@@ -7,7 +7,12 @@
 
 # Stop hook - runs when Claude is about to stop
 stop:
-  commands: []
+  commands:
+    - run: "spectr validate --all --strict"
+      showStdout: true
+      message: "Spec validation failed"
+      maxOutputLines: 100
+      timeout: 300
   # Example:
   # - run: "npm test"
   #   showStdout: true
@@ -70,11 +75,10 @@ preToolUse:
 # System notifications
 notifications:
   enabled: false
-  hooks: []  # ["*"] for all, or ["Stop", "PreToolUse"]
+  hooks: [] # ["*"] for all, or ["Stop", "PreToolUse"]
   showErrors: false
   showSuccess: false
   showSystemEvents: true
-
 # Permission request hook - auto-approve/deny tools
 # Uncomment to enable:
 #
