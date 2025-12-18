@@ -4,7 +4,7 @@
 goffice is a Go SDK for Office Open XML (OOXML) document manipulation, providing feature parity with Microsoft's Open-XML-SDK for .NET. The initial focus is on Word document processing (WordprocessingML) with support for .docx, .dotx, .docm, and .dotm files.
 
 ## Tech Stack
-- Go 1.21+ (for generics support)
+- Go 1.25+
 - Standard library only for core functionality:
   - `archive/zip` - OPC package handling
   - `encoding/xml` - XML serialization

@@ -55,13 +55,13 @@ Based on user input and research:
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
 | Go Module | `github.com/connerohnesorge/goffice` | Personal namespace |
-| Go Version | 1.22+ | Latest features, mature generics |
+| Go Version | 1.25+ | Latest features, mature generics |
 | Dependencies | Pure stdlib only | No supply chain risk |
 | Generated Code | Pre-generated, committed | No generator required by users |
 | API Style | Direct struct fields | Go idiomatic |
 | Error Handling | Return errors everywhere | Explicit error handling |
 | Validation | Strict by default | Reject invalid content |
-| Thread Safety | Package-level sync.Mutex | Document-level locking |
+| Thread Safety | sync.RWMutex with concurrent reads, exclusive writes | Document-level locking |
 
 ## Implementation Priority
 

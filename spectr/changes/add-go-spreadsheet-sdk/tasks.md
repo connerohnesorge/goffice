@@ -1,27 +1,33 @@
 # Implementation Tasks: Go SDK for Spreadsheet Document Processing
 
+**Confirmed Design Decisions:**
+- **DrawingML**: Shared `drawingml/` package used by all three SDKs (Word, Presentation, Spreadsheet)
+- **Code Generation**: Pre-generate Go types from JSON schemas and commit to repository (users do not need generator)
+- **Phase 1 Scope**: Full feature parity with Open-XML-SDK - including charts and pivot tables
+- **Validation**: Strict by default (reject invalid content, return errors for malformed documents)
+
 **Unified Design Decisions Applied (consistent with Word and Presentation SDKs):**
 - Module path: `github.com/connerohnesorge/goffice`
 - Code generation from JSON schemas (pre-generated, committed)
 - Office 2016+ only (ECMA-376 5th edition+)
-- Package structure: `pkg/{framework,types,package,spreadsheet,sml,xdr}/`
+- Package structure: `drawingml/`, `packaging/`, `openxml/`, `spreadsheet/{elements,parts}/`
 - Go-idiomatic short API names (`Workbook`, `Sheet`, `Cell`)
 - Embedded struct fields for element metadata
 - Functional options pattern for element construction
 - Generic methods only for child access: `First[T]()`, `All[T]()`, `OfType[T]()`
 - *T pointers for optional/nullable values
-- Priority: Core → Cells/Styles → Tables → Charts → Pivot Tables → Advanced
+- Priority: Core -> Cells/Styles -> Tables -> Charts -> Pivot Tables -> Advanced
 
 ## Phase 1: Project Foundation (Shared with Word/Presentation)
 
 ### 1.1 Project Setup (if not already done)
 - [ ] 1.1.1 Initialize Go module `github.com/connerohnesorge/goffice`
-- [ ] 1.1.2 Create directory structure: `pkg/`, `internal/`, `cmd/`, `testdata/`
+- [ ] 1.1.2 Create directory structure: `drawingml/`, `packaging/`, `openxml/`, `spreadsheet/`, `internal/`, `testdata/`
 - [ ] 1.1.3 Set up testing infrastructure with `go test` and test fixtures directory
 - [ ] 1.1.4 Create sample .xlsx test files for roundtrip testing (Office 2016+)
 - [ ] 1.1.5 Add Makefile with build, test, lint targets
 
-### 1.2 Core Simple Types (pkg/types/) - Shared
+### 1.2 Core Simple Types (openxml/types/) - Shared
 - [ ] 1.2.1 Implement `SimpleValue` interface with `HasValue()`, `InnerText()`, `SetInnerText()`
 - [ ] 1.2.2 Implement `StringValue` type
 - [ ] 1.2.3 Implement `Int32Value` and `UInt32Value` types
@@ -37,7 +43,7 @@
 
 ## Phase 2: OPC Packaging Layer (Shared with Word/Presentation)
 
-### 2.1 Core Package Types (internal/opc/ and pkg/package/)
+### 2.1 Core Package Types (internal/opc/ and packaging/)
 - [ ] 2.1.1 Implement `Package` struct with ZIP backing via `archive/zip`
 - [ ] 2.1.2 Implement `New(path)` and `NewWriter(w)` for new packages
 - [ ] 2.1.3 Implement `Open(path, readOnly)` for existing packages
@@ -81,7 +87,7 @@
 - [ ] 3.1.1 Implement `FeatureCollection` struct with parent inheritance
 - [ ] 3.1.2 Implement `Get[T]()` with parent chain traversal
 - [ ] 3.1.3 Implement `Set(feature)` for registration
-- [ ] 3.1.4 Implement thread-safe access (sync.Mutex)
+- [ ] 3.1.4 Implement thread-safe access (sync.RWMutex with concurrent reads via RLock(), exclusive writes via Lock())
 - [ ] 3.1.5 Define `IPackageFeature` interface and implementation
 - [ ] 3.1.6 Define `IContentTypeFeature` interface and implementation
 - [ ] 3.1.7 Define `INamespaceFeature` interface and implementation
@@ -145,14 +151,28 @@
 ### 4.3 Semantic Validation
 - [ ] 4.3.1 Implement `SemanticValidator` base
 - [ ] 4.3.2 Implement `Constraint` interface
-- [ ] 4.3.3 Implement `AttributeValueRangeConstraint`
-- [ ] 4.3.4 Implement `AttributeValuePatternConstraint`
-- [ ] 4.3.5 Implement `UniqueValueConstraint`
-- [ ] 4.3.6 Implement `RelationshipExistConstraint`
-- [ ] 4.3.7 Implement `ReferenceExistConstraint`
-- [ ] 4.3.8 Write comprehensive tests for semantic constraints
+- [ ] 4.3.3 Implement `AttributeValueRangeConstraint` (min/max bounds)
+- [ ] 4.3.4 Implement `AttributeValuePatternConstraint` (regex validation)
+- [ ] 4.3.5 Implement `AttributeValueSetConstraint` (enumeration values)
+- [ ] 4.3.6 Implement `ParentTypeConstraint` (allowed parent elements)
+- [ ] 4.3.7 Implement `ChildElementConstraint` (required/allowed children)
+- [ ] 4.3.8 Implement `UniqueValueConstraint` (uniqueness within scope)
+- [ ] 4.3.9 Implement `RelationshipExistConstraint` (relationship must exist)
+- [ ] 4.3.10 Implement `RelationshipTypeConstraint` (relationship type check)
+- [ ] 4.3.11 Implement `ReferenceExistConstraint` (ID reference validation)
+- [ ] 4.3.12 Implement `IndexRangeConstraint` (valid index bounds)
+- [ ] 4.3.13 Implement `RootAttributeConstraint` (required root attributes)
+- [ ] 4.3.14 Implement `AttributeAbsentConstraint` (mutually exclusive attributes)
+- [ ] 4.3.15 Implement `AttributeCannotOmitConstraint` (conditionally required)
+- [ ] 4.3.16 Implement `AttributeValueLengthConstraint` (string length limits)
+- [ ] 4.3.17 Implement `UniqueAttributeValueConstraint` (unique across document)
+- [ ] 4.3.18 Implement `PartContainerConstraint` (part must be in container)
+- [ ] 4.3.19 Implement `DataPartConstraint` (data part validation)
+- [ ] 4.3.20 Implement `PartTypeConstraint` (part content type validation)
+- [ ] 4.3.21 Implement custom constraint extensibility system
+- [ ] 4.3.22 Write comprehensive tests for all semantic constraints
 
-## Phase 5: Spreadsheet Document (pkg/spreadsheet/)
+## Phase 5: Spreadsheet Document (spreadsheet/)
 
 ### 5.1 Document Type
 - [ ] 5.1.1 Implement `Document` struct (SpreadsheetDocument equivalent)
@@ -194,7 +214,7 @@
 - [ ] 5.2.22 Implement `ImagePart` with content type detection
 - [ ] 5.2.23 Write tests for all part types
 
-## Phase 6: SpreadsheetML Elements (pkg/sml/)
+## Phase 6: SpreadsheetML Elements (spreadsheet/elements/)
 
 ### 6.1 Workbook Elements
 - [ ] 6.1.1 Implement `Workbook` root element (x:workbook)
@@ -274,7 +294,7 @@
 - [ ] 6.7.9 Implement `SortState` and `SortCondition` elements
 - [ ] 6.7.10 Write tests for auto filter and sort
 
-## Phase 7: Shared String Table (pkg/sml/)
+## Phase 7: Shared String Table (spreadsheet/elements/)
 
 ### 7.1 Shared Strings
 - [ ] 7.1.1 Implement `Sst` root element (x:sst)
@@ -287,7 +307,7 @@
 - [ ] 7.1.8 Implement automatic deduplication
 - [ ] 7.1.9 Write tests for shared strings
 
-## Phase 8: Stylesheet Elements (pkg/sml/)
+## Phase 8: Stylesheet Elements (spreadsheet/elements/)
 
 ### 8.1 Stylesheet Root
 - [ ] 8.1.1 Implement `Stylesheet` root element (x:styleSheet)
@@ -377,7 +397,7 @@
 - [ ] 9.4.4 Implement data table formula storage
 - [ ] 9.4.5 Write tests for formula storage
 
-## Phase 10: Table Elements (pkg/sml/)
+## Phase 10: Table Elements (spreadsheet/elements/)
 
 ### 10.1 Table Definition
 - [ ] 10.1.1 Implement `Table` root element (x:table)
@@ -389,7 +409,7 @@
 - [ ] 10.1.7 Implement totals row functions
 - [ ] 10.1.8 Write tests for tables
 
-## Phase 11: Drawing Elements (pkg/xdr/)
+## Phase 11: Drawing Elements (spreadsheet/elements/ for anchors, drawingml/ for shapes)
 
 ### 11.1 Worksheet Drawing
 - [ ] 11.1.1 Implement `WsDr` root element (xdr:wsDr)
@@ -416,7 +436,7 @@
 - [ ] 11.3.2 Implement inch/cm/point/pixel to EMU functions
 - [ ] 11.3.3 Write tests for EMU conversions
 
-## Phase 12: Chart Elements (pkg/dml/chart/)
+## Phase 12: Chart Elements (drawingml/)
 
 ### 12.1 Chart Root
 - [ ] 12.1.1 Implement `ChartSpace` root element (c:chartSpace)
@@ -462,7 +482,7 @@
 - [ ] 12.5.3 Implement sparkline types (line, column, stacked)
 - [ ] 12.5.4 Write tests for sparklines
 
-## Phase 13: Pivot Table Elements (pkg/sml/)
+## Phase 13: Pivot Table Elements (spreadsheet/elements/)
 
 ### 13.1 Pivot Table Definition
 - [ ] 13.1.1 Implement `PivotTableDefinition` root element
@@ -502,7 +522,7 @@
 - [ ] 13.5.3 Implement `TimeLineCacheDefinition` root element
 - [ ] 13.5.4 Write tests for timelines
 
-## Phase 14: Comments Elements (pkg/sml/)
+## Phase 14: Comments Elements (spreadsheet/elements/)
 
 ### 14.1 Comments
 - [ ] 14.1.1 Implement `Comments` root element (x:comments)
@@ -649,8 +669,9 @@
 
 **Estimated Scope:**
 - ~600+ element types to generate/write
-- ~29 simple types (shared)
-- ~19 semantic constraint types (shared)
-- ~25+ part types
-- ~100+ enum types in sml/ package
+- ~29 simple types (shared in openxml/types/)
+- ~19 semantic constraint types (shared in openxml/)
+- ~25+ part types in spreadsheet/parts/
+- ~100+ enum types in spreadsheet/elements/
+- DrawingML types shared across all SDKs in drawingml/
 - Total estimated: 300+ Go files, 40,000+ lines of code

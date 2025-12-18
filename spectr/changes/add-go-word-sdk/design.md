@@ -16,12 +16,14 @@ This design document captures architectural decisions for implementing a Go SDK 
 - Standard library only for core functionality (no CGO)
 
 **Decided Design Choices (Unified with Presentation SDK):**
-- Code generation from JSON schemas (same source as C# SDK)
+- Code generation from JSON schemas (same source as C# SDK) - pre-generated, committed to repo
 - Idiomatic Go naming conventions (not mirroring C# names)
-- Full validation: schema + all 19+ semantic constraint types
+- Full validation: schema + all 19+ semantic constraint types - strict by default
 - Office 2016+ only (reduces version complexity)
 - Functional options pattern for element construction
 - Generic methods only for child access: `First[T]()`, `All[T]()`, `OfType[T]()`
+- DrawingML as shared package used by Word, Presentation, and Spreadsheet SDKs
+- Phase 1 scope: Full feature parity with Open-XML-SDK (not MVP)
 
 ## Goals / Non-Goals
 
@@ -51,13 +53,16 @@ These decisions apply to both Presentation and Word SDKs for consistency:
 | Decision | Choice |
 |----------|--------|
 | **Module Path** | `github.com/connerohnesorge/goffice` |
-| **Code Generation** | Generate from JSON schemas (pre-generated, committed) |
+| **Code Generation** | Pre-generate from JSON schemas, commit to repo (users don't need generator) |
 | **Office Version** | 2016+ only (ECMA-376 5th edition+) |
-| **Package Structure** | `pkg/{framework,types,package,relationships,validation,features,word,presentation}/` |
+| **Package Structure** | Top-level: `drawingml/`, `packaging/`, `openxml/`, `wordprocessing/` |
 | **API Naming** | Go-idiomatic short names (`Document`, `Para`, not verbose C# names) |
 | **Element Metadata** | Embedded struct fields (no global registry) |
 | **Construction Pattern** | Functional options: `NewPara(WithText("Hello"))` |
 | **Child Access** | Generic methods only: `First[T]()`, `All[T]()`, `OfType[T]()` |
+| **DrawingML** | Shared package used by Word, Presentation, and Spreadsheet SDKs |
+| **Phase 1 Scope** | Full feature parity with Open-XML-SDK (not MVP) |
+| **Validation** | Strict by default - reject invalid content, return errors for malformed documents |
 
 ## Architecture Overview
 
@@ -113,48 +118,55 @@ These decisions apply to both Presentation and Word SDKs for consistency:
 
 ### D1: Package Structure
 
-**Decision:** Organize into unified `pkg/` structure (consistent with Presentation SDK).
+**Decision:** Organize into top-level packages (consistent with Presentation SDK).
 
 ```
 goffice/
-├── pkg/
-│   ├── framework/           # Core element types
-│   │   ├── element.go       # Element interface & BaseElement
-│   │   ├── composite.go     # CompositeElement (has children)
-│   │   ├── leaf.go          # LeafElement, LeafTextElement
-│   │   └── attribute.go     # Attribute handling
-│   │
+├── drawingml/               # SHARED - DrawingML types (shapes, images, effects)
+│   ├── types.go             # Core DrawingML types
+│   ├── shapes.go            # Shape definitions
+│   ├── effects.go           # Visual effects
+│   └── ...                  # Used by Word, Presentation, and Spreadsheet
+│
+├── packaging/               # OPC layer (Open Packaging Conventions)
+│   ├── package.go           # OpenXmlPackage
+│   ├── part.go              # OpenXmlPart base
+│   ├── container.go         # OpenXmlPartContainer
+│   ├── relationships.go     # Relationship management
+│   └── contenttypes.go      # Content type handling
+│
+├── openxml/                 # Core framework
+│   ├── element.go           # Element interface & BaseElement
+│   ├── composite.go         # CompositeElement (has children)
+│   ├── leaf.go              # LeafElement, LeafTextElement
+│   ├── attribute.go         # Attribute handling
 │   ├── types/               # OpenXML value types
 │   │   ├── string.go        # StringValue
 │   │   ├── bool.go          # BooleanValue, OnOffValue
 │   │   ├── numeric.go       # Int32Value, Int64Value, etc.
 │   │   └── enum.go          # EnumValue[T] generic
-│   │
-│   ├── package/             # OPC package handling
-│   │   ├── package.go       # OpenXmlPackage
-│   │   ├── part.go          # OpenXmlPart base
-│   │   └── container.go     # OpenXmlPartContainer
-│   │
-│   ├── relationships/       # Relationship management
-│   │   ├── relationship.go  # Relationship types
-│   │   ├── internal.go      # Internal relationships
-│   │   └── external.go      # External relationships (hyperlinks)
-│   │
-│   ├── validation/          # Document validation
-│   │   ├── validator.go     # OpenXmlValidator
-│   │   ├── schema.go        # Schema validation
-│   │   └── semantic.go      # Semantic constraints
-│   │
 │   ├── features/            # Feature collection pattern
 │   │   ├── collection.go    # FeatureCollection
 │   │   └── interfaces.go    # Feature interfaces
-│   │
-│   ├── word/                # WordprocessingML - Word documents
-│   │   ├── document.go      # Document type
-│   │   └── parts/           # Word-specific parts
-│   │
-│   └── wml/                 # WordprocessingML schema elements (generated)
-│       └── *.go             # Pre-generated from JSON schemas
+│   └── validation/          # Document validation
+│       ├── validator.go     # OpenXmlValidator
+│       ├── schema.go        # Schema validation
+│       └── semantic.go      # Semantic constraints (19+ types)
+│
+├── wordprocessing/          # WordprocessingML - Word documents
+│   ├── document.go          # Document type (Create/Open/Save)
+│   ├── elements/            # Word document elements
+│   │   ├── paragraph.go     # Para, Run, Text
+│   │   ├── table.go         # Table, Row, Cell
+│   │   ├── properties.go    # ParaProps, RunProps
+│   │   └── ...              # 685+ element types (generated)
+│   └── parts/               # Word document parts
+│       ├── main.go          # MainDocumentPart
+│       ├── styles.go        # StylesPart
+│       ├── numbering.go     # NumberingPart
+│       ├── header.go        # HeaderPart
+│       ├── footer.go        # FooterPart
+│       └── ...              # 30+ part types
 │
 ├── internal/
 │   ├── opc/                 # Low-level OPC/ZIP implementation
@@ -164,7 +176,7 @@ goffice/
     └── golden/              # Expected XML for golden file tests
 ```
 
-**Rationale:** Unified structure with Presentation SDK; `pkg/` style is consistent.
+**Rationale:** Top-level packages provide cleaner imports (`import "goffice/wordprocessing"`). DrawingML is shared across all three document types (Word, Presentation, Spreadsheet).
 
 ### D2: Element Implementation Strategy
 
@@ -272,7 +284,7 @@ type OpenXmlPart struct {
     stream      io.ReadSeeker  // Underlying stream
     rootElement Element        // Lazily loaded
     loaded      bool
-    mu          sync.Mutex
+    mu          sync.RWMutex
 }
 
 func (p *OpenXmlPart) RootElement() (Element, error) {
@@ -344,7 +356,7 @@ type ExternalRelationship struct {
 type FeatureCollection struct {
     parent   *FeatureCollection
     features map[reflect.Type]interface{}
-    mu       sync.Mutex
+    mu       sync.RWMutex
 }
 
 func (fc *FeatureCollection) Get(featureType interface{}) interface{} {
@@ -519,7 +531,7 @@ func (e *PartError) Unwrap() error {
 ```go
 type Document struct {
     pkg      *Package
-    mu       sync.Mutex
+    mu       sync.RWMutex
     modified bool
 }
 
@@ -540,6 +552,85 @@ func (d *Document) Save() error {
 
 **Rationale:** Common pattern; documents typically modified by single goroutine.
 
+## Key Technical Findings: WordprocessingML Architecture
+
+### Document Element Hierarchy
+Word documents follow a strict element hierarchy:
+```
+Document (w:document)
+└── Body (w:body)
+    ├── Paragraph (w:p)
+    │   ├── ParagraphProperties (w:pPr)
+    │   └── Run (w:r)
+    │       ├── RunProperties (w:rPr)
+    │       └── Text (w:t)
+    ├── Table (w:tbl)
+    │   ├── TableProperties (w:tblPr)
+    │   ├── TableGrid (w:tblGrid)
+    │   └── TableRow (w:tr)
+    │       └── TableCell (w:tc)
+    │           └── Paragraph (recursive)
+    └── SectionProperties (w:sectPr) - affects preceding content
+```
+
+### Part Types (30+)
+WordprocessingML documents contain multiple part types linked via relationships:
+
+| Part Type | Content Type | Purpose |
+|-----------|--------------|---------|
+| MainDocumentPart | application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml | Primary document content |
+| StylesPart | .../styles+xml | Style definitions |
+| NumberingPart | .../numbering+xml | List/numbering definitions |
+| HeaderPart | .../header+xml | Header content (default/first/even) |
+| FooterPart | .../footer+xml | Footer content (default/first/even) |
+| SettingsPart | .../settings+xml | Document settings |
+| FontTablePart | .../fontTable+xml | Font definitions |
+| ThemePart | .../theme+xml | Theme definitions |
+| CommentsPart | .../comments+xml | Document comments |
+| FootnotesPart | .../footnotes+xml | Footnotes |
+| EndnotesPart | .../endnotes+xml | Endnotes |
+| ImagePart | image/png, image/jpeg, etc. | Embedded images |
+| CustomXmlPart | application/xml | Custom XML data |
+
+### Properties Complexity
+- **40+ paragraph properties**: justification, indentation, spacing, borders, shading, numbering, keep-with-next, widow/orphan control, tabs, outline level, etc.
+- **50+ run properties**: bold, italic, underline (15+ styles), strikethrough, font family (4 slots: ASCII, high ANSI, complex script, East Asian), font size, color, highlight, caps, small caps, subscript/superscript, spacing, kerning, language, etc.
+
+### Style Inheritance Chain
+Formatting resolves through a three-level inheritance chain:
+```
+Document Defaults (w:docDefaults)
+    ↓ (base layer)
+Style Definitions (w:styles → w:style)
+    ↓ (style layer)
+Direct Formatting (w:pPr, w:rPr on elements)
+    ↓ (override layer)
+Final Rendered Formatting
+```
+
+### Track Changes Architecture
+Revision tracking uses wrapper elements with author/date metadata:
+- **InsertedRun** (`w:ins`) - Wraps inserted content
+- **DeletedRun** (`w:del`) - Wraps deleted content with `w:delText` for deleted text
+- **MoveFrom** / **MoveTo** (`w:moveFrom`, `w:moveTo`) - Content relocation markers
+- **rsid attributes** - Revision Save IDs track editing sessions (rsidR, rsidRDefault, rsidDel, rsidP, rsidRPr)
+
+### Section Properties Placement
+Section properties (`w:sectPr`) appear at the end of the body but affect **preceding** content. The last section's properties are in `w:body/w:sectPr`, while intermediate section breaks use `w:p/w:pPr/w:sectPr`.
+
+### Headers/Footers Architecture
+Headers and footers are stored as separate parts, linked via relationship IDs:
+- Each section can reference different headers/footers
+- Three types per section: `default`, `first` (title page), `even` (even pages)
+- Referenced in section properties: `<w:headerReference w:type="default" r:id="rId4"/>`
+
+### Validation Behavior
+**Decision: Strict by default**
+- Invalid content is rejected with descriptive errors
+- Malformed documents return errors on open
+- All 19+ semantic constraint types are enforced
+- No silent data loss or auto-repair (explicit user action required)
+
 ## Risks / Trade-offs
 
 | Risk | Impact | Mitigation |
@@ -557,16 +648,17 @@ N/A - New capability with no existing implementation.
 ## Resolved Design Questions
 
 ### Q1: Code Generation Strategy ✓ DECIDED (UPDATED)
-**Decision:** Generate from JSON schemas (unified with Presentation SDK).
+**Decision:** Pre-generate from JSON schemas, commit to repository (unified with Presentation SDK).
 
 The C# SDK generates 67,000+ lines (685 classes) for WordprocessingML alone. Using the same JSON schema approach:
 - Reuses the C# SDK's JSON schema metadata in `/data/schemas/`
-- Pre-generated Go code committed to repo (no user-facing generator)
+- **Pre-generated Go code committed to repo** - users do not need to run the generator
+- Code generation is a development-time tool, not a runtime dependency
 - Consistent with Presentation SDK approach
 - Maintains Go idioms in the generator output
 - Elements are pre-generated but can have hand-written extensions
 
-**Impact:** Code generator reads JSON schemas and produces ~685 element types as Go structs.
+**Impact:** Code generator reads JSON schemas and produces ~685 element types as Go structs. These are committed to the repository so consumers can use the SDK without needing to run any code generation.
 
 ### Q2: API Naming Style ✓ DECIDED
 **Decision:** Idiomatic Go naming conventions.
@@ -1001,25 +1093,26 @@ Documents can have multiple sections with different headers/footers.
 - ValidationContext with StateManager for caching
 - FileFormatVersions flags for version-aware validation
 
-**18 Semantic Constraint Types:**
+**19 Semantic Constraint Types:**
 1. `AttributeValueRangeConstraint` - min/max bounds
 2. `AttributeValuePatternConstraint` - regex validation
 3. `AttributeValueSetConstraint` - enumeration values
 4. `ParentTypeConstraint` - allowed parent elements
-5. `UniqueAttributeValueConstraint` - uniqueness in scope
-6. `RelationshipExistConstraint` - relationship must exist
-7. `RelationshipTypeConstraint` - relationship type check
-8. `ReferenceExistConstraint` - ID reference validation
-9. `IndexRangeConstraint` - valid index bounds
-10. `RootAttributeConstraint` - required root attributes
-11. `AttributeAbsentConstraint` - mutually exclusive attrs
-12. `AttributeCannotOmitConstraint` - conditionally required
-13. `AttributeValueLengthConstraint` - string length limits
-14. `PartContainerConstraint` - part must be in container
-15. `DataPartConstraint` - data part validation
-16. `PartTypeConstraint` - part content type check
-17. `UniqueParticleConstraint` - unique child elements
-18. `CompatibilityRuleConstraint` - markup compatibility
+5. `ChildElementConstraint` - required/allowed children
+6. `UniqueAttributeValueConstraint` - uniqueness in scope
+7. `RelationshipExistConstraint` - relationship must exist
+8. `RelationshipTypeConstraint` - relationship type check
+9. `ReferenceExistConstraint` - ID reference validation
+10. `IndexRangeConstraint` - valid index bounds
+11. `RootAttributeConstraint` - required root attributes
+12. `AttributeAbsentConstraint` - mutually exclusive attrs
+13. `AttributeCannotOmitConstraint` - conditionally required
+14. `AttributeValueLengthConstraint` - string length limits
+15. `PartContainerConstraint` - part must be in container
+16. `DataPartConstraint` - data part validation
+17. `PartTypeConstraint` - part content type check
+18. `UniqueParticleConstraint` - unique child elements
+19. `CompatibilityRuleConstraint` - markup compatibility
 
 ### Part Hierarchy
 - 60+ part types for WordprocessingML

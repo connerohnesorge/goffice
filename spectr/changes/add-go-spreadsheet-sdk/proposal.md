@@ -155,50 +155,77 @@ The spreadsheet SDK shares these components with Word and Presentation SDKs:
 | Setting | Value |
 |---------|-------|
 | **Go Module** | `github.com/connerohnesorge/goffice` |
-| **Go Version** | 1.22+ |
+| **Go Version** | Go 1.25+ |
 | **Dependencies** | Pure stdlib only |
 | **Generated Code** | Pre-generated from JSON schemas, committed |
 | **API Style** | Direct struct field access |
 | **Error Handling** | Return errors everywhere |
 | **Validation** | Strict by default |
-| **Thread Safety** | Package-level sync.Mutex |
+| **Thread Safety** | Document-level sync.RWMutex (concurrent reads via RLock(), exclusive writes via Lock()) |
 | **MVP Scope** | Full read/write from v0.1 |
 | **MC Handling** | Process automatically (select Choice/Fallback) |
 | **Testing Strategy** | Golden file tests |
 | **XML Prefixes** | Fixed canonical (x:, a:, r:, xdr:) |
-| **Package Structure** | Flat by namespace (sml/, dml/, xdr/) |
+| **Package Structure** | Domain-based: `drawingml/`, `packaging/`, `openxml/`, `spreadsheet/{elements,parts}/` |
 | **Version Support** | Office 2016+ (FileFormatVersions.Office2016) |
 
 ## Architecture Overview
 
+The package structure has been updated to use a cleaner top-level organization with shared DrawingML:
+
 ```
 goffice/
-├── pkg/
-│   ├── framework/           # Core element types (shared)
-│   ├── types/               # OpenXML value types (shared)
-│   ├── package/             # OPC package handling (shared)
-│   ├── validation/          # Schema/semantic validation (shared)
+├── drawingml/               # SHARED - shapes, images, charts (a: namespace)
+│   └── *.go                 # Pre-generated DrawingML types
+│
+├── packaging/               # OPC layer (shared)
+│   ├── package.go           # Package struct with ZIP backing
+│   ├── part.go              # Part struct
+│   ├── relationship.go      # Relationship struct
+│   └── content_types.go     # Content types management
+│
+├── openxml/                 # Core framework (shared)
+│   ├── element.go           # Element interface and base types
+│   ├── composite.go         # CompositeElement for containers
+│   ├── leaf.go              # LeafElement for simple content
+│   ├── part.go              # OpenXmlPart base struct
+│   ├── validation.go        # Validation framework
+│   └── types/               # OpenXML value types
+│       ├── string.go        # StringValue
+│       ├── int.go           # Int32Value, Int64Value, etc.
+│       ├── bool.go          # BooleanValue
+│       └── ...              # Other simple types
+│
+├── spreadsheet/             # SpreadsheetML domain
+│   ├── elements/            # Workbook, Worksheet, Cell, Formula elements
+│   │   ├── workbook.go      # x:workbook, x:sheets, x:sheet, etc.
+│   │   ├── worksheet.go     # x:worksheet, x:sheetData, x:sheetViews
+│   │   ├── cell.go          # x:row, x:c, x:v, x:f
+│   │   ├── styles.go        # x:styleSheet, x:fonts, x:fills, etc.
+│   │   ├── strings.go       # x:sst, x:si shared strings
+│   │   ├── table.go         # x:table elements
+│   │   ├── pivot.go         # Pivot table elements
+│   │   ├── chart.go         # Chart integration (uses drawingml/)
+│   │   └── conditional.go   # Conditional formatting elements
 │   │
-│   ├── spreadsheet/         # SpreadsheetDocument & types
-│   │   ├── document.go      # SpreadsheetDocument
-│   │   ├── types.go         # SpreadsheetDocumentType enum
-│   │   └── parts/           # All spreadsheet part types
-│   │       ├── workbook.go  # WorkbookPart
-│   │       ├── worksheet.go # WorksheetPart
-│   │       ├── styles.go    # WorkbookStylesPart
-│   │       ├── strings.go   # SharedStringTablePart
-│   │       ├── chart.go     # ChartPart
-│   │       └── ...          # All other parts
-│   │
-│   ├── sml/                 # SpreadsheetML elements (x: namespace)
-│   │   └── *.go             # Pre-generated from JSON schemas
-│   │
-│   ├── xdr/                 # SpreadsheetDrawing elements
-│   │   └── *.go             # Pre-generated from JSON schemas
-│   │
-│   ├── dml/                 # DrawingML elements (shared with pres/word)
-│   ├── word/                # WordprocessingML (existing)
-│   └── presentation/        # PresentationML (existing)
+│   └── parts/               # Spreadsheet parts
+│       ├── workbook.go      # WorkbookPart
+│       ├── worksheet.go     # WorksheetPart
+│       ├── styles.go        # WorkbookStylesPart
+│       ├── strings.go       # SharedStringTablePart
+│       ├── chart.go         # ChartPart
+│       ├── drawing.go       # DrawingsPart
+│       ├── pivot.go         # PivotTablePart, PivotCacheParts
+│       ├── table.go         # TableDefinitionPart
+│       └── comments.go      # CommentsPart, ThreadedCommentsPart
+│
+├── word/                    # WordprocessingML (existing/planned)
+│   ├── elements/            # Document, Paragraph, Run elements
+│   └── parts/               # Document parts
+│
+├── presentation/            # PresentationML (existing/planned)
+│   ├── elements/            # Presentation, Slide elements
+│   └── parts/               # Presentation parts
 │
 ├── internal/
 │   ├── opc/                 # Low-level OPC/ZIP implementation
@@ -208,6 +235,13 @@ goffice/
     └── golden/              # Expected XML for golden file tests
 ```
 
+**Key Package Responsibilities:**
+- `drawingml/` - Shared DrawingML types (a: namespace) used by all three SDKs for shapes, images, charts
+- `packaging/` - OPC package layer for ZIP-based document handling
+- `openxml/` - Core framework: element interfaces, part base types, validation
+- `spreadsheet/elements/` - SpreadsheetML XML element types (x: namespace)
+- `spreadsheet/parts/` - Spreadsheet part types (WorkbookPart, WorksheetPart, etc.)
+
 ## Compatibility Goals
 
 - Full API parity with Open-XML-SDK for SpreadsheetML features
@@ -216,6 +250,17 @@ goffice/
 - Support for Office 2016, 2019, 2021, and Microsoft 365 formats (ECMA-376 5th edition+)
 - Interoperability with existing Word and Presentation SDKs in goffice
 
+## Confirmed Design Decisions
+
+These key decisions have been confirmed through analysis and discussion:
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **DrawingML** | Shared `drawingml/` package | Used by all three SDKs (Word, Presentation, Spreadsheet) for shapes, images, and charts |
+| **Code Generation** | Pre-generate and commit | Go types generated from JSON schemas, committed to repository; users do not need the generator |
+| **Phase 1 Scope** | Full feature parity with Open-XML-SDK | Including charts and pivot tables from the start |
+| **Validation** | Strict by default | Reject invalid content, return errors for malformed documents |
+
 ## Unified Design Decisions
 
 These decisions apply consistently across all three SDKs (Word, Presentation, Spreadsheet):
@@ -223,9 +268,9 @@ These decisions apply consistently across all three SDKs (Word, Presentation, Sp
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
 | **Module Path** | `github.com/connerohnesorge/goffice` | Personal namespace, unified module |
-| **Code Generation** | Generate from JSON schemas | Reuse C# SDK schema data, 1000+ types per domain |
+| **Code Generation** | Pre-generate from JSON schemas, commit to repo | Reuse C# SDK schema data, 1000+ types per domain; users get ready-to-use types |
 | **Office Version** | 2016+ only | Modern documents, reduced complexity (ECMA-376 5th edition+) |
-| **Package Structure** | `pkg/` style | `pkg/{framework,types,package,spreadsheet,sml}` |
+| **Package Structure** | Domain-based packages | See updated architecture below |
 | **API Naming** | Go-idiomatic short | `Workbook`, `Sheet`, `Cell` (not verbose C# names) |
 | **Element Metadata** | Embedded struct fields | Self-contained elements, no global registry |
 | **Construction Pattern** | Functional options | `NewSheet(WithName("Data"), WithIndex(0))` |
@@ -281,6 +326,144 @@ const (
     FormulaTypeShared    FormulaType = "shared"
 )
 ```
+
+## Technical Findings from SpreadsheetML Exploration
+
+These findings were gathered from analyzing the Open-XML-SDK source, ECMA-376 specification, and real Excel documents:
+
+### Part Hierarchy
+
+**WorkbookPart** is the root and contains:
+- `WorksheetPart[]` - Individual worksheets (multiple)
+- `SharedStringTablePart` - Shared string storage (singleton)
+- `WorkbookStylesPart` - All style definitions (singleton)
+- `CalculationChainPart` - Formula calculation order (singleton)
+- `ThemePart` - Document theme (singleton)
+- `ChartsheetPart[]` - Chart-only sheets (multiple)
+- `PivotTableCacheDefinitionPart[]` - Pivot caches (multiple)
+
+**WorksheetPart** contains:
+- `DrawingsPart` - Embedded drawings/charts (singleton)
+- `TableDefinitionPart[]` - Excel tables (multiple)
+- `PivotTablePart[]` - Pivot tables (multiple)
+- `CommentsPart` - Cell comments (singleton)
+
+### Cell Reference System
+
+- **Range**: A1 to XFD1048576 (maximum 16,384 columns x 1,048,576 rows)
+- **Column naming**: A-Z, AA-AZ, ..., XFD (base-26 with offset)
+- **Reference styles**: A1-style (default) and R1C1-style (for relative formulas)
+- **Absolute references**: Use $ prefix ($A$1 = absolute, A$1 = mixed)
+
+### Cell Data Types
+
+| Type | Attribute Value | Description |
+|------|-----------------|-------------|
+| Number | (default/omit) | Numeric value stored in `<v>` element |
+| Shared String | `s` | Index into SharedStringTable in `<v>` element |
+| Formula String | `str` | Formula result is a string |
+| Error | `e` | Error value (#DIV/0!, #VALUE!, #REF!, etc.) |
+| Boolean | `b` | "0" or "1" in `<v>` element |
+| Inline String | `inlineStr` | Rich text in `<is>` element instead of `<v>` |
+
+### SharedStringTable
+
+- Deduplicates strings across all cells in the workbook
+- Cell stores integer index into the table
+- Supports plain text (`<t>`) and rich text runs (`<r>`)
+- `count` attribute = total references, `uniqueCount` = unique strings
+
+### Stylesheet Structure
+
+```
+Stylesheet
++-- NumFmts[]           # Custom number formats (id >= 164)
++-- Fonts[]             # Font definitions (0-indexed)
++-- Fills[]             # Fill definitions (0-indexed, 0=none, 1=gray125)
++-- Borders[]           # Border definitions (0-indexed)
++-- CellStyleXfs[]      # Base formatting records for named styles
++-- CellXfs[]           # Cell formatting records (combines font/fill/border)
++-- CellStyles[]        # Named styles (Normal, Heading 1, etc.)
++-- Dxfs[]              # Differential formats (for conditional formatting)
++-- TableStyles[]       # Table style definitions
+```
+
+**Built-in Number Format IDs**: 0-163 are predefined (0 = General, 1 = 0, 2 = 0.00, etc.)
+**Custom formats**: Start at ID 164
+
+### Formula Types
+
+| Type | Usage |
+|------|-------|
+| `normal` | Standard formula |
+| `array` | Array formula (legacy CSE: Ctrl+Shift+Enter) |
+| `dataTable` | Data table what-if analysis |
+| `shared` | Shared formula (optimization for repeated patterns) |
+
+### Conditional Formatting Rule Types
+
+Supports 15+ rule types:
+- `cellIs` - Compare cell value (equal, greaterThan, between, etc.)
+- `colorScale` - 2-color or 3-color gradient based on value
+- `dataBar` - In-cell data bar visualization
+- `iconSet` - Icon sets (arrows, traffic lights, ratings, etc.)
+- `top10` - Top/bottom N values or percentages
+- `aboveAverage` - Above/below average values
+- `duplicateValues` / `uniqueValues` - Duplicate/unique detection
+- `containsText` / `notContainsText` / `beginsWith` / `endsWith` - Text rules
+- `containsBlanks` / `notContainsBlanks` - Blank cell detection
+- `containsErrors` / `notContainsErrors` - Error detection
+- `expression` - Custom formula-based rules
+- `timePeriod` - Date-based rules (today, thisWeek, lastMonth, etc.)
+
+### Table Structure
+
+Excel tables (ListObjects) have:
+- `TableColumns` with optional calculated column formulas
+- `TotalsRow` with aggregation functions (sum, average, count, etc.)
+- `AutoFilter` for filtering
+- `TableStyleInfo` referencing built-in or custom styles
+- Support for structured references in formulas: `=SUM(Table1[Sales])`
+
+### Chart Types
+
+**2D Charts**: Bar, Line, Area, Pie, Doughnut, Radar, Scatter, Bubble, Stock
+**3D Charts**: Bar3D, Line3D, Area3D, Pie3D, Surface3D
+**Special**: OfPie (pie-of-pie, bar-of-pie), Stock (OHLC)
+
+Charts use DrawingML (a: namespace) for:
+- Shape properties (fills, lines, effects)
+- Text formatting
+- Themes and styles
+
+### Pivot Tables (Two-Part System)
+
+1. **PivotTableDefinition** - The pivot table structure
+   - Row fields, column fields, page fields (filters)
+   - Data fields with aggregation functions
+   - Location and styling
+
+2. **PivotCacheDefinition + PivotCacheRecords** - The data cache
+   - Source data reference (worksheet range or external)
+   - Field definitions and shared items
+   - Cached record values for offline access
+
+### Drawing Anchors
+
+Drawings can be anchored to worksheets in three ways:
+
+| Anchor Type | Usage |
+|-------------|-------|
+| `twoCellAnchor` | Anchored to two cells (from/to), resizes with cells |
+| `oneCellAnchor` | Anchored to one cell with fixed extent |
+| `absoluteAnchor` | Fixed position in EMUs (English Metric Units) |
+
+### CellValue Format Notes
+
+- **Numbers**: Stored using invariant culture format (decimal point, no thousands separator)
+- **Dates**: Stored as Excel serial date numbers (days since 1899-12-30, with 1900 leap year bug)
+- **Booleans**: Stored as "0" (false) or "1" (true)
+- **Errors**: Stored as error codes (#DIV/0!, #VALUE!, #REF!, #NAME?, #NUM!, #N/A, #NULL!)
 
 ## Risk Assessment
 

@@ -68,13 +68,16 @@ These decisions apply to both Presentation and Word SDKs for consistency:
 | Decision | Choice |
 |----------|--------|
 | **Module Path** | `github.com/connerohnesorge/goffice` |
-| **Code Generation** | Generate from JSON schemas (pre-generated, committed) |
+| **Code Generation** | Pre-generate Go types from JSON schemas and commit to repository (users don't need generator) |
 | **Office Version** | 2016+ only (ECMA-376 5th edition+) |
-| **Package Structure** | `pkg/{framework,types,package,relationships,validation,features,presentation,word}/` |
+| **Package Structure** | `drawingml/` (shared), `packaging/`, `openxml/`, `presentation/` (see below) |
 | **API Naming** | Go-idiomatic short names (`Slide`, `Para`, not verbose C# names) |
 | **Element Metadata** | Embedded struct fields (no global registry) |
 | **Construction Pattern** | Functional options: `NewSlide(WithTitle("Hello"))` |
 | **Child Access** | Generic methods only: `First[T]()`, `All[T]()`, `OfType[T]()` |
+| **DrawingML** | Shared `drawingml/` package used by all three SDKs (Word, Presentation, Spreadsheet) |
+| **Phase 1 Scope** | Full feature parity with Open-XML-SDK - including animations and transitions |
+| **Validation** | Strict by default (reject invalid content, return errors for malformed documents) |
 
 ## Decisions
 
@@ -262,14 +265,26 @@ type SemanticConstraint interface {
 }
 ```
 
-**Semantic constraint types to implement** (21 from C# SDK):
-- AttributeValueSetConstraint
-- AttributeValueRangeConstraint
-- AttributeMutualExclusive
-- UniqueAttributeValueConstraint
-- RelationshipExistConstraint
-- ReferenceExistConstraint
-- etc.
+**Semantic constraint types to implement** (19 from C# SDK):
+1. AttributeValueSetConstraint - enumeration values
+2. AttributeValueRangeConstraint - min/max bounds
+3. AttributeValuePatternConstraint - regex validation
+4. ParentTypeConstraint - allowed parent elements
+5. ChildElementConstraint - required/allowed children
+6. UniqueValueConstraint - uniqueness within scope
+7. RelationshipExistConstraint - relationship must exist
+8. RelationshipTypeConstraint - relationship type check
+9. ReferenceExistConstraint - ID reference validation
+10. IndexRangeConstraint - valid index bounds
+11. RootAttributeConstraint - required root attributes
+12. AttributeAbsentConstraint - mutually exclusive attributes
+13. AttributeCannotOmitConstraint - conditionally required
+14. AttributeValueLengthConstraint - string length limits
+15. UniqueAttributeValueConstraint - unique across document
+16. PartContainerConstraint - part must be in container
+17. DataPartConstraint - data part validation
+18. PartTypeConstraint - part content type validation
+19. Custom constraints - extensible system
 
 ---
 
@@ -453,7 +468,7 @@ Based on user input, the following decisions have been finalized:
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
 | **Go Module Path** | `github.com/connerohnesorge/goffice` | Personal namespace, easy to start |
-| **Minimum Go Version** | Go 1.22+ | Latest features, loop variable semantics, mature generics |
+| **Minimum Go Version** | Go 1.25+ | Latest features, loop variable semantics, mature generics |
 | **External Dependencies** | Pure stdlib only | Maximum compatibility, no supply chain risk |
 | **Generated Code** | Pre-generated, committed to repo | No generator tool required by users |
 
@@ -464,7 +479,7 @@ Based on user input, the following decisions have been finalized:
 | **Property Access** | Direct struct fields | Go idiomatic: `slide.ShapeTree.Shapes[0]` |
 | **Error Handling** | Return errors everywhere | Every operation returns `(result, error)` |
 | **Validation Default** | Strict by default | Reject invalid content during load |
-| **Thread Safety** | Package-level sync.Mutex | One lock per document, like C# SDK |
+| **Thread Safety** | sync.RWMutex with concurrent reads, exclusive writes | One lock per document, allows concurrent read access |
 
 ### Implementation Implications
 
@@ -506,17 +521,23 @@ doc, err := presentation.Open("invalid.pptx")
 doc, err := presentation.Open("file.pptx", WithStrictValidation(false))
 ```
 
-**Package-Level Mutex**:
+**sync.RWMutex with Concurrent Reads**:
 ```go
 type PresentationDocument struct {
-    mu       sync.Mutex
-    // All methods acquire mu before operation
+    mu       sync.RWMutex
+    // Read methods acquire RLock, write methods acquire Lock
+}
+
+func (d *PresentationDocument) GetSlide(index int) (*Slide, error) {
+    d.mu.RLock()
+    defer d.mu.RUnlock()
+    // Concurrent reads allowed
 }
 
 func (d *PresentationDocument) Save() error {
     d.mu.Lock()
     defer d.mu.Unlock()
-    // ...
+    // Exclusive write access
 }
 ```
 
@@ -535,29 +556,60 @@ func (d *PresentationDocument) Save() error {
 |----------|--------|-----------|
 | **XML Prefixes** | Fixed canonical prefixes | Always `p:` for PresentationML, `a:` for DrawingML |
 | **Child Element Access** | Direct struct fields | `slide.ShapeTree`, `shape.TextBody` - Go idiomatic |
-| **Package Structure** | Flat by namespace | `pkg/pml/`, `pkg/dml/`, `pkg/rml/` |
+| **Package Structure** | See Package Organization below | `drawingml/`, `packaging/`, `openxml/`, `presentation/` |
 | **Version Support** | Office 2016+ | FileFormatVersions.Office2016 minimum, ECMA-376 5th edition |
 
 ### Package Organization
 
 ```
 goffice/
-├── pkg/
-│   ├── framework/      # Core element types, attributes, base interfaces
-│   ├── types/          # OpenXML value types (StringValue, Int32Value, etc.)
-│   ├── package/        # OPC package abstraction and document base
-│   ├── relationships/  # Part relationships and content types
-│   ├── validation/     # Schema and semantic validation
-│   ├── features/       # Feature collection pattern implementation
-│   ├── presentation/   # PresentationDocument, document types
-│   ├── pml/            # PresentationML schema elements (p: namespace)
-│   ├── dml/            # DrawingML schema elements (a: namespace)
-│   └── rml/            # RelationshipML elements (r: namespace)
+├── drawingml/               # SHARED - shapes, images, effects (a: namespace)
+│   └── *.go                 # Pre-generated from JSON schemas, used by Word/Presentation/Spreadsheet
+│
+├── packaging/               # OPC layer (ZIP-based package handling)
+│   ├── package.go           # OpenXmlPackage
+│   ├── part.go              # OpenXmlPart base
+│   ├── container.go         # OpenXmlPartContainer
+│   ├── relationships.go     # Relationship management
+│   └── properties.go        # Core, extended, custom properties
+│
+├── openxml/                 # Core framework
+│   ├── element.go           # OpenXmlElement interface & BaseElement
+│   ├── composite.go         # CompositeElement (has children)
+│   ├── leaf.go              # LeafElement, LeafTextElement
+│   ├── attribute.go         # Attribute handling (fixed + extended)
+│   ├── types/               # OpenXML value types
+│   │   ├── string.go        # StringValue
+│   │   ├── bool.go          # BooleanValue, OnOffValue, TrueFalseValue
+│   │   ├── numeric.go       # Int32Value, Int64Value, DoubleValue, etc.
+│   │   ├── enum.go          # EnumValue[T] generic
+│   │   └── hex.go           # HexBinaryValue, Base64BinaryValue
+│   ├── validation/          # Document validation
+│   │   ├── validator.go     # OpenXmlValidator
+│   │   ├── schema.go        # Schema validation (particle-based)
+│   │   └── semantic.go      # Semantic constraints
+│   └── features/            # Feature collection pattern
+│       └── features.go      # IFeatureCollection, type-safe Get/Set
+│
+├── presentation/            # PresentationML (p: namespace)
+│   ├── document.go          # PresentationDocument
+│   ├── types.go             # PresentationDocumentType enum
+│   ├── elements/            # Slide, Shape, Transition, Animation elements
+│   │   └── *.go             # Pre-generated from JSON schemas
+│   └── parts/               # Presentation parts
+│       ├── presentation.go  # PresentationPart
+│       ├── slide.go         # SlidePart
+│       ├── slidemaster.go   # SlideMasterPart
+│       ├── slidelayout.go   # SlideLayoutPart
+│       ├── theme.go         # ThemePart
+│       └── *.go             # Other part types (NotesSlidePart, etc.)
+│
 ├── internal/
-│   ├── opc/            # Low-level OPC/ZIP handling
-│   └── xml/            # XML utilities, MC processing
+│   ├── opc/                 # Low-level OPC/ZIP handling
+│   └── xml/                 # XML utilities, MC processing
+│
 └── testdata/
-    └── golden/         # Expected XML output for golden file tests
+    └── golden/              # Expected XML output for golden file tests
 ```
 
 ### MC Processing Behavior
@@ -587,3 +639,122 @@ func TestCreateSlide(t *testing.T) {
     }
 }
 ```
+
+## Key Technical Findings from PresentationML Exploration
+
+The following findings document the actual structure and complexity of PresentationML based on exploration of the ECMA-376 schema and Open-XML-SDK implementation.
+
+### Part Hierarchy
+
+- **PresentationPart** contains:
+  - SlideParts (one per slide)
+  - SlideMasterParts (master slides with theme)
+  - SlideLayoutParts (layout templates)
+  - ThemePart (document theme)
+  - NotesMasterPart, HandoutMasterPart
+  - CommentsPart, CommentAuthorsPart
+  - TableStylesPart, CustomXmlParts
+
+### Slide Structure
+
+```
+Slide (p:sld)
+└── CommonSlideData (p:cSld)
+    ├── Background (p:bg) - optional
+    └── ShapeTree (p:spTree)
+        ├── NonVisualGroupShapeProperties (p:nvGrpSpPr)
+        ├── GroupShapeProperties (p:grpSpPr)
+        └── Shape elements (see Shape Hierarchy)
+```
+
+### Shape Hierarchy
+
+The shape tree can contain these element types:
+- **Shape** (p:sp) - basic shapes with text
+- **GroupShape** (p:grpSp) - groups of shapes
+- **Picture** (p:pic) - images
+- **GraphicFrame** (p:graphicFrame) - charts, tables, diagrams
+- **ConnectionShape** (p:cxnSp) - connector lines
+- **ContentPart** (p:contentPart) - external content
+
+### Transition Types (20+)
+
+PresentationML supports these slide transition effects:
+- blinds, checker, circle, comb, cover
+- cut, diamond, dissolve, fade, newsflash
+- plus, pull, push, random, randomBar
+- split, strips, wedge, wheel, wipe, zoom
+- And Office 2010+ extensions: flash, vortex, shred, switch, flip, ripple, honeycomb, prism, doors, window, ferris, gallery, conveyor, pan, glitter, warp, flythrough, cube, box, reveal, wheelReverse, curtains
+
+### Animation System
+
+Complex timing tree structure:
+```
+Slide
+└── Timing (p:timing)
+    └── TimeNodeList (p:tnLst)
+        └── ParallelTimeNode (p:par) - root
+            └── ChildTimeNodeList (p:childTnLst)
+                ├── SequenceTimeNode (p:seq) - main sequence
+                │   └── ChildTimeNodeList
+                │       └── ParallelTimeNode (p:par) - click groups
+                └── SequenceTimeNode (p:seq) - interactive sequences
+```
+
+Animation effect types:
+- **Animate** (p:anim) - generic property animation
+- **AnimateColor** (p:animClr) - color transitions
+- **AnimateMotion** (p:animMotion) - motion paths
+- **AnimateRotation** (p:animRot) - rotation effects
+- **AnimateScale** (p:animScale) - scaling effects
+- **AnimateEffect** (p:animEffect) - filter effects (fade, fly, etc.)
+- **Set** (p:set) - instant property changes
+- **Command** (p:cmd) - OLE commands
+- **Audio/Video** (p:audio/p:video) - media playback
+
+### Master/Layout Inheritance
+
+Inheritance chain with overrides:
+```
+SlideMaster (p:sldMaster)
+    └── SlideLayout (p:sldLayout) - inherits from master
+        └── Slide (p:sld) - inherits from layout
+```
+
+Each level can override:
+- Background
+- Color scheme
+- Font scheme
+- Shape placeholders
+- Text styles
+
+### Placeholder Types
+
+Standard placeholder types (p:ph/@type):
+- body, title, ctrTitle (centered title), subTitle
+- obj (generic object), dt (date/time), sldNum (slide number)
+- ftr (footer), hdr (header)
+- tbl (table), chart, pic (picture), media
+- dgm (diagram), clipArt, sldImg (slide image)
+
+### DrawingML Integration
+
+TextBody uses DrawingML (a: namespace) for rich text:
+```
+Shape (p:sp)
+└── TextBody (p:txBody)
+    ├── BodyProperties (a:bodyPr)
+    ├── ListStyle (a:lstStyle)
+    └── Paragraph (a:p)
+        ├── ParagraphProperties (a:pPr)
+        └── Run (a:r)
+            ├── RunProperties (a:rPr)
+            └── Text (a:t)
+```
+
+### Code Generation Scale
+
+Based on schema analysis:
+- **27,170+ lines** of generated code for PresentationML elements
+- 1000+ element types across PresentationML and DrawingML
+- Complex particle system for child element ordering validation

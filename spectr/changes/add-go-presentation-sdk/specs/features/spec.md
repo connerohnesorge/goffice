@@ -86,4 +86,4 @@ type IElementEventsFeature interface {
 - Features enable dependency injection without requiring constructor changes
 - The read-only flag prevents modification of default/shared features
 - Features are used extensively for validation, event handling, and customization
-- Use sync.Mutex for thread-safe access in concurrent scenarios
+- Use sync.RWMutex for thread-safe access: concurrent reads allowed, exclusive writes required

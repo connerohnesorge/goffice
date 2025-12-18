@@ -1,10 +1,13 @@
 # Implementation Tasks: Go SDK for Word Document Processing
 
-**Unified Design Decisions Applied (consistent with Presentation SDK):**
+**Confirmed Design Decisions (consistent with Presentation SDK):**
 - Module path: `github.com/connerohnesorge/goffice`
-- Code generation from JSON schemas (pre-generated, committed)
+- Code generation from JSON schemas (pre-generated, committed to repo - users don't need generator)
 - Office 2016+ only (ECMA-376 5th edition+)
-- Package structure: `pkg/{framework,types,package,relationships,validation,features,word,wml}/`
+- Package structure: `drawingml/`, `packaging/`, `openxml/`, `wordprocessing/` (top-level)
+- DrawingML: Shared package used by Word, Presentation, and Spreadsheet SDKs
+- Phase 1 Scope: Full feature parity with Open-XML-SDK (not MVP)
+- Validation: Strict by default (reject invalid content, return errors for malformed documents)
 - Go-idiomatic short API names (`Document`, `Para`, `ParaProps`)
 - Embedded struct fields for element metadata
 - Functional options pattern for element construction
@@ -13,16 +16,26 @@
 - *T pointers for optional/nullable values
 - Priority: Core -> Formatting -> Tables -> Advanced
 
+**Key Technical Context:**
+- Document element hierarchy: Document -> Body -> Paragraph -> Run -> Text
+- 30+ part types (MainDocumentPart, StylesPart, NumberingPart, HeaderPart, FooterPart, etc.)
+- 40+ paragraph properties, 50+ run properties
+- Tables with nested cells containing paragraphs (recursive structure)
+- Style inheritance: Document defaults -> styles -> direct formatting
+- Track changes markers (InsertedRun, DeletedRun, MoveFrom/To)
+- Section properties at end of body affecting preceding content
+- Headers/footers as separate parts linked via relationships
+
 ## Phase 1: Project Foundation
 
 ### 1.1 Project Setup
 - [ ] 1.1.1 Initialize Go module `github.com/connerohnesorge/goffice`
-- [ ] 1.1.2 Create directory structure: `pkg/`, `internal/`, `cmd/`, `testdata/`
+- [ ] 1.1.2 Create directory structure: `drawingml/`, `packaging/`, `openxml/`, `wordprocessing/`, `internal/`, `testdata/`
 - [ ] 1.1.3 Set up testing infrastructure with `go test` and test fixtures directory
 - [ ] 1.1.4 Create sample .docx test files for roundtrip testing (Office 2016+)
 - [ ] 1.1.5 Add Makefile with build, test, lint targets
 
-### 1.2 Core Simple Types (pkg/types/)
+### 1.2 Core Simple Types (openxml/types/)
 - [ ] 1.2.1 Implement `SimpleValue` interface with `HasValue()`, `InnerText()`, `SetInnerText()`
 - [ ] 1.2.2 Implement `StringValue` type
 - [ ] 1.2.3 Implement `Int32Value` and `UInt32Value` types
@@ -38,13 +51,13 @@
 - [ ] 1.2.13 Implement `PercentageValue` type
 
 ### 1.3 Phase 1 Testing
-- [ ] 1.3.1 Write unit tests for all simple types in pkg/types/
+- [ ] 1.3.1 Write unit tests for all simple types in openxml/types/
 - [ ] 1.3.2 Write unit tests for SimpleValue interface compliance
 - [ ] 1.3.3 Write unit tests for type conversion edge cases
 - [ ] 1.3.4 Run tests and verify 100% pass rate
 - [ ] 1.3.5 Integration test: verify project setup compiles and runs
 
-## Phase 2: OPC Packaging Layer (internal/opc/ and pkg/package/)
+## Phase 2: OPC Packaging Layer (packaging/)
 
 ### 2.1 Core Package Types
 - [ ] 2.1.1 Implement `Package` struct with ZIP backing via `archive/zip`
@@ -73,7 +86,7 @@
 - [ ] 2.3.7 Implement part URI normalization and validation
 - [ ] 2.3.8 Implement `ResolveURI(base, relative)` for relative URI resolution
 
-### 2.4 Package Relationships (pkg/relationships/)
+### 2.4 Package Relationships (packaging/)
 - [ ] 2.4.1 Implement `Relationship` struct
 - [ ] 2.4.2 Implement `Package.CreateRel(target, relType, id)`
 - [ ] 2.4.3 Implement `Package.RelsByType(relType)` accessor
@@ -97,13 +110,13 @@
 - [ ] 2.6.7 Integration test: create/open/save empty .docx (OPC compliance)
 - [ ] 2.6.8 Integration test with Phase 1 simple types
 
-## Phase 3: OpenXML Framework (pkg/framework/)
+## Phase 3: OpenXML Framework (openxml/)
 
-### 3.1 Feature Collection System (pkg/features/)
+### 3.1 Feature Collection System (openxml/features/)
 - [ ] 3.1.1 Implement `FeatureCollection` struct with parent inheritance
 - [ ] 3.1.2 Implement `Get[T]()` with parent chain traversal
 - [ ] 3.1.3 Implement `Set(feature)` for registration
-- [ ] 3.1.4 Implement thread-safe access (sync.Mutex)
+- [ ] 3.1.4 Implement thread-safe access (sync.RWMutex with concurrent reads, exclusive writes)
 - [ ] 3.1.5 Define `IPackageFeature` interface and implementation
 - [ ] 3.1.6 Define `IContentTypeFeature` interface and implementation
 - [ ] 3.1.7 Define `INamespaceFeature` interface and implementation
@@ -176,7 +189,7 @@
 - [ ] 3.9.9 Run tests and verify 100% pass rate
 - [ ] 3.9.10 Integration test with Phase 1 and Phase 2 components
 
-## Phase 4: Validation Framework (pkg/validation/)
+## Phase 4: Validation Framework (openxml/validation/)
 
 ### 4.1 Validation Infrastructure
 - [ ] 4.1.1 Implement `Validator` interface
@@ -237,7 +250,7 @@
 - [ ] 4.6.6 Run tests and verify 100% pass rate
 - [ ] 4.6.7 Integration test with Phase 1-3 components
 
-## Phase 5: Word Document (pkg/word/)
+## Phase 5: Word Document (wordprocessing/)
 
 ### 5.1 Document Type
 - [ ] 5.1.1 Implement `Document` struct (was WordprocessingDocument)
@@ -279,9 +292,9 @@
 - [ ] 5.3.6 Integration test: create basic documents with text
 - [ ] 5.3.7 Integration test with Phase 1-4 components
 
-## Phase 6: Word Elements - Generated (pkg/wml/)
+## Phase 6: Word Elements - Generated (wordprocessing/elements/)
 
-**Note:** All 685+ element types are generated from JSON schemas (unified with Presentation SDK). The generator reads C# SDK schema files and produces Go code. Organized by category for implementation tracking.
+**Note:** All 685+ element types are pre-generated from JSON schemas and committed to the repository (unified with Presentation SDK). The generator reads C# SDK schema files and produces Go code. Users do not need to run the generator. Organized by category for implementation tracking.
 
 ### 6.1 Document Structure Elements (~25 types)
 - [ ] 6.1.1 Implement `Doc` root element (w:document)
@@ -804,7 +817,7 @@
 - [ ] 6.18.3 Integration test: create documents with formatting
 - [ ] 6.18.4 Full integration test with Phases 1-5
 
-## Phase 7: Styles and Numbering (pkg/word/styles/, pkg/word/numbering/)
+## Phase 7: Styles and Numbering (wordprocessing/)
 
 ### 7.1 Styles
 - [ ] 7.1.1 Implement `Styles` root element (w:styles)
@@ -840,7 +853,7 @@
 - [ ] 7.3.6 Integration test: create styled documents with lists
 - [ ] 7.3.7 Integration test with Phases 1-6
 
-## Phase 8: Settings and Configuration (pkg/word/settings/)
+## Phase 8: Settings and Configuration (wordprocessing/)
 
 ### 8.1 Document Settings
 - [ ] 8.1.1 Implement `Settings` root element (w:settings)
@@ -875,7 +888,7 @@
 - [ ] 8.4.4 Run tests and verify 100% pass rate
 - [ ] 8.4.5 Integration test with Phases 1-7
 
-## Phase 9: Headers, Footers, and References (pkg/word/parts/)
+## Phase 9: Headers, Footers, and References (wordprocessing/parts/)
 
 ### 9.1 Headers and Footers (covered partially in Phase 6)
 - [ ] 9.1.1 Implement `HeaderPart` with root element binding
@@ -964,7 +977,7 @@
 - [ ] 11.3.5 Memory profiling and optimization
 - [ ] 11.3.6 Ensure lazy loading works correctly for large documents
 
-### 11.4 Enum Values (wml/ package)
+### 11.4 Enum Values (wordprocessing/elements/)
 - [ ] 11.4.1 Implement all JustificationValues (Left, Center, Right, Both, etc.)
 - [ ] 11.4.2 Implement all UnderlineValues (Single, Double, Dotted, etc.)
 - [ ] 11.4.3 Implement all HighlightColorValues
@@ -985,8 +998,12 @@
 
 ## Notes
 
-**Unified Design Decisions Applied (consistent with Presentation SDK):**
-- All 685+ element types are generated from JSON schemas (pre-generated, committed)
+**Confirmed Design Decisions Applied (consistent with Presentation SDK):**
+- All 685+ element types are pre-generated from JSON schemas and committed to repository (users don't need generator)
+- Package structure: `drawingml/`, `packaging/`, `openxml/`, `wordprocessing/` (top-level packages)
+- DrawingML: Shared package used by Word, Presentation, and Spreadsheet SDKs
+- Phase 1 Scope: Full feature parity with Open-XML-SDK (not MVP)
+- Validation: Strict by default (reject invalid content, return errors for malformed documents)
 - Idiomatic Go naming: `Document` not `WordprocessingDocument`, `Para` not `Paragraph`
 - Full validation with all 19+ semantic constraint types
 - Office 2016+ only (ECMA-376 5th edition)
@@ -1015,9 +1032,9 @@
 - After Phase 11: Full feature parity with Open-XML-SDK WordprocessingML
 
 **Estimated Scope:**
-- ~685 element types to generate from JSON schemas
+- ~685 element types to pre-generate from JSON schemas
 - ~29 simple types
 - ~19 semantic constraint types
-- ~60 part types
-- ~100+ enum types in pkg/wml/ package
+- ~30+ part types
+- ~100+ enum types in wordprocessing/elements/
 - Total estimated: 400+ Go files, 50,000+ lines of code (mostly generated)

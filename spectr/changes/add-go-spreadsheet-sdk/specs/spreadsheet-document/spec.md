@@ -132,3 +132,102 @@ The system SHALL provide document-level validation.
 - AND schema validation is performed on all XML parts
 - AND semantic constraints are checked
 - AND validation errors are returned
+
+### Requirement: Semantic Validation Constraints
+
+The system SHALL implement all 19+ semantic constraint types for comprehensive validation.
+
+#### Scenario: AttributeValueRange constraint
+- GIVEN an element with a numeric attribute
+- WHEN the attribute value is outside min/max bounds
+- THEN a validation error is reported
+
+#### Scenario: AttributeValuePattern constraint
+- GIVEN an element with an attribute requiring pattern matching
+- WHEN the attribute value does not match the regex pattern
+- THEN a validation error is reported
+
+#### Scenario: AttributeValueSet constraint
+- GIVEN an element with an enumerated attribute
+- WHEN the attribute value is not in the allowed set
+- THEN a validation error is reported
+
+#### Scenario: ParentType constraint
+- GIVEN an element with restricted parent types
+- WHEN the element's parent is not an allowed type
+- THEN a validation error is reported
+
+#### Scenario: ChildElement constraint
+- GIVEN an element with required/allowed children
+- WHEN required children are missing or disallowed children are present
+- THEN a validation error is reported
+
+#### Scenario: UniqueValue constraint
+- GIVEN elements requiring unique values within a scope
+- WHEN duplicate values exist
+- THEN a validation error is reported
+
+#### Scenario: RelationshipExist constraint
+- GIVEN an element referencing a relationship by ID
+- WHEN the referenced relationship does not exist
+- THEN a validation error is reported
+
+#### Scenario: RelationshipType constraint
+- GIVEN an element referencing a relationship
+- WHEN the relationship type is incorrect
+- THEN a validation error is reported
+
+#### Scenario: ReferenceExist constraint
+- GIVEN an element referencing another element by ID
+- WHEN the referenced element does not exist
+- THEN a validation error is reported
+
+#### Scenario: IndexRange constraint
+- GIVEN an element with an index attribute
+- WHEN the index is outside valid bounds
+- THEN a validation error is reported
+
+#### Scenario: RootAttribute constraint
+- GIVEN a root element with required attributes
+- WHEN a required attribute is missing
+- THEN a validation error is reported
+
+#### Scenario: AttributeAbsent constraint
+- GIVEN mutually exclusive attributes
+- WHEN both attributes are present
+- THEN a validation error is reported
+
+#### Scenario: AttributeCannotOmit constraint
+- GIVEN a conditionally required attribute
+- WHEN the condition is met but the attribute is missing
+- THEN a validation error is reported
+
+#### Scenario: AttributeValueLength constraint
+- GIVEN an attribute with length limits
+- WHEN the attribute value exceeds the length limit
+- THEN a validation error is reported
+
+#### Scenario: UniqueAttributeValue constraint
+- GIVEN attributes that must be unique across the document
+- WHEN duplicate attribute values exist
+- THEN a validation error is reported
+
+#### Scenario: PartContainer constraint
+- GIVEN a part that must be in a specific container
+- WHEN the part is in the wrong container
+- THEN a validation error is reported
+
+#### Scenario: DataPart constraint
+- GIVEN a data part with specific requirements
+- WHEN the data part requirements are not met
+- THEN a validation error is reported
+
+#### Scenario: PartType constraint
+- GIVEN a part with a required content type
+- WHEN the part content type is incorrect
+- THEN a validation error is reported
+
+#### Scenario: Custom constraint extensibility
+- GIVEN a custom constraint implementation
+- WHEN the constraint is registered
+- THEN the constraint is applied during validation

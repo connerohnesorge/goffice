@@ -85,17 +85,89 @@ The Office Open XML (OOXML) format is the standard for Microsoft Word documents 
 ### Migration
 - N/A - This is a new capability with no existing implementation to migrate
 
-## Unified Design Decisions
+## Confirmed Design Decisions
 
 These decisions apply to both Presentation and Word SDKs for consistency:
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
 | **Module Path** | `github.com/connerohnesorge/goffice` | Personal namespace, easy to start |
-| **Code Generation** | Generate from JSON schemas | Reuse C# SDK schema data, 1000+ types |
+| **Code Generation** | Pre-generate from JSON schemas, commit to repo | Reuse C# SDK schema data, users don't need generator |
 | **Office Version** | 2016+ only | Modern documents, reduced complexity (ECMA-376 5th edition+) |
-| **Package Structure** | `pkg/` style | `pkg/{framework,types,package,relationships,validation,features,word}` |
+| **Package Structure** | Top-level packages | `drawingml/`, `packaging/`, `openxml/`, `wordprocessing/` |
 | **API Naming** | Go-idiomatic short | `Document`, `Para`, `ParaProps` (not verbose C# names) |
 | **Element Metadata** | Embedded struct fields | Self-contained elements, no global registry |
 | **Construction Pattern** | Functional options | `NewPara(WithText("Hello"), WithBold(true))` |
 | **Child Access** | Generic methods only | `First[T]()`, `All[T]()`, `OfType[T]()` |
+| **DrawingML** | Shared `drawingml/` package | Used by all three SDKs (Word, Presentation, Spreadsheet) |
+| **Phase 1 Scope** | Full feature parity with Open-XML-SDK | Not an MVP, complete implementation |
+| **Validation** | Strict by default | Reject invalid content, return errors for malformed documents |
+
+## Package Structure
+
+```
+goffice/
+├── drawingml/           # SHARED - shapes, images, effects (used by Word, Presentation, Spreadsheet)
+├── packaging/           # OPC layer (Open Packaging Conventions)
+├── openxml/             # Core framework (element types, features, validation)
+└── wordprocessing/      # WordprocessingML
+    ├── elements/        # Word document elements
+    └── parts/           # Word document parts
+```
+
+## Key Technical Findings
+
+### Document Element Hierarchy
+Word documents follow a strict element hierarchy:
+```
+Document → Body → Paragraph → Run → Text
+```
+
+### Part Types
+WordprocessingML documents contain 30+ part types:
+- **MainDocumentPart** - Primary document content
+- **StylesPart** - Style definitions
+- **NumberingPart** - Numbering/list definitions
+- **HeaderPart** - Header content (multiple per document: default, first, even)
+- **FooterPart** - Footer content (multiple per document: default, first, even)
+- **SettingsPart** - Document settings
+- **FontTablePart** - Font definitions
+- **ThemePart** - Theme definitions
+- **CommentsPart** - Document comments
+- **FootnotesPart** / **EndnotesPart** - Notes
+- **ImagePart** - Embedded images
+- **CustomXmlPart** - Custom XML data
+- Plus 20+ additional specialized parts
+
+### Properties Complexity
+- **40+ paragraph properties** (justification, indentation, spacing, borders, numbering, etc.)
+- **50+ run properties** (bold, italic, underline, font, color, size, etc.)
+
+### Tables with Recursive Structure
+Tables contain nested cells which can contain paragraphs, which can contain tables:
+```
+Table → TableRow → TableCell → Paragraph → Run → Text
+                             → Table (nested)
+```
+
+### Style Inheritance Chain
+Formatting resolves through inheritance:
+```
+Document defaults → Styles → Direct formatting
+```
+Later sources override earlier ones.
+
+### Track Changes Markers
+Revision tracking uses wrapper elements:
+- **InsertedRun** (`w:ins`) - Inserted content
+- **DeletedRun** (`w:del`) - Deleted content
+- **MoveFrom** / **MoveTo** - Moved content markers
+
+### Section Properties Placement
+Section properties (`w:sectPr`) appear at the end of the body but affect preceding content. This is a key architectural consideration for document processing.
+
+### Headers/Footers Architecture
+Headers and footers are stored as separate parts, linked via relationships:
+- Each section can have different headers/footers
+- Three types per section: default, first page, even pages
+- Referenced via relationship IDs in section properties
