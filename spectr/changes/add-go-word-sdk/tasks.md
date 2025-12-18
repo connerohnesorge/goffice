@@ -103,7 +103,7 @@
 - [ ] 3.1.1 Implement `FeatureCollection` struct with parent inheritance
 - [ ] 3.1.2 Implement `Get[T]()` with parent chain traversal
 - [ ] 3.1.3 Implement `Set(feature)` for registration
-- [ ] 3.1.4 Implement thread-safe access (sync.RWMutex)
+- [ ] 3.1.4 Implement thread-safe access (sync.Mutex)
 - [ ] 3.1.5 Define `IPackageFeature` interface and implementation
 - [ ] 3.1.6 Define `IContentTypeFeature` interface and implementation
 - [ ] 3.1.7 Define `INamespaceFeature` interface and implementation

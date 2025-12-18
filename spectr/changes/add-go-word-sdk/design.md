@@ -272,7 +272,7 @@ type OpenXmlPart struct {
     stream      io.ReadSeeker  // Underlying stream
     rootElement Element        // Lazily loaded
     loaded      bool
-    mu          sync.RWMutex
+    mu          sync.Mutex
 }
 
 func (p *OpenXmlPart) RootElement() (Element, error) {
@@ -344,7 +344,7 @@ type ExternalRelationship struct {
 type FeatureCollection struct {
     parent   *FeatureCollection
     features map[reflect.Type]interface{}
-    mu       sync.RWMutex
+    mu       sync.Mutex
 }
 
 func (fc *FeatureCollection) Get(featureType interface{}) interface{} {
@@ -519,7 +519,7 @@ func (e *PartError) Unwrap() error {
 ```go
 type Document struct {
     pkg      *Package
-    mu       sync.RWMutex
+    mu       sync.Mutex
     modified bool
 }
 
