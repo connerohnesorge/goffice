@@ -126,8 +126,8 @@ The Office Open XML (OOXML) format is the standard for Microsoft Excel spreadshe
 
 The spreadsheet SDK shares these components with Word and Presentation SDKs:
 - **Core Framework** (`pkg/framework`) - Element base types, features
-- **Simple Types** (`pkg/simpletypes`) - Value types like StringValue, Int32Value
-- **Packaging** (`pkg/packaging`) - OPC package handling
+- **Simple Types** (`pkg/types`) - Value types like StringValue, Int32Value
+- **Packaging** (`pkg/package`) - OPC package handling
 - **Validation** (`pkg/validation`) - Schema and semantic validation
 - **DrawingML** (`pkg/dml`) - Common drawing elements (a: namespace)
 
@@ -175,8 +175,8 @@ The spreadsheet SDK shares these components with Word and Presentation SDKs:
 goffice/
 ├── pkg/
 │   ├── framework/           # Core element types (shared)
-│   ├── simpletypes/         # OpenXML value types (shared)
-│   ├── packaging/           # OPC package handling (shared)
+│   ├── types/               # OpenXML value types (shared)
+│   ├── package/             # OPC package handling (shared)
 │   ├── validation/          # Schema/semantic validation (shared)
 │   │
 │   ├── spreadsheet/         # SpreadsheetDocument & types
@@ -225,7 +225,7 @@ These decisions apply consistently across all three SDKs (Word, Presentation, Sp
 | **Module Path** | `github.com/connerohnesorge/goffice` | Personal namespace, unified module |
 | **Code Generation** | Generate from JSON schemas | Reuse C# SDK schema data, 1000+ types per domain |
 | **Office Version** | 2016+ only | Modern documents, reduced complexity (ECMA-376 5th edition+) |
-| **Package Structure** | `pkg/` style | `pkg/{framework,simpletypes,packaging,spreadsheet,sml}` |
+| **Package Structure** | `pkg/` style | `pkg/{framework,types,package,spreadsheet,sml}` |
 | **API Naming** | Go-idiomatic short | `Workbook`, `Sheet`, `Cell` (not verbose C# names) |
 | **Element Metadata** | Embedded struct fields | Self-contained elements, no global registry |
 | **Construction Pattern** | Functional options | `NewSheet(WithName("Data"), WithIndex(0))` |

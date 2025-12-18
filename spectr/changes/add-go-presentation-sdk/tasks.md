@@ -171,7 +171,7 @@
 - [ ] 5.1.2 Define `ValidationErrorType` enum
 - [ ] 5.1.3 Implement `ValidationContext` for tracking state
 - [ ] 5.1.4 Implement `ValidationSettings` configuration
-- [ ] 5.1.5 Define `FileFormatVersions` enum (Office 2016-2021, Microsoft 365)
+- [ ] 5.1.5 Define `FileFormatVersions` enum (Office2016, Office2019, Office2021, Microsoft365)
 
 ### 5.2 OpenXmlValidator (`pkg/validation/`)
 - [ ] 5.2.1 Implement `OpenXmlValidator` struct

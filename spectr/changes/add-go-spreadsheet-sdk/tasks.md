@@ -4,7 +4,7 @@
 - Module path: `github.com/connerohnesorge/goffice`
 - Code generation from JSON schemas (pre-generated, committed)
 - Office 2016+ only (ECMA-376 5th edition+)
-- Package structure: `pkg/{framework,simpletypes,packaging,spreadsheet,sml,xdr}/`
+- Package structure: `pkg/{framework,types,package,spreadsheet,sml,xdr}/`
 - Go-idiomatic short API names (`Workbook`, `Sheet`, `Cell`)
 - Embedded struct fields for element metadata
 - Functional options pattern for element construction
@@ -21,7 +21,7 @@
 - [ ] 1.1.4 Create sample .xlsx test files for roundtrip testing (Office 2016+)
 - [ ] 1.1.5 Add Makefile with build, test, lint targets
 
-### 1.2 Core Simple Types (pkg/simpletypes/) - Shared
+### 1.2 Core Simple Types (pkg/types/) - Shared
 - [ ] 1.2.1 Implement `SimpleValue` interface with `HasValue()`, `InnerText()`, `SetInnerText()`
 - [ ] 1.2.2 Implement `StringValue` type
 - [ ] 1.2.3 Implement `Int32Value` and `UInt32Value` types
@@ -37,7 +37,7 @@
 
 ## Phase 2: OPC Packaging Layer (Shared with Word/Presentation)
 
-### 2.1 Core Package Types (internal/opc/ and pkg/packaging/)
+### 2.1 Core Package Types (internal/opc/ and pkg/package/)
 - [ ] 2.1.1 Implement `Package` struct with ZIP backing via `archive/zip`
 - [ ] 2.1.2 Implement `New(path)` and `NewWriter(w)` for new packages
 - [ ] 2.1.3 Implement `Open(path, readOnly)` for existing packages
@@ -81,7 +81,7 @@
 - [ ] 3.1.1 Implement `FeatureCollection` struct with parent inheritance
 - [ ] 3.1.2 Implement `Get[T]()` with parent chain traversal
 - [ ] 3.1.3 Implement `Set(feature)` for registration
-- [ ] 3.1.4 Implement thread-safe access (sync.RWMutex)
+- [ ] 3.1.4 Implement thread-safe access (sync.Mutex)
 - [ ] 3.1.5 Define `IPackageFeature` interface and implementation
 - [ ] 3.1.6 Define `IContentTypeFeature` interface and implementation
 - [ ] 3.1.7 Define `INamespaceFeature` interface and implementation

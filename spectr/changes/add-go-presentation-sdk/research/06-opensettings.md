@@ -62,6 +62,8 @@ Controls API compatibility behavior.
 
 ## FileFormatVersions Enum (Flags)
 
+The C# SDK defines all Office versions:
+
 ```csharp
 [Flags]
 public enum FileFormatVersions
@@ -76,6 +78,23 @@ public enum FileFormatVersions
     Microsoft365 = 0x40000000
 }
 ```
+
+**Go SDK Decision: Modern Versions Only (2016+)**
+
+For the Go SDK, we only support Office 2016 and later (ECMA-376 5th edition+). The standardized enum for Go will be:
+
+```go
+type FileFormatVersions int
+
+const (
+    Office2016    FileFormatVersions = 0x8
+    Office2019    FileFormatVersions = 0x10
+    Office2021    FileFormatVersions = 0x20
+    Microsoft365  FileFormatVersions = 0x40000000
+)
+```
+
+Pre-2016 versions (Office2007, Office2010, Office2013) are NOT supported.
 
 Used for:
 - Targeting specific Office versions

@@ -24,7 +24,7 @@ Located in `/data/schemas/*.json` (155 files):
 - `Name`: QName format "prefix:ClassName/elementName"
 - `ClassName`: C# class name
 - `Summary`: Documentation string
-- `Version`: Office version (Office2010, Office2013, Microsoft365, etc.)
+- `Version`: Office version (Office2016, Office2019, Office2021, Microsoft365) - **Note: Go SDK targets Office 2016+ only**
 
 ### Type Classification
 
@@ -47,7 +47,7 @@ Located in `/data/schemas/*.json` (155 files):
   "Items": [
     {
       "Name": "w:CT_Body/w:body",
-      "InitialVersion": "Office2007",
+      "InitialVersion": "Office2016",
       "Occurs": [{ "Min": 1, "Max": 1 }]
     },
     {
@@ -58,6 +58,8 @@ Located in `/data/schemas/*.json` (155 files):
   ]
 }
 ```
+
+**Note:** The Go SDK maps legacy InitialVersion values (Office2007, Office2010, Office2013) to Office2016 since it targets Office 2016+ only.
 
 ### Particle.Kind Values
 
@@ -86,7 +88,7 @@ Located in `/data/schemas/*.json` (155 files):
   "PropertyName": "PropertyName",
   "Type": "StringValue",
   "PropertyComments": "documentation",
-  "Version": "Microsoft365",
+  "Version": "Office2016",
   "Validators": [
     {
       "Name": "RequiredValidator"
@@ -136,10 +138,12 @@ Located in `/data/schemas/*.json` (155 files):
   {
     "Prefix": "w",
     "Uri": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
-    "Version": "Office2007"
+    "Version": "Office2016"
   }
 ]
 ```
+
+**Note:** The JSON schema files may contain legacy version values from the C# SDK. The Go SDK code generator maps pre-2016 versions to Office2016 as the minimum supported version.
 
 ### WordprocessingML-specific Namespaces
 

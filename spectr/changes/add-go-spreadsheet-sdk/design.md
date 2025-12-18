@@ -57,7 +57,7 @@ These decisions apply to all three SDKs (Word, Presentation, Spreadsheet) for co
 | **Module Path** | `github.com/connerohnesorge/goffice` |
 | **Code Generation** | Generate from JSON schemas (pre-generated, committed) |
 | **Office Version** | 2016+ only (ECMA-376 5th edition+) |
-| **Package Structure** | `pkg/{framework,simpletypes,packaging,spreadsheet,...}/` |
+| **Package Structure** | `pkg/{framework,types,package,spreadsheet,...}/` |
 | **API Naming** | Go-idiomatic short names (`Workbook`, `Sheet`, not verbose C# names) |
 | **Element Metadata** | Embedded struct fields (no global registry) |
 | **Construction Pattern** | Functional options: `NewSheet(WithName("Data"))` |
@@ -109,7 +109,7 @@ These decisions apply to all three SDKs (Word, Presentation, Spreadsheet) for co
 └─────────────────────────────────────────────────────────────────┘
                                 │
 ┌─────────────────────────────────────────────────────────────────┐
-│                     packaging package (shared)                   │
+│                      package package (shared)                    │
 └─────────────────────────────────────────────────────────────────┘
                                 │
 ┌─────────────────────────────────────────────────────────────────┐

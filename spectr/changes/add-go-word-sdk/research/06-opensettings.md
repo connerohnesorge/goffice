@@ -62,6 +62,7 @@ Controls API compatibility behavior.
 
 ## FileFormatVersions Enum (Flags)
 
+**C# SDK Original (for reference):**
 ```csharp
 [Flags]
 public enum FileFormatVersions
@@ -77,8 +78,24 @@ public enum FileFormatVersions
 }
 ```
 
+**Go Implementation (Office 2016+ only):**
+```go
+// FileFormatVersion represents supported Office versions.
+// This SDK targets Office 2016+ only (ECMA-376 5th edition and later).
+type FileFormatVersion int
+
+const (
+    Office2016    FileFormatVersion = iota
+    Office2019
+    Office2021
+    Microsoft365
+)
+```
+
+**Note:** The Go SDK intentionally excludes Office 2007, Office 2010, and Office 2013 to reduce complexity and focus on modern document formats. This aligns with the design decision to support Office 2016+ only.
+
 Used for:
-- Targeting specific Office versions
+- Targeting specific Office versions (2016+)
 - Validation against version-specific schemas
 - MC namespace understanding
 

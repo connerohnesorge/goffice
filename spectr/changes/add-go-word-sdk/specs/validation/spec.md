@@ -121,27 +121,32 @@ The system SHALL provide detailed validation error information.
 - WHEN Error.Code is accessed
 - THEN a machine-readable error code is returned
 
-### Requirement: Office Version Support
-The system SHALL support validation against different Office versions.
+### Requirement: Office Version Support (Office 2016+ Only)
+The system SHALL support validation against Office 2016 and later versions only.
 
-#### Scenario: Office 2007 validation
-- GIVEN FileFormatVersions.Office2007
+#### Scenario: Office 2016 validation
+- GIVEN FileFormatVersions.Office2016
 - WHEN validation runs
-- THEN only ECMA-376 1st edition features are valid
+- THEN ECMA-376 5th edition features are valid
 
-#### Scenario: Office 2010 validation
-- GIVEN FileFormatVersions.Office2010
+#### Scenario: Office 2019 validation
+- GIVEN FileFormatVersions.Office2019
 - WHEN validation runs
-- THEN Office 2010 extensions are also valid
+- THEN Office 2019 extensions are also valid
 
-#### Scenario: Office 2013+ validation
-- GIVEN FileFormatVersions.Office2013 through Microsoft365
+#### Scenario: Office 2021 validation
+- GIVEN FileFormatVersions.Office2021
 - WHEN validation runs
-- THEN corresponding version features are valid
+- THEN Office 2021 extensions are also valid
+
+#### Scenario: Microsoft365 validation
+- GIVEN FileFormatVersions.Microsoft365
+- WHEN validation runs
+- THEN all current Microsoft365 features are valid
 
 #### Scenario: Element version availability
-- GIVEN an element introduced in Office 2013
-- WHEN validating for Office 2007
+- GIVEN an element introduced in Office 2019
+- WHEN validating for Office 2016
 - THEN "element not available in this version" error is reported
 
 ### Requirement: Compiled Particle Validators

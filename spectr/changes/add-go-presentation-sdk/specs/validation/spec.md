@@ -11,7 +11,7 @@ The system SHALL provide `OpenXmlValidator` for validating documents against ECM
 #### Scenario: Validator creation
 - WHEN `NewOpenXmlValidator(fileFormatVersion)` is called
 - THEN a validator configured for the specified version is returned
-- AND version can be Office2007 through Office2021
+- AND version must be one of: Office2016, Office2019, Office2021, Microsoft365
 
 #### Scenario: Validate element
 - WHEN `Validate(element)` is called
@@ -55,16 +55,31 @@ The system SHALL provide detailed validation error information.
 
 ### Requirement: FileFormatVersions
 
-The system SHALL support targeting specific Office versions.
+The system SHALL support targeting specific Office versions (2016 and later only).
 
-#### Scenario: Office 2007 validation
-- WHEN targeting FileFormatVersions.Office2007
-- THEN only Office 2007 schema elements are valid
-- AND newer elements are flagged as errors
+#### Standardized Enum Definition
+
+The `FileFormatVersions` enum SHALL contain exactly these values:
+- `Office2016` - Office 2016 format (ECMA-376 5th edition)
+- `Office2019` - Office 2019 format
+- `Office2021` - Office 2021 format
+- `Microsoft365` - Microsoft 365 format (latest features)
+
+Note: Pre-2016 versions (Office2007, Office2010, Office2013) are NOT supported. This SDK targets modern Office documents only.
+
+#### Scenario: Office 2016 validation
+- WHEN targeting FileFormatVersions.Office2016
+- THEN only Office 2016 schema elements are valid
+- AND newer elements (Office2019+) are flagged as errors
 
 #### Scenario: Office 2021 validation
 - WHEN targeting FileFormatVersions.Office2021
-- THEN Office 2021 and earlier elements are valid
+- THEN Office 2016, Office2019, and Office2021 elements are valid
+- AND Microsoft365-only elements are flagged as errors
+
+#### Scenario: Microsoft 365 validation
+- WHEN targeting FileFormatVersions.Microsoft365
+- THEN all supported elements (Office2016 through Microsoft365) are valid
 
 #### Scenario: Multiple version validation
 - WHEN targeting multiple versions (Office2019 | Office2021)

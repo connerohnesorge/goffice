@@ -24,7 +24,7 @@ Located in `/data/schemas/*.json` (155 files):
 - `Name`: QName format "prefix:ClassName/elementName"
 - `ClassName`: C# class name
 - `Summary`: Documentation string
-- `Version`: Office version (Office2010, Office2013, Microsoft365, etc.)
+- `Version`: Office version (Office2016, Office2019, Office2021, Microsoft365 - Go SDK supports 2016+ only)
 
 ### Type Classification
 
