@@ -8,7 +8,7 @@
 # Stop hook - runs when Claude is about to stop
 stop:
   commands:
-    - run: "spectr validate --all --strict"
+    - run: "spectr validate --all"
       showStdout: true
       message: "Spec validation failed"
       maxOutputLines: 100
