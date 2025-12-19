@@ -55,7 +55,11 @@ type Level struct {
 
 // NewLevel creates a new Level element at the specified index (0-8).
 func NewLevel(index int) *Level {
-	elem := openxml.NewCompositeElement(NamespaceWML, "lvl", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"lvl",
+		PrefixW,
+	)
 	lvl := &Level{CompositeElementBase: elem}
 	lvl.SetLevelIndex(index)
 	return lvl
@@ -63,7 +67,10 @@ func NewLevel(index int) *Level {
 
 // LevelIndex returns the level index (0-8).
 func (l *Level) LevelIndex() int {
-	attr, found := l.GetAttribute("ilvl", NamespaceWML)
+	attr, found := l.GetAttribute(
+		"ilvl",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -76,7 +83,14 @@ func (l *Level) LevelIndex() int {
 
 // SetLevelIndex sets the level index (0-8).
 func (l *Level) SetLevelIndex(index int) {
-	l.SetAttribute(openxml.NewAttribute(NamespaceWML, "ilvl", PrefixW, strconv.Itoa(index)))
+	l.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"ilvl",
+			PrefixW,
+			strconv.Itoa(index),
+		),
+	)
 }
 
 // Start returns the starting number for this level.
@@ -85,7 +99,10 @@ func (l *Level) Start() int {
 	if elem == nil {
 		return 1
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 1
 	}
@@ -99,7 +116,14 @@ func (l *Level) Start() int {
 // SetStart sets the starting number for this level.
 func (l *Level) SetStart(start int) {
 	elem := l.getOrCreateElement("start")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(start)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(start),
+		),
+	)
 }
 
 // NumberFormat returns the number format for this level.
@@ -108,7 +132,10 @@ func (l *Level) NumberFormat() NumberFormatValue {
 	if elem == nil {
 		return NumberFormatDecimal
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return NumberFormatDecimal
 	}
@@ -116,9 +143,18 @@ func (l *Level) NumberFormat() NumberFormatValue {
 }
 
 // SetNumberFormat sets the number format for this level.
-func (l *Level) SetNumberFormat(f NumberFormatValue) {
+func (l *Level) SetNumberFormat(
+	f NumberFormatValue,
+) {
 	elem := l.getOrCreateElement("numFmt")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(f)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(f),
+		),
+	)
 }
 
 // LevelText returns the level text pattern (e.g., "%1.", "%1.%2").
@@ -127,7 +163,10 @@ func (l *Level) LevelText() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -137,7 +176,14 @@ func (l *Level) LevelText() string {
 // SetLevelText sets the level text pattern.
 func (l *Level) SetLevelText(text string) {
 	elem := l.getOrCreateElement("lvlText")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, text))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			text,
+		),
+	)
 }
 
 // LevelJustification returns the justification for this level.
@@ -146,7 +192,10 @@ func (l *Level) LevelJustification() JustificationValue {
 	if elem == nil {
 		return JustificationLeft
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return JustificationLeft
 	}
@@ -154,18 +203,33 @@ func (l *Level) LevelJustification() JustificationValue {
 }
 
 // SetLevelJustification sets the justification for this level.
-func (l *Level) SetLevelJustification(j JustificationValue) {
+func (l *Level) SetLevelJustification(
+	j JustificationValue,
+) {
 	elem := l.getOrCreateElement("lvlJc")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(j)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(j),
+		),
+	)
 }
 
 // LevelRestart returns the level at which this level restarts, or -1 if not set.
 func (l *Level) LevelRestart() int {
-	elem := l.GetElement("lvlRestart", NamespaceWML)
+	elem := l.GetElement(
+		"lvlRestart",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return -1
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return -1
 	}
@@ -183,7 +247,14 @@ func (l *Level) SetLevelRestart(level int) {
 		return
 	}
 	elem := l.getOrCreateElement("lvlRestart")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(level)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(level),
+		),
+	)
 }
 
 // LevelSuffix returns the suffix after the number.
@@ -192,7 +263,10 @@ func (l *Level) LevelSuffix() LevelSuffixValue {
 	if elem == nil {
 		return LevelSuffixTab
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return LevelSuffixTab
 	}
@@ -200,13 +274,22 @@ func (l *Level) LevelSuffix() LevelSuffixValue {
 }
 
 // SetLevelSuffix sets the suffix after the number.
-func (l *Level) SetLevelSuffix(suffix LevelSuffixValue) {
+func (l *Level) SetLevelSuffix(
+	suffix LevelSuffixValue,
+) {
 	if suffix == LevelSuffixTab {
 		l.removeElement("suff")
 		return
 	}
 	elem := l.getOrCreateElement("suff")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(suffix)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(suffix),
+		),
+	)
 }
 
 // IsLegalNumbering returns whether legal numbering format is used.
@@ -215,10 +298,14 @@ func (l *Level) IsLegalNumbering() bool {
 	if elem == nil {
 		return false
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if found {
 		val := attr.Value()
-		return val != "false" && val != "0" && val != "off"
+		return val != "false" && val != "0" &&
+			val != "off"
 	}
 	return true
 }
@@ -242,7 +329,9 @@ func (l *Level) ParagraphProperties() *LevelParagraphProperties {
 		return pp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &LevelParagraphProperties{CompositeElementBase: comp}
+		return &LevelParagraphProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -268,7 +357,9 @@ func (l *Level) RunProperties() *NumberingRunProperties {
 		return rp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &NumberingRunProperties{CompositeElementBase: comp}
+		return &NumberingRunProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -285,17 +376,25 @@ func (l *Level) GetOrCreateNumberingRunProperties() *NumberingRunProperties {
 }
 
 // SetIndentation is a convenience method to set the indentation for this level.
-func (l *Level) SetIndentation(left, hanging int) {
+func (l *Level) SetIndentation(
+	left, hanging int,
+) {
 	pp := l.GetOrCreateParagraphProperties()
 	pp.SetIndentation(left, hanging)
 }
 
-func (l *Level) getOrCreateElement(name string) openxml.Element {
+func (l *Level) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := l.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	l.AppendChild(newElem)
 	return newElem
 }
@@ -315,7 +414,9 @@ func (l *Level) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Level element.
-func (l *Level) CloneNode(deep bool) openxml.Element {
+func (l *Level) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Level{
 		CompositeElementBase: l.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -328,19 +429,45 @@ type LevelParagraphProperties struct {
 
 // NewLevelParagraphProperties creates a new LevelParagraphProperties element.
 func NewLevelParagraphProperties() *LevelParagraphProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "pPr", PrefixW)
-	return &LevelParagraphProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"pPr",
+		PrefixW,
+	)
+	return &LevelParagraphProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // SetIndentation sets the indentation for the level.
-func (pp *LevelParagraphProperties) SetIndentation(left, hanging int) {
+func (pp *LevelParagraphProperties) SetIndentation(
+	left, hanging int,
+) {
 	ind := pp.GetElement("ind", NamespaceWML)
 	if ind == nil {
-		ind = openxml.NewCompositeElement(NamespaceWML, "ind", PrefixW)
+		ind = openxml.NewCompositeElement(
+			NamespaceWML,
+			"ind",
+			PrefixW,
+		)
 		pp.AppendChild(ind)
 	}
-	ind.SetAttribute(openxml.NewAttribute(NamespaceWML, "left", PrefixW, strconv.Itoa(left)))
-	ind.SetAttribute(openxml.NewAttribute(NamespaceWML, "hanging", PrefixW, strconv.Itoa(hanging)))
+	ind.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"left",
+			PrefixW,
+			strconv.Itoa(left),
+		),
+	)
+	ind.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"hanging",
+			PrefixW,
+			strconv.Itoa(hanging),
+		),
+	)
 }
 
 // Left returns the left indentation in twips.
@@ -349,7 +476,10 @@ func (pp *LevelParagraphProperties) Left() int {
 	if ind == nil {
 		return 0
 	}
-	attr, found := ind.GetAttribute("left", NamespaceWML)
+	attr, found := ind.GetAttribute(
+		"left",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -363,7 +493,10 @@ func (pp *LevelParagraphProperties) Hanging() int {
 	if ind == nil {
 		return 0
 	}
-	attr, found := ind.GetAttribute("hanging", NamespaceWML)
+	attr, found := ind.GetAttribute(
+		"hanging",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -385,26 +518,66 @@ type NumberingRunProperties struct {
 
 // NewNumberingRunProperties creates a new NumberingRunProperties element.
 func NewNumberingRunProperties() *NumberingRunProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "rPr", PrefixW)
-	return &NumberingRunProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"rPr",
+		PrefixW,
+	)
+	return &NumberingRunProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // SetFont sets the font name for the numbering symbol.
-func (rp *NumberingRunProperties) SetFont(fontName string) {
+func (rp *NumberingRunProperties) SetFont(
+	fontName string,
+) {
 	rf := rp.getOrCreateElement("rFonts")
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "ascii", PrefixW, fontName))
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "hAnsi", PrefixW, fontName))
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "hint", PrefixW, "default"))
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"ascii",
+			PrefixW,
+			fontName,
+		),
+	)
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"hAnsi",
+			PrefixW,
+			fontName,
+		),
+	)
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"hint",
+			PrefixW,
+			"default",
+		),
+	)
 }
 
 // SetFontSize sets the font size in half-points.
-func (rp *NumberingRunProperties) SetFontSize(halfPoints int) {
+func (rp *NumberingRunProperties) SetFontSize(
+	halfPoints int,
+) {
 	elem := rp.getOrCreateElement("sz")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(halfPoints)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(halfPoints),
+		),
+	)
 }
 
 // SetBold sets bold formatting.
-func (rp *NumberingRunProperties) SetBold(b bool) {
+func (rp *NumberingRunProperties) SetBold(
+	b bool,
+) {
 	if b {
 		rp.getOrCreateElement("b")
 	} else {
@@ -413,7 +586,9 @@ func (rp *NumberingRunProperties) SetBold(b bool) {
 }
 
 // SetItalic sets italic formatting.
-func (rp *NumberingRunProperties) SetItalic(b bool) {
+func (rp *NumberingRunProperties) SetItalic(
+	b bool,
+) {
 	if b {
 		rp.getOrCreateElement("i")
 	} else {
@@ -422,26 +597,43 @@ func (rp *NumberingRunProperties) SetItalic(b bool) {
 }
 
 // SetColor sets the text color.
-func (rp *NumberingRunProperties) SetColor(hex string) {
+func (rp *NumberingRunProperties) SetColor(
+	hex string,
+) {
 	if hex == "" {
 		rp.removeElement("color")
 		return
 	}
 	elem := rp.getOrCreateElement("color")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, hex))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			hex,
+		),
+	)
 }
 
-func (rp *NumberingRunProperties) getOrCreateElement(name string) openxml.Element {
+func (rp *NumberingRunProperties) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := rp.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	rp.AppendChild(newElem)
 	return newElem
 }
 
-func (rp *NumberingRunProperties) removeElement(name string) {
+func (rp *NumberingRunProperties) removeElement(
+	name string,
+) {
 	elem := rp.GetElement(name, NamespaceWML)
 	if elem != nil {
 		rp.RemoveChild(elem)

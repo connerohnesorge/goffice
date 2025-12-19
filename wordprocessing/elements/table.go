@@ -31,7 +31,9 @@ func (t *Table) TableProperties() *TableProperties {
 		return tp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &TableProperties{CompositeElementBase: comp}
+		return &TableProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -62,7 +64,9 @@ func (t *Table) TableGrid() *TableGrid {
 		return tg
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &TableGrid{CompositeElementBase: comp}
+		return &TableGrid{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -71,7 +75,8 @@ func (t *Table) TableGrid() *TableGrid {
 func (t *Table) Rows() iter.Seq[*TableRow] {
 	return func(yield func(*TableRow) bool) {
 		for child := range t.Children() {
-			if child.LocalName() == "tr" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "tr" &&
+				child.NamespaceURI() == NamespaceWML {
 				var tr *TableRow
 				if row, ok := child.(*TableRow); ok {
 					tr = row
@@ -115,7 +120,9 @@ func (t *Table) AppendRow(cols int) *TableRow {
 }
 
 // InsertRow inserts a new row at the specified index.
-func (t *Table) InsertRow(index, cols int) *TableRow {
+func (t *Table) InsertRow(
+	index, cols int,
+) *TableRow {
 	tr := NewTableRow(cols)
 	refRow := t.GetRow(index)
 	if refRow != nil {
@@ -145,7 +152,10 @@ func (t *Table) GetCell(row, col int) *TableCell {
 }
 
 // SetCellText sets the text content of a specific cell.
-func (t *Table) SetCellText(row, col int, text string) {
+func (t *Table) SetCellText(
+	row, col int,
+	text string,
+) {
 	cell := t.GetCell(row, col)
 	if cell != nil {
 		cell.SetText(text)
@@ -154,18 +164,25 @@ func (t *Table) SetCellText(row, col int, text string) {
 
 // SetStyle sets the table style.
 func (t *Table) SetStyle(styleId string) *Table {
-	t.GetOrCreateTableProperties().SetTableStyle(styleId)
+	t.GetOrCreateTableProperties().
+		SetTableStyle(styleId)
 	return t
 }
 
 // SetWidth sets the table width.
-func (t *Table) SetWidth(width int, widthType TableWidthType) *Table {
-	t.GetOrCreateTableProperties().SetTableWidth(width, widthType)
+func (t *Table) SetWidth(
+	width int,
+	widthType TableWidthType,
+) *Table {
+	t.GetOrCreateTableProperties().
+		SetTableWidth(width, widthType)
 	return t
 }
 
 // SetColumnWidth sets the width of a specific column in twips.
-func (t *Table) SetColumnWidth(col, width int) *Table {
+func (t *Table) SetColumnWidth(
+	col, width int,
+) *Table {
 	grid := t.TableGrid()
 	if grid != nil {
 		grid.SetColumnWidth(col, width)
@@ -180,17 +197,29 @@ type TableProperties struct {
 
 // NewTableProperties creates a new TableProperties element.
 func NewTableProperties() *TableProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tblPr", PrefixW)
-	return &TableProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tblPr",
+		PrefixW,
+	)
+	return &TableProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // TableStyle returns the table style ID, or empty string if not set.
 func (tp *TableProperties) TableStyle() string {
-	elem := tp.GetElement("tblStyle", NamespaceWML)
+	elem := tp.GetElement(
+		"tblStyle",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -198,10 +227,19 @@ func (tp *TableProperties) TableStyle() string {
 }
 
 // SetTableStyle sets the table style.
-func (tp *TableProperties) SetTableStyle(styleId string) {
-	elem := tp.GetElement("tblStyle", NamespaceWML)
+func (tp *TableProperties) SetTableStyle(
+	styleId string,
+) {
+	elem := tp.GetElement(
+		"tblStyle",
+		NamespaceWML,
+	)
 	if elem == nil {
-		elem = openxml.NewCompositeElement(NamespaceWML, "tblStyle", PrefixW)
+		elem = openxml.NewCompositeElement(
+			NamespaceWML,
+			"tblStyle",
+			PrefixW,
+		)
 		// Insert at beginning
 		if first := tp.FirstChild(); first != nil {
 			tp.InsertBefore(elem, first)
@@ -209,7 +247,14 @@ func (tp *TableProperties) SetTableStyle(styleId string) {
 			tp.AppendChild(elem)
 		}
 	}
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, styleId))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			styleId,
+		),
+	)
 }
 
 // TableWidth returns the table width element.
@@ -222,13 +267,18 @@ func (tp *TableProperties) TableWidth() *TableWidth {
 		return tw
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &TableWidth{CompositeElementBase: comp}
+		return &TableWidth{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
 
 // SetTableWidth sets the table width.
-func (tp *TableProperties) SetTableWidth(width int, widthType TableWidthType) {
+func (tp *TableProperties) SetTableWidth(
+	width int,
+	widthType TableWidthType,
+) {
 	tw := tp.TableWidth()
 	if tw == nil {
 		tw = NewTableWidth(width, widthType)
@@ -241,7 +291,10 @@ func (tp *TableProperties) SetTableWidth(width int, widthType TableWidthType) {
 
 // TableBorders returns the table borders element.
 func (tp *TableProperties) TableBorders() *TableBorders {
-	elem := tp.GetElement("tblBorders", NamespaceWML)
+	elem := tp.GetElement(
+		"tblBorders",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -249,7 +302,9 @@ func (tp *TableProperties) TableBorders() *TableBorders {
 		return tb
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &TableBorders{CompositeElementBase: comp}
+		return &TableBorders{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -275,13 +330,17 @@ func (tp *TableProperties) TableLook() *TableLook {
 		return tl
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &TableLook{CompositeElementBase: comp}
+		return &TableLook{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
 
 // SetTableLook sets the table look properties.
-func (tp *TableProperties) SetTableLook(firstRow, lastRow, firstColumn, lastColumn, noHBand, noVBand bool) {
+func (tp *TableProperties) SetTableLook(
+	firstRow, lastRow, firstColumn, lastColumn, noHBand, noVBand bool,
+) {
 	tl := tp.TableLook()
 	if tl == nil {
 		tl = NewTableLook()
@@ -308,8 +367,15 @@ type TableWidth struct {
 }
 
 // NewTableWidth creates a new TableWidth element.
-func NewTableWidth(width int, widthType TableWidthType) *TableWidth {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tblW", PrefixW)
+func NewTableWidth(
+	width int,
+	widthType TableWidthType,
+) *TableWidth {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tblW",
+		PrefixW,
+	)
 	tw := &TableWidth{CompositeElementBase: elem}
 	tw.SetWidth(width)
 	tw.SetType(widthType)
@@ -318,7 +384,10 @@ func NewTableWidth(width int, widthType TableWidthType) *TableWidth {
 
 // Width returns the width value.
 func (tw *TableWidth) Width() int {
-	attr, found := tw.GetAttribute("w", NamespaceWML)
+	attr, found := tw.GetAttribute(
+		"w",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -328,12 +397,22 @@ func (tw *TableWidth) Width() int {
 
 // SetWidth sets the width value.
 func (tw *TableWidth) SetWidth(width int) {
-	tw.SetAttribute(openxml.NewAttribute(NamespaceWML, "w", PrefixW, strconv.Itoa(width)))
+	tw.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"w",
+			PrefixW,
+			strconv.Itoa(width),
+		),
+	)
 }
 
 // Type returns the width type.
 func (tw *TableWidth) Type() TableWidthType {
-	attr, found := tw.GetAttribute("type", NamespaceWML)
+	attr, found := tw.GetAttribute(
+		"type",
+		NamespaceWML,
+	)
 	if !found {
 		return TableWidthTypeAuto
 	}
@@ -341,8 +420,17 @@ func (tw *TableWidth) Type() TableWidthType {
 }
 
 // SetType sets the width type.
-func (tw *TableWidth) SetType(widthType TableWidthType) {
-	tw.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(widthType)))
+func (tw *TableWidth) SetType(
+	widthType TableWidthType,
+) {
+	tw.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"type",
+			PrefixW,
+			string(widthType),
+		),
+	)
 }
 
 // Clone creates a deep copy of this TableWidth element.
@@ -359,12 +447,22 @@ type TableBorders struct {
 
 // NewTableBorders creates a new TableBorders element.
 func NewTableBorders() *TableBorders {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tblBorders", PrefixW)
-	return &TableBorders{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tblBorders",
+		PrefixW,
+	)
+	return &TableBorders{
+		CompositeElementBase: elem,
+	}
 }
 
 // SetAllBorders sets all borders to the same style.
-func (tb *TableBorders) SetAllBorders(style BorderStyle, size int, color string) {
+func (tb *TableBorders) SetAllBorders(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tb.SetTop(style, size, color)
 	tb.SetBottom(style, size, color)
 	tb.SetLeft(style, size, color)
@@ -374,45 +472,106 @@ func (tb *TableBorders) SetAllBorders(style BorderStyle, size int, color string)
 }
 
 // SetTop sets the top border.
-func (tb *TableBorders) SetTop(style BorderStyle, size int, color string) {
+func (tb *TableBorders) SetTop(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tb.setBorder("top", style, size, color)
 }
 
 // SetBottom sets the bottom border.
-func (tb *TableBorders) SetBottom(style BorderStyle, size int, color string) {
+func (tb *TableBorders) SetBottom(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tb.setBorder("bottom", style, size, color)
 }
 
 // SetLeft sets the left border.
-func (tb *TableBorders) SetLeft(style BorderStyle, size int, color string) {
+func (tb *TableBorders) SetLeft(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tb.setBorder("left", style, size, color)
 }
 
 // SetRight sets the right border.
-func (tb *TableBorders) SetRight(style BorderStyle, size int, color string) {
+func (tb *TableBorders) SetRight(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tb.setBorder("right", style, size, color)
 }
 
 // SetInsideH sets the inside horizontal border.
-func (tb *TableBorders) SetInsideH(style BorderStyle, size int, color string) {
+func (tb *TableBorders) SetInsideH(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tb.setBorder("insideH", style, size, color)
 }
 
 // SetInsideV sets the inside vertical border.
-func (tb *TableBorders) SetInsideV(style BorderStyle, size int, color string) {
+func (tb *TableBorders) SetInsideV(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tb.setBorder("insideV", style, size, color)
 }
 
-func (tb *TableBorders) setBorder(name string, style BorderStyle, size int, color string) {
+func (tb *TableBorders) setBorder(
+	name string,
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	elem := tb.GetElement(name, NamespaceWML)
 	if elem == nil {
-		elem = openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+		elem = openxml.NewCompositeElement(
+			NamespaceWML,
+			name,
+			PrefixW,
+		)
 		tb.AppendChild(elem)
 	}
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(style)))
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "sz", PrefixW, strconv.Itoa(size)))
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "color", PrefixW, color))
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "space", PrefixW, "0"))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(style),
+		),
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"sz",
+			PrefixW,
+			strconv.Itoa(size),
+		),
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"color",
+			PrefixW,
+			color,
+		),
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"space",
+			PrefixW,
+			"0",
+		),
+	)
 }
 
 // Clone creates a deep copy of this TableBorders element.
@@ -429,38 +588,84 @@ type TableLook struct {
 
 // NewTableLook creates a new TableLook element.
 func NewTableLook() *TableLook {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tblLook", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tblLook",
+		PrefixW,
+	)
 	return &TableLook{CompositeElementBase: elem}
 }
 
 // SetFirstRow sets whether to apply first row formatting.
 func (tl *TableLook) SetFirstRow(val bool) {
-	tl.SetAttribute(openxml.NewAttribute(NamespaceWML, "firstRow", PrefixW, boolToOnOff(val)))
+	tl.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"firstRow",
+			PrefixW,
+			boolToOnOff(val),
+		),
+	)
 }
 
 // SetLastRow sets whether to apply last row formatting.
 func (tl *TableLook) SetLastRow(val bool) {
-	tl.SetAttribute(openxml.NewAttribute(NamespaceWML, "lastRow", PrefixW, boolToOnOff(val)))
+	tl.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"lastRow",
+			PrefixW,
+			boolToOnOff(val),
+		),
+	)
 }
 
 // SetFirstColumn sets whether to apply first column formatting.
 func (tl *TableLook) SetFirstColumn(val bool) {
-	tl.SetAttribute(openxml.NewAttribute(NamespaceWML, "firstColumn", PrefixW, boolToOnOff(val)))
+	tl.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"firstColumn",
+			PrefixW,
+			boolToOnOff(val),
+		),
+	)
 }
 
 // SetLastColumn sets whether to apply last column formatting.
 func (tl *TableLook) SetLastColumn(val bool) {
-	tl.SetAttribute(openxml.NewAttribute(NamespaceWML, "lastColumn", PrefixW, boolToOnOff(val)))
+	tl.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"lastColumn",
+			PrefixW,
+			boolToOnOff(val),
+		),
+	)
 }
 
 // SetNoHBand sets whether to suppress horizontal banding.
 func (tl *TableLook) SetNoHBand(val bool) {
-	tl.SetAttribute(openxml.NewAttribute(NamespaceWML, "noHBand", PrefixW, boolToOnOff(val)))
+	tl.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"noHBand",
+			PrefixW,
+			boolToOnOff(val),
+		),
+	)
 }
 
 // SetNoVBand sets whether to suppress vertical banding.
 func (tl *TableLook) SetNoVBand(val bool) {
-	tl.SetAttribute(openxml.NewAttribute(NamespaceWML, "noVBand", PrefixW, boolToOnOff(val)))
+	tl.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"noVBand",
+			PrefixW,
+			boolToOnOff(val),
+		),
+	)
 }
 
 func boolToOnOff(val bool) string {
@@ -484,7 +689,11 @@ type TableGrid struct {
 
 // NewTableGrid creates a new TableGrid element.
 func NewTableGrid() *TableGrid {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tblGrid", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tblGrid",
+		PrefixW,
+	)
 	return &TableGrid{CompositeElementBase: elem}
 }
 
@@ -492,7 +701,8 @@ func NewTableGrid() *TableGrid {
 func (tg *TableGrid) GridColumns() iter.Seq[*GridColumn] {
 	return func(yield func(*GridColumn) bool) {
 		for child := range tg.Children() {
-			if child.LocalName() == "gridCol" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "gridCol" &&
+				child.NamespaceURI() == NamespaceWML {
 				var gc *GridColumn
 				if col, ok := child.(*GridColumn); ok {
 					gc = col
@@ -508,7 +718,9 @@ func (tg *TableGrid) GridColumns() iter.Seq[*GridColumn] {
 }
 
 // SetColumnWidth sets the width of a specific column in twips.
-func (tg *TableGrid) SetColumnWidth(col, width int) {
+func (tg *TableGrid) SetColumnWidth(
+	col, width int,
+) {
 	i := 0
 	for gc := range tg.GridColumns() {
 		if i == col {
@@ -533,7 +745,11 @@ type GridColumn struct {
 
 // NewGridColumn creates a new GridColumn element.
 func NewGridColumn(width int) *GridColumn {
-	elem := openxml.NewCompositeElement(NamespaceWML, "gridCol", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"gridCol",
+		PrefixW,
+	)
 	gc := &GridColumn{CompositeElementBase: elem}
 	if width > 0 {
 		gc.SetWidth(width)
@@ -543,7 +759,10 @@ func NewGridColumn(width int) *GridColumn {
 
 // Width returns the column width in twips.
 func (gc *GridColumn) Width() int {
-	attr, found := gc.GetAttribute("w", NamespaceWML)
+	attr, found := gc.GetAttribute(
+		"w",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -553,7 +772,14 @@ func (gc *GridColumn) Width() int {
 
 // SetWidth sets the column width in twips.
 func (gc *GridColumn) SetWidth(width int) {
-	gc.SetAttribute(openxml.NewAttribute(NamespaceWML, "w", PrefixW, strconv.Itoa(width)))
+	gc.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"w",
+			PrefixW,
+			strconv.Itoa(width),
+		),
+	)
 }
 
 // Clone creates a deep copy of this GridColumn element.
@@ -573,7 +799,9 @@ func (tr *TableRow) TableRowProperties() *TableRowProperties {
 		return trp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &TableRowProperties{CompositeElementBase: comp}
+		return &TableRowProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -598,7 +826,8 @@ func (tr *TableRow) GetOrCreateTableRowProperties() *TableRowProperties {
 func (tr *TableRow) Cells() iter.Seq[*TableCell] {
 	return func(yield func(*TableCell) bool) {
 		for child := range tr.Children() {
-			if child.LocalName() == "tc" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "tc" &&
+				child.NamespaceURI() == NamespaceWML {
 				var tc *TableCell
 				if cell, ok := child.(*TableCell); ok {
 					tc = cell
@@ -614,7 +843,9 @@ func (tr *TableRow) Cells() iter.Seq[*TableCell] {
 }
 
 // GetCell returns the cell at the specified index (0-based).
-func (tr *TableRow) GetCell(index int) *TableCell {
+func (tr *TableRow) GetCell(
+	index int,
+) *TableCell {
 	i := 0
 	for cell := range tr.Cells() {
 		if i == index {
@@ -642,13 +873,18 @@ func (tr *TableRow) AppendCell() *TableCell {
 }
 
 // SetHeight sets the row height in twips.
-func (tr *TableRow) SetHeight(height int, rule HeightRule) {
-	tr.GetOrCreateTableRowProperties().SetHeight(height, rule)
+func (tr *TableRow) SetHeight(
+	height int,
+	rule HeightRule,
+) {
+	tr.GetOrCreateTableRowProperties().
+		SetHeight(height, rule)
 }
 
 // SetHeaderRow marks this row as a header row.
 func (tr *TableRow) SetHeaderRow(isHeader bool) {
-	tr.GetOrCreateTableRowProperties().SetHeader(isHeader)
+	tr.GetOrCreateTableRowProperties().
+		SetHeader(isHeader)
 }
 
 // TableRowProperties represents the w:trPr element.
@@ -658,8 +894,14 @@ type TableRowProperties struct {
 
 // NewTableRowProperties creates a new TableRowProperties element.
 func NewTableRowProperties() *TableRowProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "trPr", PrefixW)
-	return &TableRowProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"trPr",
+		PrefixW,
+	)
+	return &TableRowProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // HeightRule represents the height rule for a table row.
@@ -675,22 +917,55 @@ const (
 )
 
 // SetHeight sets the row height.
-func (trp *TableRowProperties) SetHeight(height int, rule HeightRule) {
-	elem := trp.GetElement("trHeight", NamespaceWML)
+func (trp *TableRowProperties) SetHeight(
+	height int,
+	rule HeightRule,
+) {
+	elem := trp.GetElement(
+		"trHeight",
+		NamespaceWML,
+	)
 	if elem == nil {
-		elem = openxml.NewCompositeElement(NamespaceWML, "trHeight", PrefixW)
+		elem = openxml.NewCompositeElement(
+			NamespaceWML,
+			"trHeight",
+			PrefixW,
+		)
 		trp.AppendChild(elem)
 	}
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(height)))
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "hRule", PrefixW, string(rule)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(height),
+		),
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"hRule",
+			PrefixW,
+			string(rule),
+		),
+	)
 }
 
 // SetHeader sets whether this row is a header row.
-func (trp *TableRowProperties) SetHeader(isHeader bool) {
-	elem := trp.GetElement("tblHeader", NamespaceWML)
+func (trp *TableRowProperties) SetHeader(
+	isHeader bool,
+) {
+	elem := trp.GetElement(
+		"tblHeader",
+		NamespaceWML,
+	)
 	if isHeader {
 		if elem == nil {
-			elem = openxml.NewCompositeElement(NamespaceWML, "tblHeader", PrefixW)
+			elem = openxml.NewCompositeElement(
+				NamespaceWML,
+				"tblHeader",
+				PrefixW,
+			)
 			trp.AppendChild(elem)
 		}
 	} else {
@@ -717,7 +992,9 @@ func (tc *TableCell) TableCellProperties() *TableCellProperties {
 		return tcp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &TableCellProperties{CompositeElementBase: comp}
+		return &TableCellProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -742,7 +1019,8 @@ func (tc *TableCell) GetOrCreateTableCellProperties() *TableCellProperties {
 func (tc *TableCell) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range tc.Children() {
-			if child.LocalName() == "p" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "p" &&
+				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
 				if para, ok := child.(*Paragraph); ok {
 					p = para
@@ -758,7 +1036,9 @@ func (tc *TableCell) Paragraphs() iter.Seq[*Paragraph] {
 }
 
 // AppendParagraph appends a new paragraph with the given text to this cell.
-func (tc *TableCell) AppendParagraph(text string) *Paragraph {
+func (tc *TableCell) AppendParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	tc.AppendChild(p)
 	return p
@@ -769,7 +1049,8 @@ func (tc *TableCell) SetText(text string) {
 	// Remove all paragraphs
 	var toRemove []openxml.Element
 	for child := range tc.Children() {
-		if child.LocalName() == "p" && child.NamespaceURI() == NamespaceWML {
+		if child.LocalName() == "p" &&
+			child.NamespaceURI() == NamespaceWML {
 			toRemove = append(toRemove, child)
 		}
 	}
@@ -793,23 +1074,36 @@ func (tc *TableCell) InnerText() string {
 }
 
 // SetWidth sets the cell width.
-func (tc *TableCell) SetWidth(width int, widthType TableWidthType) {
-	tc.GetOrCreateTableCellProperties().SetWidth(width, widthType)
+func (tc *TableCell) SetWidth(
+	width int,
+	widthType TableWidthType,
+) {
+	tc.GetOrCreateTableCellProperties().
+		SetWidth(width, widthType)
 }
 
 // SetShading sets the cell shading/background color.
-func (tc *TableCell) SetShading(fillColor string) {
-	tc.GetOrCreateTableCellProperties().SetShading(fillColor)
+func (tc *TableCell) SetShading(
+	fillColor string,
+) {
+	tc.GetOrCreateTableCellProperties().
+		SetShading(fillColor)
 }
 
 // SetVerticalMerge sets vertical cell merge.
-func (tc *TableCell) SetVerticalMerge(mergeType VerticalMergeType) {
-	tc.GetOrCreateTableCellProperties().SetVerticalMerge(mergeType)
+func (tc *TableCell) SetVerticalMerge(
+	mergeType VerticalMergeType,
+) {
+	tc.GetOrCreateTableCellProperties().
+		SetVerticalMerge(mergeType)
 }
 
 // SetHorizontalMerge sets horizontal cell span (gridSpan).
-func (tc *TableCell) SetHorizontalMerge(span int) {
-	tc.GetOrCreateTableCellProperties().SetGridSpan(span)
+func (tc *TableCell) SetHorizontalMerge(
+	span int,
+) {
+	tc.GetOrCreateTableCellProperties().
+		SetGridSpan(span)
 }
 
 // TableCellProperties represents the w:tcPr element.
@@ -819,8 +1113,14 @@ type TableCellProperties struct {
 
 // NewTableCellProperties creates a new TableCellProperties element.
 func NewTableCellProperties() *TableCellProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tcPr", PrefixW)
-	return &TableCellProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tcPr",
+		PrefixW,
+	)
+	return &TableCellProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // TableCellWidth returns the cell width element.
@@ -833,13 +1133,18 @@ func (tcp *TableCellProperties) TableCellWidth() *TableCellWidth {
 		return tcw
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &TableCellWidth{CompositeElementBase: comp}
+		return &TableCellWidth{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
 
 // SetWidth sets the cell width.
-func (tcp *TableCellProperties) SetWidth(width int, widthType TableWidthType) {
+func (tcp *TableCellProperties) SetWidth(
+	width int,
+	widthType TableWidthType,
+) {
 	tcw := tcp.TableCellWidth()
 	if tcw == nil {
 		tcw = NewTableCellWidth(width, widthType)
@@ -875,13 +1180,17 @@ func (tcp *TableCellProperties) VerticalMerge() *VerticalMerge {
 		return vm
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &VerticalMerge{CompositeElementBase: comp}
+		return &VerticalMerge{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
 
 // SetVerticalMerge sets the vertical merge type.
-func (tcp *TableCellProperties) SetVerticalMerge(mergeType VerticalMergeType) {
+func (tcp *TableCellProperties) SetVerticalMerge(
+	mergeType VerticalMergeType,
+) {
 	vm := tcp.VerticalMerge()
 	if vm == nil {
 		vm = NewVerticalMerge(mergeType)
@@ -893,11 +1202,17 @@ func (tcp *TableCellProperties) SetVerticalMerge(mergeType VerticalMergeType) {
 
 // GridSpan returns the grid span value.
 func (tcp *TableCellProperties) GridSpan() int {
-	elem := tcp.GetElement("gridSpan", NamespaceWML)
+	elem := tcp.GetElement(
+		"gridSpan",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return 1
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 1
 	}
@@ -906,13 +1221,29 @@ func (tcp *TableCellProperties) GridSpan() int {
 }
 
 // SetGridSpan sets the grid span (horizontal merge).
-func (tcp *TableCellProperties) SetGridSpan(span int) {
-	elem := tcp.GetElement("gridSpan", NamespaceWML)
+func (tcp *TableCellProperties) SetGridSpan(
+	span int,
+) {
+	elem := tcp.GetElement(
+		"gridSpan",
+		NamespaceWML,
+	)
 	if elem == nil {
-		elem = openxml.NewCompositeElement(NamespaceWML, "gridSpan", PrefixW)
+		elem = openxml.NewCompositeElement(
+			NamespaceWML,
+			"gridSpan",
+			PrefixW,
+		)
 		tcp.AppendChild(elem)
 	}
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(span)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(span),
+		),
+	)
 }
 
 // Shading returns the shading element.
@@ -925,13 +1256,17 @@ func (tcp *TableCellProperties) Shading() *Shading {
 		return s
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &Shading{CompositeElementBase: comp}
+		return &Shading{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
 
 // SetShading sets the cell shading/background color.
-func (tcp *TableCellProperties) SetShading(fillColor string) {
+func (tcp *TableCellProperties) SetShading(
+	fillColor string,
+) {
 	shd := tcp.Shading()
 	if shd == nil {
 		shd = NewShading()
@@ -946,7 +1281,10 @@ func (tcp *TableCellProperties) SetShading(fillColor string) {
 
 // TableCellBorders returns the cell borders element.
 func (tcp *TableCellProperties) TableCellBorders() *TableCellBorders {
-	elem := tcp.GetElement("tcBorders", NamespaceWML)
+	elem := tcp.GetElement(
+		"tcBorders",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -954,7 +1292,9 @@ func (tcp *TableCellProperties) TableCellBorders() *TableCellBorders {
 		return tcb
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &TableCellBorders{CompositeElementBase: comp}
+		return &TableCellBorders{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -983,9 +1323,18 @@ type TableCellWidth struct {
 }
 
 // NewTableCellWidth creates a new TableCellWidth element.
-func NewTableCellWidth(width int, widthType TableWidthType) *TableCellWidth {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tcW", PrefixW)
-	tcw := &TableCellWidth{CompositeElementBase: elem}
+func NewTableCellWidth(
+	width int,
+	widthType TableWidthType,
+) *TableCellWidth {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tcW",
+		PrefixW,
+	)
+	tcw := &TableCellWidth{
+		CompositeElementBase: elem,
+	}
 	tcw.SetWidth(width)
 	tcw.SetType(widthType)
 	return tcw
@@ -993,7 +1342,10 @@ func NewTableCellWidth(width int, widthType TableWidthType) *TableCellWidth {
 
 // Width returns the width value.
 func (tcw *TableCellWidth) Width() int {
-	attr, found := tcw.GetAttribute("w", NamespaceWML)
+	attr, found := tcw.GetAttribute(
+		"w",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -1003,12 +1355,22 @@ func (tcw *TableCellWidth) Width() int {
 
 // SetWidth sets the width value.
 func (tcw *TableCellWidth) SetWidth(width int) {
-	tcw.SetAttribute(openxml.NewAttribute(NamespaceWML, "w", PrefixW, strconv.Itoa(width)))
+	tcw.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"w",
+			PrefixW,
+			strconv.Itoa(width),
+		),
+	)
 }
 
 // Type returns the width type.
 func (tcw *TableCellWidth) Type() TableWidthType {
-	attr, found := tcw.GetAttribute("type", NamespaceWML)
+	attr, found := tcw.GetAttribute(
+		"type",
+		NamespaceWML,
+	)
 	if !found {
 		return TableWidthTypeAuto
 	}
@@ -1016,8 +1378,17 @@ func (tcw *TableCellWidth) Type() TableWidthType {
 }
 
 // SetType sets the width type.
-func (tcw *TableCellWidth) SetType(widthType TableWidthType) {
-	tcw.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(widthType)))
+func (tcw *TableCellWidth) SetType(
+	widthType TableWidthType,
+) {
+	tcw.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"type",
+			PrefixW,
+			string(widthType),
+		),
+	)
 }
 
 // Clone creates a deep copy of this TableCellWidth element.
@@ -1033,9 +1404,17 @@ type VerticalMerge struct {
 }
 
 // NewVerticalMerge creates a new VerticalMerge element.
-func NewVerticalMerge(mergeType VerticalMergeType) *VerticalMerge {
-	elem := openxml.NewCompositeElement(NamespaceWML, "vMerge", PrefixW)
-	vm := &VerticalMerge{CompositeElementBase: elem}
+func NewVerticalMerge(
+	mergeType VerticalMergeType,
+) *VerticalMerge {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"vMerge",
+		PrefixW,
+	)
+	vm := &VerticalMerge{
+		CompositeElementBase: elem,
+	}
 	if mergeType == VerticalMergeRestart {
 		vm.SetType(mergeType)
 	}
@@ -1045,7 +1424,10 @@ func NewVerticalMerge(mergeType VerticalMergeType) *VerticalMerge {
 
 // Type returns the merge type.
 func (vm *VerticalMerge) Type() VerticalMergeType {
-	attr, found := vm.GetAttribute("val", NamespaceWML)
+	attr, found := vm.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return VerticalMergeContinue // Default when no val attribute
 	}
@@ -1053,9 +1435,18 @@ func (vm *VerticalMerge) Type() VerticalMergeType {
 }
 
 // SetType sets the merge type.
-func (vm *VerticalMerge) SetType(mergeType VerticalMergeType) {
+func (vm *VerticalMerge) SetType(
+	mergeType VerticalMergeType,
+) {
 	if mergeType == VerticalMergeRestart {
-		vm.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(mergeType)))
+		vm.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"val",
+				PrefixW,
+				string(mergeType),
+			),
+		)
 	} else {
 		vm.RemoveAttribute("val", NamespaceWML)
 	}
@@ -1075,12 +1466,22 @@ type TableCellBorders struct {
 
 // NewTableCellBorders creates a new TableCellBorders element.
 func NewTableCellBorders() *TableCellBorders {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tcBorders", PrefixW)
-	return &TableCellBorders{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tcBorders",
+		PrefixW,
+	)
+	return &TableCellBorders{
+		CompositeElementBase: elem,
+	}
 }
 
 // SetAllBorders sets all borders to the same style.
-func (tcb *TableCellBorders) SetAllBorders(style BorderStyle, size int, color string) {
+func (tcb *TableCellBorders) SetAllBorders(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tcb.SetTop(style, size, color)
 	tcb.SetBottom(style, size, color)
 	tcb.SetLeft(style, size, color)
@@ -1088,35 +1489,88 @@ func (tcb *TableCellBorders) SetAllBorders(style BorderStyle, size int, color st
 }
 
 // SetTop sets the top border.
-func (tcb *TableCellBorders) SetTop(style BorderStyle, size int, color string) {
+func (tcb *TableCellBorders) SetTop(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tcb.setBorder("top", style, size, color)
 }
 
 // SetBottom sets the bottom border.
-func (tcb *TableCellBorders) SetBottom(style BorderStyle, size int, color string) {
+func (tcb *TableCellBorders) SetBottom(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tcb.setBorder("bottom", style, size, color)
 }
 
 // SetLeft sets the left border.
-func (tcb *TableCellBorders) SetLeft(style BorderStyle, size int, color string) {
+func (tcb *TableCellBorders) SetLeft(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tcb.setBorder("left", style, size, color)
 }
 
 // SetRight sets the right border.
-func (tcb *TableCellBorders) SetRight(style BorderStyle, size int, color string) {
+func (tcb *TableCellBorders) SetRight(
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	tcb.setBorder("right", style, size, color)
 }
 
-func (tcb *TableCellBorders) setBorder(name string, style BorderStyle, size int, color string) {
+func (tcb *TableCellBorders) setBorder(
+	name string,
+	style BorderStyle,
+	size int,
+	color string,
+) {
 	elem := tcb.GetElement(name, NamespaceWML)
 	if elem == nil {
-		elem = openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+		elem = openxml.NewCompositeElement(
+			NamespaceWML,
+			name,
+			PrefixW,
+		)
 		tcb.AppendChild(elem)
 	}
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(style)))
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "sz", PrefixW, strconv.Itoa(size)))
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "color", PrefixW, color))
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "space", PrefixW, "0"))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(style),
+		),
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"sz",
+			PrefixW,
+			strconv.Itoa(size),
+		),
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"color",
+			PrefixW,
+			color,
+		),
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"space",
+			PrefixW,
+			"0",
+		),
+	)
 }
 
 // Clone creates a deep copy of this TableCellBorders element.

@@ -10,7 +10,9 @@ type OpenXmlQualifiedName struct {
 }
 
 // NewQualifiedName creates a new qualified name with the given namespace URI and local name.
-func NewQualifiedName(namespaceURI, localName string) OpenXmlQualifiedName {
+func NewQualifiedName(
+	namespaceURI, localName string,
+) OpenXmlQualifiedName {
 	return OpenXmlQualifiedName{
 		namespaceURI: namespaceURI,
 		localName:    localName,
@@ -38,17 +40,23 @@ func (qn OpenXmlQualifiedName) String() string {
 
 // IsEmpty returns true if both the namespace URI and local name are empty.
 func (qn OpenXmlQualifiedName) IsEmpty() bool {
-	return qn.namespaceURI == "" && qn.localName == ""
+	return qn.namespaceURI == "" &&
+		qn.localName == ""
 }
 
 // Equals returns true if this qualified name equals the other.
-func (qn OpenXmlQualifiedName) Equals(other OpenXmlQualifiedName) bool {
-	return qn.namespaceURI == other.namespaceURI && qn.localName == other.localName
+func (qn OpenXmlQualifiedName) Equals(
+	other OpenXmlQualifiedName,
+) bool {
+	return qn.namespaceURI == other.namespaceURI &&
+		qn.localName == other.localName
 }
 
 // ParseQualifiedName parses a qualified name from string format.
 // Accepts either "{namespaceURI}localName" or just "localName".
-func ParseQualifiedName(s string) OpenXmlQualifiedName {
+func ParseQualifiedName(
+	s string,
+) OpenXmlQualifiedName {
 	if !strings.HasPrefix(s, "{") {
 		return OpenXmlQualifiedName{localName: s}
 	}

@@ -108,8 +108,15 @@ type Style struct {
 }
 
 // NewStyle creates a new Style element with the given ID and type.
-func NewStyle(id string, styleType StyleType) *Style {
-	elem := openxml.NewCompositeElement(NamespaceWML, "style", PrefixW)
+func NewStyle(
+	id string,
+	styleType StyleType,
+) *Style {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"style",
+		PrefixW,
+	)
 	s := &Style{CompositeElementBase: elem}
 	s.SetStyleId(id)
 	s.SetType(styleType)
@@ -167,7 +174,10 @@ func NewHeadingStyle(level int) *Style {
 
 // StyleId returns the style ID.
 func (s *Style) StyleId() string {
-	attr, found := s.GetAttribute("styleId", NamespaceWML)
+	attr, found := s.GetAttribute(
+		"styleId",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -176,12 +186,22 @@ func (s *Style) StyleId() string {
 
 // SetStyleId sets the style ID.
 func (s *Style) SetStyleId(id string) {
-	s.SetAttribute(openxml.NewAttribute(NamespaceWML, "styleId", PrefixW, id))
+	s.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"styleId",
+			PrefixW,
+			id,
+		),
+	)
 }
 
 // Type returns the style type.
 func (s *Style) Type() StyleType {
-	attr, found := s.GetAttribute("type", NamespaceWML)
+	attr, found := s.GetAttribute(
+		"type",
+		NamespaceWML,
+	)
 	if !found {
 		return StyleTypeParagraph
 	}
@@ -190,7 +210,14 @@ func (s *Style) Type() StyleType {
 
 // SetType sets the style type.
 func (s *Style) SetType(t StyleType) {
-	s.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(t)))
+	s.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"type",
+			PrefixW,
+			string(t),
+		),
+	)
 }
 
 // StyleName returns the human-readable style name.
@@ -199,7 +226,10 @@ func (s *Style) StyleName() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -213,7 +243,14 @@ func (s *Style) SetStyleName(name string) {
 		return
 	}
 	elem := s.getOrCreateElement("name")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, name))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			name,
+		),
+	)
 }
 
 // BasedOn returns the parent style ID.
@@ -222,7 +259,10 @@ func (s *Style) BasedOn() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -236,7 +276,14 @@ func (s *Style) SetBasedOn(id string) {
 		return
 	}
 	elem := s.getOrCreateElement("basedOn")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, id))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			id,
+		),
+	)
 }
 
 // NextParagraphStyle returns the style ID for the next paragraph.
@@ -245,7 +292,10 @@ func (s *Style) NextParagraphStyle() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -259,7 +309,14 @@ func (s *Style) SetNextParagraphStyle(id string) {
 		return
 	}
 	elem := s.getOrCreateElement("next")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, id))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			id,
+		),
+	)
 }
 
 // LinkedStyle returns the linked style ID.
@@ -268,7 +325,10 @@ func (s *Style) LinkedStyle() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -282,23 +342,41 @@ func (s *Style) SetLinkedStyle(id string) {
 		return
 	}
 	elem := s.getOrCreateElement("link")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, id))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			id,
+		),
+	)
 }
 
 // Default returns whether this is the default style of its type.
 func (s *Style) Default() bool {
-	attr, found := s.GetAttribute("default", NamespaceWML)
+	attr, found := s.GetAttribute(
+		"default",
+		NamespaceWML,
+	)
 	if !found {
 		return false
 	}
 	val := attr.Value()
-	return val == "1" || val == "true" || val == "on"
+	return val == "1" || val == "true" ||
+		val == "on"
 }
 
 // SetDefault sets whether this is the default style of its type.
 func (s *Style) SetDefault(b bool) {
 	if b {
-		s.SetAttribute(openxml.NewAttribute(NamespaceWML, "default", PrefixW, "1"))
+		s.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"default",
+				PrefixW,
+				"1",
+			),
+		)
 	} else {
 		s.RemoveAttribute("default", NamespaceWML)
 	}
@@ -306,18 +384,29 @@ func (s *Style) SetDefault(b bool) {
 
 // CustomStyle returns whether this is a user-defined style.
 func (s *Style) CustomStyle() bool {
-	attr, found := s.GetAttribute("customStyle", NamespaceWML)
+	attr, found := s.GetAttribute(
+		"customStyle",
+		NamespaceWML,
+	)
 	if !found {
 		return false
 	}
 	val := attr.Value()
-	return val == "1" || val == "true" || val == "on"
+	return val == "1" || val == "true" ||
+		val == "on"
 }
 
 // SetCustomStyle sets whether this is a user-defined style.
 func (s *Style) SetCustomStyle(b bool) {
 	if b {
-		s.SetAttribute(openxml.NewAttribute(NamespaceWML, "customStyle", PrefixW, "1"))
+		s.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"customStyle",
+				PrefixW,
+				"1",
+			),
+		)
 	} else {
 		s.RemoveAttribute("customStyle", NamespaceWML)
 	}
@@ -333,7 +422,9 @@ func (s *Style) StyleParagraphProperties() *StyleParagraphProperties {
 		return pp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &StyleParagraphProperties{CompositeElementBase: comp}
+		return &StyleParagraphProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -359,7 +450,9 @@ func (s *Style) StyleRunProperties() *StyleRunProperties {
 		return rp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &StyleRunProperties{CompositeElementBase: comp}
+		return &StyleRunProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -385,7 +478,9 @@ func (s *Style) StyleTableProperties() *StyleTableProperties {
 		return tp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &StyleTableProperties{CompositeElementBase: comp}
+		return &StyleTableProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -403,11 +498,17 @@ func (s *Style) GetOrCreateStyleTableProperties() *StyleTableProperties {
 
 // UIPriority returns the sort order in the style gallery.
 func (s *Style) UIPriority() int {
-	elem := s.GetElement("uiPriority", NamespaceWML)
+	elem := s.GetElement(
+		"uiPriority",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return 99 // Default priority
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 99
 	}
@@ -421,7 +522,14 @@ func (s *Style) UIPriority() int {
 // SetUIPriority sets the sort order in the style gallery.
 func (s *Style) SetUIPriority(priority int) {
 	elem := s.getOrCreateElement("uiPriority")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(priority)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(priority),
+		),
+	)
 }
 
 // QuickFormat returns whether the style appears in quick styles.
@@ -456,20 +564,29 @@ func (s *Style) SetUnhideWhenUsed(b bool) {
 
 // Helper methods
 
-func (s *Style) hasOnOffElement(name string) bool {
+func (s *Style) hasOnOffElement(
+	name string,
+) bool {
 	elem := s.GetElement(name, NamespaceWML)
 	if elem == nil {
 		return false
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if found {
 		val := attr.Value()
-		return val != "false" && val != "0" && val != "off"
+		return val != "false" && val != "0" &&
+			val != "off"
 	}
 	return true
 }
 
-func (s *Style) setOnOffElement(name string, value bool) {
+func (s *Style) setOnOffElement(
+	name string,
+	value bool,
+) {
 	if value {
 		s.getOrCreateElement(name)
 	} else {
@@ -477,12 +594,18 @@ func (s *Style) setOnOffElement(name string, value bool) {
 	}
 }
 
-func (s *Style) getOrCreateElement(name string) openxml.Element {
+func (s *Style) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := s.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	s.AppendChild(newElem)
 	return newElem
 }
@@ -502,7 +625,9 @@ func (s *Style) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Style element.
-func (s *Style) CloneNode(deep bool) openxml.Element {
+func (s *Style) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Style{
 		CompositeElementBase: s.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -515,83 +640,158 @@ type StyleParagraphProperties struct {
 
 // NewStyleParagraphProperties creates a new StyleParagraphProperties element.
 func NewStyleParagraphProperties() *StyleParagraphProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "pPr", PrefixW)
-	return &StyleParagraphProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"pPr",
+		PrefixW,
+	)
+	return &StyleParagraphProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // SetJustification sets the paragraph alignment.
-func (pp *StyleParagraphProperties) SetJustification(j JustificationValue) {
+func (pp *StyleParagraphProperties) SetJustification(
+	j JustificationValue,
+) {
 	if j == "" || j == JustificationLeft {
 		pp.removeElement("jc")
 		return
 	}
 	elem := pp.getOrCreateElement("jc")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(j)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(j),
+		),
+	)
 }
 
 // SetOutlineLevel sets the outline level (0-8).
-func (pp *StyleParagraphProperties) SetOutlineLevel(level int) {
+func (pp *StyleParagraphProperties) SetOutlineLevel(
+	level int,
+) {
 	if level < 0 || level > 8 {
 		pp.removeElement("outlineLvl")
 		return
 	}
 	elem := pp.getOrCreateElement("outlineLvl")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(level)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(level),
+		),
+	)
 }
 
 // SetKeepNext sets whether to keep with the next paragraph.
-func (pp *StyleParagraphProperties) SetKeepNext(b bool) {
+func (pp *StyleParagraphProperties) SetKeepNext(
+	b bool,
+) {
 	pp.setOnOffElement("keepNext", b)
 }
 
 // SetKeepLines sets whether to keep lines together.
-func (pp *StyleParagraphProperties) SetKeepLines(b bool) {
+func (pp *StyleParagraphProperties) SetKeepLines(
+	b bool,
+) {
 	pp.setOnOffElement("keepLines", b)
 }
 
 // SetPageBreakBefore sets whether to insert a page break before.
-func (pp *StyleParagraphProperties) SetPageBreakBefore(b bool) {
+func (pp *StyleParagraphProperties) SetPageBreakBefore(
+	b bool,
+) {
 	pp.setOnOffElement("pageBreakBefore", b)
 }
 
 // SetSpacingBefore sets the space before the paragraph in twips.
-func (pp *StyleParagraphProperties) SetSpacingBefore(twips int) {
+func (pp *StyleParagraphProperties) SetSpacingBefore(
+	twips int,
+) {
 	elem := pp.getOrCreateElement("spacing")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "before", PrefixW, strconv.Itoa(twips)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"before",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // SetSpacingAfter sets the space after the paragraph in twips.
-func (pp *StyleParagraphProperties) SetSpacingAfter(twips int) {
+func (pp *StyleParagraphProperties) SetSpacingAfter(
+	twips int,
+) {
 	elem := pp.getOrCreateElement("spacing")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "after", PrefixW, strconv.Itoa(twips)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"after",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // SetLeftIndent sets the left indentation in twips.
-func (pp *StyleParagraphProperties) SetLeftIndent(twips int) {
+func (pp *StyleParagraphProperties) SetLeftIndent(
+	twips int,
+) {
 	elem := pp.getOrCreateElement("ind")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "left", PrefixW, strconv.Itoa(twips)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"left",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // SetHangingIndent sets the hanging indentation in twips.
-func (pp *StyleParagraphProperties) SetHangingIndent(twips int) {
+func (pp *StyleParagraphProperties) SetHangingIndent(
+	twips int,
+) {
 	elem := pp.getOrCreateElement("ind")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "hanging", PrefixW, strconv.Itoa(twips)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"hanging",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
-func (pp *StyleParagraphProperties) hasOnOffElement(name string) bool {
+func (pp *StyleParagraphProperties) hasOnOffElement(
+	name string,
+) bool {
 	elem := pp.GetElement(name, NamespaceWML)
 	if elem == nil {
 		return false
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if found {
 		val := attr.Value()
-		return val != "false" && val != "0" && val != "off"
+		return val != "false" && val != "0" &&
+			val != "off"
 	}
 	return true
 }
 
-func (pp *StyleParagraphProperties) setOnOffElement(name string, value bool) {
+func (pp *StyleParagraphProperties) setOnOffElement(
+	name string,
+	value bool,
+) {
 	if value {
 		pp.getOrCreateElement(name)
 	} else {
@@ -599,17 +799,25 @@ func (pp *StyleParagraphProperties) setOnOffElement(name string, value bool) {
 	}
 }
 
-func (pp *StyleParagraphProperties) getOrCreateElement(name string) openxml.Element {
+func (pp *StyleParagraphProperties) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := pp.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	pp.AppendChild(newElem)
 	return newElem
 }
 
-func (pp *StyleParagraphProperties) removeElement(name string) {
+func (pp *StyleParagraphProperties) removeElement(
+	name string,
+) {
 	elem := pp.GetElement(name, NamespaceWML)
 	if elem != nil {
 		pp.RemoveChild(elem)
@@ -630,8 +838,14 @@ type StyleRunProperties struct {
 
 // NewStyleRunProperties creates a new StyleRunProperties element.
 func NewStyleRunProperties() *StyleRunProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "rPr", PrefixW)
-	return &StyleRunProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"rPr",
+		PrefixW,
+	)
+	return &StyleRunProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // SetBold sets bold formatting.
@@ -645,52 +859,118 @@ func (rp *StyleRunProperties) SetItalic(b bool) {
 }
 
 // SetUnderline sets the underline style.
-func (rp *StyleRunProperties) SetUnderline(u UnderlineValue) {
+func (rp *StyleRunProperties) SetUnderline(
+	u UnderlineValue,
+) {
 	if u == UnderlineNone {
 		rp.removeElement("u")
 		return
 	}
 	elem := rp.getOrCreateElement("u")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(u)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(u),
+		),
+	)
 }
 
 // SetFontSize sets the font size in half-points.
-func (rp *StyleRunProperties) SetFontSize(halfPoints int) {
+func (rp *StyleRunProperties) SetFontSize(
+	halfPoints int,
+) {
 	if halfPoints <= 0 {
 		rp.removeElement("sz")
 		return
 	}
 	elem := rp.getOrCreateElement("sz")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(halfPoints)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(halfPoints),
+		),
+	)
 }
 
 // SetFontSizeComplexScript sets the complex script font size in half-points.
-func (rp *StyleRunProperties) SetFontSizeComplexScript(halfPoints int) {
+func (rp *StyleRunProperties) SetFontSizeComplexScript(
+	halfPoints int,
+) {
 	if halfPoints <= 0 {
 		rp.removeElement("szCs")
 		return
 	}
 	elem := rp.getOrCreateElement("szCs")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(halfPoints)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(halfPoints),
+		),
+	)
 }
 
 // SetFont sets the font name for all script types.
-func (rp *StyleRunProperties) SetFont(fontName string) {
+func (rp *StyleRunProperties) SetFont(
+	fontName string,
+) {
 	rf := rp.getOrCreateElement("rFonts")
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "ascii", PrefixW, fontName))
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "hAnsi", PrefixW, fontName))
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "eastAsia", PrefixW, fontName))
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "cs", PrefixW, fontName))
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"ascii",
+			PrefixW,
+			fontName,
+		),
+	)
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"hAnsi",
+			PrefixW,
+			fontName,
+		),
+	)
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"eastAsia",
+			PrefixW,
+			fontName,
+		),
+	)
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"cs",
+			PrefixW,
+			fontName,
+		),
+	)
 }
 
 // SetColor sets the text color from a hex string (without # prefix).
-func (rp *StyleRunProperties) SetColor(hex string) {
+func (rp *StyleRunProperties) SetColor(
+	hex string,
+) {
 	if hex == "" {
 		rp.removeElement("color")
 		return
 	}
 	elem := rp.getOrCreateElement("color")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, hex))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			hex,
+		),
+	)
 }
 
 // SetCaps sets all caps formatting.
@@ -699,7 +979,9 @@ func (rp *StyleRunProperties) SetCaps(b bool) {
 }
 
 // SetSmallCaps sets small caps formatting.
-func (rp *StyleRunProperties) SetSmallCaps(b bool) {
+func (rp *StyleRunProperties) SetSmallCaps(
+	b bool,
+) {
 	rp.setOnOffElement("smallCaps", b)
 }
 
@@ -708,7 +990,10 @@ func (rp *StyleRunProperties) SetStrike(b bool) {
 	rp.setOnOffElement("strike", b)
 }
 
-func (rp *StyleRunProperties) setOnOffElement(name string, value bool) {
+func (rp *StyleRunProperties) setOnOffElement(
+	name string,
+	value bool,
+) {
 	if value {
 		rp.getOrCreateElement(name)
 	} else {
@@ -716,17 +1001,25 @@ func (rp *StyleRunProperties) setOnOffElement(name string, value bool) {
 	}
 }
 
-func (rp *StyleRunProperties) getOrCreateElement(name string) openxml.Element {
+func (rp *StyleRunProperties) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := rp.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	rp.AppendChild(newElem)
 	return newElem
 }
 
-func (rp *StyleRunProperties) removeElement(name string) {
+func (rp *StyleRunProperties) removeElement(
+	name string,
+) {
 	elem := rp.GetElement(name, NamespaceWML)
 	if elem != nil {
 		rp.RemoveChild(elem)
@@ -747,8 +1040,14 @@ type StyleTableProperties struct {
 
 // NewStyleTableProperties creates a new StyleTableProperties element.
 func NewStyleTableProperties() *StyleTableProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tblPr", PrefixW)
-	return &StyleTableProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tblPr",
+		PrefixW,
+	)
+	return &StyleTableProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // Clone creates a deep copy of this StyleTableProperties element.

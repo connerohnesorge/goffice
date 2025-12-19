@@ -26,15 +26,26 @@ const (
 )
 
 // newFootnotesPart creates a new footnotes part.
-func newFootnotesPart(mainPart *MainPart) (*FootnotesPart, error) {
+func newFootnotesPart(
+	mainPart *MainPart,
+) (*FootnotesPart, error) {
 	uri := "/word/footnotes.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeFootnotes, RelationshipTypeFootnotes)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeFootnotes,
+		RelationshipTypeFootnotes,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeFootnotes, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeFootnotes,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	fp := &FootnotesPart{
@@ -90,7 +101,9 @@ func (fp *FootnotesPart) Footnotes() *elements.Footnotes {
 	}
 	// Wrap the root element as Footnotes
 	if pre, ok := root.(*openxml.PartRootElementBase); ok {
-		return &elements.Footnotes{PartRootElementBase: pre}
+		return &elements.Footnotes{
+			PartRootElementBase: pre,
+		}
 	}
 	return nil
 }
@@ -107,13 +120,17 @@ func (fp *FootnotesPart) GetOrCreateFootnotes() *elements.Footnotes {
 }
 
 // AddFootnote adds a new footnote and returns it.
-func (fp *FootnotesPart) AddFootnote(text string) *elements.Footnote {
+func (fp *FootnotesPart) AddFootnote(
+	text string,
+) *elements.Footnote {
 	fn := fp.GetOrCreateFootnotes()
 	return fn.AddFootnote(text)
 }
 
 // GetFootnote returns the footnote with the specified ID.
-func (fp *FootnotesPart) GetFootnote(id int) *elements.Footnote {
+func (fp *FootnotesPart) GetFootnote(
+	id int,
+) *elements.Footnote {
 	fn := fp.Footnotes()
 	if fn == nil {
 		return nil
@@ -130,15 +147,26 @@ func (fp *FootnotesPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*FootnotesPart)(nil)
 
 // newEndnotesPart creates a new endnotes part.
-func newEndnotesPart(mainPart *MainPart) (*EndnotesPart, error) {
+func newEndnotesPart(
+	mainPart *MainPart,
+) (*EndnotesPart, error) {
 	uri := "/word/endnotes.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeEndnotes, RelationshipTypeEndnotes)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeEndnotes,
+		RelationshipTypeEndnotes,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeEndnotes, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeEndnotes,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	ep := &EndnotesPart{
@@ -194,7 +222,9 @@ func (ep *EndnotesPart) Endnotes() *elements.Endnotes {
 	}
 	// Wrap the root element as Endnotes
 	if pre, ok := root.(*openxml.PartRootElementBase); ok {
-		return &elements.Endnotes{PartRootElementBase: pre}
+		return &elements.Endnotes{
+			PartRootElementBase: pre,
+		}
 	}
 	return nil
 }
@@ -211,13 +241,17 @@ func (ep *EndnotesPart) GetOrCreateEndnotes() *elements.Endnotes {
 }
 
 // AddEndnote adds a new endnote and returns it.
-func (ep *EndnotesPart) AddEndnote(text string) *elements.Endnote {
+func (ep *EndnotesPart) AddEndnote(
+	text string,
+) *elements.Endnote {
 	en := ep.GetOrCreateEndnotes()
 	return en.AddEndnote(text)
 }
 
 // GetEndnote returns the endnote with the specified ID.
-func (ep *EndnotesPart) GetEndnote(id int) *elements.Endnote {
+func (ep *EndnotesPart) GetEndnote(
+	id int,
+) *elements.Endnote {
 	en := ep.Endnotes()
 	if en == nil {
 		return nil
@@ -234,7 +268,10 @@ func (ep *EndnotesPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*EndnotesPart)(nil)
 
 // FootnotesPartFactory creates a FootnotesPart from a URI and container.
-func FootnotesPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func FootnotesPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -245,14 +282,22 @@ func FootnotesPartFactory(uri string, container openxml.OpenXmlPartContainer) op
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeFootnotes, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeFootnotes,
+		packPart,
+		container,
+	)
 	return &FootnotesPart{
 		OpenXmlPartData: partData,
 	}
 }
 
 // EndnotesPartFactory creates an EndnotesPart from a URI and container.
-func EndnotesPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func EndnotesPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -263,7 +308,12 @@ func EndnotesPartFactory(uri string, container openxml.OpenXmlPartContainer) ope
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeEndnotes, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeEndnotes,
+		packPart,
+		container,
+	)
 	return &EndnotesPart{
 		OpenXmlPartData: partData,
 	}
@@ -271,19 +321,23 @@ func EndnotesPartFactory(uri string, container openxml.OpenXmlPartContainer) ope
 
 // Register the FootnotesPart and EndnotesPart types.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeFootnotes,
-		RelationshipType:   RelationshipTypeFootnotes,
-		Factory:            FootnotesPartFactory,
-		DefaultURI:         "/word/footnotes.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeFootnotes,
+			RelationshipType:   RelationshipTypeFootnotes,
+			Factory:            FootnotesPartFactory,
+			DefaultURI:         "/word/footnotes.xml",
+			IsFixedContentType: true,
+		},
+	)
 
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeEndnotes,
-		RelationshipType:   RelationshipTypeEndnotes,
-		Factory:            EndnotesPartFactory,
-		DefaultURI:         "/word/endnotes.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeEndnotes,
+			RelationshipType:   RelationshipTypeEndnotes,
+			Factory:            EndnotesPartFactory,
+			DefaultURI:         "/word/endnotes.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

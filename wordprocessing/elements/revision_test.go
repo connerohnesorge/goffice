@@ -9,21 +9,42 @@ import (
 func TestInsertedRun(t *testing.T) {
 	id := 1
 	author := "Test Author"
-	date := time.Date(2024, 1, 15, 10, 30, 0, 0, time.UTC)
+	date := time.Date(
+		2024,
+		1,
+		15,
+		10,
+		30,
+		0,
+		0,
+		time.UTC,
+	)
 
 	ins := NewInsertedRun(id, author, date)
 
 	if ins.Id() != id {
-		t.Errorf("Expected ID %d, got %d", id, ins.Id())
+		t.Errorf(
+			"Expected ID %d, got %d",
+			id,
+			ins.Id(),
+		)
 	}
 
 	if ins.Author() != author {
-		t.Errorf("Expected author '%s', got '%s'", author, ins.Author())
+		t.Errorf(
+			"Expected author '%s', got '%s'",
+			author,
+			ins.Author(),
+		)
 	}
 
 	parsedDate := ins.Date()
 	if !parsedDate.Equal(date) {
-		t.Errorf("Expected date %v, got %v", date, parsedDate)
+		t.Errorf(
+			"Expected date %v, got %v",
+			date,
+			parsedDate,
+		)
 	}
 }
 
@@ -34,7 +55,10 @@ func TestInsertedRunWithContent(t *testing.T) {
 
 	text := ins.InnerText()
 	if text != "Inserted text" {
-		t.Errorf("Expected 'Inserted text', got '%s'", text)
+		t.Errorf(
+			"Expected 'Inserted text', got '%s'",
+			text,
+		)
 	}
 
 	// Count runs
@@ -52,39 +76,79 @@ func TestInsertedRunSetters(t *testing.T) {
 
 	ins.SetId(5)
 	if ins.Id() != 5 {
-		t.Errorf("Expected ID 5, got %d", ins.Id())
+		t.Errorf(
+			"Expected ID 5, got %d",
+			ins.Id(),
+		)
 	}
 
 	ins.SetAuthor("New Author")
 	if ins.Author() != "New Author" {
-		t.Errorf("Expected 'New Author', got '%s'", ins.Author())
+		t.Errorf(
+			"Expected 'New Author', got '%s'",
+			ins.Author(),
+		)
 	}
 
-	newDate := time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC)
+	newDate := time.Date(
+		2024,
+		6,
+		1,
+		0,
+		0,
+		0,
+		0,
+		time.UTC,
+	)
 	ins.SetDate(newDate)
 	if !ins.Date().Equal(newDate) {
-		t.Errorf("Expected date %v, got %v", newDate, ins.Date())
+		t.Errorf(
+			"Expected date %v, got %v",
+			newDate,
+			ins.Date(),
+		)
 	}
 }
 
 func TestDeletedRun(t *testing.T) {
 	id := 2
 	author := "Test Author"
-	date := time.Date(2024, 1, 15, 10, 30, 0, 0, time.UTC)
+	date := time.Date(
+		2024,
+		1,
+		15,
+		10,
+		30,
+		0,
+		0,
+		time.UTC,
+	)
 
 	del := NewDeletedRun(id, author, date)
 
 	if del.Id() != id {
-		t.Errorf("Expected ID %d, got %d", id, del.Id())
+		t.Errorf(
+			"Expected ID %d, got %d",
+			id,
+			del.Id(),
+		)
 	}
 
 	if del.Author() != author {
-		t.Errorf("Expected author '%s', got '%s'", author, del.Author())
+		t.Errorf(
+			"Expected author '%s', got '%s'",
+			author,
+			del.Author(),
+		)
 	}
 
 	parsedDate := del.Date()
 	if !parsedDate.Equal(date) {
-		t.Errorf("Expected date %v, got %v", date, parsedDate)
+		t.Errorf(
+			"Expected date %v, got %v",
+			date,
+			parsedDate,
+		)
 	}
 }
 
@@ -95,7 +159,10 @@ func TestDeletedRunWithContent(t *testing.T) {
 
 	text := del.InnerText()
 	if text != "Deleted text" {
-		t.Errorf("Expected 'Deleted text', got '%s'", text)
+		t.Errorf(
+			"Expected 'Deleted text', got '%s'",
+			text,
+		)
 	}
 
 	// Count deleted texts
@@ -104,7 +171,10 @@ func TestDeletedRunWithContent(t *testing.T) {
 		count++
 	}
 	if count != 1 {
-		t.Errorf("Expected 1 deleted text, got %d", count)
+		t.Errorf(
+			"Expected 1 deleted text, got %d",
+			count,
+		)
 	}
 }
 
@@ -112,12 +182,18 @@ func TestDeletedText(t *testing.T) {
 	dt := NewDeletedText("Some deleted text")
 
 	if dt.InnerText() != "Some deleted text" {
-		t.Errorf("Expected 'Some deleted text', got '%s'", dt.InnerText())
+		t.Errorf(
+			"Expected 'Some deleted text', got '%s'",
+			dt.InnerText(),
+		)
 	}
 
 	dt.SetText("New deleted text")
 	if dt.InnerText() != "New deleted text" {
-		t.Errorf("Expected 'New deleted text', got '%s'", dt.InnerText())
+		t.Errorf(
+			"Expected 'New deleted text', got '%s'",
+			dt.InnerText(),
+		)
 	}
 }
 
@@ -125,7 +201,9 @@ func TestDeletedTextSpacePreserve(t *testing.T) {
 	dt := NewDeletedText("  spaces  ")
 
 	if dt.Space() != "preserve" {
-		t.Errorf("Expected space='preserve' for text with leading/trailing spaces")
+		t.Errorf(
+			"Expected space='preserve' for text with leading/trailing spaces",
+		)
 	}
 }
 
@@ -137,7 +215,10 @@ func TestMoveFromRun(t *testing.T) {
 	}
 
 	if mf.Author() != "Author" {
-		t.Errorf("Expected author 'Author', got '%s'", mf.Author())
+		t.Errorf(
+			"Expected author 'Author', got '%s'",
+			mf.Author(),
+		)
 	}
 }
 
@@ -149,19 +230,32 @@ func TestMoveToRun(t *testing.T) {
 	}
 
 	if mt.Author() != "Author" {
-		t.Errorf("Expected author 'Author', got '%s'", mt.Author())
+		t.Errorf(
+			"Expected author 'Author', got '%s'",
+			mt.Author(),
+		)
 	}
 }
 
 func TestRunPropertiesChange(t *testing.T) {
-	rpc := NewRunPropertiesChange(1, "Author", time.Now())
+	rpc := NewRunPropertiesChange(
+		1,
+		"Author",
+		time.Now(),
+	)
 
 	if rpc.Id() != 1 {
-		t.Errorf("Expected ID 1, got %d", rpc.Id())
+		t.Errorf(
+			"Expected ID 1, got %d",
+			rpc.Id(),
+		)
 	}
 
 	if rpc.Author() != "Author" {
-		t.Errorf("Expected author 'Author', got '%s'", rpc.Author())
+		t.Errorf(
+			"Expected author 'Author', got '%s'",
+			rpc.Author(),
+		)
 	}
 
 	// Test previous properties
@@ -171,24 +265,38 @@ func TestRunPropertiesChange(t *testing.T) {
 
 	prevRp := rpc.PreviousRunProperties()
 	if prevRp == nil {
-		t.Fatal("PreviousRunProperties returned nil")
+		t.Fatal(
+			"PreviousRunProperties returned nil",
+		)
 	}
 
 	xml := prevRp.OuterXml()
 	if !strings.Contains(xml, "b") {
-		t.Error("Expected bold property in previous run properties")
+		t.Error(
+			"Expected bold property in previous run properties",
+		)
 	}
 }
 
 func TestParagraphPropertiesChange(t *testing.T) {
-	ppc := NewParagraphPropertiesChange(1, "Author", time.Now())
+	ppc := NewParagraphPropertiesChange(
+		1,
+		"Author",
+		time.Now(),
+	)
 
 	if ppc.Id() != 1 {
-		t.Errorf("Expected ID 1, got %d", ppc.Id())
+		t.Errorf(
+			"Expected ID 1, got %d",
+			ppc.Id(),
+		)
 	}
 
 	if ppc.Author() != "Author" {
-		t.Errorf("Expected author 'Author', got '%s'", ppc.Author())
+		t.Errorf(
+			"Expected author 'Author', got '%s'",
+			ppc.Author(),
+		)
 	}
 
 	// Test previous properties
@@ -198,12 +306,16 @@ func TestParagraphPropertiesChange(t *testing.T) {
 
 	prevPp := ppc.PreviousParagraphProperties()
 	if prevPp == nil {
-		t.Fatal("PreviousParagraphProperties returned nil")
+		t.Fatal(
+			"PreviousParagraphProperties returned nil",
+		)
 	}
 
 	xml := prevPp.OuterXml()
 	if !strings.Contains(xml, "jc") {
-		t.Error("Expected justification in previous paragraph properties")
+		t.Error(
+			"Expected justification in previous paragraph properties",
+		)
 	}
 }
 

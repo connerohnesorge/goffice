@@ -53,7 +53,9 @@ func (sv *StringValue) InnerText() string {
 // SetInnerText parses the value from a string.
 // An empty string sets the value to empty (still considered "set").
 // Use SetNil() to explicitly unset the value.
-func (sv *StringValue) SetInnerText(text string) error {
+func (sv *StringValue) SetInnerText(
+	text string,
+) error {
 	sv.value = text
 	sv.hasValue = true
 	return nil

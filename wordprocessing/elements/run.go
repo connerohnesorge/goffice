@@ -14,7 +14,11 @@ type Run struct {
 
 // NewRun creates a new Run element with optional text content.
 func NewRun(text string) *Run {
-	elem := openxml.NewCompositeElement(NamespaceWML, "r", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"r",
+		PrefixW,
+	)
 	r := &Run{CompositeElementBase: elem}
 	if text != "" {
 		r.AppendChild(NewText(text))
@@ -33,7 +37,9 @@ func (r *Run) Properties() *RunProperties {
 	}
 	// Wrap existing element
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &RunProperties{CompositeElementBase: comp}
+		return &RunProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -74,7 +80,8 @@ func (r *Run) Text() *Text {
 func (r *Run) Texts() iter.Seq[*Text] {
 	return func(yield func(*Text) bool) {
 		for child := range r.Children() {
-			if child.LocalName() == "t" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "t" &&
+				child.NamespaceURI() == NamespaceWML {
 				var t *Text
 				if text, ok := child.(*Text); ok {
 					t = text
@@ -103,8 +110,12 @@ func (r *Run) SetText(value string) {
 	// Remove existing text elements
 	var textsToRemove []openxml.Element
 	for child := range r.Children() {
-		if child.LocalName() == "t" && child.NamespaceURI() == NamespaceWML {
-			textsToRemove = append(textsToRemove, child)
+		if child.LocalName() == "t" &&
+			child.NamespaceURI() == NamespaceWML {
+			textsToRemove = append(
+				textsToRemove,
+				child,
+			)
 		}
 	}
 	for _, t := range textsToRemove {
@@ -124,7 +135,9 @@ func (r *Run) AppendText(value string) *Text {
 }
 
 // AppendBreak appends a Break element to this run.
-func (r *Run) AppendBreak(breakType BreakType) *Break {
+func (r *Run) AppendBreak(
+	breakType BreakType,
+) *Break {
 	br := NewBreak(breakType)
 	r.AppendChild(br)
 	return br
@@ -145,7 +158,9 @@ func (r *Run) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Run element.
-func (r *Run) CloneNode(deep bool) openxml.Element {
+func (r *Run) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Run{
 		CompositeElementBase: r.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -166,14 +181,17 @@ func (r *Run) SetItalic(b bool) *Run {
 }
 
 // SetUnderline sets underline formatting on this run.
-func (r *Run) SetUnderline(u UnderlineValue) *Run {
+func (r *Run) SetUnderline(
+	u UnderlineValue,
+) *Run {
 	r.GetOrCreateProperties().SetUnderline(u)
 	return r
 }
 
 // SetFontSize sets the font size in half-points.
 func (r *Run) SetFontSize(halfPoints int) *Run {
-	r.GetOrCreateProperties().SetFontSize(halfPoints)
+	r.GetOrCreateProperties().
+		SetFontSize(halfPoints)
 	return r
 }
 
@@ -190,27 +208,35 @@ func (r *Run) SetColor(hex string) *Run {
 }
 
 // SetHighlight sets the highlight color.
-func (r *Run) SetHighlight(color HighlightColor) *Run {
+func (r *Run) SetHighlight(
+	color HighlightColor,
+) *Run {
 	r.GetOrCreateProperties().SetHighlight(color)
 	return r
 }
 
 // AppendFootnoteReference appends a footnote reference to this run.
-func (r *Run) AppendFootnoteReference(id int) *FootnoteReference {
+func (r *Run) AppendFootnoteReference(
+	id int,
+) *FootnoteReference {
 	fr := NewFootnoteReference(id)
 	r.AppendChild(fr)
 	return fr
 }
 
 // AppendEndnoteReference appends an endnote reference to this run.
-func (r *Run) AppendEndnoteReference(id int) *EndnoteReference {
+func (r *Run) AppendEndnoteReference(
+	id int,
+) *EndnoteReference {
 	er := NewEndnoteReference(id)
 	r.AppendChild(er)
 	return er
 }
 
 // AppendCommentReference appends a comment reference to this run.
-func (r *Run) AppendCommentReference(id int) *CommentReference {
+func (r *Run) AppendCommentReference(
+	id int,
+) *CommentReference {
 	cr := NewCommentReference(id)
 	r.AppendChild(cr)
 	return cr
@@ -238,21 +264,27 @@ func (r *Run) AppendNoBreakHyphen() *NoBreakHyphen {
 }
 
 // AppendSymbol appends a symbol element to this run.
-func (r *Run) AppendSymbol(font, char string) *Symbol {
+func (r *Run) AppendSymbol(
+	font, char string,
+) *Symbol {
 	s := NewSymbol(font, char)
 	r.AppendChild(s)
 	return s
 }
 
 // AppendFieldChar appends a field character element to this run.
-func (r *Run) AppendFieldChar(charType FieldCharType) *FieldChar {
+func (r *Run) AppendFieldChar(
+	charType FieldCharType,
+) *FieldChar {
 	fc := NewFieldChar(charType)
 	r.AppendChild(fc)
 	return fc
 }
 
 // AppendInstrText appends field instruction text to this run.
-func (r *Run) AppendInstrText(text string) *InstrText {
+func (r *Run) AppendInstrText(
+	text string,
+) *InstrText {
 	it := NewInstrText(text)
 	r.AppendChild(it)
 	return it

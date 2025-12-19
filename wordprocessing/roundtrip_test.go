@@ -12,13 +12,22 @@ import (
 // TestRoundtripBasicDocument tests creating, saving, reopening, and verifying
 // a basic document with paragraphs.
 func TestRoundtripBasicDocument(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "goffice-roundtrip-*")
+	tmpDir, err := os.MkdirTemp(
+		"",
+		"goffice-roundtrip-*",
+	)
 	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
+		t.Fatalf(
+			"Failed to create temp dir: %v",
+			err,
+		)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	testPath := filepath.Join(tmpDir, "roundtrip.docx")
+	testPath := filepath.Join(
+		tmpDir,
+		"roundtrip.docx",
+	)
 
 	// Create a document with content using the builder
 	builder := NewDocumentBuilder()
@@ -60,24 +69,42 @@ func TestRoundtripBasicDocument(t *testing.T) {
 
 	// Verify document type is preserved
 	if doc2.Type() != DocTypeDocument {
-		t.Errorf("Type() = %v, want %v", doc2.Type(), DocTypeDocument)
+		t.Errorf(
+			"Type() = %v, want %v",
+			doc2.Type(),
+			DocTypeDocument,
+		)
 	}
 
 	// Verify original XML had expected content
-	if !strings.Contains(originalXml, "First paragraph") {
-		t.Error("Original XML missing 'First paragraph'")
+	if !strings.Contains(
+		originalXml,
+		"First paragraph",
+	) {
+		t.Error(
+			"Original XML missing 'First paragraph'",
+		)
 	}
 }
 
 // TestRoundtripFormattedText tests that text formatting survives save/reopen.
 func TestRoundtripFormattedText(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "goffice-roundtrip-*")
+	tmpDir, err := os.MkdirTemp(
+		"",
+		"goffice-roundtrip-*",
+	)
 	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
+		t.Fatalf(
+			"Failed to create temp dir: %v",
+			err,
+		)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	testPath := filepath.Join(tmpDir, "formatted.docx")
+	testPath := filepath.Join(
+		tmpDir,
+		"formatted.docx",
+	)
 
 	// Create document
 	doc1, err := New(testPath, DocTypeDocument)
@@ -138,7 +165,10 @@ func TestRoundtripTable(t *testing.T) {
 
 		// Verify row count
 		if table.RowCount() != 3 {
-			t.Errorf("Expected 3 rows, got %d", table.RowCount())
+			t.Errorf(
+				"Expected 3 rows, got %d",
+				table.RowCount(),
+			)
 		}
 
 		// Verify cell content
@@ -147,12 +177,18 @@ func TestRoundtripTable(t *testing.T) {
 			t.Fatal("GetCell(1,1) returned nil")
 		}
 		if cell.InnerText() != "B2" {
-			t.Errorf("Expected 'B2', got '%s'", cell.InnerText())
+			t.Errorf(
+				"Expected 'B2', got '%s'",
+				cell.InnerText(),
+			)
 		}
 	}
 
 	if tableCount != 1 {
-		t.Errorf("Expected 1 table, got %d", tableCount)
+		t.Errorf(
+			"Expected 1 table, got %d",
+			tableCount,
+		)
 	}
 
 	// Verify XML contains table elements
@@ -187,7 +223,12 @@ func TestRoundtripStyles(t *testing.T) {
 
 	// Verify paragraph styles
 	i := 0
-	expectedStyles := []string{"Heading1", "Heading2", "", "Heading3"}
+	expectedStyles := []string{
+		"Heading1",
+		"Heading2",
+		"",
+		"Heading3",
+	}
 	for p := range body.Paragraphs() {
 		if i >= len(expectedStyles) {
 			break
@@ -196,7 +237,11 @@ func TestRoundtripStyles(t *testing.T) {
 		props := p.Properties()
 		if expectedStyles[i] != "" {
 			if props == nil {
-				t.Errorf("Paragraph %d: expected style '%s', got nil properties", i, expectedStyles[i])
+				t.Errorf(
+					"Paragraph %d: expected style '%s', got nil properties",
+					i,
+					expectedStyles[i],
+				)
 			} else {
 				styleId := props.ParagraphStyleId()
 				if styleId != expectedStyles[i] {
@@ -213,7 +258,8 @@ func TestRoundtripComplexDocument(t *testing.T) {
 	builder := NewDocumentBuilder()
 
 	// Title
-	builder.AddHeading("Complex Document", 1).AlignCenter()
+	builder.AddHeading("Complex Document", 1).
+		AlignCenter()
 
 	// Introduction
 	builder.AddParagraph("This document tests roundtrip functionality.").
@@ -221,7 +267,9 @@ func TestRoundtripComplexDocument(t *testing.T) {
 
 	// First section
 	builder.AddHeading("Section 1: Tables", 2)
-	builder.AddParagraph("Below is a sample table:")
+	builder.AddParagraph(
+		"Below is a sample table:",
+	)
 
 	builder.AddTable(2, 3).
 		SetCellText(0, 0, "Header A").
@@ -269,7 +317,10 @@ func TestRoundtripComplexDocument(t *testing.T) {
 		paraCount++
 	}
 	if paraCount < 10 {
-		t.Errorf("Expected at least 10 paragraphs, got %d", paraCount)
+		t.Errorf(
+			"Expected at least 10 paragraphs, got %d",
+			paraCount,
+		)
 	}
 
 	// Verify table count
@@ -278,7 +329,10 @@ func TestRoundtripComplexDocument(t *testing.T) {
 		tableCount++
 	}
 	if tableCount != 1 {
-		t.Errorf("Expected 1 table, got %d", tableCount)
+		t.Errorf(
+			"Expected 1 table, got %d",
+			tableCount,
+		)
 	}
 
 	// Verify XML content
@@ -297,16 +351,25 @@ func TestRoundtripComplexDocument(t *testing.T) {
 
 	for _, elem := range expectedElements {
 		if !strings.Contains(xml, elem) {
-			t.Errorf("XML missing expected content: '%s'", elem)
+			t.Errorf(
+				"XML missing expected content: '%s'",
+				elem,
+			)
 		}
 	}
 }
 
 // TestRoundtripDocumentTypes tests that different document types are preserved.
 func TestRoundtripDocumentTypes(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "goffice-roundtrip-*")
+	tmpDir, err := os.MkdirTemp(
+		"",
+		"goffice-roundtrip-*",
+	)
 	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
+		t.Fatalf(
+			"Failed to create temp dir: %v",
+			err,
+		)
 	}
 	defer os.RemoveAll(tmpDir)
 
@@ -319,47 +382,77 @@ func TestRoundtripDocumentTypes(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.docType.String(), func(t *testing.T) {
-			testPath := filepath.Join(tmpDir, "test"+tc.extension)
+		t.Run(
+			tc.docType.String(),
+			func(t *testing.T) {
+				testPath := filepath.Join(
+					tmpDir,
+					"test"+tc.extension,
+				)
 
-			// Create
-			doc1, err := New(testPath, tc.docType)
-			if err != nil {
-				t.Fatalf("New() error = %v", err)
-			}
+				// Create
+				doc1, err := New(
+					testPath,
+					tc.docType,
+				)
+				if err != nil {
+					t.Fatalf(
+						"New() error = %v",
+						err,
+					)
+				}
 
-			// Save
-			if err := doc1.SaveAs(testPath); err != nil {
-				t.Fatalf("SaveAs() error = %v", err)
-			}
-			doc1.Close()
+				// Save
+				if err := doc1.SaveAs(testPath); err != nil {
+					t.Fatalf(
+						"SaveAs() error = %v",
+						err,
+					)
+				}
+				doc1.Close()
 
-			// Reopen
-			doc2, err := Open(testPath, true)
-			if err != nil {
-				t.Fatalf("Open() error = %v", err)
-			}
+				// Reopen
+				doc2, err := Open(testPath, true)
+				if err != nil {
+					t.Fatalf(
+						"Open() error = %v",
+						err,
+					)
+				}
 
-			// Verify type is preserved
-			if doc2.Type() != tc.docType {
-				t.Errorf("Type() = %v, want %v", doc2.Type(), tc.docType)
-			}
+				// Verify type is preserved
+				if doc2.Type() != tc.docType {
+					t.Errorf(
+						"Type() = %v, want %v",
+						doc2.Type(),
+						tc.docType,
+					)
+				}
 
-			doc2.Close()
-		})
+				doc2.Close()
+			},
+		)
 	}
 }
 
 // TestRoundtripParagraphProperties tests that paragraph properties survive roundtrip.
-func TestRoundtripParagraphProperties(t *testing.T) {
+func TestRoundtripParagraphProperties(
+	t *testing.T,
+) {
 	builder := NewDocumentBuilder()
 
 	// Add paragraphs with various properties
 	builder.AddParagraph("Centered").AlignCenter()
-	builder.AddParagraph("Right aligned").AlignRight()
-	builder.AddParagraph("Justified").AlignJustify()
-	builder.AddParagraph("With spacing").SpacingBefore(12).SpacingAfter(12)
-	builder.AddParagraph("Indented").LeftIndent(36).FirstLineIndent(18)
+	builder.AddParagraph("Right aligned").
+		AlignRight()
+	builder.AddParagraph("Justified").
+		AlignJustify()
+	builder.AddParagraph("With spacing").
+		SpacingBefore(12).
+		SpacingAfter(12)
+	builder.AddParagraph("Indented").
+		LeftIndent(36).
+		FirstLineIndent(18)
 
 	doc, err := builder.Build()
 	if err != nil {
@@ -375,16 +468,28 @@ func TestRoundtripParagraphProperties(t *testing.T) {
 
 		switch i {
 		case 0: // Centered
-			if props != nil && props.Justification() != elements.JustificationCenter {
-				t.Errorf("Paragraph %d: expected center", i)
+			if props != nil &&
+				props.Justification() != elements.JustificationCenter {
+				t.Errorf(
+					"Paragraph %d: expected center",
+					i,
+				)
 			}
 		case 1: // Right
-			if props != nil && props.Justification() != elements.JustificationRight {
-				t.Errorf("Paragraph %d: expected right", i)
+			if props != nil &&
+				props.Justification() != elements.JustificationRight {
+				t.Errorf(
+					"Paragraph %d: expected right",
+					i,
+				)
 			}
 		case 2: // Justified
-			if props != nil && props.Justification() != elements.JustificationBoth {
-				t.Errorf("Paragraph %d: expected justify", i)
+			if props != nil &&
+				props.Justification() != elements.JustificationBoth {
+				t.Errorf(
+					"Paragraph %d: expected justify",
+					i,
+				)
 			}
 		case 3: // Spacing
 			if props != nil {
@@ -392,10 +497,18 @@ func TestRoundtripParagraphProperties(t *testing.T) {
 				if spacing != nil {
 					// 12 points = 240 twips
 					if spacing.Before() != 240 {
-						t.Errorf("Paragraph %d: expected before 240, got %d", i, spacing.Before())
+						t.Errorf(
+							"Paragraph %d: expected before 240, got %d",
+							i,
+							spacing.Before(),
+						)
 					}
 					if spacing.After() != 240 {
-						t.Errorf("Paragraph %d: expected after 240, got %d", i, spacing.After())
+						t.Errorf(
+							"Paragraph %d: expected after 240, got %d",
+							i,
+							spacing.After(),
+						)
 					}
 				}
 			}
@@ -405,11 +518,19 @@ func TestRoundtripParagraphProperties(t *testing.T) {
 				if ind != nil {
 					// 36 points = 720 twips
 					if ind.Left() != 720 {
-						t.Errorf("Paragraph %d: expected left 720, got %d", i, ind.Left())
+						t.Errorf(
+							"Paragraph %d: expected left 720, got %d",
+							i,
+							ind.Left(),
+						)
 					}
 					// 18 points = 360 twips
 					if ind.FirstLine() != 360 {
-						t.Errorf("Paragraph %d: expected firstLine 360, got %d", i, ind.FirstLine())
+						t.Errorf(
+							"Paragraph %d: expected firstLine 360, got %d",
+							i,
+							ind.FirstLine(),
+						)
 					}
 				}
 			}
@@ -448,25 +569,52 @@ func TestRoundtripRunProperties(t *testing.T) {
 
 			switch text {
 			case "Bold":
-				if !strings.Contains(xml, "<w:b") {
-					t.Errorf("Expected bold for '%s'", text)
+				if !strings.Contains(
+					xml,
+					"<w:b",
+				) {
+					t.Errorf(
+						"Expected bold for '%s'",
+						text,
+					)
 				}
 			case "Italic":
-				if !strings.Contains(xml, "<w:i") {
-					t.Errorf("Expected italic for '%s'", text)
+				if !strings.Contains(
+					xml,
+					"<w:i",
+				) {
+					t.Errorf(
+						"Expected italic for '%s'",
+						text,
+					)
 				}
 			case "Underline":
-				if !strings.Contains(xml, "<w:u") {
-					t.Errorf("Expected underline for '%s'", text)
+				if !strings.Contains(
+					xml,
+					"<w:u",
+				) {
+					t.Errorf(
+						"Expected underline for '%s'",
+						text,
+					)
 				}
 			case "Colored":
-				if !strings.Contains(xml, "0000FF") {
-					t.Errorf("Expected blue color for '%s'", text)
+				if !strings.Contains(
+					xml,
+					"0000FF",
+				) {
+					t.Errorf(
+						"Expected blue color for '%s'",
+						text,
+					)
 				}
 			case "Large":
 				// 20 points = 40 half-points
 				if !strings.Contains(xml, "40") {
-					t.Errorf("Expected font size 40 for '%s'", text)
+					t.Errorf(
+						"Expected font size 40 for '%s'",
+						text,
+					)
 				}
 			}
 		}
@@ -475,13 +623,22 @@ func TestRoundtripRunProperties(t *testing.T) {
 
 // TestRoundtripEmptyDocument tests that an empty document can be saved and reopened.
 func TestRoundtripEmptyDocument(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "goffice-roundtrip-*")
+	tmpDir, err := os.MkdirTemp(
+		"",
+		"goffice-roundtrip-*",
+	)
 	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
+		t.Fatalf(
+			"Failed to create temp dir: %v",
+			err,
+		)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	testPath := filepath.Join(tmpDir, "empty.docx")
+	testPath := filepath.Join(
+		tmpDir,
+		"empty.docx",
+	)
 
 	// Create empty document
 	doc1, err := New(testPath, DocTypeDocument)
@@ -507,19 +664,31 @@ func TestRoundtripEmptyDocument(t *testing.T) {
 		t.Error("MainPart() = nil")
 	}
 	if doc2.Type() != DocTypeDocument {
-		t.Errorf("Type() = %v, want DocTypeDocument", doc2.Type())
+		t.Errorf(
+			"Type() = %v, want DocTypeDocument",
+			doc2.Type(),
+		)
 	}
 }
 
 // TestRoundtripMultipleSaves tests saving the same document multiple times.
 func TestRoundtripMultipleSaves(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "goffice-roundtrip-*")
+	tmpDir, err := os.MkdirTemp(
+		"",
+		"goffice-roundtrip-*",
+	)
 	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
+		t.Fatalf(
+			"Failed to create temp dir: %v",
+			err,
+		)
 	}
 	defer os.RemoveAll(tmpDir)
 
-	testPath := filepath.Join(tmpDir, "multisave.docx")
+	testPath := filepath.Join(
+		tmpDir,
+		"multisave.docx",
+	)
 
 	// Create document
 	doc, err := New(testPath, DocTypeDocument)
@@ -531,16 +700,27 @@ func TestRoundtripMultipleSaves(t *testing.T) {
 	// Save multiple times
 	for i := 0; i < 3; i++ {
 		if err := doc.SaveAs(testPath); err != nil {
-			t.Fatalf("SaveAs() attempt %d error = %v", i+1, err)
+			t.Fatalf(
+				"SaveAs() attempt %d error = %v",
+				i+1,
+				err,
+			)
 		}
 
 		// Verify file exists after each save
 		info, err := os.Stat(testPath)
 		if err != nil {
-			t.Fatalf("Stat() attempt %d error = %v", i+1, err)
+			t.Fatalf(
+				"Stat() attempt %d error = %v",
+				i+1,
+				err,
+			)
 		}
 		if info.Size() == 0 {
-			t.Errorf("File size is 0 after save attempt %d", i+1)
+			t.Errorf(
+				"File size is 0 after save attempt %d",
+				i+1,
+			)
 		}
 	}
 }

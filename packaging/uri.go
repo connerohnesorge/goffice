@@ -58,12 +58,16 @@ func ValidateURI(uri string) bool {
 	}
 
 	// Must not contain query string or fragment
-	if strings.Contains(uri, "?") || strings.Contains(uri, "#") {
+	if strings.Contains(uri, "?") ||
+		strings.Contains(uri, "#") {
 		return false
 	}
 
 	// Check for empty segments (double slashes)
-	segments := strings.Split(uri[1:], "/") // Skip leading slash
+	segments := strings.Split(
+		uri[1:],
+		"/",
+	) // Skip leading slash
 	for _, seg := range segments {
 		if seg == "" {
 			return false
@@ -76,7 +80,9 @@ func ValidateURI(uri string) bool {
 // ResolvePartURI resolves a relative URI against a base part URI.
 // The base URI is the URI of the source part, and relative is the target reference.
 // For example, ResolvePartURI("/word/document.xml", "media/image1.png") returns "/word/media/image1.png".
-func ResolvePartURI(base, relative string) string {
+func ResolvePartURI(
+	base, relative string,
+) string {
 	// If relative is already absolute, just normalize it
 	if strings.HasPrefix(relative, "/") {
 		return NormalizeURI(relative)
@@ -124,7 +130,8 @@ func URIFilename(uri string) string {
 func IsRelationshipURI(uri string) bool {
 	filename := path.Base(uri)
 	dir := path.Dir(uri)
-	return strings.HasSuffix(filename, ".rels") && strings.HasSuffix(dir, "_rels")
+	return strings.HasSuffix(filename, ".rels") &&
+		strings.HasSuffix(dir, "_rels")
 }
 
 // RelationshipPartURI returns the relationship part URI for a given part URI.
@@ -138,13 +145,19 @@ func RelationshipPartURI(partURI string) string {
 	dir := path.Dir(partURI)
 	filename := path.Base(partURI)
 
-	return path.Join(dir, "_rels", filename+".rels")
+	return path.Join(
+		dir,
+		"_rels",
+		filename+".rels",
+	)
 }
 
 // PartURIFromRelationshipURI returns the source part URI for a relationship part.
 // For "/word/_rels/document.xml.rels", this returns "/word/document.xml".
 // For "/_rels/.rels", this returns "/".
-func PartURIFromRelationshipURI(relURI string) string {
+func PartURIFromRelationshipURI(
+	relURI string,
+) string {
 	if relURI == "/_rels/.rels" {
 		return "/"
 	}

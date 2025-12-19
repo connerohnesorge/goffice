@@ -34,14 +34,18 @@ type Element interface {
 
 	// GetAttribute returns the attribute with the given local name and namespace URI.
 	// Returns the attribute and true if found, or an empty attribute and false if not.
-	GetAttribute(localName, namespaceURI string) (OpenXmlAttribute, bool)
+	GetAttribute(
+		localName, namespaceURI string,
+	) (OpenXmlAttribute, bool)
 
 	// SetAttribute sets or adds an attribute on this element.
 	SetAttribute(attr OpenXmlAttribute)
 
 	// RemoveAttribute removes the attribute with the given local name and namespace URI.
 	// Returns true if an attribute was removed.
-	RemoveAttribute(localName, namespaceURI string) bool
+	RemoveAttribute(
+		localName, namespaceURI string,
+	) bool
 
 	// OuterXml returns the complete XML representation of this element including children.
 	OuterXml() string
@@ -77,7 +81,9 @@ type CompositeElement interface {
 	LastChild() Element
 
 	// GetElement returns the first child element of type T, or nil if not found.
-	GetElement(localName, namespaceURI string) Element
+	GetElement(
+		localName, namespaceURI string,
+	) Element
 
 	// AppendChild adds a child element at the end of the children list.
 	// The child's parent is set to this element.

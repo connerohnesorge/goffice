@@ -39,17 +39,27 @@ type WebSettings struct {
 
 // NewWebSettings creates a new WebSettings element.
 func NewWebSettings() *WebSettings {
-	elem := openxml.NewCompositeElement(NamespaceWML, "webSettings", PrefixW)
-	return &WebSettings{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"webSettings",
+		PrefixW,
+	)
+	return &WebSettings{
+		CompositeElementBase: elem,
+	}
 }
 
 // OptimizeForBrowser returns whether to optimize for browser.
 func (ws *WebSettings) OptimizeForBrowser() bool {
-	return ws.hasOnOffElement("optimizeForBrowser")
+	return ws.hasOnOffElement(
+		"optimizeForBrowser",
+	)
 }
 
 // SetOptimizeForBrowser sets whether to optimize for browser.
-func (ws *WebSettings) SetOptimizeForBrowser(b bool) {
+func (ws *WebSettings) SetOptimizeForBrowser(
+	b bool,
+) {
 	ws.setOnOffElement("optimizeForBrowser", b)
 }
 
@@ -65,11 +75,17 @@ func (ws *WebSettings) SetAllowPNG(b bool) {
 
 // TargetScreenSize returns the target screen size.
 func (ws *WebSettings) TargetScreenSize() TargetScreenSizeValue {
-	elem := ws.GetElement("targetScreenSz", NamespaceWML)
+	elem := ws.GetElement(
+		"targetScreenSz",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -77,22 +93,39 @@ func (ws *WebSettings) TargetScreenSize() TargetScreenSizeValue {
 }
 
 // SetTargetScreenSize sets the target screen size.
-func (ws *WebSettings) SetTargetScreenSize(size TargetScreenSizeValue) {
+func (ws *WebSettings) SetTargetScreenSize(
+	size TargetScreenSizeValue,
+) {
 	if size == "" {
 		ws.removeElement("targetScreenSz")
 		return
 	}
-	elem := ws.getOrCreateElement("targetScreenSz")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(size)))
+	elem := ws.getOrCreateElement(
+		"targetScreenSz",
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(size),
+		),
+	)
 }
 
 // Encoding returns the web page encoding.
 func (ws *WebSettings) Encoding() string {
-	elem := ws.GetElement("encoding", NamespaceWML)
+	elem := ws.GetElement(
+		"encoding",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -106,16 +139,27 @@ func (ws *WebSettings) SetEncoding(enc string) {
 		return
 	}
 	elem := ws.getOrCreateElement("encoding")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, enc))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			enc,
+		),
+	)
 }
 
 // DoNotUseLongFileNames returns whether to use short file names.
 func (ws *WebSettings) DoNotUseLongFileNames() bool {
-	return ws.hasOnOffElement("doNotUseLongFileNames")
+	return ws.hasOnOffElement(
+		"doNotUseLongFileNames",
+	)
 }
 
 // SetDoNotUseLongFileNames sets whether to use short file names.
-func (ws *WebSettings) SetDoNotUseLongFileNames(b bool) {
+func (ws *WebSettings) SetDoNotUseLongFileNames(
+	b bool,
+) {
 	ws.setOnOffElement("doNotUseLongFileNames", b)
 }
 
@@ -141,31 +185,45 @@ func (ws *WebSettings) SetDoNotRelyOnCSS(b bool) {
 
 // DoNotSaveAsSingleFile returns whether to avoid saving as single file.
 func (ws *WebSettings) DoNotSaveAsSingleFile() bool {
-	return ws.hasOnOffElement("doNotSaveAsSingleFile")
+	return ws.hasOnOffElement(
+		"doNotSaveAsSingleFile",
+	)
 }
 
 // SetDoNotSaveAsSingleFile sets whether to avoid saving as single file.
-func (ws *WebSettings) SetDoNotSaveAsSingleFile(b bool) {
+func (ws *WebSettings) SetDoNotSaveAsSingleFile(
+	b bool,
+) {
 	ws.setOnOffElement("doNotSaveAsSingleFile", b)
 }
 
 // DoNotOrganizeInFolder returns whether to not organize in folder.
 func (ws *WebSettings) DoNotOrganizeInFolder() bool {
-	return ws.hasOnOffElement("doNotOrganizeInFolder")
+	return ws.hasOnOffElement(
+		"doNotOrganizeInFolder",
+	)
 }
 
 // SetDoNotOrganizeInFolder sets whether to not organize in folder.
-func (ws *WebSettings) SetDoNotOrganizeInFolder(b bool) {
+func (ws *WebSettings) SetDoNotOrganizeInFolder(
+	b bool,
+) {
 	ws.setOnOffElement("doNotOrganizeInFolder", b)
 }
 
 // PixelsPerInch returns the pixels per inch setting.
 func (ws *WebSettings) PixelsPerInch() int {
-	elem := ws.GetElement("pixelsPerInch", NamespaceWML)
+	elem := ws.GetElement(
+		"pixelsPerInch",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return 96 // Default
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 96
 	}
@@ -207,7 +265,14 @@ func (ws *WebSettings) SetPixelsPerInch(ppi int) {
 		}
 		s = string(digits)
 	}
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, s))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			s,
+		),
+	)
 }
 
 // Divs returns the Divs element containing div definitions, or nil if not present.
@@ -238,20 +303,29 @@ func (ws *WebSettings) GetOrCreateDivs() *Divs {
 
 // Helper methods
 
-func (ws *WebSettings) hasOnOffElement(name string) bool {
+func (ws *WebSettings) hasOnOffElement(
+	name string,
+) bool {
 	elem := ws.GetElement(name, NamespaceWML)
 	if elem == nil {
 		return false
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if found {
 		val := attr.Value()
-		return val != "false" && val != "0" && val != "off"
+		return val != "false" && val != "0" &&
+			val != "off"
 	}
 	return true
 }
 
-func (ws *WebSettings) setOnOffElement(name string, value bool) {
+func (ws *WebSettings) setOnOffElement(
+	name string,
+	value bool,
+) {
 	if value {
 		ws.getOrCreateElement(name)
 	} else {
@@ -259,17 +333,25 @@ func (ws *WebSettings) setOnOffElement(name string, value bool) {
 	}
 }
 
-func (ws *WebSettings) getOrCreateElement(name string) openxml.Element {
+func (ws *WebSettings) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := ws.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	ws.AppendChild(newElem)
 	return newElem
 }
 
-func (ws *WebSettings) removeElement(name string) {
+func (ws *WebSettings) removeElement(
+	name string,
+) {
 	elem := ws.GetElement(name, NamespaceWML)
 	if elem != nil {
 		ws.RemoveChild(elem)
@@ -284,7 +366,9 @@ func (ws *WebSettings) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this WebSettings element.
-func (ws *WebSettings) CloneNode(deep bool) openxml.Element {
+func (ws *WebSettings) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &WebSettings{
 		CompositeElementBase: ws.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -297,7 +381,11 @@ type Divs struct {
 
 // NewDivs creates a new Divs element.
 func NewDivs() *Divs {
-	elem := openxml.NewCompositeElement(NamespaceWML, "divs", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"divs",
+		PrefixW,
+	)
 	return &Divs{CompositeElementBase: elem}
 }
 
@@ -309,7 +397,9 @@ func (d *Divs) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Divs element.
-func (d *Divs) CloneNode(deep bool) openxml.Element {
+func (d *Divs) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Divs{
 		CompositeElementBase: d.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

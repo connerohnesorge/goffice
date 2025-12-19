@@ -13,8 +13,14 @@ type RunProperties struct {
 
 // NewRunProperties creates a new RunProperties element.
 func NewRunProperties() *RunProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "rPr", PrefixW)
-	return &RunProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"rPr",
+		PrefixW,
+	)
+	return &RunProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // Bold returns whether bold formatting is applied.
@@ -43,7 +49,10 @@ func (rp *RunProperties) Underline() UnderlineValue {
 	if elem == nil {
 		return UnderlineNone
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return UnderlineSingle // Default if element exists but no val
 	}
@@ -51,13 +60,22 @@ func (rp *RunProperties) Underline() UnderlineValue {
 }
 
 // SetUnderline sets the underline style.
-func (rp *RunProperties) SetUnderline(u UnderlineValue) {
+func (rp *RunProperties) SetUnderline(
+	u UnderlineValue,
+) {
 	if u == UnderlineNone {
 		rp.removeElement("u")
 		return
 	}
 	elem := rp.getOrCreateElement("u")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(u)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(u),
+		),
+	)
 }
 
 // Strike returns whether strikethrough is applied.
@@ -86,7 +104,10 @@ func (rp *RunProperties) FontSize() int {
 	if elem == nil {
 		return 0
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -95,13 +116,22 @@ func (rp *RunProperties) FontSize() int {
 }
 
 // SetFontSize sets the font size in half-points.
-func (rp *RunProperties) SetFontSize(halfPoints int) {
+func (rp *RunProperties) SetFontSize(
+	halfPoints int,
+) {
 	if halfPoints <= 0 {
 		rp.removeElement("sz")
 		return
 	}
 	elem := rp.getOrCreateElement("sz")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(halfPoints)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(halfPoints),
+		),
+	)
 }
 
 // FontSizeComplexScript returns the complex script font size in half-points.
@@ -110,7 +140,10 @@ func (rp *RunProperties) FontSizeComplexScript() int {
 	if elem == nil {
 		return 0
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -119,13 +152,22 @@ func (rp *RunProperties) FontSizeComplexScript() int {
 }
 
 // SetFontSizeComplexScript sets the complex script font size in half-points.
-func (rp *RunProperties) SetFontSizeComplexScript(halfPoints int) {
+func (rp *RunProperties) SetFontSizeComplexScript(
+	halfPoints int,
+) {
 	if halfPoints <= 0 {
 		rp.removeElement("szCs")
 		return
 	}
 	elem := rp.getOrCreateElement("szCs")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(halfPoints)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(halfPoints),
+		),
+	)
 }
 
 // RunFonts returns the run fonts element.
@@ -139,18 +181,50 @@ func (rp *RunProperties) RunFonts() *RunFonts {
 	}
 	// Wrap existing element
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &RunFonts{CompositeElementBase: comp}
+		return &RunFonts{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
 
 // SetFont sets the font name for all script types.
-func (rp *RunProperties) SetFont(fontName string) {
+func (rp *RunProperties) SetFont(
+	fontName string,
+) {
 	rf := rp.getOrCreateRunFonts()
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "ascii", PrefixW, fontName))
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "hAnsi", PrefixW, fontName))
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "eastAsia", PrefixW, fontName))
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "cs", PrefixW, fontName))
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"ascii",
+			PrefixW,
+			fontName,
+		),
+	)
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"hAnsi",
+			PrefixW,
+			fontName,
+		),
+	)
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"eastAsia",
+			PrefixW,
+			fontName,
+		),
+	)
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"cs",
+			PrefixW,
+			fontName,
+		),
+	)
 }
 
 // Color returns the text color as a hex string.
@@ -159,7 +233,10 @@ func (rp *RunProperties) Color() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -173,16 +250,29 @@ func (rp *RunProperties) SetColor(hex string) {
 		return
 	}
 	elem := rp.getOrCreateElement("color")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, hex))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			hex,
+		),
+	)
 }
 
 // Highlight returns the highlight color.
 func (rp *RunProperties) Highlight() HighlightColor {
-	elem := rp.GetElement("highlight", NamespaceWML)
+	elem := rp.GetElement(
+		"highlight",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return HighlightNone
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return HighlightNone
 	}
@@ -190,13 +280,22 @@ func (rp *RunProperties) Highlight() HighlightColor {
 }
 
 // SetHighlight sets the highlight color.
-func (rp *RunProperties) SetHighlight(color HighlightColor) {
+func (rp *RunProperties) SetHighlight(
+	color HighlightColor,
+) {
 	if color == HighlightNone {
 		rp.removeElement("highlight")
 		return
 	}
 	elem := rp.getOrCreateElement("highlight")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(color)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(color),
+		),
+	)
 }
 
 // Caps returns whether all caps is applied.
@@ -221,11 +320,17 @@ func (rp *RunProperties) SetSmallCaps(b bool) {
 
 // VerticalTextAlignment returns the vertical text alignment.
 func (rp *RunProperties) VerticalTextAlignment() VerticalAlignValue {
-	elem := rp.GetElement("vertAlign", NamespaceWML)
+	elem := rp.GetElement(
+		"vertAlign",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return VerticalAlignBaseline
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return VerticalAlignBaseline
 	}
@@ -233,13 +338,22 @@ func (rp *RunProperties) VerticalTextAlignment() VerticalAlignValue {
 }
 
 // SetVerticalTextAlignment sets the vertical text alignment.
-func (rp *RunProperties) SetVerticalTextAlignment(v VerticalAlignValue) {
+func (rp *RunProperties) SetVerticalTextAlignment(
+	v VerticalAlignValue,
+) {
 	if v == VerticalAlignBaseline {
 		rp.removeElement("vertAlign")
 		return
 	}
 	elem := rp.getOrCreateElement("vertAlign")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(v)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(v),
+		),
+	)
 }
 
 // Vanish returns whether the text is hidden.
@@ -258,7 +372,10 @@ func (rp *RunProperties) RunStyle() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -266,13 +383,22 @@ func (rp *RunProperties) RunStyle() string {
 }
 
 // SetRunStyle sets the character style ID.
-func (rp *RunProperties) SetRunStyle(styleId string) {
+func (rp *RunProperties) SetRunStyle(
+	styleId string,
+) {
 	if styleId == "" {
 		rp.removeElement("rStyle")
 		return
 	}
 	elem := rp.getOrCreateElement("rStyle")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, styleId))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			styleId,
+		),
+	)
 }
 
 // Emboss returns whether emboss effect is applied.
@@ -321,7 +447,9 @@ func (rp *RunProperties) NoProof() bool {
 }
 
 // SetNoProof sets whether to suppress spell/grammar checking.
-func (rp *RunProperties) SetNoProof(noProof bool) {
+func (rp *RunProperties) SetNoProof(
+	noProof bool,
+) {
 	rp.setOnOffElement("noProof", noProof)
 }
 
@@ -331,7 +459,9 @@ func (rp *RunProperties) WebHidden() bool {
 }
 
 // SetWebHidden sets whether the text is hidden in web layout.
-func (rp *RunProperties) SetWebHidden(hidden bool) {
+func (rp *RunProperties) SetWebHidden(
+	hidden bool,
+) {
 	rp.setOnOffElement("webHidden", hidden)
 }
 
@@ -341,7 +471,10 @@ func (rp *RunProperties) CharSpacing() int {
 	if elem == nil {
 		return 0
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -350,22 +483,37 @@ func (rp *RunProperties) CharSpacing() int {
 }
 
 // SetCharSpacing sets the character spacing in twips.
-func (rp *RunProperties) SetCharSpacing(twips int) {
+func (rp *RunProperties) SetCharSpacing(
+	twips int,
+) {
 	if twips == 0 {
 		rp.removeElement("spacing")
 		return
 	}
 	elem := rp.getOrCreateElement("spacing")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(twips)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Position returns the vertical text position (raise/lower) in half-points.
 func (rp *RunProperties) Position() int {
-	elem := rp.GetElement("position", NamespaceWML)
+	elem := rp.GetElement(
+		"position",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return 0
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -374,13 +522,22 @@ func (rp *RunProperties) Position() int {
 }
 
 // SetPosition sets the vertical text position (raise/lower) in half-points.
-func (rp *RunProperties) SetPosition(halfPoints int) {
+func (rp *RunProperties) SetPosition(
+	halfPoints int,
+) {
 	if halfPoints == 0 {
 		rp.removeElement("position")
 		return
 	}
 	elem := rp.getOrCreateElement("position")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(halfPoints)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(halfPoints),
+		),
+	)
 }
 
 // CharacterWidth returns the character scale percentage (50-600).
@@ -389,7 +546,10 @@ func (rp *RunProperties) CharacterWidth() int {
 	if elem == nil {
 		return 0
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -398,13 +558,22 @@ func (rp *RunProperties) CharacterWidth() int {
 }
 
 // SetCharacterWidth sets the character scale percentage (50-600).
-func (rp *RunProperties) SetCharacterWidth(percent int) {
+func (rp *RunProperties) SetCharacterWidth(
+	percent int,
+) {
 	if percent == 0 || percent == 100 {
 		rp.removeElement("w")
 		return
 	}
 	elem := rp.getOrCreateElement("w")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(percent)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(percent),
+		),
+	)
 }
 
 // Kerning returns the auto-kern threshold in half-points.
@@ -413,7 +582,10 @@ func (rp *RunProperties) Kerning() int {
 	if elem == nil {
 		return 0
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -422,13 +594,22 @@ func (rp *RunProperties) Kerning() int {
 }
 
 // SetKerning sets the auto-kern threshold in half-points.
-func (rp *RunProperties) SetKerning(halfPoints int) {
+func (rp *RunProperties) SetKerning(
+	halfPoints int,
+) {
 	if halfPoints <= 0 {
 		rp.removeElement("kern")
 		return
 	}
 	elem := rp.getOrCreateElement("kern")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(halfPoints)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(halfPoints),
+		),
+	)
 }
 
 // RunStyleId returns the run style reference ID.
@@ -439,7 +620,9 @@ func (rp *RunProperties) RunStyleId() string {
 
 // SetRunStyleId sets the run style reference ID.
 // Note: This is an alias for SetRunStyle() for API consistency.
-func (rp *RunProperties) SetRunStyleId(id string) {
+func (rp *RunProperties) SetRunStyleId(
+	id string,
+) {
 	rp.SetRunStyle(id)
 }
 
@@ -459,7 +642,9 @@ func (rp *RunProperties) ComplexScript() bool {
 }
 
 // SetComplexScript sets whether complex script formatting is applied.
-func (rp *RunProperties) SetComplexScript(cs bool) {
+func (rp *RunProperties) SetComplexScript(
+	cs bool,
+) {
 	rp.setOnOffElement("cs", cs)
 }
 
@@ -469,7 +654,10 @@ func (rp *RunProperties) EmphasisMark() EmphasisMarkValue {
 	if elem == nil {
 		return EmphasisNone
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return EmphasisNone
 	}
@@ -477,32 +665,50 @@ func (rp *RunProperties) EmphasisMark() EmphasisMarkValue {
 }
 
 // SetEmphasisMark sets the emphasis mark type.
-func (rp *RunProperties) SetEmphasisMark(em EmphasisMarkValue) {
+func (rp *RunProperties) SetEmphasisMark(
+	em EmphasisMarkValue,
+) {
 	if em == EmphasisNone {
 		rp.removeElement("em")
 		return
 	}
 	elem := rp.getOrCreateElement("em")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(em)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(em),
+		),
+	)
 }
 
 // Helper methods
 
-func (rp *RunProperties) hasOnOffElement(name string) bool {
+func (rp *RunProperties) hasOnOffElement(
+	name string,
+) bool {
 	elem := rp.GetElement(name, NamespaceWML)
 	if elem == nil {
 		return false
 	}
 	// Check for explicit val="false" or val="0"
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if found {
 		val := attr.Value()
-		return val != "false" && val != "0" && val != "off"
+		return val != "false" && val != "0" &&
+			val != "off"
 	}
 	return true
 }
 
-func (rp *RunProperties) setOnOffElement(name string, value bool) {
+func (rp *RunProperties) setOnOffElement(
+	name string,
+	value bool,
+) {
 	if value {
 		rp.getOrCreateElement(name)
 	} else {
@@ -510,12 +716,18 @@ func (rp *RunProperties) setOnOffElement(name string, value bool) {
 	}
 }
 
-func (rp *RunProperties) getOrCreateElement(name string) openxml.Element {
+func (rp *RunProperties) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := rp.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	rp.AppendChild(newElem)
 	return newElem
 }
@@ -527,7 +739,9 @@ func (rp *RunProperties) getOrCreateRunFonts() *RunFonts {
 			return rf
 		}
 		if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-			return &RunFonts{CompositeElementBase: comp}
+			return &RunFonts{
+				CompositeElementBase: comp,
+			}
 		}
 	}
 	rf := NewRunFonts()
@@ -535,7 +749,9 @@ func (rp *RunProperties) getOrCreateRunFonts() *RunFonts {
 	return rf
 }
 
-func (rp *RunProperties) removeElement(name string) {
+func (rp *RunProperties) removeElement(
+	name string,
+) {
 	elem := rp.GetElement(name, NamespaceWML)
 	if elem != nil {
 		rp.RemoveChild(elem)
@@ -550,7 +766,9 @@ func (rp *RunProperties) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this RunProperties element.
-func (rp *RunProperties) CloneNode(deep bool) openxml.Element {
+func (rp *RunProperties) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &RunProperties{
 		CompositeElementBase: rp.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -563,13 +781,20 @@ type RunFonts struct {
 
 // NewRunFonts creates a new RunFonts element.
 func NewRunFonts() *RunFonts {
-	elem := openxml.NewCompositeElement(NamespaceWML, "rFonts", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"rFonts",
+		PrefixW,
+	)
 	return &RunFonts{CompositeElementBase: elem}
 }
 
 // ASCII returns the ASCII font name.
 func (rf *RunFonts) ASCII() string {
-	attr, found := rf.GetAttribute("ascii", NamespaceWML)
+	attr, found := rf.GetAttribute(
+		"ascii",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -578,12 +803,22 @@ func (rf *RunFonts) ASCII() string {
 
 // SetASCII sets the ASCII font name.
 func (rf *RunFonts) SetASCII(fontName string) {
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "ascii", PrefixW, fontName))
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"ascii",
+			PrefixW,
+			fontName,
+		),
+	)
 }
 
 // HAnsi returns the high ANSI font name.
 func (rf *RunFonts) HAnsi() string {
-	attr, found := rf.GetAttribute("hAnsi", NamespaceWML)
+	attr, found := rf.GetAttribute(
+		"hAnsi",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -592,12 +827,22 @@ func (rf *RunFonts) HAnsi() string {
 
 // SetHAnsi sets the high ANSI font name.
 func (rf *RunFonts) SetHAnsi(fontName string) {
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "hAnsi", PrefixW, fontName))
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"hAnsi",
+			PrefixW,
+			fontName,
+		),
+	)
 }
 
 // EastAsia returns the East Asian font name.
 func (rf *RunFonts) EastAsia() string {
-	attr, found := rf.GetAttribute("eastAsia", NamespaceWML)
+	attr, found := rf.GetAttribute(
+		"eastAsia",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -606,12 +851,22 @@ func (rf *RunFonts) EastAsia() string {
 
 // SetEastAsia sets the East Asian font name.
 func (rf *RunFonts) SetEastAsia(fontName string) {
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "eastAsia", PrefixW, fontName))
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"eastAsia",
+			PrefixW,
+			fontName,
+		),
+	)
 }
 
 // ComplexScript returns the complex script font name.
 func (rf *RunFonts) ComplexScript() string {
-	attr, found := rf.GetAttribute("cs", NamespaceWML)
+	attr, found := rf.GetAttribute(
+		"cs",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -619,8 +874,17 @@ func (rf *RunFonts) ComplexScript() string {
 }
 
 // SetComplexScript sets the complex script font name.
-func (rf *RunFonts) SetComplexScript(fontName string) {
-	rf.SetAttribute(openxml.NewAttribute(NamespaceWML, "cs", PrefixW, fontName))
+func (rf *RunFonts) SetComplexScript(
+	fontName string,
+) {
+	rf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"cs",
+			PrefixW,
+			fontName,
+		),
+	)
 }
 
 // Clone creates a deep copy of this RunFonts element.
@@ -631,7 +895,9 @@ func (rf *RunFonts) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this RunFonts element.
-func (rf *RunFonts) CloneNode(deep bool) openxml.Element {
+func (rf *RunFonts) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &RunFonts{
 		CompositeElementBase: rf.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

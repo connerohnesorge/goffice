@@ -13,7 +13,9 @@ type Base64BinaryValue struct {
 }
 
 // NewBase64BinaryValue creates a new Base64BinaryValue with the given bytes.
-func NewBase64BinaryValue(v []byte) *Base64BinaryValue {
+func NewBase64BinaryValue(
+	v []byte,
+) *Base64BinaryValue {
 	// Make a copy to avoid aliasing issues
 	valueCopy := make([]byte, len(v))
 	copy(valueCopy, v)
@@ -25,7 +27,9 @@ func NewBase64BinaryValue(v []byte) *Base64BinaryValue {
 
 // NewBase64BinaryValueFromString creates a new Base64BinaryValue by parsing a base64 string.
 // Returns an error if the string is not valid base64.
-func NewBase64BinaryValueFromString(s string) (*Base64BinaryValue, error) {
+func NewBase64BinaryValueFromString(
+	s string,
+) (*Base64BinaryValue, error) {
 	bv := &Base64BinaryValue{}
 	if err := bv.SetInnerText(s); err != nil {
 		return nil, err
@@ -70,20 +74,29 @@ func (bv *Base64BinaryValue) InnerText() string {
 	if !bv.hasValue {
 		return ""
 	}
-	return base64.StdEncoding.EncodeToString(bv.value)
+	return base64.StdEncoding.EncodeToString(
+		bv.value,
+	)
 }
 
 // SetInnerText parses the value from a base64 encoded string.
 // Returns an error if the string is not valid base64.
-func (bv *Base64BinaryValue) SetInnerText(text string) error {
+func (bv *Base64BinaryValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		bv.hasValue = false
 		bv.value = nil
 		return nil
 	}
-	decoded, err := base64.StdEncoding.DecodeString(text)
+	decoded, err := base64.StdEncoding.DecodeString(
+		text,
+	)
 	if err != nil {
-		return fmt.Errorf("invalid base64 value: %w", err)
+		return fmt.Errorf(
+			"invalid base64 value: %w",
+			err,
+		)
 	}
 	bv.value = decoded
 	bv.hasValue = true

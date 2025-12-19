@@ -66,7 +66,9 @@ type INamespaceFeature interface {
 	ResolveNamespace(prefix string) (string, bool)
 
 	// ResolvePrefix returns the preferred prefix for the given namespace URI.
-	ResolvePrefix(namespaceURI string) (string, bool)
+	ResolvePrefix(
+		namespaceURI string,
+	) (string, bool)
 
 	// RegisterNamespace registers a prefix-to-namespace mapping.
 	RegisterNamespace(prefix, namespaceURI string)
@@ -77,7 +79,9 @@ type IPartRelationshipsFeature interface {
 	Feature
 
 	// CreateRelationship creates a new relationship from this part.
-	CreateRelationship(target, relType, id string) (any, error)
+	CreateRelationship(
+		target, relType, id string,
+	) (any, error)
 
 	// GetRelationship returns the relationship with the given ID.
 	GetRelationship(id string) (any, error)
@@ -122,7 +126,9 @@ type IPartUriFeature interface {
 	URI() string
 
 	// GenerateChildUri generates a unique URI for a child part.
-	GenerateChildUri(baseName, extension string) string
+	GenerateChildUri(
+		baseName, extension string,
+	) string
 }
 
 // IElementMetadata provides schema metadata for elements.

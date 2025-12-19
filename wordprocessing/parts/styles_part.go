@@ -18,15 +18,26 @@ const (
 )
 
 // newStylesPart creates a new styles definitions part.
-func newStylesPart(mainPart *MainPart) (*StylesPart, error) {
+func newStylesPart(
+	mainPart *MainPart,
+) (*StylesPart, error) {
 	uri := "/word/styles.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeStyles, RelationshipTypeStyles)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeStyles,
+		RelationshipTypeStyles,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeStyles, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeStyles,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	sp := &StylesPart{
@@ -80,14 +91,18 @@ func (sp *StylesPart) Styles() openxml.PartRootElement {
 
 // GetStyleById returns a style by its ID.
 // TODO: Implement proper Style element type.
-func (sp *StylesPart) GetStyleById(id string) interface{} {
+func (sp *StylesPart) GetStyleById(
+	id string,
+) interface{} {
 	// TODO: Parse styles and find by ID
 	return nil
 }
 
 // GetStyleByName returns a style by its name.
 // TODO: Implement proper Style element type.
-func (sp *StylesPart) GetStyleByName(name string) interface{} {
+func (sp *StylesPart) GetStyleByName(
+	name string,
+) interface{} {
 	// TODO: Parse styles and find by name
 	return nil
 }
@@ -101,7 +116,10 @@ func (sp *StylesPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*StylesPart)(nil)
 
 // StylesPartFactory creates a StylesPart from a URI and container.
-func StylesPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func StylesPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -112,7 +130,12 @@ func StylesPartFactory(uri string, container openxml.OpenXmlPartContainer) openx
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeStyles, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeStyles,
+		packPart,
+		container,
+	)
 	return &StylesPart{
 		OpenXmlPartData: partData,
 	}
@@ -120,11 +143,13 @@ func StylesPartFactory(uri string, container openxml.OpenXmlPartContainer) openx
 
 // Register the StylesPart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeStyles,
-		RelationshipType:   RelationshipTypeStyles,
-		Factory:            StylesPartFactory,
-		DefaultURI:         "/word/styles.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeStyles,
+			RelationshipType:   RelationshipTypeStyles,
+			Factory:            StylesPartFactory,
+			DefaultURI:         "/word/styles.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

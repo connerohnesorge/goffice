@@ -48,18 +48,24 @@ func (v FileFormatVersions) Description() string {
 }
 
 // AtLeast returns true if this version is at least the given version.
-func (v FileFormatVersions) AtLeast(other FileFormatVersions) bool {
+func (v FileFormatVersions) AtLeast(
+	other FileFormatVersions,
+) bool {
 	return v >= other
 }
 
 // AtMost returns true if this version is at most the given version.
-func (v FileFormatVersions) AtMost(other FileFormatVersions) bool {
+func (v FileFormatVersions) AtMost(
+	other FileFormatVersions,
+) bool {
 	return v <= other
 }
 
 // Includes returns true if this version includes features from the given version.
 // Higher versions include features from lower versions.
-func (v FileFormatVersions) Includes(other FileFormatVersions) bool {
+func (v FileFormatVersions) Includes(
+	other FileFormatVersions,
+) bool {
 	return v >= other
 }
 
@@ -74,7 +80,9 @@ type VersionAvailability struct {
 }
 
 // NewVersionAvailability creates a new version availability starting from the given version.
-func NewVersionAvailability(introducedIn FileFormatVersions) *VersionAvailability {
+func NewVersionAvailability(
+	introducedIn FileFormatVersions,
+) *VersionAvailability {
 	return &VersionAvailability{
 		IntroducedIn: introducedIn,
 	}
@@ -101,7 +109,9 @@ func Since365() *VersionAvailability {
 }
 
 // IsAvailableIn returns true if the feature is available in the given version.
-func (va *VersionAvailability) IsAvailableIn(version FileFormatVersions) bool {
+func (va *VersionAvailability) IsAvailableIn(
+	version FileFormatVersions,
+) bool {
 	if va == nil {
 		// If no availability info, assume it's available in all versions
 		return true
@@ -113,7 +123,8 @@ func (va *VersionAvailability) IsAvailableIn(version FileFormatVersions) bool {
 	}
 
 	// Check if removed in this version or earlier
-	if va.RemovedIn != 0 && version >= va.RemovedIn {
+	if va.RemovedIn != 0 &&
+		version >= va.RemovedIn {
 		return false
 	}
 
@@ -121,7 +132,9 @@ func (va *VersionAvailability) IsAvailableIn(version FileFormatVersions) bool {
 }
 
 // IsDeprecatedIn returns true if the feature is deprecated in the given version.
-func (va *VersionAvailability) IsDeprecatedIn(version FileFormatVersions) bool {
+func (va *VersionAvailability) IsDeprecatedIn(
+	version FileFormatVersions,
+) bool {
 	if va == nil || va.DeprecatedIn == 0 {
 		return false
 	}
@@ -129,13 +142,17 @@ func (va *VersionAvailability) IsDeprecatedIn(version FileFormatVersions) bool {
 }
 
 // Deprecated marks this feature as deprecated starting from the given version.
-func (va *VersionAvailability) Deprecated(version FileFormatVersions) *VersionAvailability {
+func (va *VersionAvailability) Deprecated(
+	version FileFormatVersions,
+) *VersionAvailability {
 	va.DeprecatedIn = version
 	return va
 }
 
 // Removed marks this feature as removed starting from the given version.
-func (va *VersionAvailability) Removed(version FileFormatVersions) *VersionAvailability {
+func (va *VersionAvailability) Removed(
+	version FileFormatVersions,
+) *VersionAvailability {
 	va.RemovedIn = version
 	return va
 }
@@ -165,10 +182,15 @@ type VersionedAttribute interface {
 
 // CheckElementVersion checks if an element is available in the given version.
 // Returns a validation error if not available.
-func CheckElementVersion(element interface{}, version FileFormatVersions, path string) *ValidationError {
+func CheckElementVersion(
+	element interface{},
+	version FileFormatVersions,
+	path string,
+) *ValidationError {
 	if ve, ok := element.(VersionedElement); ok {
 		avail := ve.Availability()
-		if avail != nil && !avail.IsAvailableIn(version) {
+		if avail != nil &&
+			!avail.IsAvailableIn(version) {
 			return NewValidationError(
 				Schema_ElementNotAvailable,
 				"Element is not available in "+version.String(),

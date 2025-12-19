@@ -43,7 +43,11 @@ type ValidatablePart interface {
 }
 
 // Validate validates an OpenXML package.
-func Validate(pkg interface{}, version FileFormatVersions, settings *ValidationSettings) ValidationErrors {
+func Validate(
+	pkg interface{},
+	version FileFormatVersions,
+	settings *ValidationSettings,
+) ValidationErrors {
 	if settings == nil {
 		settings = DefaultSettings()
 	}
@@ -66,7 +70,10 @@ func Validate(pkg interface{}, version FileFormatVersions, settings *ValidationS
 }
 
 // ValidateElement validates a single element and its descendants.
-func ValidateElement(element interface{}, ctx *ValidationContext) []*ValidationError {
+func ValidateElement(
+	element interface{},
+	ctx *ValidationContext,
+) []*ValidationError {
 	if element == nil {
 		return nil
 	}
@@ -76,7 +83,9 @@ func ValidateElement(element interface{}, ctx *ValidationContext) []*ValidationE
 	// Get element info
 	info := GetElementInfoFromInterface(element)
 	if info != nil {
-		ctx.PushPath(buildElementPathSegment(info))
+		ctx.PushPath(
+			buildElementPathSegment(info),
+		)
 		defer ctx.PopPath()
 	}
 
@@ -90,7 +99,10 @@ func ValidateElement(element interface{}, ctx *ValidationContext) []*ValidationE
 
 	// Schema validation
 	if ctx.Settings.SchemaValidation {
-		schemaErrs := validateElementSchema(ctx, element)
+		schemaErrs := validateElementSchema(
+			ctx,
+			element,
+		)
 		for _, err := range schemaErrs {
 			errors = append(errors, err)
 			if !ctx.AddError(err) {
@@ -101,7 +113,10 @@ func ValidateElement(element interface{}, ctx *ValidationContext) []*ValidationE
 
 	// Semantic validation
 	if ctx.Settings.SemanticValidation {
-		semanticErrs := validateElementSemantics(ctx, element)
+		semanticErrs := validateElementSemantics(
+			ctx,
+			element,
+		)
 		for _, err := range semanticErrs {
 			errors = append(errors, err)
 			if !ctx.AddError(err) {
@@ -124,7 +139,10 @@ func ValidateElement(element interface{}, ctx *ValidationContext) []*ValidationE
 }
 
 // validatePart validates a document part.
-func validatePart(ctx *ValidationContext, part interface{}) {
+func validatePart(
+	ctx *ValidationContext,
+	part interface{},
+) {
 	// Get root element from part
 	root := getPartRootElement(part)
 	if root == nil {
@@ -139,7 +157,10 @@ func validatePart(ctx *ValidationContext, part interface{}) {
 }
 
 // validateElementSchema performs schema validation on an element.
-func validateElementSchema(ctx *ValidationContext, element interface{}) []*ValidationError {
+func validateElementSchema(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	var errors []*ValidationError
 
 	// Get registered schema validator for this element type
@@ -152,7 +173,10 @@ func validateElementSchema(ctx *ValidationContext, element interface{}) []*Valid
 }
 
 // validateElementSemantics performs semantic validation on an element.
-func validateElementSemantics(ctx *ValidationContext, element interface{}) []*ValidationError {
+func validateElementSemantics(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	var errors []*ValidationError
 
 	// Get registered constraints for this element type
@@ -171,11 +195,16 @@ var schemaValidatorRegistry = struct {
 	mu         sync.RWMutex
 	validators map[reflect.Type]*SchemaValidator
 }{
-	validators: make(map[reflect.Type]*SchemaValidator),
+	validators: make(
+		map[reflect.Type]*SchemaValidator,
+	),
 }
 
 // RegisterSchemaValidator registers a schema validator for an element type.
-func RegisterSchemaValidator(elementType reflect.Type, validator *SchemaValidator) {
+func RegisterSchemaValidator(
+	elementType reflect.Type,
+	validator *SchemaValidator,
+) {
 	schemaValidatorRegistry.mu.Lock()
 	defer schemaValidatorRegistry.mu.Unlock()
 
@@ -183,7 +212,9 @@ func RegisterSchemaValidator(elementType reflect.Type, validator *SchemaValidato
 }
 
 // getSchemaValidator returns the registered schema validator for an element.
-func getSchemaValidator(element interface{}) *SchemaValidator {
+func getSchemaValidator(
+	element interface{},
+) *SchemaValidator {
 	schemaValidatorRegistry.mu.RLock()
 	defer schemaValidatorRegistry.mu.RUnlock()
 
@@ -194,14 +225,17 @@ func getSchemaValidator(element interface{}) *SchemaValidator {
 // Helper functions for extracting information from elements
 
 // GetElementInfoFromInterface extracts ElementInfo from an element.
-func GetElementInfoFromInterface(element interface{}) *ElementInfo {
+func GetElementInfoFromInterface(
+	element interface{},
+) *ElementInfo {
 	if element == nil {
 		return nil
 	}
 
 	// Check for nil interface value
 	v := reflect.ValueOf(element)
-	if !v.IsValid() || (v.Kind() == reflect.Ptr && v.IsNil()) {
+	if !v.IsValid() ||
+		(v.Kind() == reflect.Ptr && v.IsNil()) {
 		return nil
 	}
 
@@ -219,11 +253,15 @@ func GetElementInfoFromInterface(element interface{}) *ElementInfo {
 	localNameMethod := v.MethodByName("LocalName")
 	nsURIMethod := v.MethodByName("NamespaceURI")
 
-	if localNameMethod.IsValid() && nsURIMethod.IsValid() {
-		localNameResult := localNameMethod.Call(nil)
+	if localNameMethod.IsValid() &&
+		nsURIMethod.IsValid() {
+		localNameResult := localNameMethod.Call(
+			nil,
+		)
 		nsURIResult := nsURIMethod.Call(nil)
 
-		if len(localNameResult) > 0 && len(nsURIResult) > 0 {
+		if len(localNameResult) > 0 &&
+			len(nsURIResult) > 0 {
 			localName, _ := localNameResult[0].Interface().(string)
 			nsURI, _ := nsURIResult[0].Interface().(string)
 			return &ElementInfo{
@@ -238,7 +276,9 @@ func GetElementInfoFromInterface(element interface{}) *ElementInfo {
 }
 
 // GetChildElementInfos extracts ElementInfo for all children of an element.
-func GetChildElementInfos(element interface{}) []ElementInfo {
+func GetChildElementInfos(
+	element interface{},
+) []ElementInfo {
 	children := getChildElements(element)
 	infos := make([]ElementInfo, 0, len(children))
 
@@ -252,7 +292,9 @@ func GetChildElementInfos(element interface{}) []ElementInfo {
 }
 
 // getChildElements extracts child elements from an element.
-func getChildElements(element interface{}) []interface{} {
+func getChildElements(
+	element interface{},
+) []interface{} {
 	if element == nil {
 		return nil
 	}
@@ -272,9 +314,13 @@ func getChildElements(element interface{}) []interface{} {
 			result := results[0]
 			switch result.Kind() {
 			case reflect.Slice:
-				children := make([]interface{}, result.Len())
+				children := make(
+					[]interface{},
+					result.Len(),
+				)
 				for i := 0; i < result.Len(); i++ {
-					children[i] = result.Index(i).Interface()
+					children[i] = result.Index(i).
+						Interface()
 				}
 				return children
 			case reflect.Func:
@@ -289,8 +335,11 @@ func getChildElements(element interface{}) []interface{} {
 }
 
 // extractFromIterator extracts elements from a Go iterator function.
-func extractFromIterator(iterFunc reflect.Value) []interface{} {
-	if !iterFunc.IsValid() || iterFunc.Kind() != reflect.Func {
+func extractFromIterator(
+	iterFunc reflect.Value,
+) []interface{} {
+	if !iterFunc.IsValid() ||
+		iterFunc.Kind() != reflect.Func {
 		return nil
 	}
 
@@ -303,12 +352,20 @@ func extractFromIterator(iterFunc reflect.Value) []interface{} {
 	}
 
 	// Create the yield callback
-	yieldFunc := reflect.MakeFunc(yieldType, func(args []reflect.Value) []reflect.Value {
-		if len(args) > 0 {
-			results = append(results, args[0].Interface())
-		}
-		return []reflect.Value{reflect.ValueOf(true)}
-	})
+	yieldFunc := reflect.MakeFunc(
+		yieldType,
+		func(args []reflect.Value) []reflect.Value {
+			if len(args) > 0 {
+				results = append(
+					results,
+					args[0].Interface(),
+				)
+			}
+			return []reflect.Value{
+				reflect.ValueOf(true),
+			}
+		},
+	)
 
 	// Call the iterator with our yield function
 	iterFunc.Call([]reflect.Value{yieldFunc})
@@ -317,7 +374,9 @@ func extractFromIterator(iterFunc reflect.Value) []interface{} {
 }
 
 // GetElementAttributes extracts attributes from an element as a map.
-func GetElementAttributes(element interface{}) map[string]string {
+func GetElementAttributes(
+	element interface{},
+) map[string]string {
 	if element == nil {
 		return nil
 	}
@@ -326,7 +385,8 @@ func GetElementAttributes(element interface{}) map[string]string {
 
 	// Try using reflection to find Attributes method
 	v := reflect.ValueOf(element)
-	if !v.IsValid() || (v.Kind() == reflect.Ptr && v.IsNil()) {
+	if !v.IsValid() ||
+		(v.Kind() == reflect.Ptr && v.IsNil()) {
 		return attrs
 	}
 
@@ -350,24 +410,39 @@ func GetElementAttributes(element interface{}) map[string]string {
 					// First try on the value directly (for struct types)
 					if attr.Kind() == reflect.Struct {
 						// Need to get addressable value for methods with pointer receiver
-						localNameMethod = attr.MethodByName("LocalName")
-						valueMethod = attr.MethodByName("Value")
+						localNameMethod = attr.MethodByName(
+							"LocalName",
+						)
+						valueMethod = attr.MethodByName(
+							"Value",
+						)
 
 						// If methods not found, try getting address if possible
-						if !localNameMethod.IsValid() && attr.CanAddr() {
-							localNameMethod = attr.Addr().MethodByName("LocalName")
-							valueMethod = attr.Addr().MethodByName("Value")
+						if !localNameMethod.IsValid() &&
+							attr.CanAddr() {
+							localNameMethod = attr.Addr().
+								MethodByName("LocalName")
+							valueMethod = attr.Addr().
+								MethodByName("Value")
 						}
 					} else {
 						localNameMethod = attr.MethodByName("LocalName")
 						valueMethod = attr.MethodByName("Value")
 					}
 
-					if localNameMethod.IsValid() && valueMethod.IsValid() {
-						localNameResult := localNameMethod.Call(nil)
-						valueResult := valueMethod.Call(nil)
+					if localNameMethod.IsValid() &&
+						valueMethod.IsValid() {
+						localNameResult := localNameMethod.Call(
+							nil,
+						)
+						valueResult := valueMethod.Call(
+							nil,
+						)
 
-						if len(localNameResult) > 0 && len(valueResult) > 0 {
+						if len(
+							localNameResult,
+						) > 0 &&
+							len(valueResult) > 0 {
 							name, _ := localNameResult[0].Interface().(string)
 							value, _ := valueResult[0].Interface().(string)
 							attrs[name] = value
@@ -382,7 +457,9 @@ func GetElementAttributes(element interface{}) map[string]string {
 }
 
 // GetParentTypeName gets the type name of an element's parent.
-func GetParentTypeName(element interface{}) string {
+func GetParentTypeName(
+	element interface{},
+) string {
 	if element == nil {
 		return ""
 	}
@@ -401,7 +478,8 @@ func GetParentTypeName(element interface{}) string {
 	parentMethod := v.MethodByName("Parent")
 	if parentMethod.IsValid() {
 		results := parentMethod.Call(nil)
-		if len(results) > 0 && !results[0].IsNil() {
+		if len(results) > 0 &&
+			!results[0].IsNil() {
 			return results[0].Type().String()
 		}
 	}
@@ -410,7 +488,9 @@ func GetParentTypeName(element interface{}) string {
 }
 
 // getPackageParts extracts parts from a package.
-func getPackageParts(pkg interface{}) []interface{} {
+func getPackageParts(
+	pkg interface{},
+) []interface{} {
 	if pkg == nil {
 		return nil
 	}
@@ -429,9 +509,13 @@ func getPackageParts(pkg interface{}) []interface{} {
 			result := results[0]
 			switch result.Kind() {
 			case reflect.Slice:
-				parts := make([]interface{}, result.Len())
+				parts := make(
+					[]interface{},
+					result.Len(),
+				)
 				for i := 0; i < result.Len(); i++ {
-					parts[i] = result.Index(i).Interface()
+					parts[i] = result.Index(i).
+						Interface()
 				}
 				return parts
 			case reflect.Func:
@@ -444,7 +528,9 @@ func getPackageParts(pkg interface{}) []interface{} {
 }
 
 // getPartRootElement gets the root element from a part.
-func getPartRootElement(part interface{}) interface{} {
+func getPartRootElement(
+	part interface{},
+) interface{} {
 	if part == nil {
 		return nil
 	}
@@ -459,7 +545,8 @@ func getPartRootElement(part interface{}) interface{} {
 	rootMethod := v.MethodByName("RootElement")
 	if rootMethod.IsValid() {
 		results := rootMethod.Call(nil)
-		if len(results) > 0 && !results[0].IsNil() {
+		if len(results) > 0 &&
+			!results[0].IsNil() {
 			return results[0].Interface()
 		}
 	}
@@ -468,14 +555,18 @@ func getPartRootElement(part interface{}) interface{} {
 }
 
 // buildElementPathSegment builds an XPath-like path segment for an element.
-func buildElementPathSegment(info *ElementInfo) string {
+func buildElementPathSegment(
+	info *ElementInfo,
+) string {
 	if info == nil {
 		return ""
 	}
 
 	// Use namespace prefix if available, otherwise just local name
 	if info.NamespaceURI != "" {
-		prefix := getNamespacePrefix(info.NamespaceURI)
+		prefix := getNamespacePrefix(
+			info.NamespaceURI,
+		)
 		if prefix != "" {
 			return prefix + ":" + info.LocalName
 		}
@@ -485,29 +576,31 @@ func buildElementPathSegment(info *ElementInfo) string {
 
 // Common namespace prefixes for OOXML
 var namespacePrefixes = map[string]string{
-	"http://schemas.openxmlformats.org/wordprocessingml/2006/main":                      "w",
-	"http://schemas.openxmlformats.org/spreadsheetml/2006/main":                         "x",
-	"http://schemas.openxmlformats.org/presentationml/2006/main":                        "p",
-	"http://schemas.openxmlformats.org/drawingml/2006/main":                             "a",
-	"http://schemas.openxmlformats.org/drawingml/2006/picture":                          "pic",
-	"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing":            "wp",
-	"http://schemas.openxmlformats.org/officeDocument/2006/relationships":               "r",
-	"http://schemas.openxmlformats.org/package/2006/relationships":                      "rel",
-	"http://schemas.openxmlformats.org/officeDocument/2006/math":                        "m",
-	"http://schemas.openxmlformats.org/markup-compatibility/2006":                       "mc",
-	"http://schemas.microsoft.com/office/word/2010/wordml":                              "w14",
-	"http://schemas.microsoft.com/office/word/2012/wordml":                              "w15",
-	"http://schemas.microsoft.com/office/word/2015/wordml/symex":                        "w16se",
-	"http://schemas.microsoft.com/office/word/2018/wordml":                              "w16",
-	"http://purl.org/dc/elements/1.1/":                                                  "dc",
-	"http://purl.org/dc/terms/":                                                         "dcterms",
-	"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes":              "vt",
-	"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties":         "ep",
-	"http://schemas.openxmlformats.org/package/2006/content-types":                      "ct",
+	"http://schemas.openxmlformats.org/wordprocessingml/2006/main":              "w",
+	"http://schemas.openxmlformats.org/spreadsheetml/2006/main":                 "x",
+	"http://schemas.openxmlformats.org/presentationml/2006/main":                "p",
+	"http://schemas.openxmlformats.org/drawingml/2006/main":                     "a",
+	"http://schemas.openxmlformats.org/drawingml/2006/picture":                  "pic",
+	"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing":    "wp",
+	"http://schemas.openxmlformats.org/officeDocument/2006/relationships":       "r",
+	"http://schemas.openxmlformats.org/package/2006/relationships":              "rel",
+	"http://schemas.openxmlformats.org/officeDocument/2006/math":                "m",
+	"http://schemas.openxmlformats.org/markup-compatibility/2006":               "mc",
+	"http://schemas.microsoft.com/office/word/2010/wordml":                      "w14",
+	"http://schemas.microsoft.com/office/word/2012/wordml":                      "w15",
+	"http://schemas.microsoft.com/office/word/2015/wordml/symex":                "w16se",
+	"http://schemas.microsoft.com/office/word/2018/wordml":                      "w16",
+	"http://purl.org/dc/elements/1.1/":                                          "dc",
+	"http://purl.org/dc/terms/":                                                 "dcterms",
+	"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes":      "vt",
+	"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties": "ep",
+	"http://schemas.openxmlformats.org/package/2006/content-types":              "ct",
 }
 
 // getNamespacePrefix returns a known prefix for a namespace URI.
-func getNamespacePrefix(namespaceURI string) string {
+func getNamespacePrefix(
+	namespaceURI string,
+) string {
 	if prefix, ok := namespacePrefixes[namespaceURI]; ok {
 		return prefix
 	}
@@ -525,11 +618,17 @@ func BuildXPath(element interface{}) string {
 	// Walk up the tree
 	current := element
 	for current != nil {
-		info := GetElementInfoFromInterface(current)
+		info := GetElementInfoFromInterface(
+			current,
+		)
 		if info != nil {
-			segment := buildElementPathSegment(info)
+			segment := buildElementPathSegment(
+				info,
+			)
 			// Prepend to build path from root to element
-			segments = append([]string{segment}, segments...)
+			segments = append(
+				[]string{segment},
+				segments...)
 		}
 
 		// Get parent
@@ -554,7 +653,8 @@ func getParent(element interface{}) interface{} {
 	}
 
 	v := reflect.ValueOf(element)
-	if !v.IsValid() || (v.Kind() == reflect.Ptr && v.IsNil()) {
+	if !v.IsValid() ||
+		(v.Kind() == reflect.Ptr && v.IsNil()) {
 		return nil
 	}
 

@@ -14,7 +14,11 @@ type Header struct {
 
 // NewHeader creates a new Header element.
 func NewHeader() *Header {
-	elem := openxml.NewPartRootElement(NamespaceWML, "hdr", PrefixW)
+	elem := openxml.NewPartRootElement(
+		NamespaceWML,
+		"hdr",
+		PrefixW,
+	)
 	return &Header{PartRootElementBase: elem}
 }
 
@@ -22,7 +26,8 @@ func NewHeader() *Header {
 func (h *Header) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range h.Children() {
-			if child.LocalName() == "p" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "p" &&
+				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
 				if para, ok := child.(*Paragraph); ok {
 					p = para
@@ -41,7 +46,8 @@ func (h *Header) Paragraphs() iter.Seq[*Paragraph] {
 func (h *Header) Tables() iter.Seq[*Table] {
 	return func(yield func(*Table) bool) {
 		for child := range h.Children() {
-			if child.LocalName() == "tbl" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "tbl" &&
+				child.NamespaceURI() == NamespaceWML {
 				var t *Table
 				if tbl, ok := child.(*Table); ok {
 					t = tbl
@@ -57,14 +63,18 @@ func (h *Header) Tables() iter.Seq[*Table] {
 }
 
 // AppendParagraph appends a new paragraph with the given text to the header.
-func (h *Header) AppendParagraph(text string) *Paragraph {
+func (h *Header) AppendParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	h.AppendChild(p)
 	return p
 }
 
 // PrependParagraph prepends a new paragraph with the given text to the header.
-func (h *Header) PrependParagraph(text string) *Paragraph {
+func (h *Header) PrependParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	if first := h.FirstChild(); first != nil {
 		h.InsertBefore(p, first)
@@ -75,7 +85,9 @@ func (h *Header) PrependParagraph(text string) *Paragraph {
 }
 
 // AppendTable appends a new table with the specified dimensions to the header.
-func (h *Header) AppendTable(rows, cols int) *Table {
+func (h *Header) AppendTable(
+	rows, cols int,
+) *Table {
 	t := NewTable(rows, cols)
 	h.AppendChild(t)
 	return t
@@ -94,7 +106,9 @@ func (h *Header) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Header element.
-func (h *Header) CloneNode(deep bool) openxml.Element {
+func (h *Header) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Header{
 		PartRootElementBase: h.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
 	}

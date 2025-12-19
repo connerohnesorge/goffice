@@ -57,7 +57,9 @@ func (iv *Int32Value) InnerText() string {
 
 // SetInnerText parses the value from a string.
 // Returns an error if the string cannot be parsed as an int32.
-func (iv *Int32Value) SetInnerText(text string) error {
+func (iv *Int32Value) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		iv.hasValue = false
 		iv.value = 0
@@ -65,7 +67,10 @@ func (iv *Int32Value) SetInnerText(text string) error {
 	}
 	v, err := strconv.ParseInt(text, 10, 32)
 	if err != nil {
-		return fmt.Errorf("invalid int32 value: %w", err)
+		return fmt.Errorf(
+			"invalid int32 value: %w",
+			err,
+		)
 	}
 	iv.value = int32(v)
 	iv.hasValue = true
@@ -125,12 +130,17 @@ func (uv *UInt32Value) InnerText() string {
 	if !uv.hasValue {
 		return ""
 	}
-	return strconv.FormatUint(uint64(uv.value), 10)
+	return strconv.FormatUint(
+		uint64(uv.value),
+		10,
+	)
 }
 
 // SetInnerText parses the value from a string.
 // Returns an error if the string cannot be parsed as a uint32 or is negative.
-func (uv *UInt32Value) SetInnerText(text string) error {
+func (uv *UInt32Value) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		uv.hasValue = false
 		uv.value = 0
@@ -138,11 +148,17 @@ func (uv *UInt32Value) SetInnerText(text string) error {
 	}
 	// Check for negative values
 	if len(text) > 0 && text[0] == '-' {
-		return fmt.Errorf("invalid uint32 value: negative values not allowed: %s", text)
+		return fmt.Errorf(
+			"invalid uint32 value: negative values not allowed: %s",
+			text,
+		)
 	}
 	v, err := strconv.ParseUint(text, 10, 32)
 	if err != nil {
-		return fmt.Errorf("invalid uint32 value: %w", err)
+		return fmt.Errorf(
+			"invalid uint32 value: %w",
+			err,
+		)
 	}
 	uv.value = uint32(v)
 	uv.hasValue = true

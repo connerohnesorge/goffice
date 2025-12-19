@@ -13,8 +13,14 @@ type SectionProperties struct {
 
 // NewSectionProperties creates a new SectionProperties element.
 func NewSectionProperties() *SectionProperties {
-	elem := openxml.NewCompositeElement(NamespaceWML, "sectPr", PrefixW)
-	return &SectionProperties{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"sectPr",
+		PrefixW,
+	)
+	return &SectionProperties{
+		CompositeElementBase: elem,
+	}
 }
 
 // PageSize returns the page size settings.
@@ -27,7 +33,9 @@ func (sp *SectionProperties) PageSize() *PageSize {
 		return ps
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &PageSize{CompositeElementBase: comp}
+		return &PageSize{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -53,7 +61,9 @@ func (sp *SectionProperties) PageMargins() *PageMargins {
 		return pm
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &PageMargins{CompositeElementBase: comp}
+		return &PageMargins{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -79,7 +89,9 @@ func (sp *SectionProperties) Columns() *Columns {
 		return cols
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &Columns{CompositeElementBase: comp}
+		return &Columns{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -99,7 +111,8 @@ func (sp *SectionProperties) GetOrCreateColumns() *Columns {
 func (sp *SectionProperties) HeaderReferences() []*HeaderReference {
 	var refs []*HeaderReference
 	for child := range sp.Children() {
-		if child.LocalName() == "headerReference" && child.NamespaceURI() == NamespaceWML {
+		if child.LocalName() == "headerReference" &&
+			child.NamespaceURI() == NamespaceWML {
 			if hr, ok := child.(*HeaderReference); ok {
 				refs = append(refs, hr)
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
@@ -114,7 +127,8 @@ func (sp *SectionProperties) HeaderReferences() []*HeaderReference {
 func (sp *SectionProperties) FooterReferences() []*FooterReference {
 	var refs []*FooterReference
 	for child := range sp.Children() {
-		if child.LocalName() == "footerReference" && child.NamespaceURI() == NamespaceWML {
+		if child.LocalName() == "footerReference" &&
+			child.NamespaceURI() == NamespaceWML {
 			if fr, ok := child.(*FooterReference); ok {
 				refs = append(refs, fr)
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
@@ -126,21 +140,29 @@ func (sp *SectionProperties) FooterReferences() []*FooterReference {
 }
 
 // AddHeaderReference adds a header reference.
-func (sp *SectionProperties) AddHeaderReference(relId string, hfType HeaderFooterType) *HeaderReference {
+func (sp *SectionProperties) AddHeaderReference(
+	relId string,
+	hfType HeaderFooterType,
+) *HeaderReference {
 	hr := NewHeaderReference(relId, hfType)
 	sp.AppendChild(hr)
 	return hr
 }
 
 // AddFooterReference adds a footer reference.
-func (sp *SectionProperties) AddFooterReference(relId string, hfType HeaderFooterType) *FooterReference {
+func (sp *SectionProperties) AddFooterReference(
+	relId string,
+	hfType HeaderFooterType,
+) *FooterReference {
 	fr := NewFooterReference(relId, hfType)
 	sp.AppendChild(fr)
 	return fr
 }
 
 // GetHeaderReference returns the header reference of the specified type, or nil if not found.
-func (sp *SectionProperties) GetHeaderReference(hfType HeaderFooterType) *HeaderReference {
+func (sp *SectionProperties) GetHeaderReference(
+	hfType HeaderFooterType,
+) *HeaderReference {
 	for _, hr := range sp.HeaderReferences() {
 		if hr.Type() == hfType {
 			return hr
@@ -150,7 +172,9 @@ func (sp *SectionProperties) GetHeaderReference(hfType HeaderFooterType) *Header
 }
 
 // GetFooterReference returns the footer reference of the specified type, or nil if not found.
-func (sp *SectionProperties) GetFooterReference(hfType HeaderFooterType) *FooterReference {
+func (sp *SectionProperties) GetFooterReference(
+	hfType HeaderFooterType,
+) *FooterReference {
 	for _, fr := range sp.FooterReferences() {
 		if fr.Type() == hfType {
 			return fr
@@ -161,7 +185,9 @@ func (sp *SectionProperties) GetFooterReference(hfType HeaderFooterType) *Footer
 
 // RemoveHeaderReference removes the header reference of the specified type.
 // Returns true if a reference was removed.
-func (sp *SectionProperties) RemoveHeaderReference(hfType HeaderFooterType) bool {
+func (sp *SectionProperties) RemoveHeaderReference(
+	hfType HeaderFooterType,
+) bool {
 	for _, hr := range sp.HeaderReferences() {
 		if hr.Type() == hfType {
 			sp.RemoveChild(hr)
@@ -173,7 +199,9 @@ func (sp *SectionProperties) RemoveHeaderReference(hfType HeaderFooterType) bool
 
 // RemoveFooterReference removes the footer reference of the specified type.
 // Returns true if a reference was removed.
-func (sp *SectionProperties) RemoveFooterReference(hfType HeaderFooterType) bool {
+func (sp *SectionProperties) RemoveFooterReference(
+	hfType HeaderFooterType,
+) bool {
 	for _, fr := range sp.FooterReferences() {
 		if fr.Type() == hfType {
 			sp.RemoveChild(fr)
@@ -184,13 +212,19 @@ func (sp *SectionProperties) RemoveFooterReference(hfType HeaderFooterType) bool
 }
 
 // SetHeaderReference sets or replaces the header reference of the specified type.
-func (sp *SectionProperties) SetHeaderReference(relId string, hfType HeaderFooterType) *HeaderReference {
+func (sp *SectionProperties) SetHeaderReference(
+	relId string,
+	hfType HeaderFooterType,
+) *HeaderReference {
 	sp.RemoveHeaderReference(hfType)
 	return sp.AddHeaderReference(relId, hfType)
 }
 
 // SetFooterReference sets or replaces the footer reference of the specified type.
-func (sp *SectionProperties) SetFooterReference(relId string, hfType HeaderFooterType) *FooterReference {
+func (sp *SectionProperties) SetFooterReference(
+	relId string,
+	hfType HeaderFooterType,
+) *FooterReference {
 	sp.RemoveFooterReference(hfType)
 	return sp.AddFooterReference(relId, hfType)
 }
@@ -201,7 +235,10 @@ func (sp *SectionProperties) TitlePage() bool {
 	if elem == nil {
 		return false
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if found {
 		val := attr.Value()
 		return val != "false" && val != "0"
@@ -210,9 +247,14 @@ func (sp *SectionProperties) TitlePage() bool {
 }
 
 // SetTitlePage sets whether the section has a different first page header/footer.
-func (sp *SectionProperties) SetTitlePage(b bool) {
+func (sp *SectionProperties) SetTitlePage(
+	b bool,
+) {
 	if b {
-		if sp.GetElement("titlePg", NamespaceWML) == nil {
+		if sp.GetElement(
+			"titlePg",
+			NamespaceWML,
+		) == nil {
 			elem := NewTitlePageElement()
 			sp.AppendChild(elem)
 		}
@@ -235,7 +277,9 @@ func (sp *SectionProperties) GetOrCreateTitlePage() *TitlePageElement {
 		return tp
 	}
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
-		return &TitlePageElement{LeafElementBase: leaf}
+		return &TitlePageElement{
+			LeafElementBase: leaf,
+		}
 	}
 	return nil
 }
@@ -265,7 +309,9 @@ func (sp *SectionProperties) GetSectionType() SectionTypeValue {
 }
 
 // SetSectionType sets the section type.
-func (sp *SectionProperties) SetSectionType(val SectionTypeValue) {
+func (sp *SectionProperties) SetSectionType(
+	val SectionTypeValue,
+) {
 	if elem := sp.GetElement("type", NamespaceWML); elem != nil {
 		sp.RemoveChild(elem)
 	}
@@ -275,7 +321,10 @@ func (sp *SectionProperties) SetSectionType(val SectionTypeValue) {
 
 // PageNumberTypeElement returns the page number type element, or nil if not present.
 func (sp *SectionProperties) PageNumberTypeElement() *PageNumberType {
-	elem := sp.GetElement("pgNumType", NamespaceWML)
+	elem := sp.GetElement(
+		"pgNumType",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -283,7 +332,9 @@ func (sp *SectionProperties) PageNumberTypeElement() *PageNumberType {
 		return pn
 	}
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
-		return &PageNumberType{LeafElementBase: leaf}
+		return &PageNumberType{
+			LeafElementBase: leaf,
+		}
 	}
 	return nil
 }
@@ -301,7 +352,10 @@ func (sp *SectionProperties) GetOrCreatePageNumberType() *PageNumberType {
 
 // FormProtectionElement returns the form protection element, or nil if not present.
 func (sp *SectionProperties) FormProtectionElement() *FormProtection {
-	elem := sp.GetElement("formProt", NamespaceWML)
+	elem := sp.GetElement(
+		"formProt",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -309,13 +363,17 @@ func (sp *SectionProperties) FormProtectionElement() *FormProtection {
 		return fp
 	}
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
-		return &FormProtection{LeafElementBase: leaf}
+		return &FormProtection{
+			LeafElementBase: leaf,
+		}
 	}
 	return nil
 }
 
 // SetFormProtection sets the form protection.
-func (sp *SectionProperties) SetFormProtection(enabled bool) {
+func (sp *SectionProperties) SetFormProtection(
+	enabled bool,
+) {
 	if elem := sp.GetElement("formProt", NamespaceWML); elem != nil {
 		sp.RemoveChild(elem)
 	}
@@ -335,7 +393,9 @@ func (sp *SectionProperties) VerticalTextAlignmentElement() *VerticalTextAlignme
 		return vta
 	}
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
-		return &VerticalTextAlignment{LeafElementBase: leaf}
+		return &VerticalTextAlignment{
+			LeafElementBase: leaf,
+		}
 	}
 	return nil
 }
@@ -350,7 +410,9 @@ func (sp *SectionProperties) GetVerticalTextAlignment() VerticalTextAlignmentVal
 }
 
 // SetVerticalTextAlignment sets the vertical text alignment.
-func (sp *SectionProperties) SetVerticalTextAlignment(val VerticalTextAlignmentValue) {
+func (sp *SectionProperties) SetVerticalTextAlignment(
+	val VerticalTextAlignmentValue,
+) {
 	if elem := sp.GetElement("vAlign", NamespaceWML); elem != nil {
 		sp.RemoveChild(elem)
 	}
@@ -362,7 +424,10 @@ func (sp *SectionProperties) SetVerticalTextAlignment(val VerticalTextAlignmentV
 
 // NoEndnoteElement returns the no endnote element, or nil if not present.
 func (sp *SectionProperties) NoEndnoteElement() *NoEndnote {
-	elem := sp.GetElement("noEndnote", NamespaceWML)
+	elem := sp.GetElement(
+		"noEndnote",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -376,7 +441,9 @@ func (sp *SectionProperties) NoEndnoteElement() *NoEndnote {
 }
 
 // SetNoEndnote sets whether endnotes are suppressed in this section.
-func (sp *SectionProperties) SetNoEndnote(suppress bool) {
+func (sp *SectionProperties) SetNoEndnote(
+	suppress bool,
+) {
 	if elem := sp.GetElement("noEndnote", NamespaceWML); elem != nil {
 		sp.RemoveChild(elem)
 	}
@@ -388,7 +455,10 @@ func (sp *SectionProperties) SetNoEndnote(suppress bool) {
 
 // PaperSourceElement returns the paper source element, or nil if not present.
 func (sp *SectionProperties) PaperSourceElement() *PaperSource {
-	elem := sp.GetElement("paperSrc", NamespaceWML)
+	elem := sp.GetElement(
+		"paperSrc",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -414,7 +484,10 @@ func (sp *SectionProperties) GetOrCreatePaperSource() *PaperSource {
 
 // LineNumberTypeElement returns the line number type element, or nil if not present.
 func (sp *SectionProperties) LineNumberTypeElement() *LineNumberType {
-	elem := sp.GetElement("lnNumType", NamespaceWML)
+	elem := sp.GetElement(
+		"lnNumType",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -422,7 +495,9 @@ func (sp *SectionProperties) LineNumberTypeElement() *LineNumberType {
 		return ln
 	}
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
-		return &LineNumberType{LeafElementBase: leaf}
+		return &LineNumberType{
+			LeafElementBase: leaf,
+		}
 	}
 	return nil
 }
@@ -440,7 +515,10 @@ func (sp *SectionProperties) GetOrCreateLineNumberType() *LineNumberType {
 
 // TextDirectionElement returns the text direction element, or nil if not present.
 func (sp *SectionProperties) TextDirectionElement() *TextDirection {
-	elem := sp.GetElement("textDirection", NamespaceWML)
+	elem := sp.GetElement(
+		"textDirection",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -448,7 +526,9 @@ func (sp *SectionProperties) TextDirectionElement() *TextDirection {
 		return td
 	}
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
-		return &TextDirection{LeafElementBase: leaf}
+		return &TextDirection{
+			LeafElementBase: leaf,
+		}
 	}
 	return nil
 }
@@ -463,7 +543,9 @@ func (sp *SectionProperties) GetTextDirection() TextDirectionValue {
 }
 
 // SetTextDirection sets the text direction.
-func (sp *SectionProperties) SetTextDirection(val TextDirectionValue) {
+func (sp *SectionProperties) SetTextDirection(
+	val TextDirectionValue,
+) {
 	if elem := sp.GetElement("textDirection", NamespaceWML); elem != nil {
 		sp.RemoveChild(elem)
 	}
@@ -475,7 +557,10 @@ func (sp *SectionProperties) SetTextDirection(val TextDirectionValue) {
 
 // RTLGutterElement returns the RTL gutter element, or nil if not present.
 func (sp *SectionProperties) RTLGutterElement() *RTLGutter {
-	elem := sp.GetElement("rtlGutter", NamespaceWML)
+	elem := sp.GetElement(
+		"rtlGutter",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -489,7 +574,9 @@ func (sp *SectionProperties) RTLGutterElement() *RTLGutter {
 }
 
 // SetRTLGutter sets whether RTL gutter is enabled.
-func (sp *SectionProperties) SetRTLGutter(enabled bool) {
+func (sp *SectionProperties) SetRTLGutter(
+	enabled bool,
+) {
 	if elem := sp.GetElement("rtlGutter", NamespaceWML); elem != nil {
 		sp.RemoveChild(elem)
 	}
@@ -533,7 +620,9 @@ func (sp *SectionProperties) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this SectionProperties element.
-func (sp *SectionProperties) CloneNode(deep bool) openxml.Element {
+func (sp *SectionProperties) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &SectionProperties{
 		CompositeElementBase: sp.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -546,7 +635,11 @@ type PageSize struct {
 
 // NewPageSize creates a new PageSize element with default Letter size.
 func NewPageSize() *PageSize {
-	elem := openxml.NewCompositeElement(NamespaceWML, "pgSz", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"pgSz",
+		PrefixW,
+	)
 	ps := &PageSize{CompositeElementBase: elem}
 	// Default to Letter size (8.5 x 11 inches = 12240 x 15840 twips)
 	ps.SetWidth(12240)
@@ -556,7 +649,10 @@ func NewPageSize() *PageSize {
 
 // Width returns the page width in twips.
 func (ps *PageSize) Width() int {
-	attr, found := ps.GetAttribute("w", NamespaceWML)
+	attr, found := ps.GetAttribute(
+		"w",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -566,12 +662,22 @@ func (ps *PageSize) Width() int {
 
 // SetWidth sets the page width in twips.
 func (ps *PageSize) SetWidth(twips int) {
-	ps.SetAttribute(openxml.NewAttribute(NamespaceWML, "w", PrefixW, strconv.Itoa(twips)))
+	ps.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"w",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Height returns the page height in twips.
 func (ps *PageSize) Height() int {
-	attr, found := ps.GetAttribute("h", NamespaceWML)
+	attr, found := ps.GetAttribute(
+		"h",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -581,12 +687,22 @@ func (ps *PageSize) Height() int {
 
 // SetHeight sets the page height in twips.
 func (ps *PageSize) SetHeight(twips int) {
-	ps.SetAttribute(openxml.NewAttribute(NamespaceWML, "h", PrefixW, strconv.Itoa(twips)))
+	ps.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"h",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Orient returns the page orientation.
 func (ps *PageSize) Orient() PageOrientation {
-	attr, found := ps.GetAttribute("orient", NamespaceWML)
+	attr, found := ps.GetAttribute(
+		"orient",
+		NamespaceWML,
+	)
 	if !found {
 		return PageOrientationPortrait
 	}
@@ -594,7 +710,9 @@ func (ps *PageSize) Orient() PageOrientation {
 }
 
 // SetOrient sets the page orientation.
-func (ps *PageSize) SetOrient(orient PageOrientation) {
+func (ps *PageSize) SetOrient(
+	orient PageOrientation,
+) {
 	if orient == PageOrientationPortrait {
 		ps.RemoveAttribute("orient", NamespaceWML)
 	} else {
@@ -610,7 +728,9 @@ func (ps *PageSize) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this PageSize element.
-func (ps *PageSize) CloneNode(deep bool) openxml.Element {
+func (ps *PageSize) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &PageSize{
 		CompositeElementBase: ps.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -623,7 +743,11 @@ type PageMargins struct {
 
 // NewPageMargins creates a new PageMargins element with default margins.
 func NewPageMargins() *PageMargins {
-	elem := openxml.NewCompositeElement(NamespaceWML, "pgMar", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"pgMar",
+		PrefixW,
+	)
 	pm := &PageMargins{CompositeElementBase: elem}
 	// Default 1 inch margins (1440 twips)
 	pm.SetTop(1440)
@@ -642,7 +766,14 @@ func (pm *PageMargins) Top() int {
 
 // SetTop sets the top margin in twips.
 func (pm *PageMargins) SetTop(twips int) {
-	pm.SetAttribute(openxml.NewAttribute(NamespaceWML, "top", PrefixW, strconv.Itoa(twips)))
+	pm.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"top",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Bottom returns the bottom margin in twips.
@@ -652,7 +783,14 @@ func (pm *PageMargins) Bottom() int {
 
 // SetBottom sets the bottom margin in twips.
 func (pm *PageMargins) SetBottom(twips int) {
-	pm.SetAttribute(openxml.NewAttribute(NamespaceWML, "bottom", PrefixW, strconv.Itoa(twips)))
+	pm.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"bottom",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Left returns the left margin in twips.
@@ -662,7 +800,14 @@ func (pm *PageMargins) Left() int {
 
 // SetLeft sets the left margin in twips.
 func (pm *PageMargins) SetLeft(twips int) {
-	pm.SetAttribute(openxml.NewAttribute(NamespaceWML, "left", PrefixW, strconv.Itoa(twips)))
+	pm.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"left",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Right returns the right margin in twips.
@@ -672,7 +817,14 @@ func (pm *PageMargins) Right() int {
 
 // SetRight sets the right margin in twips.
 func (pm *PageMargins) SetRight(twips int) {
-	pm.SetAttribute(openxml.NewAttribute(NamespaceWML, "right", PrefixW, strconv.Itoa(twips)))
+	pm.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"right",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Header returns the header margin in twips.
@@ -682,7 +834,14 @@ func (pm *PageMargins) Header() int {
 
 // SetHeader sets the header margin in twips.
 func (pm *PageMargins) SetHeader(twips int) {
-	pm.SetAttribute(openxml.NewAttribute(NamespaceWML, "header", PrefixW, strconv.Itoa(twips)))
+	pm.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"header",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Footer returns the footer margin in twips.
@@ -692,7 +851,14 @@ func (pm *PageMargins) Footer() int {
 
 // SetFooter sets the footer margin in twips.
 func (pm *PageMargins) SetFooter(twips int) {
-	pm.SetAttribute(openxml.NewAttribute(NamespaceWML, "footer", PrefixW, strconv.Itoa(twips)))
+	pm.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"footer",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Gutter returns the gutter margin in twips.
@@ -702,11 +868,23 @@ func (pm *PageMargins) Gutter() int {
 
 // SetGutter sets the gutter margin in twips.
 func (pm *PageMargins) SetGutter(twips int) {
-	pm.SetAttribute(openxml.NewAttribute(NamespaceWML, "gutter", PrefixW, strconv.Itoa(twips)))
+	pm.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"gutter",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
-func (pm *PageMargins) getIntAttribute(name string) int {
-	attr, found := pm.GetAttribute(name, NamespaceWML)
+func (pm *PageMargins) getIntAttribute(
+	name string,
+) int {
+	attr, found := pm.GetAttribute(
+		name,
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -722,7 +900,9 @@ func (pm *PageMargins) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this PageMargins element.
-func (pm *PageMargins) CloneNode(deep bool) openxml.Element {
+func (pm *PageMargins) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &PageMargins{
 		CompositeElementBase: pm.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -735,13 +915,20 @@ type Columns struct {
 
 // NewColumns creates a new Columns element.
 func NewColumns() *Columns {
-	elem := openxml.NewCompositeElement(NamespaceWML, "cols", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"cols",
+		PrefixW,
+	)
 	return &Columns{CompositeElementBase: elem}
 }
 
 // Num returns the number of columns.
 func (c *Columns) Num() int {
-	attr, found := c.GetAttribute("num", NamespaceWML)
+	attr, found := c.GetAttribute(
+		"num",
+		NamespaceWML,
+	)
 	if !found {
 		return 1
 	}
@@ -751,12 +938,22 @@ func (c *Columns) Num() int {
 
 // SetNum sets the number of columns.
 func (c *Columns) SetNum(num int) {
-	c.SetAttribute(openxml.NewAttribute(NamespaceWML, "num", PrefixW, strconv.Itoa(num)))
+	c.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"num",
+			PrefixW,
+			strconv.Itoa(num),
+		),
+	)
 }
 
 // Space returns the space between columns in twips.
 func (c *Columns) Space() int {
-	attr, found := c.GetAttribute("space", NamespaceWML)
+	attr, found := c.GetAttribute(
+		"space",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -766,12 +963,22 @@ func (c *Columns) Space() int {
 
 // SetSpace sets the space between columns in twips.
 func (c *Columns) SetSpace(twips int) {
-	c.SetAttribute(openxml.NewAttribute(NamespaceWML, "space", PrefixW, strconv.Itoa(twips)))
+	c.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"space",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // EqualWidth returns whether columns have equal width.
 func (c *Columns) EqualWidth() bool {
-	attr, found := c.GetAttribute("equalWidth", NamespaceWML)
+	attr, found := c.GetAttribute(
+		"equalWidth",
+		NamespaceWML,
+	)
 	if !found {
 		return true // default
 	}
@@ -782,7 +989,10 @@ func (c *Columns) EqualWidth() bool {
 // SetEqualWidth sets whether columns have equal width.
 func (c *Columns) SetEqualWidth(b bool) {
 	if b {
-		c.RemoveAttribute("equalWidth", NamespaceWML)
+		c.RemoveAttribute(
+			"equalWidth",
+			NamespaceWML,
+		)
 	} else {
 		c.SetAttribute(openxml.NewAttribute(NamespaceWML, "equalWidth", PrefixW, "false"))
 	}
@@ -796,7 +1006,9 @@ func (c *Columns) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Columns element.
-func (c *Columns) CloneNode(deep bool) openxml.Element {
+func (c *Columns) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Columns{
 		CompositeElementBase: c.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -808,17 +1020,43 @@ type HeaderReference struct {
 }
 
 // NewHeaderReference creates a new HeaderReference element.
-func NewHeaderReference(relId string, hfType HeaderFooterType) *HeaderReference {
-	elem := openxml.NewCompositeElement(NamespaceWML, "headerReference", PrefixW)
-	hr := &HeaderReference{CompositeElementBase: elem}
-	hr.SetAttribute(openxml.NewAttribute(openxml.NamespaceRelationships, "id", "r", relId))
-	hr.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(hfType)))
+func NewHeaderReference(
+	relId string,
+	hfType HeaderFooterType,
+) *HeaderReference {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"headerReference",
+		PrefixW,
+	)
+	hr := &HeaderReference{
+		CompositeElementBase: elem,
+	}
+	hr.SetAttribute(
+		openxml.NewAttribute(
+			openxml.NamespaceRelationships,
+			"id",
+			"r",
+			relId,
+		),
+	)
+	hr.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"type",
+			PrefixW,
+			string(hfType),
+		),
+	)
 	return hr
 }
 
 // RelationshipId returns the relationship ID.
 func (hr *HeaderReference) RelationshipId() string {
-	attr, found := hr.GetAttribute("id", openxml.NamespaceRelationships)
+	attr, found := hr.GetAttribute(
+		"id",
+		openxml.NamespaceRelationships,
+	)
 	if !found {
 		return ""
 	}
@@ -827,7 +1065,10 @@ func (hr *HeaderReference) RelationshipId() string {
 
 // Type returns the header type.
 func (hr *HeaderReference) Type() HeaderFooterType {
-	attr, found := hr.GetAttribute("type", NamespaceWML)
+	attr, found := hr.GetAttribute(
+		"type",
+		NamespaceWML,
+	)
 	if !found {
 		return HeaderFooterDefault
 	}
@@ -842,7 +1083,9 @@ func (hr *HeaderReference) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this HeaderReference element.
-func (hr *HeaderReference) CloneNode(deep bool) openxml.Element {
+func (hr *HeaderReference) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &HeaderReference{
 		CompositeElementBase: hr.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -854,17 +1097,43 @@ type FooterReference struct {
 }
 
 // NewFooterReference creates a new FooterReference element.
-func NewFooterReference(relId string, hfType HeaderFooterType) *FooterReference {
-	elem := openxml.NewCompositeElement(NamespaceWML, "footerReference", PrefixW)
-	fr := &FooterReference{CompositeElementBase: elem}
-	fr.SetAttribute(openxml.NewAttribute(openxml.NamespaceRelationships, "id", "r", relId))
-	fr.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(hfType)))
+func NewFooterReference(
+	relId string,
+	hfType HeaderFooterType,
+) *FooterReference {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"footerReference",
+		PrefixW,
+	)
+	fr := &FooterReference{
+		CompositeElementBase: elem,
+	}
+	fr.SetAttribute(
+		openxml.NewAttribute(
+			openxml.NamespaceRelationships,
+			"id",
+			"r",
+			relId,
+		),
+	)
+	fr.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"type",
+			PrefixW,
+			string(hfType),
+		),
+	)
 	return fr
 }
 
 // RelationshipId returns the relationship ID.
 func (fr *FooterReference) RelationshipId() string {
-	attr, found := fr.GetAttribute("id", openxml.NamespaceRelationships)
+	attr, found := fr.GetAttribute(
+		"id",
+		openxml.NamespaceRelationships,
+	)
 	if !found {
 		return ""
 	}
@@ -873,7 +1142,10 @@ func (fr *FooterReference) RelationshipId() string {
 
 // Type returns the footer type.
 func (fr *FooterReference) Type() HeaderFooterType {
-	attr, found := fr.GetAttribute("type", NamespaceWML)
+	attr, found := fr.GetAttribute(
+		"type",
+		NamespaceWML,
+	)
 	if !found {
 		return HeaderFooterDefault
 	}
@@ -888,7 +1160,9 @@ func (fr *FooterReference) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this FooterReference element.
-func (fr *FooterReference) CloneNode(deep bool) openxml.Element {
+func (fr *FooterReference) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &FooterReference{
 		CompositeElementBase: fr.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -916,8 +1190,14 @@ type SectionType struct {
 }
 
 // NewSectionType creates a new SectionType element with the specified value.
-func NewSectionType(val SectionTypeValue) *SectionType {
-	elem := openxml.NewLeafElement(NamespaceWML, "type", PrefixW)
+func NewSectionType(
+	val SectionTypeValue,
+) *SectionType {
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"type",
+		PrefixW,
+	)
 	st := &SectionType{LeafElementBase: elem}
 	st.SetValue(val)
 	return st
@@ -925,7 +1205,10 @@ func NewSectionType(val SectionTypeValue) *SectionType {
 
 // Value returns the section type value.
 func (st *SectionType) Value() SectionTypeValue {
-	attr, found := st.GetAttribute("val", NamespaceWML)
+	attr, found := st.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return SectionTypeNextPage
 	}
@@ -933,8 +1216,17 @@ func (st *SectionType) Value() SectionTypeValue {
 }
 
 // SetValue sets the section type value.
-func (st *SectionType) SetValue(val SectionTypeValue) {
-	st.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(val)))
+func (st *SectionType) SetValue(
+	val SectionTypeValue,
+) {
+	st.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(val),
+		),
+	)
 }
 
 // Clone creates a deep copy of this SectionType element.
@@ -945,7 +1237,9 @@ func (st *SectionType) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this SectionType element.
-func (st *SectionType) CloneNode(deep bool) openxml.Element {
+func (st *SectionType) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &SectionType{
 		LeafElementBase: st.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -959,8 +1253,14 @@ type TitlePageElement struct {
 
 // NewTitlePageElement creates a new TitlePageElement element.
 func NewTitlePageElement() *TitlePageElement {
-	elem := openxml.NewLeafElement(NamespaceWML, "titlePg", PrefixW)
-	return &TitlePageElement{LeafElementBase: elem}
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"titlePg",
+		PrefixW,
+	)
+	return &TitlePageElement{
+		LeafElementBase: elem,
+	}
 }
 
 // Clone creates a deep copy of this TitlePageElement element.
@@ -971,7 +1271,9 @@ func (tp *TitlePageElement) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this TitlePageElement element.
-func (tp *TitlePageElement) CloneNode(deep bool) openxml.Element {
+func (tp *TitlePageElement) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &TitlePageElement{
 		LeafElementBase: tp.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -1006,13 +1308,20 @@ type PageNumberType struct {
 
 // NewPageNumberType creates a new PageNumberType element.
 func NewPageNumberType() *PageNumberType {
-	elem := openxml.NewLeafElement(NamespaceWML, "pgNumType", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"pgNumType",
+		PrefixW,
+	)
 	return &PageNumberType{LeafElementBase: elem}
 }
 
 // Format returns the page number format.
 func (pn *PageNumberType) Format() PageNumberFormatValue {
-	attr, found := pn.GetAttribute("fmt", NamespaceWML)
+	attr, found := pn.GetAttribute(
+		"fmt",
+		NamespaceWML,
+	)
 	if !found {
 		return PageNumberFormatDecimal
 	}
@@ -1020,13 +1329,25 @@ func (pn *PageNumberType) Format() PageNumberFormatValue {
 }
 
 // SetFormat sets the page number format.
-func (pn *PageNumberType) SetFormat(format PageNumberFormatValue) {
-	pn.SetAttribute(openxml.NewAttribute(NamespaceWML, "fmt", PrefixW, string(format)))
+func (pn *PageNumberType) SetFormat(
+	format PageNumberFormatValue,
+) {
+	pn.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"fmt",
+			PrefixW,
+			string(format),
+		),
+	)
 }
 
 // Start returns the starting page number.
 func (pn *PageNumberType) Start() int {
-	attr, found := pn.GetAttribute("start", NamespaceWML)
+	attr, found := pn.GetAttribute(
+		"start",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -1036,12 +1357,22 @@ func (pn *PageNumberType) Start() int {
 
 // SetStart sets the starting page number.
 func (pn *PageNumberType) SetStart(start int) {
-	pn.SetAttribute(openxml.NewAttribute(NamespaceWML, "start", PrefixW, strconv.Itoa(start)))
+	pn.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"start",
+			PrefixW,
+			strconv.Itoa(start),
+		),
+	)
 }
 
 // ChapStyle returns the chapter heading style level.
 func (pn *PageNumberType) ChapStyle() int {
-	attr, found := pn.GetAttribute("chapStyle", NamespaceWML)
+	attr, found := pn.GetAttribute(
+		"chapStyle",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -1050,9 +1381,14 @@ func (pn *PageNumberType) ChapStyle() int {
 }
 
 // SetChapStyle sets the chapter heading style level.
-func (pn *PageNumberType) SetChapStyle(level int) {
+func (pn *PageNumberType) SetChapStyle(
+	level int,
+) {
 	if level <= 0 {
-		pn.RemoveAttribute("chapStyle", NamespaceWML)
+		pn.RemoveAttribute(
+			"chapStyle",
+			NamespaceWML,
+		)
 	} else {
 		pn.SetAttribute(openxml.NewAttribute(NamespaceWML, "chapStyle", PrefixW, strconv.Itoa(level)))
 	}
@@ -1060,7 +1396,10 @@ func (pn *PageNumberType) SetChapStyle(level int) {
 
 // ChapSep returns the chapter separator character.
 func (pn *PageNumberType) ChapSep() string {
-	attr, found := pn.GetAttribute("chapSep", NamespaceWML)
+	attr, found := pn.GetAttribute(
+		"chapSep",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -1071,7 +1410,10 @@ func (pn *PageNumberType) ChapSep() string {
 // Valid values: "hyphen", "period", "colon", "emDash", "enDash"
 func (pn *PageNumberType) SetChapSep(sep string) {
 	if sep == "" {
-		pn.RemoveAttribute("chapSep", NamespaceWML)
+		pn.RemoveAttribute(
+			"chapSep",
+			NamespaceWML,
+		)
 	} else {
 		pn.SetAttribute(openxml.NewAttribute(NamespaceWML, "chapSep", PrefixW, sep))
 	}
@@ -1085,7 +1427,9 @@ func (pn *PageNumberType) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this PageNumberType element.
-func (pn *PageNumberType) CloneNode(deep bool) openxml.Element {
+func (pn *PageNumberType) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &PageNumberType{
 		LeafElementBase: pn.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -1097,18 +1441,34 @@ type FormProtection struct {
 }
 
 // NewFormProtection creates a new FormProtection element.
-func NewFormProtection(enabled bool) *FormProtection {
-	elem := openxml.NewLeafElement(NamespaceWML, "formProt", PrefixW)
+func NewFormProtection(
+	enabled bool,
+) *FormProtection {
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"formProt",
+		PrefixW,
+	)
 	fp := &FormProtection{LeafElementBase: elem}
 	if !enabled {
-		fp.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, "false"))
+		fp.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"val",
+				PrefixW,
+				"false",
+			),
+		)
 	}
 	return fp
 }
 
 // Enabled returns whether form protection is enabled.
 func (fp *FormProtection) Enabled() bool {
-	attr, found := fp.GetAttribute("val", NamespaceWML)
+	attr, found := fp.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return true // default is true when element is present
 	}
@@ -1117,7 +1477,9 @@ func (fp *FormProtection) Enabled() bool {
 }
 
 // SetEnabled sets whether form protection is enabled.
-func (fp *FormProtection) SetEnabled(enabled bool) {
+func (fp *FormProtection) SetEnabled(
+	enabled bool,
+) {
 	if enabled {
 		fp.RemoveAttribute("val", NamespaceWML)
 	} else {
@@ -1133,7 +1495,9 @@ func (fp *FormProtection) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this FormProtection element.
-func (fp *FormProtection) CloneNode(deep bool) openxml.Element {
+func (fp *FormProtection) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &FormProtection{
 		LeafElementBase: fp.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -1159,25 +1523,47 @@ type VerticalTextAlignment struct {
 }
 
 // NewVerticalTextAlignment creates a new VerticalTextAlignment element.
-func NewVerticalTextAlignment(val VerticalTextAlignmentValue) *VerticalTextAlignment {
-	elem := openxml.NewLeafElement(NamespaceWML, "vAlign", PrefixW)
-	vta := &VerticalTextAlignment{LeafElementBase: elem}
+func NewVerticalTextAlignment(
+	val VerticalTextAlignmentValue,
+) *VerticalTextAlignment {
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"vAlign",
+		PrefixW,
+	)
+	vta := &VerticalTextAlignment{
+		LeafElementBase: elem,
+	}
 	vta.SetValue(val)
 	return vta
 }
 
 // Value returns the vertical text alignment value.
 func (vta *VerticalTextAlignment) Value() VerticalTextAlignmentValue {
-	attr, found := vta.GetAttribute("val", NamespaceWML)
+	attr, found := vta.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return VerticalTextAlignTop
 	}
-	return VerticalTextAlignmentValue(attr.Value())
+	return VerticalTextAlignmentValue(
+		attr.Value(),
+	)
 }
 
 // SetValue sets the vertical text alignment value.
-func (vta *VerticalTextAlignment) SetValue(val VerticalTextAlignmentValue) {
-	vta.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(val)))
+func (vta *VerticalTextAlignment) SetValue(
+	val VerticalTextAlignmentValue,
+) {
+	vta.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(val),
+		),
+	)
 }
 
 // Clone creates a deep copy of this VerticalTextAlignment element.
@@ -1188,7 +1574,9 @@ func (vta *VerticalTextAlignment) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this VerticalTextAlignment element.
-func (vta *VerticalTextAlignment) CloneNode(deep bool) openxml.Element {
+func (vta *VerticalTextAlignment) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &VerticalTextAlignment{
 		LeafElementBase: vta.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -1201,17 +1589,31 @@ type NoEndnote struct {
 
 // NewNoEndnote creates a new NoEndnote element.
 func NewNoEndnote(suppress bool) *NoEndnote {
-	elem := openxml.NewLeafElement(NamespaceWML, "noEndnote", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"noEndnote",
+		PrefixW,
+	)
 	ne := &NoEndnote{LeafElementBase: elem}
 	if !suppress {
-		ne.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, "false"))
+		ne.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"val",
+				PrefixW,
+				"false",
+			),
+		)
 	}
 	return ne
 }
 
 // Suppressed returns whether endnotes are suppressed.
 func (ne *NoEndnote) Suppressed() bool {
-	attr, found := ne.GetAttribute("val", NamespaceWML)
+	attr, found := ne.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return true // default is true when element is present
 	}
@@ -1220,7 +1622,9 @@ func (ne *NoEndnote) Suppressed() bool {
 }
 
 // SetSuppressed sets whether endnotes are suppressed.
-func (ne *NoEndnote) SetSuppressed(suppress bool) {
+func (ne *NoEndnote) SetSuppressed(
+	suppress bool,
+) {
 	if suppress {
 		ne.RemoveAttribute("val", NamespaceWML)
 	} else {
@@ -1236,7 +1640,9 @@ func (ne *NoEndnote) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this NoEndnote element.
-func (ne *NoEndnote) CloneNode(deep bool) openxml.Element {
+func (ne *NoEndnote) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &NoEndnote{
 		LeafElementBase: ne.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -1249,13 +1655,20 @@ type PaperSource struct {
 
 // NewPaperSource creates a new PaperSource element.
 func NewPaperSource() *PaperSource {
-	elem := openxml.NewLeafElement(NamespaceWML, "paperSrc", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"paperSrc",
+		PrefixW,
+	)
 	return &PaperSource{LeafElementBase: elem}
 }
 
 // First returns the first page paper source code.
 func (ps *PaperSource) First() int {
-	attr, found := ps.GetAttribute("first", NamespaceWML)
+	attr, found := ps.GetAttribute(
+		"first",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -1274,7 +1687,10 @@ func (ps *PaperSource) SetFirst(code int) {
 
 // Other returns the other pages paper source code.
 func (ps *PaperSource) Other() int {
-	attr, found := ps.GetAttribute("other", NamespaceWML)
+	attr, found := ps.GetAttribute(
+		"other",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -1299,7 +1715,9 @@ func (ps *PaperSource) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this PaperSource element.
-func (ps *PaperSource) CloneNode(deep bool) openxml.Element {
+func (ps *PaperSource) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &PaperSource{
 		LeafElementBase: ps.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -1324,13 +1742,20 @@ type LineNumberType struct {
 
 // NewLineNumberType creates a new LineNumberType element.
 func NewLineNumberType() *LineNumberType {
-	elem := openxml.NewLeafElement(NamespaceWML, "lnNumType", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"lnNumType",
+		PrefixW,
+	)
 	return &LineNumberType{LeafElementBase: elem}
 }
 
 // CountBy returns the line number increment.
 func (ln *LineNumberType) CountBy() int {
-	attr, found := ln.GetAttribute("countBy", NamespaceWML)
+	attr, found := ln.GetAttribute(
+		"countBy",
+		NamespaceWML,
+	)
 	if !found {
 		return 1
 	}
@@ -1341,7 +1766,10 @@ func (ln *LineNumberType) CountBy() int {
 // SetCountBy sets the line number increment.
 func (ln *LineNumberType) SetCountBy(count int) {
 	if count <= 1 {
-		ln.RemoveAttribute("countBy", NamespaceWML)
+		ln.RemoveAttribute(
+			"countBy",
+			NamespaceWML,
+		)
 	} else {
 		ln.SetAttribute(openxml.NewAttribute(NamespaceWML, "countBy", PrefixW, strconv.Itoa(count)))
 	}
@@ -1349,7 +1777,10 @@ func (ln *LineNumberType) SetCountBy(count int) {
 
 // Start returns the starting line number.
 func (ln *LineNumberType) Start() int {
-	attr, found := ln.GetAttribute("start", NamespaceWML)
+	attr, found := ln.GetAttribute(
+		"start",
+		NamespaceWML,
+	)
 	if !found {
 		return 1
 	}
@@ -1368,7 +1799,10 @@ func (ln *LineNumberType) SetStart(start int) {
 
 // Distance returns the distance from text to line numbers in twips.
 func (ln *LineNumberType) Distance() int {
-	attr, found := ln.GetAttribute("distance", NamespaceWML)
+	attr, found := ln.GetAttribute(
+		"distance",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -1379,7 +1813,10 @@ func (ln *LineNumberType) Distance() int {
 // SetDistance sets the distance from text to line numbers in twips.
 func (ln *LineNumberType) SetDistance(twips int) {
 	if twips <= 0 {
-		ln.RemoveAttribute("distance", NamespaceWML)
+		ln.RemoveAttribute(
+			"distance",
+			NamespaceWML,
+		)
 	} else {
 		ln.SetAttribute(openxml.NewAttribute(NamespaceWML, "distance", PrefixW, strconv.Itoa(twips)))
 	}
@@ -1387,7 +1824,10 @@ func (ln *LineNumberType) SetDistance(twips int) {
 
 // Restart returns the line number restart value.
 func (ln *LineNumberType) Restart() LineNumberRestartValue {
-	attr, found := ln.GetAttribute("restart", NamespaceWML)
+	attr, found := ln.GetAttribute(
+		"restart",
+		NamespaceWML,
+	)
 	if !found {
 		return LineNumberRestartNewPage
 	}
@@ -1395,9 +1835,14 @@ func (ln *LineNumberType) Restart() LineNumberRestartValue {
 }
 
 // SetRestart sets the line number restart value.
-func (ln *LineNumberType) SetRestart(val LineNumberRestartValue) {
+func (ln *LineNumberType) SetRestart(
+	val LineNumberRestartValue,
+) {
 	if val == LineNumberRestartNewPage {
-		ln.RemoveAttribute("restart", NamespaceWML)
+		ln.RemoveAttribute(
+			"restart",
+			NamespaceWML,
+		)
 	} else {
 		ln.SetAttribute(openxml.NewAttribute(NamespaceWML, "restart", PrefixW, string(val)))
 	}
@@ -1411,7 +1856,9 @@ func (ln *LineNumberType) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this LineNumberType element.
-func (ln *LineNumberType) CloneNode(deep bool) openxml.Element {
+func (ln *LineNumberType) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &LineNumberType{
 		LeafElementBase: ln.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -1441,8 +1888,14 @@ type TextDirection struct {
 }
 
 // NewTextDirection creates a new TextDirection element.
-func NewTextDirection(val TextDirectionValue) *TextDirection {
-	elem := openxml.NewLeafElement(NamespaceWML, "textDirection", PrefixW)
+func NewTextDirection(
+	val TextDirectionValue,
+) *TextDirection {
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"textDirection",
+		PrefixW,
+	)
 	td := &TextDirection{LeafElementBase: elem}
 	td.SetValue(val)
 	return td
@@ -1450,7 +1903,10 @@ func NewTextDirection(val TextDirectionValue) *TextDirection {
 
 // Value returns the text direction value.
 func (td *TextDirection) Value() TextDirectionValue {
-	attr, found := td.GetAttribute("val", NamespaceWML)
+	attr, found := td.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return TextDirectionLrTb
 	}
@@ -1458,8 +1914,17 @@ func (td *TextDirection) Value() TextDirectionValue {
 }
 
 // SetValue sets the text direction value.
-func (td *TextDirection) SetValue(val TextDirectionValue) {
-	td.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(val)))
+func (td *TextDirection) SetValue(
+	val TextDirectionValue,
+) {
+	td.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(val),
+		),
+	)
 }
 
 // Clone creates a deep copy of this TextDirection element.
@@ -1470,7 +1935,9 @@ func (td *TextDirection) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this TextDirection element.
-func (td *TextDirection) CloneNode(deep bool) openxml.Element {
+func (td *TextDirection) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &TextDirection{
 		LeafElementBase: td.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -1483,17 +1950,31 @@ type RTLGutter struct {
 
 // NewRTLGutter creates a new RTLGutter element.
 func NewRTLGutter(enabled bool) *RTLGutter {
-	elem := openxml.NewLeafElement(NamespaceWML, "rtlGutter", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"rtlGutter",
+		PrefixW,
+	)
 	rg := &RTLGutter{LeafElementBase: elem}
 	if !enabled {
-		rg.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, "false"))
+		rg.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"val",
+				PrefixW,
+				"false",
+			),
+		)
 	}
 	return rg
 }
 
 // Enabled returns whether RTL gutter is enabled.
 func (rg *RTLGutter) Enabled() bool {
-	attr, found := rg.GetAttribute("val", NamespaceWML)
+	attr, found := rg.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return true // default is true when element is present
 	}
@@ -1518,7 +1999,9 @@ func (rg *RTLGutter) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this RTLGutter element.
-func (rg *RTLGutter) CloneNode(deep bool) openxml.Element {
+func (rg *RTLGutter) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &RTLGutter{
 		LeafElementBase: rg.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -1545,13 +2028,20 @@ type DocGrid struct {
 
 // NewDocGrid creates a new DocGrid element.
 func NewDocGrid() *DocGrid {
-	elem := openxml.NewLeafElement(NamespaceWML, "docGrid", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"docGrid",
+		PrefixW,
+	)
 	return &DocGrid{LeafElementBase: elem}
 }
 
 // Type returns the document grid type.
 func (dg *DocGrid) Type() DocGridTypeValue {
-	attr, found := dg.GetAttribute("type", NamespaceWML)
+	attr, found := dg.GetAttribute(
+		"type",
+		NamespaceWML,
+	)
 	if !found {
 		return DocGridDefault
 	}
@@ -1569,7 +2059,10 @@ func (dg *DocGrid) SetType(val DocGridTypeValue) {
 
 // LinePitch returns the line pitch in twips.
 func (dg *DocGrid) LinePitch() int {
-	attr, found := dg.GetAttribute("linePitch", NamespaceWML)
+	attr, found := dg.GetAttribute(
+		"linePitch",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -1580,7 +2073,10 @@ func (dg *DocGrid) LinePitch() int {
 // SetLinePitch sets the line pitch in twips.
 func (dg *DocGrid) SetLinePitch(twips int) {
 	if twips <= 0 {
-		dg.RemoveAttribute("linePitch", NamespaceWML)
+		dg.RemoveAttribute(
+			"linePitch",
+			NamespaceWML,
+		)
 	} else {
 		dg.SetAttribute(openxml.NewAttribute(NamespaceWML, "linePitch", PrefixW, strconv.Itoa(twips)))
 	}
@@ -1588,7 +2084,10 @@ func (dg *DocGrid) SetLinePitch(twips int) {
 
 // CharSpace returns the character pitch adjustment.
 func (dg *DocGrid) CharSpace() int {
-	attr, found := dg.GetAttribute("charSpace", NamespaceWML)
+	attr, found := dg.GetAttribute(
+		"charSpace",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -1599,7 +2098,10 @@ func (dg *DocGrid) CharSpace() int {
 // SetCharSpace sets the character pitch adjustment.
 func (dg *DocGrid) SetCharSpace(val int) {
 	if val == 0 {
-		dg.RemoveAttribute("charSpace", NamespaceWML)
+		dg.RemoveAttribute(
+			"charSpace",
+			NamespaceWML,
+		)
 	} else {
 		dg.SetAttribute(openxml.NewAttribute(NamespaceWML, "charSpace", PrefixW, strconv.Itoa(val)))
 	}
@@ -1613,7 +2115,9 @@ func (dg *DocGrid) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this DocGrid element.
-func (dg *DocGrid) CloneNode(deep bool) openxml.Element {
+func (dg *DocGrid) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &DocGrid{
 		LeafElementBase: dg.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}

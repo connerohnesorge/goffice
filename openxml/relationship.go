@@ -88,7 +88,11 @@ type PartRelationship struct {
 }
 
 // NewPartRelationship creates a new relationship to an internal part.
-func NewPartRelationship(id, relType string, target OpenXmlPart, container OpenXmlPartContainer) *PartRelationship {
+func NewPartRelationship(
+	id, relType string,
+	target OpenXmlPart,
+	container OpenXmlPartContainer,
+) *PartRelationship {
 	return &PartRelationship{
 		baseRelationship: baseRelationship{
 			id:         id,
@@ -112,7 +116,10 @@ type ExternalRelationship struct {
 }
 
 // NewExternalRelationship creates a new relationship to an external URI.
-func NewExternalRelationship(id, relType, targetURI string, container OpenXmlPartContainer) *ExternalRelationship {
+func NewExternalRelationship(
+	id, relType, targetURI string,
+	container OpenXmlPartContainer,
+) *ExternalRelationship {
 	return &ExternalRelationship{
 		baseRelationship: baseRelationship{
 			id:         id,
@@ -131,7 +138,11 @@ type HyperlinkRelationship struct {
 }
 
 // NewHyperlinkRelationship creates a new hyperlink relationship.
-func NewHyperlinkRelationship(id, targetURI string, isExternal bool, container OpenXmlPartContainer) *HyperlinkRelationship {
+func NewHyperlinkRelationship(
+	id, targetURI string,
+	isExternal bool,
+	container OpenXmlPartContainer,
+) *HyperlinkRelationship {
 	mode := TargetModeInternal
 	if isExternal {
 		mode = TargetModeExternal
@@ -159,7 +170,10 @@ type DataPartReferenceRelationship struct {
 }
 
 // NewDataPartReferenceRelationship creates a new data part reference relationship.
-func NewDataPartReferenceRelationship(id, relType, target string, container OpenXmlPartContainer) *DataPartReferenceRelationship {
+func NewDataPartReferenceRelationship(
+	id, relType, target string,
+	container OpenXmlPartContainer,
+) *DataPartReferenceRelationship {
 	return &DataPartReferenceRelationship{
 		baseRelationship: baseRelationship{
 			id:         id,
@@ -186,63 +200,63 @@ const (
 	RelationshipTypeDigitalSignatureXpsSignature = "http://schemas.microsoft.com/xps/2005/06/signature-definitions"
 
 	// Additional Word relationships
-	RelationshipTypeCustomXml               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXml"
-	RelationshipTypeCustomXmlProps          = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXmlProps"
-	RelationshipTypeGlossaryDocument        = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/glossaryDocument"
-	RelationshipTypeDocument                = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"
-	RelationshipTypeAlternativeFormat       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/aFChunk"
-	RelationshipTypeFramesetRelationship    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/frame"
-	RelationshipTypeControl                 = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/control"
-	RelationshipTypeOleObject               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject"
-	RelationshipTypePackage                 = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/package"
-	RelationshipTypeEmbeddedPackage         = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/embeddedPackage"
-	RelationshipTypeVideo                   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"
-	RelationshipTypeAudio                   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"
-	RelationshipTypeFont                    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/font"
-	RelationshipTypeMailMergeHeaderSource   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/mailMergeSource"
-	RelationshipTypeMailMergeDataSource     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/mailMergeSource"
-	RelationshipTypeDiagramColors           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramColors"
-	RelationshipTypeDiagramData             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramData"
-	RelationshipTypeDiagramLayout           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramLayout"
-	RelationshipTypeDiagramQuickStyle       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramQuickStyle"
-	RelationshipTypeDiagramDrawing          = "http://schemas.microsoft.com/office/2007/relationships/diagramDrawing"
-	RelationshipTypeChart                   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
-	RelationshipTypeChartSheet              = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chartsheet"
-	RelationshipTypeVmlDrawing              = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"
-	RelationshipTypeDrawing                 = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"
-	RelationshipTypeCustomization           = "http://schemas.microsoft.com/office/2006/relationships/ui/extensibility"
-	RelationshipTypeRibbonExtensibility     = "http://schemas.microsoft.com/office/2007/relationships/ui/extensibility"
-	RelationshipTypeQuickAccessToolbar      = "http://schemas.microsoft.com/office/2006/relationships/ui/userCustomization"
-	RelationshipTypeAttachedToolbars        = "http://schemas.microsoft.com/office/2011/relationships/attachedToolbars"
-	RelationshipTypePrinterSettings         = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/printerSettings"
-	RelationshipTypeExternalLink            = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/externalLink"
-	RelationshipTypeExternalLinkPath        = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/externalLinkPath"
-	RelationshipTypeTableStyle              = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles"
-	RelationshipTypePivotTable              = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable"
-	RelationshipTypePivotCacheDefinition    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition"
-	RelationshipTypePivotCacheRecords       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheRecords"
-	RelationshipTypeQueryTable              = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/queryTable"
-	RelationshipTypeConnectionTable         = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/connections"
-	RelationshipTypeSharedStrings           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings"
-	RelationshipTypeCalculationChain        = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/calcChain"
-	RelationshipTypeWorksheet               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet"
-	RelationshipTypeSlide                   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
-	RelationshipTypeSlideMaster             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
-	RelationshipTypeSlideLayout             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
-	RelationshipTypeNotesMaster             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster"
-	RelationshipTypeNotesSlide              = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"
-	RelationshipTypeHandoutMaster           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/handoutMaster"
-	RelationshipTypePresProps               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps"
-	RelationshipTypeViewProps               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps"
-	RelationshipTypeTableStyles             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles"
-	RelationshipTypeCommentsExtended        = "http://schemas.microsoft.com/office/2011/relationships/commentsExtended"
-	RelationshipTypeCommentsIDs             = "http://schemas.microsoft.com/office/2016/09/relationships/commentsIds"
-	RelationshipTypePeople                  = "http://schemas.microsoft.com/office/2011/relationships/people"
-	RelationshipTypeTimeline                = "http://schemas.microsoft.com/office/2011/relationships/timeline"
-	RelationshipTypeSlicer                  = "http://schemas.microsoft.com/office/2011/relationships/slicer"
-	RelationshipTypeSlicerCache             = "http://schemas.microsoft.com/office/2011/relationships/slicerCache"
-	RelationshipTypeModel                   = "http://schemas.microsoft.com/office/2011/relationships/model"
-	RelationshipTypeModel3D                 = "http://schemas.microsoft.com/office/2017/06/relationships/model3d"
+	RelationshipTypeCustomXml             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXml"
+	RelationshipTypeCustomXmlProps        = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXmlProps"
+	RelationshipTypeGlossaryDocument      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/glossaryDocument"
+	RelationshipTypeDocument              = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"
+	RelationshipTypeAlternativeFormat     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/aFChunk"
+	RelationshipTypeFramesetRelationship  = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/frame"
+	RelationshipTypeControl               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/control"
+	RelationshipTypeOleObject             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject"
+	RelationshipTypePackage               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/package"
+	RelationshipTypeEmbeddedPackage       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/embeddedPackage"
+	RelationshipTypeVideo                 = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"
+	RelationshipTypeAudio                 = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"
+	RelationshipTypeFont                  = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/font"
+	RelationshipTypeMailMergeHeaderSource = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/mailMergeSource"
+	RelationshipTypeMailMergeDataSource   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/mailMergeSource"
+	RelationshipTypeDiagramColors         = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramColors"
+	RelationshipTypeDiagramData           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramData"
+	RelationshipTypeDiagramLayout         = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramLayout"
+	RelationshipTypeDiagramQuickStyle     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramQuickStyle"
+	RelationshipTypeDiagramDrawing        = "http://schemas.microsoft.com/office/2007/relationships/diagramDrawing"
+	RelationshipTypeChart                 = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
+	RelationshipTypeChartSheet            = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chartsheet"
+	RelationshipTypeVmlDrawing            = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"
+	RelationshipTypeDrawing               = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"
+	RelationshipTypeCustomization         = "http://schemas.microsoft.com/office/2006/relationships/ui/extensibility"
+	RelationshipTypeRibbonExtensibility   = "http://schemas.microsoft.com/office/2007/relationships/ui/extensibility"
+	RelationshipTypeQuickAccessToolbar    = "http://schemas.microsoft.com/office/2006/relationships/ui/userCustomization"
+	RelationshipTypeAttachedToolbars      = "http://schemas.microsoft.com/office/2011/relationships/attachedToolbars"
+	RelationshipTypePrinterSettings       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/printerSettings"
+	RelationshipTypeExternalLink          = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/externalLink"
+	RelationshipTypeExternalLinkPath      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/externalLinkPath"
+	RelationshipTypeTableStyle            = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles"
+	RelationshipTypePivotTable            = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotTable"
+	RelationshipTypePivotCacheDefinition  = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition"
+	RelationshipTypePivotCacheRecords     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheRecords"
+	RelationshipTypeQueryTable            = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/queryTable"
+	RelationshipTypeConnectionTable       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/connections"
+	RelationshipTypeSharedStrings         = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings"
+	RelationshipTypeCalculationChain      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/calcChain"
+	RelationshipTypeWorksheet             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet"
+	RelationshipTypeSlide                 = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
+	RelationshipTypeSlideMaster           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
+	RelationshipTypeSlideLayout           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
+	RelationshipTypeNotesMaster           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster"
+	RelationshipTypeNotesSlide            = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"
+	RelationshipTypeHandoutMaster         = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/handoutMaster"
+	RelationshipTypePresProps             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps"
+	RelationshipTypeViewProps             = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps"
+	RelationshipTypeTableStyles           = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles"
+	RelationshipTypeCommentsExtended      = "http://schemas.microsoft.com/office/2011/relationships/commentsExtended"
+	RelationshipTypeCommentsIDs           = "http://schemas.microsoft.com/office/2016/09/relationships/commentsIds"
+	RelationshipTypePeople                = "http://schemas.microsoft.com/office/2011/relationships/people"
+	RelationshipTypeTimeline              = "http://schemas.microsoft.com/office/2011/relationships/timeline"
+	RelationshipTypeSlicer                = "http://schemas.microsoft.com/office/2011/relationships/slicer"
+	RelationshipTypeSlicerCache           = "http://schemas.microsoft.com/office/2011/relationships/slicerCache"
+	RelationshipTypeModel                 = "http://schemas.microsoft.com/office/2011/relationships/model"
+	RelationshipTypeModel3D               = "http://schemas.microsoft.com/office/2017/06/relationships/model3d"
 )
 
 // RelationshipIDGenerator generates unique relationship IDs.
@@ -261,7 +275,9 @@ func NewRelationshipIDGenerator() *RelationshipIDGenerator {
 }
 
 // Reserve marks an ID as used (for loading existing relationships).
-func (g *RelationshipIDGenerator) Reserve(id string) {
+func (g *RelationshipIDGenerator) Reserve(
+	id string,
+) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
@@ -302,13 +318,20 @@ func GenerateUniqueID() string {
 
 // ResolveTargetURI resolves a relative target URI against a source part URI.
 // This is used to get the absolute URI of a relationship target.
-func ResolveTargetURI(sourceURI, relativeTarget string) string {
-	return packaging.ResolvePartURI(sourceURI, relativeTarget)
+func ResolveTargetURI(
+	sourceURI, relativeTarget string,
+) string {
+	return packaging.ResolvePartURI(
+		sourceURI,
+		relativeTarget,
+	)
 }
 
 // RelativeTargetURI computes the relative URI from source to target.
 // This is the inverse of ResolveTargetURI.
-func RelativeTargetURI(sourceURI, targetURI string) string {
+func RelativeTargetURI(
+	sourceURI, targetURI string,
+) string {
 	// Get directories
 	sourceDir := packaging.URIDirectory(sourceURI)
 	targetDir := packaging.URIDirectory(targetURI)
@@ -320,7 +343,8 @@ func RelativeTargetURI(sourceURI, targetURI string) string {
 	}
 
 	// If target is in a subdirectory of source's directory
-	if len(targetDir) > len(sourceDir) && targetDir[:len(sourceDir)] == sourceDir {
+	if len(targetDir) > len(sourceDir) &&
+		targetDir[:len(sourceDir)] == sourceDir {
 		return targetDir[len(sourceDir)+1:] + "/" + targetFile
 	}
 
@@ -385,12 +409,16 @@ var knownRelationshipTypes = map[string]RelationshipTypeInfo{
 }
 
 // GetRelationshipTypeInfo returns metadata about a relationship type.
-func GetRelationshipTypeInfo(relType string) (RelationshipTypeInfo, bool) {
+func GetRelationshipTypeInfo(
+	relType string,
+) (RelationshipTypeInfo, bool) {
 	info, ok := knownRelationshipTypes[relType]
 	return info, ok
 }
 
 // RegisterRelationshipType registers a new relationship type with its metadata.
-func RegisterRelationshipType(info RelationshipTypeInfo) {
+func RegisterRelationshipType(
+	info RelationshipTypeInfo,
+) {
 	knownRelationshipTypes[info.Type] = info
 }

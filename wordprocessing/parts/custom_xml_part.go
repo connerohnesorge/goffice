@@ -23,16 +23,30 @@ const (
 var customXmlCounter uint64
 
 // newCustomXmlPart creates a new custom XML part.
-func newCustomXmlPart(mainPart *MainPart) (*CustomXmlPart, error) {
+func newCustomXmlPart(
+	mainPart *MainPart,
+) (*CustomXmlPart, error) {
 	num := atomic.AddUint64(&customXmlCounter, 1)
-	uri := fmt.Sprintf("/customXml/item%d.xml", num)
+	uri := fmt.Sprintf(
+		"/customXml/item%d.xml",
+		num,
+	)
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeCustomXml, RelationshipTypeCustomXml)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeCustomXml,
+		RelationshipTypeCustomXml,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeCustomXml, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeCustomXml,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	cxp := &CustomXmlPart{
@@ -58,7 +72,9 @@ func (cxp *CustomXmlPart) initializeContent() {
 }
 
 // SetXmlData sets the custom XML data.
-func (cxp *CustomXmlPart) SetXmlData(data []byte) {
+func (cxp *CustomXmlPart) SetXmlData(
+	data []byte,
+) {
 	cxp.SetData(data)
 }
 
@@ -76,7 +92,10 @@ func (cxp *CustomXmlPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*CustomXmlPart)(nil)
 
 // CustomXmlPartFactory creates a CustomXmlPart from a URI and container.
-func CustomXmlPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func CustomXmlPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -87,7 +106,12 @@ func CustomXmlPartFactory(uri string, container openxml.OpenXmlPartContainer) op
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeCustomXml, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeCustomXml,
+		packPart,
+		container,
+	)
 	return &CustomXmlPart{
 		OpenXmlPartData: partData,
 	}
@@ -95,11 +119,13 @@ func CustomXmlPartFactory(uri string, container openxml.OpenXmlPartContainer) op
 
 // Register the CustomXmlPart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeCustomXml,
-		RelationshipType:   RelationshipTypeCustomXml,
-		Factory:            CustomXmlPartFactory,
-		DefaultURI:         "/customXml/item1.xml",
-		IsFixedContentType: false, // Custom XML can have different content types
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeCustomXml,
+			RelationshipType:   RelationshipTypeCustomXml,
+			Factory:            CustomXmlPartFactory,
+			DefaultURI:         "/customXml/item1.xml",
+			IsFixedContentType: false, // Custom XML can have different content types
+		},
+	)
 }

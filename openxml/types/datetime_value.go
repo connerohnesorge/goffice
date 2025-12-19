@@ -15,18 +15,20 @@ type DateTimeValue struct {
 
 // Common ISO 8601 formats used in Office Open XML
 var dateTimeFormats = []string{
-	time.RFC3339,                    // "2006-01-02T15:04:05Z07:00"
-	"2006-01-02T15:04:05Z",          // UTC with Z suffix
-	"2006-01-02T15:04:05",           // No timezone
-	"2006-01-02T15:04:05.000Z",      // With milliseconds and Z
-	"2006-01-02T15:04:05.000",       // With milliseconds, no TZ
-	"2006-01-02T15:04:05.000000Z",   // With microseconds and Z
-	"2006-01-02T15:04:05.000000",    // With microseconds, no TZ
-	"2006-01-02",                    // Date only
+	time.RFC3339,                  // "2006-01-02T15:04:05Z07:00"
+	"2006-01-02T15:04:05Z",        // UTC with Z suffix
+	"2006-01-02T15:04:05",         // No timezone
+	"2006-01-02T15:04:05.000Z",    // With milliseconds and Z
+	"2006-01-02T15:04:05.000",     // With milliseconds, no TZ
+	"2006-01-02T15:04:05.000000Z", // With microseconds and Z
+	"2006-01-02T15:04:05.000000",  // With microseconds, no TZ
+	"2006-01-02",                  // Date only
 }
 
 // NewDateTimeValue creates a new DateTimeValue with the given time.
-func NewDateTimeValue(t time.Time) *DateTimeValue {
+func NewDateTimeValue(
+	t time.Time,
+) *DateTimeValue {
 	return &DateTimeValue{
 		value:    t,
 		hasValue: true,
@@ -72,7 +74,9 @@ func (dv *DateTimeValue) InnerText() string {
 // SetInnerText parses the value from an ISO 8601 formatted string.
 // Supports various ISO 8601 variants.
 // Returns an error if the string cannot be parsed.
-func (dv *DateTimeValue) SetInnerText(text string) error {
+func (dv *DateTimeValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		dv.hasValue = false
 		dv.value = time.Time{}
@@ -91,7 +95,11 @@ func (dv *DateTimeValue) SetInnerText(text string) error {
 		parseErr = err
 	}
 
-	return fmt.Errorf("invalid datetime value %q: %w", text, parseErr)
+	return fmt.Errorf(
+		"invalid datetime value %q: %w",
+		text,
+		parseErr,
+	)
 }
 
 // SetNil clears the value, making HasValue() return false.

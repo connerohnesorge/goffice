@@ -11,15 +11,24 @@ import (
 type ElementFactory func(namespaceURI, localName string) Element
 
 // DefaultElementFactory creates default elements (CompositeElementBase or LeafElementBase).
-func DefaultElementFactory(namespaceURI, localName string) Element {
+func DefaultElementFactory(
+	namespaceURI, localName string,
+) Element {
 	// By default, create composite elements that can hold children
-	return NewCompositeElement(namespaceURI, localName, "")
+	return NewCompositeElement(
+		namespaceURI,
+		localName,
+		"",
+	)
 }
 
 // ParseElement parses XML from a reader and constructs an element tree.
 // The factory function is called to create elements for each XML element encountered.
 // If factory is nil, DefaultElementFactory is used.
-func ParseElement(r io.Reader, factory ElementFactory) (Element, error) {
+func ParseElement(
+	r io.Reader,
+	factory ElementFactory,
+) (Element, error) {
 	if factory == nil {
 		factory = DefaultElementFactory
 	}
@@ -29,7 +38,10 @@ func ParseElement(r io.Reader, factory ElementFactory) (Element, error) {
 }
 
 // parseElement recursively parses elements from the decoder.
-func parseElement(decoder *xml.Decoder, factory ElementFactory) (Element, error) {
+func parseElement(
+	decoder *xml.Decoder,
+	factory ElementFactory,
+) (Element, error) {
 	for {
 		token, err := decoder.Token()
 		if err == io.EOF {
@@ -53,11 +65,22 @@ func parseElement(decoder *xml.Decoder, factory ElementFactory) (Element, error)
 }
 
 // parseStartElement parses a start element and its contents.
-func parseStartElement(decoder *xml.Decoder, start xml.StartElement, factory ElementFactory) (Element, error) {
+func parseStartElement(
+	decoder *xml.Decoder,
+	start xml.StartElement,
+	factory ElementFactory,
+) (Element, error) {
 	// Create the element using the factory
-	elem := factory(start.Name.Space, start.Name.Local)
+	elem := factory(
+		start.Name.Space,
+		start.Name.Local,
+	)
 	if elem == nil {
-		elem = NewCompositeElement(start.Name.Space, start.Name.Local, "")
+		elem = NewCompositeElement(
+			start.Name.Space,
+			start.Name.Local,
+			"",
+		)
 	}
 
 	// Extract prefix from the name if present in the token
@@ -71,7 +94,12 @@ func parseStartElement(decoder *xml.Decoder, start xml.StartElement, factory Ele
 	// Set attributes
 	for _, attr := range start.Attr {
 		attrPrefix := extractPrefix(attr.Name)
-		openxmlAttr := NewAttribute(attr.Name.Space, attr.Name.Local, attrPrefix, attr.Value)
+		openxmlAttr := NewAttribute(
+			attr.Name.Space,
+			attr.Name.Local,
+			attrPrefix,
+			attr.Value,
+		)
 		elem.SetAttribute(openxmlAttr)
 	}
 
@@ -93,7 +121,11 @@ func parseStartElement(decoder *xml.Decoder, start xml.StartElement, factory Ele
 }
 
 // parseChildren parses child elements and adds them to the parent.
-func parseChildren(decoder *xml.Decoder, parent CompositeElement, factory ElementFactory) error {
+func parseChildren(
+	decoder *xml.Decoder,
+	parent CompositeElement,
+	factory ElementFactory,
+) error {
 	var textBuilder strings.Builder
 
 	for {
@@ -134,7 +166,9 @@ func parseChildren(decoder *xml.Decoder, parent CompositeElement, factory Elemen
 }
 
 // readTextContent reads text content until the end element is reached.
-func readTextContent(decoder *xml.Decoder) (string, error) {
+func readTextContent(
+	decoder *xml.Decoder,
+) (string, error) {
 	var textBuilder strings.Builder
 
 	for {
@@ -188,7 +222,9 @@ func extractPrefix(name xml.Name) string {
 }
 
 // guessPrefixForNamespace returns a common prefix for well-known namespaces.
-func guessPrefixForNamespace(namespace string) string {
+func guessPrefixForNamespace(
+	namespace string,
+) string {
 	switch namespace {
 	case NamespaceWordprocessingML:
 		return "w"
@@ -214,7 +250,9 @@ func guessPrefixForNamespace(namespace string) string {
 }
 
 // getBaseElement extracts the BaseElement from an element if possible.
-func getBaseElement(elem Element) (*BaseElement, bool) {
+func getBaseElement(
+	elem Element,
+) (*BaseElement, bool) {
 	switch e := elem.(type) {
 	case *CompositeElementBase:
 		return &e.BaseElement, true
@@ -230,7 +268,10 @@ func getBaseElement(elem Element) (*BaseElement, bool) {
 // SetOuterXml parses XML and replaces the element's content.
 // For composite elements, this replaces all children.
 // For leaf elements, this sets the inner text.
-func SetOuterXml(elem Element, xmlContent string) error {
+func SetOuterXml(
+	elem Element,
+	xmlContent string,
+) error {
 	reader := strings.NewReader(xmlContent)
 	parsed, err := ParseElement(reader, nil)
 	if err != nil {
@@ -261,7 +302,9 @@ func SetOuterXml(elem Element, xmlContent string) error {
 	// Copy text for leaf elements
 	if leaf, ok := elem.(LeafElement); ok {
 		if parsedLeaf, ok := parsed.(LeafElement); ok {
-			leaf.SetInnerText(parsedLeaf.InnerText())
+			leaf.SetInnerText(
+				parsedLeaf.InnerText(),
+			)
 		}
 	}
 

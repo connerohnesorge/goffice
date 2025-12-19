@@ -13,7 +13,11 @@ type Body struct {
 
 // NewBody creates a new Body element.
 func NewBody() *Body {
-	elem := openxml.NewCompositeElement(NamespaceWML, "body", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"body",
+		PrefixW,
+	)
 	return &Body{CompositeElementBase: elem}
 }
 
@@ -21,7 +25,8 @@ func NewBody() *Body {
 func (b *Body) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range b.Children() {
-			if child.LocalName() == "p" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "p" &&
+				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
 				if para, ok := child.(*Paragraph); ok {
 					p = para
@@ -40,7 +45,8 @@ func (b *Body) Paragraphs() iter.Seq[*Paragraph] {
 func (b *Body) Tables() iter.Seq[*Table] {
 	return func(yield func(*Table) bool) {
 		for child := range b.Children() {
-			if child.LocalName() == "tbl" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "tbl" &&
+				child.NamespaceURI() == NamespaceWML {
 				var t *Table
 				if tbl, ok := child.(*Table); ok {
 					t = tbl
@@ -65,7 +71,9 @@ func (b *Body) SectionProperties() *SectionProperties {
 		return sp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &SectionProperties{CompositeElementBase: comp}
+		return &SectionProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -83,7 +91,9 @@ func (b *Body) GetOrCreateSectionProperties() *SectionProperties {
 }
 
 // AppendParagraph appends a new paragraph with the given text.
-func (b *Body) AppendParagraph(text string) *Paragraph {
+func (b *Body) AppendParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	// Insert before section properties if present
 	sectPr := b.SectionProperties()
@@ -96,7 +106,9 @@ func (b *Body) AppendParagraph(text string) *Paragraph {
 }
 
 // PrependParagraph prepends a new paragraph with the given text.
-func (b *Body) PrependParagraph(text string) *Paragraph {
+func (b *Body) PrependParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	if first := b.FirstChild(); first != nil {
 		b.InsertBefore(p, first)
@@ -107,21 +119,29 @@ func (b *Body) PrependParagraph(text string) *Paragraph {
 }
 
 // InsertParagraphBefore inserts a new paragraph before the specified element.
-func (b *Body) InsertParagraphBefore(text string, ref openxml.Element) *Paragraph {
+func (b *Body) InsertParagraphBefore(
+	text string,
+	ref openxml.Element,
+) *Paragraph {
 	p := NewParagraph(text)
 	b.InsertBefore(p, ref)
 	return p
 }
 
 // InsertParagraphAfter inserts a new paragraph after the specified element.
-func (b *Body) InsertParagraphAfter(text string, ref openxml.Element) *Paragraph {
+func (b *Body) InsertParagraphAfter(
+	text string,
+	ref openxml.Element,
+) *Paragraph {
 	p := NewParagraph(text)
 	b.InsertAfter(p, ref)
 	return p
 }
 
 // AppendTable appends a new table with the specified dimensions.
-func (b *Body) AppendTable(rows, cols int) *Table {
+func (b *Body) AppendTable(
+	rows, cols int,
+) *Table {
 	t := NewTable(rows, cols)
 	// Insert before section properties if present
 	sectPr := b.SectionProperties()
@@ -137,7 +157,8 @@ func (b *Body) AppendTable(rows, cols int) *Table {
 func (b *Body) ClearContent() {
 	var toRemove []openxml.Element
 	for child := range b.Children() {
-		if child.LocalName() != "sectPr" || child.NamespaceURI() != NamespaceWML {
+		if child.LocalName() != "sectPr" ||
+			child.NamespaceURI() != NamespaceWML {
 			toRemove = append(toRemove, child)
 		}
 	}
@@ -154,7 +175,9 @@ func (b *Body) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Body element.
-func (b *Body) CloneNode(deep bool) openxml.Element {
+func (b *Body) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Body{
 		CompositeElementBase: b.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -168,17 +191,33 @@ type Table struct {
 
 // NewTable creates a new Table element with the specified dimensions.
 func NewTable(rows, cols int) *Table {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tbl", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tbl",
+		PrefixW,
+	)
 	t := &Table{CompositeElementBase: elem}
 
 	// Add table properties
-	tblPr := openxml.NewCompositeElement(NamespaceWML, "tblPr", PrefixW)
+	tblPr := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tblPr",
+		PrefixW,
+	)
 	t.AppendChild(tblPr)
 
 	// Add table grid
-	tblGrid := openxml.NewCompositeElement(NamespaceWML, "tblGrid", PrefixW)
+	tblGrid := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tblGrid",
+		PrefixW,
+	)
 	for i := 0; i < cols; i++ {
-		gridCol := openxml.NewCompositeElement(NamespaceWML, "gridCol", PrefixW)
+		gridCol := openxml.NewCompositeElement(
+			NamespaceWML,
+			"gridCol",
+			PrefixW,
+		)
 		tblGrid.AppendChild(gridCol)
 	}
 	t.AppendChild(tblGrid)
@@ -206,7 +245,11 @@ type TableRow struct {
 
 // NewTableRow creates a new TableRow element with the specified number of cells.
 func NewTableRow(cols int) *TableRow {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tr", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tr",
+		PrefixW,
+	)
 	tr := &TableRow{CompositeElementBase: elem}
 
 	for i := 0; i < cols; i++ {
@@ -231,7 +274,11 @@ type TableCell struct {
 
 // NewTableCell creates a new TableCell element.
 func NewTableCell() *TableCell {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tc", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tc",
+		PrefixW,
+	)
 	tc := &TableCell{CompositeElementBase: elem}
 
 	// Add an empty paragraph (required by OOXML)

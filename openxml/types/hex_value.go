@@ -26,7 +26,9 @@ func NewHexBinaryValue(v []byte) *HexBinaryValue {
 
 // NewHexBinaryValueFromString creates a new HexBinaryValue by parsing a hex string.
 // Returns an error if the string is not valid hexadecimal.
-func NewHexBinaryValueFromString(s string) (*HexBinaryValue, error) {
+func NewHexBinaryValueFromString(
+	s string,
+) (*HexBinaryValue, error) {
 	hv := &HexBinaryValue{}
 	if err := hv.SetInnerText(s); err != nil {
 		return nil, err
@@ -71,13 +73,17 @@ func (hv *HexBinaryValue) InnerText() string {
 	if !hv.hasValue {
 		return ""
 	}
-	return strings.ToUpper(hex.EncodeToString(hv.value))
+	return strings.ToUpper(
+		hex.EncodeToString(hv.value),
+	)
 }
 
 // SetInnerText parses the value from a hexadecimal string.
 // Accepts both uppercase and lowercase hex digits.
 // Returns an error if the string is not valid hexadecimal.
-func (hv *HexBinaryValue) SetInnerText(text string) error {
+func (hv *HexBinaryValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		hv.hasValue = false
 		hv.value = nil
@@ -85,7 +91,10 @@ func (hv *HexBinaryValue) SetInnerText(text string) error {
 	}
 	decoded, err := hex.DecodeString(text)
 	if err != nil {
-		return fmt.Errorf("invalid hexadecimal value: %w", err)
+		return fmt.Errorf(
+			"invalid hexadecimal value: %w",
+			err,
+		)
 	}
 	hv.value = decoded
 	hv.hasValue = true

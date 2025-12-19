@@ -33,7 +33,10 @@ func NewBooleanValue(v bool) *BooleanValue {
 }
 
 // NewBooleanValueWithFormat creates a new BooleanValue with the given boolean and output format.
-func NewBooleanValueWithFormat(v bool, format BooleanOutputFormat) *BooleanValue {
+func NewBooleanValueWithFormat(
+	v bool,
+	format BooleanOutputFormat,
+) *BooleanValue {
 	return &BooleanValue{
 		value:        v,
 		hasValue:     true,
@@ -70,7 +73,9 @@ func (bv *BooleanValue) HasValue() bool {
 }
 
 // SetOutputFormat sets the format used for serialization.
-func (bv *BooleanValue) SetOutputFormat(format BooleanOutputFormat) {
+func (bv *BooleanValue) SetOutputFormat(
+	format BooleanOutputFormat,
+) {
 	bv.outputFormat = format
 }
 
@@ -101,13 +106,17 @@ func (bv *BooleanValue) InnerText() string {
 // SetInnerText parses the value from a string.
 // Accepts "true", "false", "1", "0" (case-insensitive for true/false).
 // Returns an error if the string cannot be parsed as a boolean.
-func (bv *BooleanValue) SetInnerText(text string) error {
+func (bv *BooleanValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		bv.hasValue = false
 		bv.value = false
 		return nil
 	}
-	lower := strings.ToLower(strings.TrimSpace(text))
+	lower := strings.ToLower(
+		strings.TrimSpace(text),
+	)
 	switch lower {
 	case "true", "1":
 		bv.value = true
@@ -118,7 +127,10 @@ func (bv *BooleanValue) SetInnerText(text string) error {
 		bv.hasValue = true
 		return nil
 	default:
-		return fmt.Errorf("invalid boolean value: %q (expected true, false, 1, or 0)", text)
+		return fmt.Errorf(
+			"invalid boolean value: %q (expected true, false, 1, or 0)",
+			text,
+		)
 	}
 }
 

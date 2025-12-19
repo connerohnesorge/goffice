@@ -19,8 +19,12 @@ func Example_createDocument() {
 		AlignCenter()
 
 	// Add body content
-	builder.AddParagraph("This is the first paragraph of the document.")
-	builder.AddParagraph("This is the second paragraph.")
+	builder.AddParagraph(
+		"This is the first paragraph of the document.",
+	)
+	builder.AddParagraph(
+		"This is the second paragraph.",
+	)
 
 	// Build the document
 	doc, err := builder.Build()
@@ -36,7 +40,10 @@ func Example_createDocument() {
 		count++
 	}
 
-	fmt.Printf("Document created with %d paragraphs\n", count)
+	fmt.Printf(
+		"Document created with %d paragraphs\n",
+		count,
+	)
 	// Output: Document created with 3 paragraphs
 }
 
@@ -57,7 +64,6 @@ func Example_documentBuilder() {
 		AddParagraph("Content for section 1.").
 		Document().
 		Build()
-
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
@@ -70,7 +76,10 @@ func Example_documentBuilder() {
 		paraCount++
 	}
 
-	fmt.Printf("Built document with %d paragraphs\n", paraCount)
+	fmt.Printf(
+		"Built document with %d paragraphs\n",
+		paraCount,
+	)
 	// Output: Built document with 5 paragraphs
 }
 
@@ -79,7 +88,9 @@ func Example_addTable() {
 	builder := wordprocessing.NewDocumentBuilder()
 
 	// Add a title
-	builder.AddParagraph("Sales Report").Bold().AlignCenter()
+	builder.AddParagraph("Sales Report").
+		Bold().
+		AlignCenter()
 
 	// Create a 4x3 table (4 rows, 3 columns)
 	builder.AddTable(4, 3).
@@ -109,10 +120,16 @@ func Example_addTable() {
 	tableCount := 0
 	for table := range body.Tables() {
 		tableCount++
-		fmt.Printf("Table has %d rows\n", table.RowCount())
+		fmt.Printf(
+			"Table has %d rows\n",
+			table.RowCount(),
+		)
 	}
 
-	fmt.Printf("Document has %d table(s)\n", tableCount)
+	fmt.Printf(
+		"Document has %d table(s)\n",
+		tableCount,
+	)
 	// Output:
 	// Table has 4 rows
 	// Document has 1 table(s)
@@ -152,7 +169,10 @@ func Example_formatting() {
 	for range body.Paragraphs() {
 		count++
 	}
-	fmt.Printf("Created %d paragraphs with formatting\n", count)
+	fmt.Printf(
+		"Created %d paragraphs with formatting\n",
+		count,
+	)
 	// Output: Created 3 paragraphs with formatting
 }
 
@@ -176,8 +196,14 @@ func Example_headersFooters() {
 		footerParas++
 	}
 
-	fmt.Printf("Header has %d paragraph(s)\n", headerParas)
-	fmt.Printf("Footer has %d paragraph(s)\n", footerParas)
+	fmt.Printf(
+		"Header has %d paragraph(s)\n",
+		headerParas,
+	)
+	fmt.Printf(
+		"Footer has %d paragraph(s)\n",
+		footerParas,
+	)
 	// Output:
 	// Header has 1 paragraph(s)
 	// Footer has 1 paragraph(s)
@@ -187,10 +213,14 @@ func Example_headersFooters() {
 func Example_paragraphAlignment() {
 	builder := wordprocessing.NewDocumentBuilder()
 
-	builder.AddParagraph("Left aligned (default)").AlignLeft()
-	builder.AddParagraph("Center aligned").AlignCenter()
-	builder.AddParagraph("Right aligned").AlignRight()
-	builder.AddParagraph("Justified text - this would normally be a longer paragraph to show the effect.").AlignJustify()
+	builder.AddParagraph("Left aligned (default)").
+		AlignLeft()
+	builder.AddParagraph("Center aligned").
+		AlignCenter()
+	builder.AddParagraph("Right aligned").
+		AlignRight()
+	builder.AddParagraph("Justified text - this would normally be a longer paragraph to show the effect.").
+		AlignJustify()
 
 	doc, err := builder.Build()
 	if err != nil {
@@ -200,12 +230,21 @@ func Example_paragraphAlignment() {
 
 	body := doc.Body()
 	i := 0
-	alignments := []string{"left", "center", "right", "justify"}
+	alignments := []string{
+		"left",
+		"center",
+		"right",
+		"justify",
+	}
 	for p := range body.Paragraphs() {
 		if i < len(alignments) {
 			props := p.Properties()
 			if props != nil {
-				fmt.Printf("Paragraph %d: %s alignment\n", i+1, alignments[i])
+				fmt.Printf(
+					"Paragraph %d: %s alignment\n",
+					i+1,
+					alignments[i],
+				)
 			}
 		}
 		i++
@@ -247,7 +286,13 @@ func Example_tableWithFormatting() {
 		for col := 0; col < 3; col++ {
 			cell := tb.Cell(row, col)
 			if cell != nil {
-				cell.SetText(fmt.Sprintf("Data %d-%d", row, col+1))
+				cell.SetText(
+					fmt.Sprintf(
+						"Data %d-%d",
+						row,
+						col+1,
+					),
+				)
 			}
 		}
 	}
@@ -262,11 +307,17 @@ func Example_tableWithFormatting() {
 	for table := range body.Tables() {
 		cell := table.GetCell(0, 0)
 		if cell != nil {
-			fmt.Println("First header cell:", cell.InnerText())
+			fmt.Println(
+				"First header cell:",
+				cell.InnerText(),
+			)
 		}
 		cell = table.GetCell(1, 1)
 		if cell != nil {
-			fmt.Println("Data cell (1,1):", cell.InnerText())
+			fmt.Println(
+				"Data cell (1,1):",
+				cell.InnerText(),
+			)
 		}
 	}
 	// Output:
@@ -280,7 +331,9 @@ func Example_paragraphSpacing() {
 
 	// Add paragraphs with custom spacing
 	builder.AddParagraph("First paragraph with space after.").
-		SpacingAfter(24) // 24 points
+		SpacingAfter(24)
+
+		// 24 points
 
 	builder.AddParagraph("Second paragraph with space before and after.").
 		SpacingBefore(12).
@@ -303,7 +356,10 @@ func Example_paragraphSpacing() {
 	for range body.Paragraphs() {
 		count++
 	}
-	fmt.Printf("Created %d paragraphs with custom spacing\n", count)
+	fmt.Printf(
+		"Created %d paragraphs with custom spacing\n",
+		count,
+	)
 	// Output: Created 4 paragraphs with custom spacing
 }
 
@@ -330,7 +386,10 @@ func Example_pageBreaks() {
 	}
 	// Each page break adds a paragraph, so we have:
 	// Page 1 content (1) + break para (1) + Page 2 content (1) + break para (1) + Page 3 content (1) = 5
-	fmt.Printf("Document has %d paragraphs (including page breaks)\n", count)
+	fmt.Printf(
+		"Document has %d paragraphs (including page breaks)\n",
+		count,
+	)
 	// Output: Document has 5 paragraphs (including page breaks)
 }
 
@@ -346,7 +405,8 @@ func Example_runFormatting() {
 
 	pb.AddRun(" This is italic.").Italic()
 
-	pb.AddRun(" Double underline.").UnderlineStyle(elements.UnderlineDouble)
+	pb.AddRun(" Double underline.").
+		UnderlineStyle(elements.UnderlineDouble)
 
 	pb.AddRun(" Tab character:").AddTab()
 	pb.AddRun("After tab.")
@@ -363,7 +423,10 @@ func Example_runFormatting() {
 		for range p.Runs() {
 			runCount++
 		}
-		fmt.Printf("Paragraph has %d runs\n", runCount)
+		fmt.Printf(
+			"Paragraph has %d runs\n",
+			runCount,
+		)
 	}
 	// Output: Paragraph has 5 runs
 }
@@ -371,7 +434,9 @@ func Example_runFormatting() {
 // Example_buildToBytes demonstrates building to bytes.
 func Example_buildToBytes() {
 	builder := wordprocessing.NewDocumentBuilder()
-	builder.AddParagraph("Simple document content")
+	builder.AddParagraph(
+		"Simple document content",
+	)
 
 	data, err := builder.BuildToBytes()
 	if err != nil {

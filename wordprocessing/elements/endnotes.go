@@ -29,24 +29,41 @@ type Endnotes struct {
 
 // NewEndnotes creates a new Endnotes element with default separators.
 func NewEndnotes() *Endnotes {
-	elem := openxml.NewPartRootElement(NamespaceWML, "endnotes", PrefixW)
-	en := &Endnotes{PartRootElementBase: elem, nextID: 1}
+	elem := openxml.NewPartRootElement(
+		NamespaceWML,
+		"endnotes",
+		PrefixW,
+	)
+	en := &Endnotes{
+		PartRootElementBase: elem,
+		nextID:              1,
+	}
 
 	// Add default separator endnotes
 	en.addSeparator(-1, EndnoteTypeSeparator)
-	en.addSeparator(0, EndnoteTypeContinuationSeparator)
+	en.addSeparator(
+		0,
+		EndnoteTypeContinuationSeparator,
+	)
 
 	return en
 }
 
 // addSeparator adds a separator endnote with the given ID and type.
-func (en *Endnotes) addSeparator(id int, enType EndnoteType) {
+func (en *Endnotes) addSeparator(
+	id int,
+	enType EndnoteType,
+) {
 	endnote := newEndnoteWithType(id, enType)
 
 	// Add separator content
 	p := NewParagraph()
 	r := NewRun("")
-	sep := openxml.NewCompositeElement(NamespaceWML, string(enType), PrefixW)
+	sep := openxml.NewCompositeElement(
+		NamespaceWML,
+		string(enType),
+		PrefixW,
+	)
 	r.AppendChild(sep)
 	p.AppendChild(r)
 	endnote.AppendChild(p)
@@ -58,7 +75,8 @@ func (en *Endnotes) addSeparator(id int, enType EndnoteType) {
 func (en *Endnotes) Endnotes() iter.Seq[*Endnote] {
 	return func(yield func(*Endnote) bool) {
 		for child := range en.Children() {
-			if child.LocalName() == "endnote" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "endnote" &&
+				child.NamespaceURI() == NamespaceWML {
 				var e *Endnote
 				if endnote, ok := child.(*Endnote); ok {
 					e = endnote
@@ -67,7 +85,8 @@ func (en *Endnotes) Endnotes() iter.Seq[*Endnote] {
 				}
 				if e != nil {
 					// Skip separator endnotes
-					if e.Type() == EndnoteTypeNormal || e.Type() == "" {
+					if e.Type() == EndnoteTypeNormal ||
+						e.Type() == "" {
 						if !yield(e) {
 							return
 						}
@@ -82,7 +101,8 @@ func (en *Endnotes) Endnotes() iter.Seq[*Endnote] {
 func (en *Endnotes) AllEndnotes() iter.Seq[*Endnote] {
 	return func(yield func(*Endnote) bool) {
 		for child := range en.Children() {
-			if child.LocalName() == "endnote" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "endnote" &&
+				child.NamespaceURI() == NamespaceWML {
 				var e *Endnote
 				if endnote, ok := child.(*Endnote); ok {
 					e = endnote
@@ -108,7 +128,9 @@ func (en *Endnotes) GetEndnote(id int) *Endnote {
 }
 
 // AddEndnote adds a new endnote with the given text and returns it.
-func (en *Endnotes) AddEndnote(text string) *Endnote {
+func (en *Endnotes) AddEndnote(
+	text string,
+) *Endnote {
 	e := NewEndnote(en.nextID, text)
 	en.nextID++
 	en.AppendChild(e)
@@ -134,7 +156,9 @@ func (en *Endnotes) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Endnotes element.
-func (en *Endnotes) CloneNode(deep bool) openxml.Element {
+func (en *Endnotes) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Endnotes{
 		PartRootElementBase: en.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
 		nextID:              en.nextID,
@@ -157,19 +181,44 @@ func NewEndnote(id int, text string) *Endnote {
 }
 
 // newEndnoteWithType creates a new Endnote with the specified ID and type.
-func newEndnoteWithType(id int, enType EndnoteType) *Endnote {
-	elem := openxml.NewCompositeElement(NamespaceWML, "endnote", PrefixW)
+func newEndnoteWithType(
+	id int,
+	enType EndnoteType,
+) *Endnote {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"endnote",
+		PrefixW,
+	)
 	e := &Endnote{CompositeElementBase: elem}
-	e.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
-	if enType != EndnoteTypeNormal && enType != "" {
-		e.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(enType)))
+	e.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
+	if enType != EndnoteTypeNormal &&
+		enType != "" {
+		e.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"type",
+				PrefixW,
+				string(enType),
+			),
+		)
 	}
 	return e
 }
 
 // Id returns the endnote ID.
 func (e *Endnote) Id() int {
-	attr, found := e.GetAttribute("id", NamespaceWML)
+	attr, found := e.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -179,12 +228,22 @@ func (e *Endnote) Id() int {
 
 // SetId sets the endnote ID.
 func (e *Endnote) SetId(id int) {
-	e.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	e.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Type returns the endnote type.
 func (e *Endnote) Type() EndnoteType {
-	attr, found := e.GetAttribute("type", NamespaceWML)
+	attr, found := e.GetAttribute(
+		"type",
+		NamespaceWML,
+	)
 	if !found {
 		return EndnoteTypeNormal
 	}
@@ -193,7 +252,8 @@ func (e *Endnote) Type() EndnoteType {
 
 // SetType sets the endnote type.
 func (e *Endnote) SetType(enType EndnoteType) {
-	if enType == EndnoteTypeNormal || enType == "" {
+	if enType == EndnoteTypeNormal ||
+		enType == "" {
 		e.RemoveAttribute("type", NamespaceWML)
 	} else {
 		e.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(enType)))
@@ -204,7 +264,8 @@ func (e *Endnote) SetType(enType EndnoteType) {
 func (e *Endnote) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range e.Children() {
-			if child.LocalName() == "p" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "p" &&
+				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
 				if para, ok := child.(*Paragraph); ok {
 					p = para
@@ -220,7 +281,9 @@ func (e *Endnote) Paragraphs() iter.Seq[*Paragraph] {
 }
 
 // AppendParagraph appends a paragraph with the given text.
-func (e *Endnote) AppendParagraph(text string) *Paragraph {
+func (e *Endnote) AppendParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	e.AppendChild(p)
 	return p
@@ -234,7 +297,9 @@ func (e *Endnote) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Endnote element.
-func (e *Endnote) CloneNode(deep bool) openxml.Element {
+func (e *Endnote) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Endnote{
 		CompositeElementBase: e.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -247,16 +312,34 @@ type EndnoteReference struct {
 }
 
 // NewEndnoteReference creates a new EndnoteReference element with the given ID.
-func NewEndnoteReference(id int) *EndnoteReference {
-	elem := openxml.NewCompositeElement(NamespaceWML, "endnoteReference", PrefixW)
-	er := &EndnoteReference{CompositeElementBase: elem}
-	er.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+func NewEndnoteReference(
+	id int,
+) *EndnoteReference {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"endnoteReference",
+		PrefixW,
+	)
+	er := &EndnoteReference{
+		CompositeElementBase: elem,
+	}
+	er.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 	return er
 }
 
 // Id returns the referenced endnote ID.
 func (er *EndnoteReference) Id() int {
-	attr, found := er.GetAttribute("id", NamespaceWML)
+	attr, found := er.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -266,7 +349,14 @@ func (er *EndnoteReference) Id() int {
 
 // SetId sets the referenced endnote ID.
 func (er *EndnoteReference) SetId(id int) {
-	er.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	er.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Clone creates a deep copy of this EndnoteReference element.
@@ -277,7 +367,9 @@ func (er *EndnoteReference) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this EndnoteReference element.
-func (er *EndnoteReference) CloneNode(deep bool) openxml.Element {
+func (er *EndnoteReference) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &EndnoteReference{
 		CompositeElementBase: er.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

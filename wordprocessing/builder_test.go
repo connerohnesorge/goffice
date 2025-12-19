@@ -20,7 +20,9 @@ func TestDocumentBuilder(t *testing.T) {
 	}
 }
 
-func TestDocumentBuilderAddParagraph(t *testing.T) {
+func TestDocumentBuilderAddParagraph(
+	t *testing.T,
+) {
 	builder := NewDocumentBuilder()
 
 	builder.AddParagraph("Hello, World!")
@@ -43,10 +45,16 @@ func TestDocumentBuilderAddParagraph(t *testing.T) {
 	}
 
 	if count != 1 {
-		t.Errorf("Expected 1 paragraph, got %d", count)
+		t.Errorf(
+			"Expected 1 paragraph, got %d",
+			count,
+		)
 	}
 	if text != "Hello, World!" {
-		t.Errorf("Expected 'Hello, World!', got '%s'", text)
+		t.Errorf(
+			"Expected 'Hello, World!', got '%s'",
+			text,
+		)
 	}
 }
 
@@ -68,7 +76,10 @@ func TestDocumentBuilderAddHeading(t *testing.T) {
 		}
 		styleId := props.ParagraphStyleId()
 		if styleId != "Heading1" {
-			t.Errorf("Expected style 'Heading1', got '%s'", styleId)
+			t.Errorf(
+				"Expected style 'Heading1', got '%s'",
+				styleId,
+			)
 		}
 	}
 }
@@ -90,20 +101,31 @@ func TestDocumentBuilderAddTable(t *testing.T) {
 	for table := range body.Tables() {
 		tableCount++
 		if table.RowCount() != 2 {
-			t.Errorf("Expected 2 rows, got %d", table.RowCount())
+			t.Errorf(
+				"Expected 2 rows, got %d",
+				table.RowCount(),
+			)
 		}
 		cell00 := table.GetCell(0, 0)
 		if cell00.InnerText() != "Cell 00" {
-			t.Errorf("Expected 'Cell 00', got '%s'", cell00.InnerText())
+			t.Errorf(
+				"Expected 'Cell 00', got '%s'",
+				cell00.InnerText(),
+			)
 		}
 	}
 
 	if tableCount != 1 {
-		t.Errorf("Expected 1 table, got %d", tableCount)
+		t.Errorf(
+			"Expected 1 table, got %d",
+			tableCount,
+		)
 	}
 }
 
-func TestParagraphBuilderFormatting(t *testing.T) {
+func TestParagraphBuilderFormatting(
+	t *testing.T,
+) {
 	builder := NewDocumentBuilder()
 
 	builder.AddParagraph("Bold and Italic").
@@ -124,10 +146,14 @@ func TestParagraphBuilderFormatting(t *testing.T) {
 			}
 			xml := props.OuterXml()
 			if !strings.Contains(xml, "<w:b") {
-				t.Error("Expected bold formatting")
+				t.Error(
+					"Expected bold formatting",
+				)
 			}
 			if !strings.Contains(xml, "<w:i") {
-				t.Error("Expected italic formatting")
+				t.Error(
+					"Expected italic formatting",
+				)
 			}
 		}
 	}
@@ -138,7 +164,8 @@ func TestParagraphBuilderAlignment(t *testing.T) {
 
 	builder.AddParagraph("Centered").AlignCenter()
 	builder.AddParagraph("Right").AlignRight()
-	builder.AddParagraph("Justified").AlignJustify()
+	builder.AddParagraph("Justified").
+		AlignJustify()
 
 	doc, err := builder.Build()
 	if err != nil {
@@ -162,7 +189,12 @@ func TestParagraphBuilderAlignment(t *testing.T) {
 			t.Fatal("Paragraph properties is nil")
 		}
 		if props.Justification() != alignments[i] {
-			t.Errorf("Paragraph %d: expected %s, got %s", i, alignments[i], props.Justification())
+			t.Errorf(
+				"Paragraph %d: expected %s, got %s",
+				i,
+				alignments[i],
+				props.Justification(),
+			)
 		}
 		i++
 	}
@@ -171,7 +203,8 @@ func TestParagraphBuilderAlignment(t *testing.T) {
 func TestParagraphBuilderFont(t *testing.T) {
 	builder := NewDocumentBuilder()
 
-	builder.AddParagraph("Custom Font").Font("Arial", 14)
+	builder.AddParagraph("Custom Font").
+		Font("Arial", 14)
 
 	doc, err := builder.Build()
 	if err != nil {
@@ -191,7 +224,9 @@ func TestParagraphBuilderFont(t *testing.T) {
 			}
 			// Font size is in half-points, so 14pt = 28
 			if !strings.Contains(xml, "28") {
-				t.Error("Expected font size 28 (14pt)")
+				t.Error(
+					"Expected font size 28 (14pt)",
+				)
 			}
 		}
 	}
@@ -221,10 +256,16 @@ func TestParagraphBuilderSpacing(t *testing.T) {
 		}
 		// 12 points = 240 twips
 		if spacing.Before() != 240 {
-			t.Errorf("Expected before 240, got %d", spacing.Before())
+			t.Errorf(
+				"Expected before 240, got %d",
+				spacing.Before(),
+			)
 		}
 		if spacing.After() != 240 {
-			t.Errorf("Expected after 240, got %d", spacing.After())
+			t.Errorf(
+				"Expected after 240, got %d",
+				spacing.After(),
+			)
 		}
 	}
 }
@@ -253,11 +294,17 @@ func TestParagraphBuilderIndent(t *testing.T) {
 		}
 		// 36 points = 720 twips
 		if ind.Left() != 720 {
-			t.Errorf("Expected left 720, got %d", ind.Left())
+			t.Errorf(
+				"Expected left 720, got %d",
+				ind.Left(),
+			)
 		}
 		// 18 points = 360 twips
 		if ind.FirstLine() != 360 {
-			t.Errorf("Expected firstLine 360, got %d", ind.FirstLine())
+			t.Errorf(
+				"Expected firstLine 360, got %d",
+				ind.FirstLine(),
+			)
 		}
 	}
 }
@@ -284,7 +331,10 @@ func TestRunBuilder(t *testing.T) {
 			runCount++
 		}
 		if runCount != 3 {
-			t.Errorf("Expected 3 runs, got %d", runCount)
+			t.Errorf(
+				"Expected 3 runs, got %d",
+				runCount,
+			)
 		}
 	}
 }
@@ -308,7 +358,10 @@ func TestTableBuilderStyle(t *testing.T) {
 			t.Fatal("Table properties is nil")
 		}
 		if props.TableStyle() != "TableGrid" {
-			t.Errorf("Expected style 'TableGrid', got '%s'", props.TableStyle())
+			t.Errorf(
+				"Expected style 'TableGrid', got '%s'",
+				props.TableStyle(),
+			)
 		}
 	}
 }
@@ -336,7 +389,9 @@ func TestTableBuilderBorders(t *testing.T) {
 		}
 		xml := borders.OuterXml()
 		if !strings.Contains(xml, "single") {
-			t.Error("Expected single border style")
+			t.Error(
+				"Expected single border style",
+			)
 		}
 	}
 }
@@ -361,14 +416,20 @@ func TestTableCellBuilder(t *testing.T) {
 	for table := range body.Tables() {
 		c := table.GetCell(0, 0)
 		if c.InnerText() != "Hello" {
-			t.Errorf("Expected 'Hello', got '%s'", c.InnerText())
+			t.Errorf(
+				"Expected 'Hello', got '%s'",
+				c.InnerText(),
+			)
 		}
 		props := c.TableCellProperties()
 		if props == nil {
 			t.Fatal("Cell properties is nil")
 		}
 		if props.GridSpan() != 2 {
-			t.Errorf("Expected gridSpan 2, got %d", props.GridSpan())
+			t.Errorf(
+				"Expected gridSpan 2, got %d",
+				props.GridSpan(),
+			)
 		}
 	}
 }
@@ -427,44 +488,78 @@ func TestDocumentBuilderPageBreak(t *testing.T) {
 func TestImageBuilderDimensions(t *testing.T) {
 	builder := NewDocumentBuilder()
 
-	img := builder.AddImage([]byte{0x89, 0x50, 0x4E, 0x47}, "image/png")
+	img := builder.AddImage(
+		[]byte{0x89, 0x50, 0x4E, 0x47},
+		"image/png",
+	)
 
 	// Test EMU dimensions
 	img.Width(914400).Height(914400)
 	if img.width != 914400 {
-		t.Errorf("Expected width 914400, got %d", img.width)
+		t.Errorf(
+			"Expected width 914400, got %d",
+			img.width,
+		)
 	}
 	if img.height != 914400 {
-		t.Errorf("Expected height 914400, got %d", img.height)
+		t.Errorf(
+			"Expected height 914400, got %d",
+			img.height,
+		)
 	}
 
 	// Test inch dimensions
 	img.WidthInches(2.0).HeightInches(1.5)
-	expectedWidth := int64(2.0 * float64(elements.EMUsPerInch))
-	expectedHeight := int64(1.5 * float64(elements.EMUsPerInch))
+	expectedWidth := int64(
+		2.0 * float64(elements.EMUsPerInch),
+	)
+	expectedHeight := int64(
+		1.5 * float64(elements.EMUsPerInch),
+	)
 	if img.width != expectedWidth {
-		t.Errorf("Expected width %d, got %d", expectedWidth, img.width)
+		t.Errorf(
+			"Expected width %d, got %d",
+			expectedWidth,
+			img.width,
+		)
 	}
 	if img.height != expectedHeight {
-		t.Errorf("Expected height %d, got %d", expectedHeight, img.height)
+		t.Errorf(
+			"Expected height %d, got %d",
+			expectedHeight,
+			img.height,
+		)
 	}
 
 	// Test cm dimensions
 	img.WidthCm(5.0).HeightCm(3.0)
-	expectedWidth = int64(5.0 * float64(elements.EMUsPerCm))
-	expectedHeight = int64(3.0 * float64(elements.EMUsPerCm))
+	expectedWidth = int64(
+		5.0 * float64(elements.EMUsPerCm),
+	)
+	expectedHeight = int64(
+		3.0 * float64(elements.EMUsPerCm),
+	)
 	if img.width != expectedWidth {
-		t.Errorf("Expected width %d, got %d", expectedWidth, img.width)
+		t.Errorf(
+			"Expected width %d, got %d",
+			expectedWidth,
+			img.width,
+		)
 	}
 	if img.height != expectedHeight {
-		t.Errorf("Expected height %d, got %d", expectedHeight, img.height)
+		t.Errorf(
+			"Expected height %d, got %d",
+			expectedHeight,
+			img.height,
+		)
 	}
 }
 
 func TestParagraphBuilderColor(t *testing.T) {
 	builder := NewDocumentBuilder()
 
-	builder.AddParagraph("Red Text").Color("FF0000")
+	builder.AddParagraph("Red Text").
+		Color("FF0000")
 
 	doc, err := builder.Build()
 	if err != nil {
@@ -489,7 +584,8 @@ func TestParagraphBuilderColor(t *testing.T) {
 func TestParagraphBuilderHighlight(t *testing.T) {
 	builder := NewDocumentBuilder()
 
-	builder.AddParagraph("Highlighted").Highlight(elements.HighlightYellow)
+	builder.AddParagraph("Highlighted").
+		Highlight(elements.HighlightYellow)
 
 	doc, err := builder.Build()
 	if err != nil {
@@ -505,7 +601,9 @@ func TestParagraphBuilderHighlight(t *testing.T) {
 			}
 			xml := props.OuterXml()
 			if !strings.Contains(xml, "yellow") {
-				t.Error("Expected yellow highlight")
+				t.Error(
+					"Expected yellow highlight",
+				)
 			}
 		}
 	}
@@ -521,12 +619,16 @@ func TestBuildToBytes(t *testing.T) {
 	}
 
 	if len(bytes) == 0 {
-		t.Error("BuildToBytes returned empty bytes")
+		t.Error(
+			"BuildToBytes returned empty bytes",
+		)
 	}
 
 	// Should contain XML declaration and document element
 	s := string(bytes)
 	if !strings.Contains(s, "document") {
-		t.Error("Expected document element in output")
+		t.Error(
+			"Expected document element in output",
+		)
 	}
 }

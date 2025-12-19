@@ -104,7 +104,11 @@ func (e *ValidationError) Error() string {
 }
 
 // NewValidationError creates a new validation error.
-func NewValidationError(code ErrorCode, description, path string, element interface{}) *ValidationError {
+func NewValidationError(
+	code ErrorCode,
+	description, path string,
+	element interface{},
+) *ValidationError {
 	return &ValidationError{
 		Code:        code,
 		Description: description,
@@ -115,7 +119,11 @@ func NewValidationError(code ErrorCode, description, path string, element interf
 }
 
 // NewValidationWarning creates a new validation warning.
-func NewValidationWarning(code ErrorCode, description, path string, element interface{}) *ValidationError {
+func NewValidationWarning(
+	code ErrorCode,
+	description, path string,
+	element interface{},
+) *ValidationError {
 	return &ValidationError{
 		Code:        code,
 		Description: description,
@@ -126,7 +134,9 @@ func NewValidationWarning(code ErrorCode, description, path string, element inte
 }
 
 // WithRelatedInfo adds related information to the error.
-func (e *ValidationError) WithRelatedInfo(info string) *ValidationError {
+func (e *ValidationError) WithRelatedInfo(
+	info string,
+) *ValidationError {
 	e.RelatedInfo = info
 	return e
 }
@@ -143,12 +153,23 @@ func (errs ValidationErrors) Error() string {
 		return errs[0].Error()
 	}
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("%d validation errors:\n", len(errs)))
+	sb.WriteString(
+		fmt.Sprintf(
+			"%d validation errors:\n",
+			len(errs),
+		),
+	)
 	for i, err := range errs {
 		if i > 0 {
 			sb.WriteString("\n")
 		}
-		sb.WriteString(fmt.Sprintf("  %d. %s", i+1, err.Error()))
+		sb.WriteString(
+			fmt.Sprintf(
+				"  %d. %s",
+				i+1,
+				err.Error(),
+			),
+		)
 	}
 	return sb.String()
 }
@@ -186,7 +207,9 @@ func (errs ValidationErrors) Warnings() ValidationErrors {
 }
 
 // ByCode returns errors with the given error code.
-func (errs ValidationErrors) ByCode(code ErrorCode) ValidationErrors {
+func (errs ValidationErrors) ByCode(
+	code ErrorCode,
+) ValidationErrors {
 	result := make(ValidationErrors, 0)
 	for _, e := range errs {
 		if e.Code == code {

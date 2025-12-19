@@ -179,7 +179,9 @@ var NamespacePrefixes = map[string]string{
 }
 
 // GetPrefixForNamespace returns the conventional prefix for a namespace URI.
-func GetPrefixForNamespace(namespaceURI string) string {
+func GetPrefixForNamespace(
+	namespaceURI string,
+) string {
 	if prefix, ok := NamespacePrefixes[namespaceURI]; ok {
 		return prefix
 	}

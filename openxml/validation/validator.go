@@ -9,7 +9,10 @@ import (
 type Validator interface {
 	// Validate validates the given element within the context.
 	// Returns a slice of validation errors (may be empty).
-	Validate(ctx *ValidationContext, element interface{}) []*ValidationError
+	Validate(
+		ctx *ValidationContext,
+		element interface{},
+	) []*ValidationError
 }
 
 // Constraint is the interface for custom validation constraints.
@@ -17,7 +20,10 @@ type Validator interface {
 type Constraint interface {
 	// Check checks the constraint on the given element.
 	// Returns validation errors if the constraint is violated.
-	Check(ctx *ValidationContext, element interface{}) []*ValidationError
+	Check(
+		ctx *ValidationContext,
+		element interface{},
+	) []*ValidationError
 }
 
 // SchemaValidator validates element structure against schema particles.
@@ -53,25 +59,41 @@ type AttributeSchema struct {
 }
 
 // NewSchemaValidator creates a new schema validator with the given particle.
-func NewSchemaValidator(particle Particle) *SchemaValidator {
+func NewSchemaValidator(
+	particle Particle,
+) *SchemaValidator {
 	return &SchemaValidator{
-		Particle:           particle,
-		AllowedAttributes:  make([]AttributeSchema, 0),
+		Particle: particle,
+		AllowedAttributes: make(
+			[]AttributeSchema,
+			0,
+		),
 		RequiredAttributes: make([]string, 0),
 	}
 }
 
 // WithAttribute adds an allowed attribute to the schema.
-func (v *SchemaValidator) WithAttribute(attr AttributeSchema) *SchemaValidator {
-	v.AllowedAttributes = append(v.AllowedAttributes, attr)
+func (v *SchemaValidator) WithAttribute(
+	attr AttributeSchema,
+) *SchemaValidator {
+	v.AllowedAttributes = append(
+		v.AllowedAttributes,
+		attr,
+	)
 	if attr.Required {
-		v.RequiredAttributes = append(v.RequiredAttributes, attr.LocalName)
+		v.RequiredAttributes = append(
+			v.RequiredAttributes,
+			attr.LocalName,
+		)
 	}
 	return v
 }
 
 // Validate validates an element against the schema.
-func (v *SchemaValidator) Validate(ctx *ValidationContext, element interface{}) []*ValidationError {
+func (v *SchemaValidator) Validate(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	var errors []*ValidationError
 
 	// Get element info using reflection or interface
@@ -83,19 +105,29 @@ func (v *SchemaValidator) Validate(ctx *ValidationContext, element interface{}) 
 	// Validate child structure
 	if v.Particle != nil {
 		children := GetChildElementInfos(element)
-		childErrors, _ := v.Particle.Validate(ctx, children, ctx.CurrentPath())
+		childErrors, _ := v.Particle.Validate(
+			ctx,
+			children,
+			ctx.CurrentPath(),
+		)
 		errors = append(errors, childErrors...)
 	}
 
 	// Validate attributes
-	attrErrors := v.validateAttributes(ctx, element)
+	attrErrors := v.validateAttributes(
+		ctx,
+		element,
+	)
 	errors = append(errors, attrErrors...)
 
 	return errors
 }
 
 // validateAttributes validates the element's attributes.
-func (v *SchemaValidator) validateAttributes(ctx *ValidationContext, element interface{}) []*ValidationError {
+func (v *SchemaValidator) validateAttributes(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	var errors []*ValidationError
 
 	// Get attributes from element
@@ -108,12 +140,15 @@ func (v *SchemaValidator) validateAttributes(ctx *ValidationContext, element int
 	// Check required attributes
 	for _, required := range v.RequiredAttributes {
 		if _, ok := attrMap[required]; !ok {
-			errors = append(errors, NewValidationError(
-				Schema_MissingRequiredAttribute,
-				"Required attribute '"+required+"' is missing",
-				ctx.CurrentPath(),
-				element,
-			))
+			errors = append(
+				errors,
+				NewValidationError(
+					Schema_MissingRequiredAttribute,
+					"Required attribute '"+required+"' is missing",
+					ctx.CurrentPath(),
+					element,
+				),
+			)
 		}
 	}
 
@@ -125,13 +160,19 @@ func (v *SchemaValidator) validateAttributes(ctx *ValidationContext, element int
 		}
 
 		// Check version availability
-		if schema.Availability != nil && !ctx.IsVersionAvailable(schema.Availability) {
-			errors = append(errors, NewValidationError(
-				Schema_AttributeNotAvailable,
-				"Attribute '"+schema.LocalName+"' is not available in "+ctx.Version.String(),
-				ctx.CurrentPath(),
-				element,
-			))
+		if schema.Availability != nil &&
+			!ctx.IsVersionAvailable(
+				schema.Availability,
+			) {
+			errors = append(
+				errors,
+				NewValidationError(
+					Schema_AttributeNotAvailable,
+					"Attribute '"+schema.LocalName+"' is not available in "+ctx.Version.String(),
+					ctx.CurrentPath(),
+					element,
+				),
+			)
 			continue
 		}
 
@@ -145,12 +186,15 @@ func (v *SchemaValidator) validateAttributes(ctx *ValidationContext, element int
 				}
 			}
 			if !found {
-				errors = append(errors, NewValidationError(
-					Schema_ValueNotInEnumeration,
-					"Attribute '"+schema.LocalName+"' value '"+value+"' is not in allowed values",
-					ctx.CurrentPath(),
-					element,
-				))
+				errors = append(
+					errors,
+					NewValidationError(
+						Schema_ValueNotInEnumeration,
+						"Attribute '"+schema.LocalName+"' value '"+value+"' is not in allowed values",
+						ctx.CurrentPath(),
+						element,
+					),
+				)
 			}
 		}
 	}
@@ -165,24 +209,32 @@ type AttributeValidator struct {
 }
 
 // NewAttributeValidator creates a new attribute validator.
-func NewAttributeValidator(schema AttributeSchema) *AttributeValidator {
+func NewAttributeValidator(
+	schema AttributeSchema,
+) *AttributeValidator {
 	return &AttributeValidator{Schema: schema}
 }
 
 // Validate validates an attribute value.
-func (v *AttributeValidator) Validate(ctx *ValidationContext, element interface{}) []*ValidationError {
+func (v *AttributeValidator) Validate(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	var errors []*ValidationError
 
 	attrs := GetElementAttributes(element)
 	value, ok := attrs[v.Schema.LocalName]
 	if !ok {
 		if v.Schema.Required {
-			errors = append(errors, NewValidationError(
-				Schema_MissingRequiredAttribute,
-				"Required attribute '"+v.Schema.LocalName+"' is missing",
-				ctx.CurrentPath(),
-				element,
-			))
+			errors = append(
+				errors,
+				NewValidationError(
+					Schema_MissingRequiredAttribute,
+					"Required attribute '"+v.Schema.LocalName+"' is missing",
+					ctx.CurrentPath(),
+					element,
+				),
+			)
 		}
 		return errors
 	}
@@ -197,12 +249,15 @@ func (v *AttributeValidator) Validate(ctx *ValidationContext, element interface{
 			}
 		}
 		if !found {
-			errors = append(errors, NewValidationError(
-				Schema_ValueNotInEnumeration,
-				"Attribute '"+v.Schema.LocalName+"' value '"+value+"' is not in allowed values",
-				ctx.CurrentPath(),
-				element,
-			))
+			errors = append(
+				errors,
+				NewValidationError(
+					Schema_ValueNotInEnumeration,
+					"Attribute '"+v.Schema.LocalName+"' value '"+value+"' is not in allowed values",
+					ctx.CurrentPath(),
+					element,
+				),
+			)
 		}
 	}
 
@@ -223,13 +278,18 @@ func NewSemanticValidator() *SemanticValidator {
 }
 
 // AddConstraint adds a constraint to check.
-func (v *SemanticValidator) AddConstraint(c Constraint) *SemanticValidator {
+func (v *SemanticValidator) AddConstraint(
+	c Constraint,
+) *SemanticValidator {
 	v.constraints = append(v.constraints, c)
 	return v
 }
 
 // Validate validates an element against semantic constraints.
-func (v *SemanticValidator) Validate(ctx *ValidationContext, element interface{}) []*ValidationError {
+func (v *SemanticValidator) Validate(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	var errors []*ValidationError
 
 	for _, c := range v.constraints {
@@ -245,19 +305,29 @@ var constraintRegistry = struct {
 	mu          sync.RWMutex
 	constraints map[reflect.Type][]Constraint
 }{
-	constraints: make(map[reflect.Type][]Constraint),
+	constraints: make(
+		map[reflect.Type][]Constraint,
+	),
 }
 
 // RegisterConstraint registers a constraint for a specific element type.
-func RegisterConstraint(elementType reflect.Type, constraint Constraint) {
+func RegisterConstraint(
+	elementType reflect.Type,
+	constraint Constraint,
+) {
 	constraintRegistry.mu.Lock()
 	defer constraintRegistry.mu.Unlock()
 
-	constraintRegistry.constraints[elementType] = append(constraintRegistry.constraints[elementType], constraint)
+	constraintRegistry.constraints[elementType] = append(
+		constraintRegistry.constraints[elementType],
+		constraint,
+	)
 }
 
 // GetConstraints returns all registered constraints for the given element type.
-func GetConstraints(elementType reflect.Type) []Constraint {
+func GetConstraints(
+	elementType reflect.Type,
+) []Constraint {
 	constraintRegistry.mu.RLock()
 	defer constraintRegistry.mu.RUnlock()
 
@@ -269,7 +339,9 @@ func ClearConstraints() {
 	constraintRegistry.mu.Lock()
 	defer constraintRegistry.mu.Unlock()
 
-	constraintRegistry.constraints = make(map[reflect.Type][]Constraint)
+	constraintRegistry.constraints = make(
+		map[reflect.Type][]Constraint,
+	)
 }
 
 // Built-in constraint implementations
@@ -281,24 +353,31 @@ type UniqueIDConstraint struct {
 }
 
 // NewUniqueIDConstraint creates a constraint that checks for unique IDs.
-func NewUniqueIDConstraint(getID func(element interface{}) string) *UniqueIDConstraint {
+func NewUniqueIDConstraint(
+	getID func(element interface{}) string,
+) *UniqueIDConstraint {
 	return &UniqueIDConstraint{GetID: getID}
 }
 
 // Check checks that the element's ID is unique.
-func (c *UniqueIDConstraint) Check(ctx *ValidationContext, element interface{}) []*ValidationError {
+func (c *UniqueIDConstraint) Check(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	id := c.GetID(element)
 	if id == "" {
 		return nil
 	}
 
 	if existing := ctx.TrackID(id, element); existing != nil {
-		return []*ValidationError{NewValidationError(
-			Semantic_DuplicateID,
-			"Duplicate ID '"+id+"' found",
-			ctx.CurrentPath(),
-			element,
-		).WithRelatedInfo("First occurrence at previously validated element")}
+		return []*ValidationError{
+			NewValidationError(
+				Semantic_DuplicateID,
+				"Duplicate ID '"+id+"' found",
+				ctx.CurrentPath(),
+				element,
+			).WithRelatedInfo("First occurrence at previously validated element"),
+		}
 	}
 
 	return nil
@@ -313,7 +392,10 @@ type RelationshipReferenceConstraint struct {
 }
 
 // NewRelationshipReferenceConstraint creates a constraint that checks relationship references.
-func NewRelationshipReferenceConstraint(getRelID func(element interface{}) string, checkExists func(ctx *ValidationContext, relID string) bool) *RelationshipReferenceConstraint {
+func NewRelationshipReferenceConstraint(
+	getRelID func(element interface{}) string,
+	checkExists func(ctx *ValidationContext, relID string) bool,
+) *RelationshipReferenceConstraint {
 	return &RelationshipReferenceConstraint{
 		GetRelID:    getRelID,
 		CheckExists: checkExists,
@@ -321,19 +403,24 @@ func NewRelationshipReferenceConstraint(getRelID func(element interface{}) strin
 }
 
 // Check checks that the referenced relationship exists.
-func (c *RelationshipReferenceConstraint) Check(ctx *ValidationContext, element interface{}) []*ValidationError {
+func (c *RelationshipReferenceConstraint) Check(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	relID := c.GetRelID(element)
 	if relID == "" {
 		return nil
 	}
 
 	if !c.CheckExists(ctx, relID) {
-		return []*ValidationError{NewValidationError(
-			Semantic_RelationshipNotFound,
-			"Referenced relationship '"+relID+"' not found",
-			ctx.CurrentPath(),
-			element,
-		)}
+		return []*ValidationError{
+			NewValidationError(
+				Semantic_RelationshipNotFound,
+				"Referenced relationship '"+relID+"' not found",
+				ctx.CurrentPath(),
+				element,
+			),
+		}
 	}
 
 	return nil
@@ -346,12 +433,19 @@ type MutuallyExclusiveConstraint struct {
 }
 
 // NewMutuallyExclusiveConstraint creates a constraint for mutually exclusive attributes.
-func NewMutuallyExclusiveConstraint(attrs ...string) *MutuallyExclusiveConstraint {
-	return &MutuallyExclusiveConstraint{Attributes: attrs}
+func NewMutuallyExclusiveConstraint(
+	attrs ...string,
+) *MutuallyExclusiveConstraint {
+	return &MutuallyExclusiveConstraint{
+		Attributes: attrs,
+	}
 }
 
 // Check checks that no more than one of the mutually exclusive attributes is present.
-func (c *MutuallyExclusiveConstraint) Check(ctx *ValidationContext, element interface{}) []*ValidationError {
+func (c *MutuallyExclusiveConstraint) Check(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	attrs := GetElementAttributes(element)
 	present := make([]string, 0)
 
@@ -362,12 +456,17 @@ func (c *MutuallyExclusiveConstraint) Check(ctx *ValidationContext, element inte
 	}
 
 	if len(present) > 1 {
-		return []*ValidationError{NewValidationError(
-			Semantic_MutuallyExclusiveAttributes,
-			"Mutually exclusive attributes are present: "+joinStrings(present, ", "),
-			ctx.CurrentPath(),
-			element,
-		)}
+		return []*ValidationError{
+			NewValidationError(
+				Semantic_MutuallyExclusiveAttributes,
+				"Mutually exclusive attributes are present: "+joinStrings(
+					present,
+					", ",
+				),
+				ctx.CurrentPath(),
+				element,
+			),
+		}
 	}
 
 	return nil
@@ -380,12 +479,19 @@ type ParentTypeConstraint struct {
 }
 
 // NewParentTypeConstraint creates a constraint for allowed parent types.
-func NewParentTypeConstraint(parents ...string) *ParentTypeConstraint {
-	return &ParentTypeConstraint{AllowedParents: parents}
+func NewParentTypeConstraint(
+	parents ...string,
+) *ParentTypeConstraint {
+	return &ParentTypeConstraint{
+		AllowedParents: parents,
+	}
 }
 
 // Check checks that the element's parent is of an allowed type.
-func (c *ParentTypeConstraint) Check(ctx *ValidationContext, element interface{}) []*ValidationError {
+func (c *ParentTypeConstraint) Check(
+	ctx *ValidationContext,
+	element interface{},
+) []*ValidationError {
 	parentName := GetParentTypeName(element)
 	if parentName == "" {
 		return nil // No parent or can't determine
@@ -399,14 +505,20 @@ func (c *ParentTypeConstraint) Check(ctx *ValidationContext, element interface{}
 
 	return []*ValidationError{NewValidationError(
 		Semantic_InvalidParentType,
-		"Element cannot have parent of type '"+parentName+"', expected one of: "+joinStrings(c.AllowedParents, ", "),
+		"Element cannot have parent of type '"+parentName+"', expected one of: "+joinStrings(
+			c.AllowedParents,
+			", ",
+		),
 		ctx.CurrentPath(),
 		element,
 	)}
 }
 
 // joinStrings joins strings with a separator.
-func joinStrings(strs []string, sep string) string {
+func joinStrings(
+	strs []string,
+	sep string,
+) string {
 	if len(strs) == 0 {
 		return ""
 	}

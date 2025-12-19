@@ -54,11 +54,11 @@ type Package struct {
 	zipData   []byte // loaded ZIP data for in-memory operations
 
 	// Package contents
-	parts           map[string]*Part          // normalized URI -> Part
-	relationships   *Relationships            // package-level relationships
-	partRels        map[string]*Relationships // part URI -> part relationships
-	contentTypes    *ContentTypes
-	coreProperties  *CoreProperties
+	parts          map[string]*Part          // normalized URI -> Part
+	relationships  *Relationships            // package-level relationships
+	partRels       map[string]*Relationships // part URI -> part relationships
+	contentTypes   *ContentTypes
+	coreProperties *CoreProperties
 
 	// Writer for streaming output
 	writer io.Writer
@@ -68,19 +68,27 @@ type Package struct {
 // The package will have ReadWrite capability.
 func Create(path string) (*Package, error) {
 	pkg := &Package{
-		path:           path,
-		capability:     ReadWrite,
-		closed:         false,
-		parts:          make(map[string]*Part),
-		relationships:  NewRelationships("/"),
-		partRels:       make(map[string]*Relationships),
+		path:          path,
+		capability:    ReadWrite,
+		closed:        false,
+		parts:         make(map[string]*Part),
+		relationships: NewRelationships("/"),
+		partRels: make(
+			map[string]*Relationships,
+		),
 		contentTypes:   NewContentTypes(),
 		coreProperties: NewCoreProperties(),
 	}
 
 	// Initialize with standard defaults for Office documents
-	pkg.contentTypes.SetDefault("xml", "application/xml")
-	pkg.contentTypes.SetDefault("rels", "application/vnd.openxmlformats-package.relationships+xml")
+	pkg.contentTypes.SetDefault(
+		"xml",
+		"application/xml",
+	)
+	pkg.contentTypes.SetDefault(
+		"rels",
+		"application/vnd.openxmlformats-package.relationships+xml",
+	)
 
 	return pkg, nil
 }
@@ -89,20 +97,28 @@ func Create(path string) (*Package, error) {
 // The package will have Write capability only.
 func CreateWriter(w io.Writer) (*Package, error) {
 	pkg := &Package{
-		path:           "",
-		capability:     Write,
-		closed:         false,
-		writer:         w,
-		parts:          make(map[string]*Part),
-		relationships:  NewRelationships("/"),
-		partRels:       make(map[string]*Relationships),
+		path:          "",
+		capability:    Write,
+		closed:        false,
+		writer:        w,
+		parts:         make(map[string]*Part),
+		relationships: NewRelationships("/"),
+		partRels: make(
+			map[string]*Relationships,
+		),
 		contentTypes:   NewContentTypes(),
 		coreProperties: NewCoreProperties(),
 	}
 
 	// Initialize with standard defaults
-	pkg.contentTypes.SetDefault("xml", "application/xml")
-	pkg.contentTypes.SetDefault("rels", "application/vnd.openxmlformats-package.relationships+xml")
+	pkg.contentTypes.SetDefault(
+		"xml",
+		"application/xml",
+	)
+	pkg.contentTypes.SetDefault(
+		"rels",
+		"application/vnd.openxmlformats-package.relationships+xml",
+	)
 
 	return pkg, nil
 }
@@ -110,7 +126,10 @@ func CreateWriter(w io.Writer) (*Package, error) {
 // Open opens an existing package from a file path.
 // If readOnly is true, the package is opened with Read capability.
 // Otherwise, it is opened with ReadWrite capability.
-func Open(path string, readOnly bool) (*Package, error) {
+func Open(
+	path string,
+	readOnly bool,
+) (*Package, error) {
 	// Read the file into memory
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -133,10 +152,14 @@ func Open(path string, readOnly bool) (*Package, error) {
 
 // OpenReader opens a package from an io.ReaderAt.
 // The package will have Read capability only.
-func OpenReader(r io.ReaderAt, size int64) (*Package, error) {
+func OpenReader(
+	r io.ReaderAt,
+	size int64,
+) (*Package, error) {
 	// Read all data into memory
 	data := make([]byte, size)
-	if _, err := r.ReadAt(data, 0); err != nil && err != io.EOF {
+	if _, err := r.ReadAt(data, 0); err != nil &&
+		err != io.EOF {
 		return nil, err
 	}
 
@@ -144,21 +167,29 @@ func OpenReader(r io.ReaderAt, size int64) (*Package, error) {
 }
 
 // openFromBytes opens a package from in-memory data.
-func openFromBytes(data []byte, capability PackageCapability) (*Package, error) {
+func openFromBytes(
+	data []byte,
+	capability PackageCapability,
+) (*Package, error) {
 	reader := bytes.NewReader(data)
-	zipReader, err := zip.NewReader(reader, int64(len(data)))
+	zipReader, err := zip.NewReader(
+		reader,
+		int64(len(data)),
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	pkg := &Package{
-		capability:     capability,
-		closed:         false,
-		zipReader:      zipReader,
-		zipData:        data,
-		parts:          make(map[string]*Part),
-		relationships:  NewRelationships("/"),
-		partRels:       make(map[string]*Relationships),
+		capability:    capability,
+		closed:        false,
+		zipReader:     zipReader,
+		zipData:       data,
+		parts:         make(map[string]*Part),
+		relationships: NewRelationships("/"),
+		partRels: make(
+			map[string]*Relationships,
+		),
 		contentTypes:   NewContentTypes(),
 		coreProperties: NewCoreProperties(),
 	}
@@ -187,14 +218,19 @@ func openFromBytes(data []byte, capability PackageCapability) (*Package, error) 
 // loadContentTypes loads [Content_Types].xml from the package.
 func (p *Package) loadContentTypes() error {
 	for _, f := range p.zipReader.File {
-		if strings.EqualFold(f.Name, "[Content_Types].xml") {
+		if strings.EqualFold(
+			f.Name,
+			"[Content_Types].xml",
+		) {
 			rc, err := f.Open()
 			if err != nil {
 				return err
 			}
 			defer rc.Close()
 
-			return p.contentTypes.UnmarshalFromXML(rc)
+			return p.contentTypes.UnmarshalFromXML(
+				rc,
+			)
 		}
 	}
 	return ErrInvalidPackage
@@ -206,7 +242,10 @@ func (p *Package) loadParts() error {
 		name := f.Name
 
 		// Skip [Content_Types].xml
-		if strings.EqualFold(name, "[Content_Types].xml") {
+		if strings.EqualFold(
+			name,
+			"[Content_Types].xml",
+		) {
 			continue
 		}
 
@@ -219,7 +258,9 @@ func (p *Package) loadParts() error {
 		}
 
 		// Get content type
-		contentType, err := p.contentTypes.GetContentType(uri)
+		contentType, err := p.contentTypes.GetContentType(
+			uri,
+		)
 		if err != nil {
 			// Use a default if not found
 			contentType = "application/octet-stream"
@@ -255,7 +296,9 @@ func (p *Package) loadParts() error {
 			return err
 		}
 
-		sourceURI := PartURIFromRelationshipURI(uri)
+		sourceURI := PartURIFromRelationshipURI(
+			uri,
+		)
 		rels := NewRelationships(sourceURI)
 		if err := rels.UnmarshalFromXML(rc); err != nil {
 			rc.Close()
@@ -276,14 +319,19 @@ func (p *Package) loadParts() error {
 // loadRelationships loads package-level relationships from _rels/.rels.
 func (p *Package) loadRelationships() error {
 	for _, f := range p.zipReader.File {
-		if strings.EqualFold(f.Name, "_rels/.rels") {
+		if strings.EqualFold(
+			f.Name,
+			"_rels/.rels",
+		) {
 			rc, err := f.Open()
 			if err != nil {
 				return err
 			}
 			defer rc.Close()
 
-			return p.relationships.UnmarshalFromXML(rc)
+			return p.relationships.UnmarshalFromXML(
+				rc,
+			)
 		}
 	}
 	// It's okay if there are no package-level relationships
@@ -351,7 +399,9 @@ func (p *Package) saveToFile(path string) error {
 }
 
 // saveToWriter writes the package to an io.Writer.
-func (p *Package) saveToWriter(w io.Writer) error {
+func (p *Package) saveToWriter(
+	w io.Writer,
+) error {
 	zw := zip.NewWriter(w)
 	defer zw.Close()
 
@@ -398,7 +448,10 @@ func (p *Package) saveToWriter(w io.Writer) error {
 		}
 
 		relPath := RelationshipPartURI(sourceURI)
-		zipPath := strings.TrimPrefix(relPath, "/")
+		zipPath := strings.TrimPrefix(
+			relPath,
+			"/",
+		)
 		if err := writeZipFile(zw, zipPath, relsData); err != nil {
 			return err
 		}
@@ -408,7 +461,11 @@ func (p *Package) saveToWriter(w io.Writer) error {
 }
 
 // writeZipFile writes a file to the ZIP archive.
-func writeZipFile(zw *zip.Writer, name string, data []byte) error {
+func writeZipFile(
+	zw *zip.Writer,
+	name string,
+	data []byte,
+) error {
 	w, err := zw.Create(name)
 	if err != nil {
 		return err
@@ -465,7 +522,9 @@ func (p *Package) IsClosed() bool {
 // CreatePart creates a new part with the given URI and content type.
 // Returns ErrPartExists if a part with that URI already exists.
 // Returns ErrReadOnly if the package is read-only.
-func (p *Package) CreatePart(uri, contentType string) (*Part, error) {
+func (p *Package) CreatePart(
+	uri, contentType string,
+) (*Part, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -490,14 +549,19 @@ func (p *Package) CreatePart(uri, contentType string) (*Part, error) {
 	p.parts[normalizedURI] = part
 
 	// Register content type
-	p.contentTypes.SetOverride(normalizedURI, contentType)
+	p.contentTypes.SetOverride(
+		normalizedURI,
+		contentType,
+	)
 
 	return part, nil
 }
 
 // Part returns the part with the given URI.
 // Returns ErrPartNotFound if no such part exists.
-func (p *Package) Part(uri string) (*Part, error) {
+func (p *Package) Part(
+	uri string,
+) (*Part, error) {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 
@@ -541,21 +605,32 @@ func (p *Package) DeletePart(uri string) error {
 	delete(p.partRels, normalizedURI)
 
 	// Remove relationships to this part from package level
-	p.removeRelationshipsTo(normalizedURI, p.relationships)
+	p.removeRelationshipsTo(
+		normalizedURI,
+		p.relationships,
+	)
 
 	// Remove relationships to this part from other parts
 	for _, rels := range p.partRels {
-		p.removeRelationshipsTo(normalizedURI, rels)
+		p.removeRelationshipsTo(
+			normalizedURI,
+			rels,
+		)
 	}
 
 	return nil
 }
 
 // removeRelationshipsTo removes all relationships targeting the given URI.
-func (p *Package) removeRelationshipsTo(targetURI string, rels *Relationships) {
+func (p *Package) removeRelationshipsTo(
+	targetURI string,
+	rels *Relationships,
+) {
 	var toDelete []string
 	for rel := range rels.All() {
-		if NormalizeURI(rel.Target()) == targetURI {
+		if NormalizeURI(
+			rel.Target(),
+		) == targetURI {
 			toDelete = append(toDelete, rel.ID())
 		}
 	}
@@ -599,7 +674,9 @@ func (p *Package) ContentTypes() *ContentTypes {
 
 // CreateRelationship creates a package-level relationship.
 // If id is empty, an auto-generated ID will be used.
-func (p *Package) CreateRelationship(target, relType, id string) (*Relationship, error) {
+func (p *Package) CreateRelationship(
+	target, relType, id string,
+) (*Relationship, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -611,11 +688,17 @@ func (p *Package) CreateRelationship(target, relType, id string) (*Relationship,
 		return nil, ErrReadOnly
 	}
 
-	return p.relationships.Create(target, relType, id)
+	return p.relationships.Create(
+		target,
+		relType,
+		id,
+	)
 }
 
 // Relationship returns the package-level relationship with the given ID.
-func (p *Package) Relationship(id string) (*Relationship, error) {
+func (p *Package) Relationship(
+	id string,
+) (*Relationship, error) {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 
@@ -627,7 +710,9 @@ func (p *Package) Relationship(id string) (*Relationship, error) {
 }
 
 // RelationshipsByType returns an iterator over package-level relationships of the given type.
-func (p *Package) RelationshipsByType(relType string) iter.Seq[*Relationship] {
+func (p *Package) RelationshipsByType(
+	relType string,
+) iter.Seq[*Relationship] {
 	return func(yield func(*Relationship) bool) {
 		p.mu.RLock()
 		defer p.mu.RUnlock()
@@ -645,7 +730,9 @@ func (p *Package) RelationshipsByType(relType string) iter.Seq[*Relationship] {
 }
 
 // DeleteRelationship deletes a package-level relationship.
-func (p *Package) DeleteRelationship(id string) error {
+func (p *Package) DeleteRelationship(
+	id string,
+) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -669,7 +756,9 @@ func (p *Package) Relationships() *Relationships {
 
 // PartRelationships returns the relationships for a specific part.
 // Returns nil if the part has no relationships.
-func (p *Package) PartRelationships(partURI string) *Relationships {
+func (p *Package) PartRelationships(
+	partURI string,
+) *Relationships {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 
@@ -678,7 +767,9 @@ func (p *Package) PartRelationships(partURI string) *Relationships {
 }
 
 // CreatePartRelationship creates a relationship from a part to a target.
-func (p *Package) CreatePartRelationship(sourceURI, target, relType, id string) (*Relationship, error) {
+func (p *Package) CreatePartRelationship(
+	sourceURI, target, relType, id string,
+) (*Relationship, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -703,7 +794,9 @@ func (p *Package) CreatePartRelationship(sourceURI, target, relType, id string) 
 }
 
 // DeletePartRelationship deletes a relationship from a part.
-func (p *Package) DeletePartRelationship(sourceURI, id string) error {
+func (p *Package) DeletePartRelationship(
+	sourceURI, id string,
+) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -749,12 +842,23 @@ func (p *Package) EnsureCorePropertiesPart() error {
 
 	// Create part if it doesn't exist
 	if _, exists := p.parts[uri]; !exists {
-		part := newPart(uri, CorePropertiesContentType, p)
+		part := newPart(
+			uri,
+			CorePropertiesContentType,
+			p,
+		)
 		p.parts[uri] = part
-		p.contentTypes.SetOverride(uri, CorePropertiesContentType)
+		p.contentTypes.SetOverride(
+			uri,
+			CorePropertiesContentType,
+		)
 
 		// Create relationship to core properties
-		p.relationships.Create(CorePropertiesPartURI, CorePropertiesRelationshipType, "")
+		p.relationships.Create(
+			CorePropertiesPartURI,
+			CorePropertiesRelationshipType,
+			"",
+		)
 	}
 
 	// Serialize core properties to part

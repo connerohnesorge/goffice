@@ -19,12 +19,21 @@ type BaseElement struct {
 }
 
 // InitBaseElement initializes a BaseElement with the given namespace URI, local name, and prefix.
-func InitBaseElement(b *BaseElement, namespaceURI, localName, prefix string, parentFeatures *features.FeatureCollection) {
-	b.qname = NewQualifiedName(namespaceURI, localName)
+func InitBaseElement(
+	b *BaseElement,
+	namespaceURI, localName, prefix string,
+	parentFeatures *features.FeatureCollection,
+) {
+	b.qname = NewQualifiedName(
+		namespaceURI,
+		localName,
+	)
 	b.prefix = prefix
 	b.attributes = nil
 	if parentFeatures != nil {
-		b.features = features.NewFeatureCollectionWithParent(parentFeatures)
+		b.features = features.NewFeatureCollectionWithParent(
+			parentFeatures,
+		)
 	} else {
 		b.features = features.NewFeatureCollection()
 	}
@@ -82,15 +91,21 @@ func (b *BaseElement) Attributes() []OpenXmlAttribute {
 		return []OpenXmlAttribute{}
 	}
 	// Return a copy to prevent external modification
-	result := make([]OpenXmlAttribute, len(b.attributes))
+	result := make(
+		[]OpenXmlAttribute,
+		len(b.attributes),
+	)
 	copy(result, b.attributes)
 	return result
 }
 
 // GetAttribute returns the attribute with the given local name and namespace URI.
-func (b *BaseElement) GetAttribute(localName, namespaceURI string) (OpenXmlAttribute, bool) {
+func (b *BaseElement) GetAttribute(
+	localName, namespaceURI string,
+) (OpenXmlAttribute, bool) {
 	for _, attr := range b.attributes {
-		if attr.LocalName() == localName && attr.NamespaceURI() == namespaceURI {
+		if attr.LocalName() == localName &&
+			attr.NamespaceURI() == namespaceURI {
 			return attr, true
 		}
 	}
@@ -98,10 +113,13 @@ func (b *BaseElement) GetAttribute(localName, namespaceURI string) (OpenXmlAttri
 }
 
 // SetAttribute sets or adds an attribute on this element.
-func (b *BaseElement) SetAttribute(attr OpenXmlAttribute) {
+func (b *BaseElement) SetAttribute(
+	attr OpenXmlAttribute,
+) {
 	// Look for existing attribute with same name
 	for i, existing := range b.attributes {
-		if existing.LocalName() == attr.LocalName() && existing.NamespaceURI() == attr.NamespaceURI() {
+		if existing.LocalName() == attr.LocalName() &&
+			existing.NamespaceURI() == attr.NamespaceURI() {
 			b.attributes[i] = attr
 			return
 		}
@@ -111,10 +129,15 @@ func (b *BaseElement) SetAttribute(attr OpenXmlAttribute) {
 }
 
 // RemoveAttribute removes the attribute with the given local name and namespace URI.
-func (b *BaseElement) RemoveAttribute(localName, namespaceURI string) bool {
+func (b *BaseElement) RemoveAttribute(
+	localName, namespaceURI string,
+) bool {
 	for i, attr := range b.attributes {
-		if attr.LocalName() == localName && attr.NamespaceURI() == namespaceURI {
-			b.attributes = append(b.attributes[:i], b.attributes[i+1:]...)
+		if attr.LocalName() == localName &&
+			attr.NamespaceURI() == namespaceURI {
+			b.attributes = append(
+				b.attributes[:i],
+				b.attributes[i+1:]...)
 			return true
 		}
 	}
@@ -149,11 +172,17 @@ func (b *BaseElement) xmlStartElement() xml.StartElement {
 		}
 	}
 
-	return xml.StartElement{Name: name, Attr: attrs}
+	return xml.StartElement{
+		Name: name,
+		Attr: attrs,
+	}
 }
 
 // writeStartElement writes the opening tag to the writer.
-func (b *BaseElement) writeStartElement(w io.Writer, selfClose bool) error {
+func (b *BaseElement) writeStartElement(
+	w io.Writer,
+	selfClose bool,
+) error {
 	var buf bytes.Buffer
 	buf.WriteByte('<')
 
@@ -164,11 +193,14 @@ func (b *BaseElement) writeStartElement(w io.Writer, selfClose bool) error {
 	buf.WriteString(b.qname.LocalName())
 
 	// Write namespace declaration if this is a root element or has a different namespace
-	if b.prefix != "" && b.qname.NamespaceURI() != "" {
+	if b.prefix != "" &&
+		b.qname.NamespaceURI() != "" {
 		buf.WriteString(" xmlns:")
 		buf.WriteString(b.prefix)
 		buf.WriteString("=\"")
-		buf.WriteString(escapeXmlAttr(b.qname.NamespaceURI()))
+		buf.WriteString(
+			escapeXmlAttr(b.qname.NamespaceURI()),
+		)
 		buf.WriteByte('"')
 	}
 
@@ -181,7 +213,9 @@ func (b *BaseElement) writeStartElement(w io.Writer, selfClose bool) error {
 		}
 		buf.WriteString(attr.LocalName())
 		buf.WriteString("=\"")
-		buf.WriteString(escapeXmlAttr(attr.Value()))
+		buf.WriteString(
+			escapeXmlAttr(attr.Value()),
+		)
 		buf.WriteByte('"')
 	}
 
@@ -196,7 +230,9 @@ func (b *BaseElement) writeStartElement(w io.Writer, selfClose bool) error {
 }
 
 // writeEndElement writes the closing tag to the writer.
-func (b *BaseElement) writeEndElement(w io.Writer) error {
+func (b *BaseElement) writeEndElement(
+	w io.Writer,
+) error {
 	var buf bytes.Buffer
 	buf.WriteString("</")
 	if b.prefix != "" {
@@ -251,7 +287,10 @@ func escapeXmlText(s string) string {
 
 // copyBaseElement copies the base element fields.
 func (b *BaseElement) copyBaseElement() BaseElement {
-	attrs := make([]OpenXmlAttribute, len(b.attributes))
+	attrs := make(
+		[]OpenXmlAttribute,
+		len(b.attributes),
+	)
 	copy(attrs, b.attributes)
 
 	return BaseElement{

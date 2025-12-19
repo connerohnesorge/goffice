@@ -39,7 +39,10 @@ type Relationship struct {
 }
 
 // NewRelationship creates a new relationship with the given parameters.
-func NewRelationship(id, relType, target string, targetMode TargetMode) *Relationship {
+func NewRelationship(
+	id, relType, target string,
+	targetMode TargetMode,
+) *Relationship {
 	return &Relationship{
 		id:         id,
 		relType:    relType,
@@ -70,14 +73,16 @@ func (r *Relationship) TargetMode() TargetMode {
 
 // Relationships manages a collection of relationships for a source part.
 type Relationships struct {
-	mu       sync.RWMutex
-	rels     map[string]*Relationship // id -> relationship
+	mu        sync.RWMutex
+	rels      map[string]*Relationship // id -> relationship
 	sourceURI string                   // URI of the source part (or "/" for package-level)
-	nextID   int                      // for auto-generating IDs
+	nextID    int                      // for auto-generating IDs
 }
 
 // NewRelationships creates a new Relationships collection for the given source URI.
-func NewRelationships(sourceURI string) *Relationships {
+func NewRelationships(
+	sourceURI string,
+) *Relationships {
 	return &Relationships{
 		rels:      make(map[string]*Relationship),
 		sourceURI: sourceURI,
@@ -93,14 +98,24 @@ func (rs *Relationships) SourceURI() string {
 // Create creates a new relationship with the given parameters.
 // If id is empty, an auto-generated ID will be used.
 // Returns ErrRelationshipExists if a relationship with the same ID already exists.
-func (rs *Relationships) Create(target, relType, id string) (*Relationship, error) {
-	return rs.CreateWithMode(target, relType, id, TargetModeInternal)
+func (rs *Relationships) Create(
+	target, relType, id string,
+) (*Relationship, error) {
+	return rs.CreateWithMode(
+		target,
+		relType,
+		id,
+		TargetModeInternal,
+	)
 }
 
 // CreateWithMode creates a new relationship with the given parameters and target mode.
 // If id is empty, an auto-generated ID will be used.
 // Returns ErrRelationshipExists if a relationship with the same ID already exists.
-func (rs *Relationships) CreateWithMode(target, relType, id string, mode TargetMode) (*Relationship, error) {
+func (rs *Relationships) CreateWithMode(
+	target, relType, id string,
+	mode TargetMode,
+) (*Relationship, error) {
 	rs.mu.Lock()
 	defer rs.mu.Unlock()
 
@@ -114,7 +129,12 @@ func (rs *Relationships) CreateWithMode(target, relType, id string, mode TargetM
 		return nil, ErrRelationshipExists
 	}
 
-	rel := NewRelationship(id, relType, target, mode)
+	rel := NewRelationship(
+		id,
+		relType,
+		target,
+		mode,
+	)
 	rs.rels[id] = rel
 
 	return rel, nil
@@ -133,7 +153,9 @@ func (rs *Relationships) generateID() string {
 
 // Get returns the relationship with the given ID.
 // Returns ErrRelationshipNotFound if no such relationship exists.
-func (rs *Relationships) Get(id string) (*Relationship, error) {
+func (rs *Relationships) Get(
+	id string,
+) (*Relationship, error) {
 	rs.mu.RLock()
 	defer rs.mu.RUnlock()
 
@@ -158,7 +180,9 @@ func (rs *Relationships) Delete(id string) error {
 }
 
 // ByType returns an iterator over all relationships of the given type.
-func (rs *Relationships) ByType(relType string) iter.Seq[*Relationship] {
+func (rs *Relationships) ByType(
+	relType string,
+) iter.Seq[*Relationship] {
 	return func(yield func(*Relationship) bool) {
 		rs.mu.RLock()
 		defer rs.mu.RUnlock()
@@ -231,7 +255,10 @@ func (rs *Relationships) MarshalToXML() ([]byte, error) {
 		if rel.targetMode == TargetModeExternal {
 			xmlRel.TargetMode = "External"
 		}
-		xmlRels.Relationships = append(xmlRels.Relationships, xmlRel)
+		xmlRels.Relationships = append(
+			xmlRels.Relationships,
+			xmlRel,
+		)
 	}
 
 	var buf bytes.Buffer
@@ -247,7 +274,9 @@ func (rs *Relationships) MarshalToXML() ([]byte, error) {
 }
 
 // UnmarshalFromXML deserializes the Relationships from XML.
-func (rs *Relationships) UnmarshalFromXML(r io.Reader) error {
+func (rs *Relationships) UnmarshalFromXML(
+	r io.Reader,
+) error {
 	rs.mu.Lock()
 	defer rs.mu.Unlock()
 
@@ -267,7 +296,12 @@ func (rs *Relationships) UnmarshalFromXML(r io.Reader) error {
 			mode = TargetModeExternal
 		}
 
-		rel := NewRelationship(xmlRel.ID, xmlRel.Type, xmlRel.Target, mode)
+		rel := NewRelationship(
+			xmlRel.ID,
+			xmlRel.Type,
+			xmlRel.Target,
+			mode,
+		)
 		rs.rels[xmlRel.ID] = rel
 
 		// Track highest ID for auto-generation

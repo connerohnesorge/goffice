@@ -61,7 +61,9 @@ func (cp *CoreProperties) Subject() string {
 }
 
 // SetSubject sets the document subject.
-func (cp *CoreProperties) SetSubject(subject string) {
+func (cp *CoreProperties) SetSubject(
+	subject string,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.subject = subject
@@ -75,7 +77,9 @@ func (cp *CoreProperties) Creator() string {
 }
 
 // SetCreator sets the document creator (author).
-func (cp *CoreProperties) SetCreator(creator string) {
+func (cp *CoreProperties) SetCreator(
+	creator string,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.creator = creator
@@ -89,7 +93,9 @@ func (cp *CoreProperties) Keywords() string {
 }
 
 // SetKeywords sets the document keywords.
-func (cp *CoreProperties) SetKeywords(keywords string) {
+func (cp *CoreProperties) SetKeywords(
+	keywords string,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.keywords = keywords
@@ -103,7 +109,9 @@ func (cp *CoreProperties) Description() string {
 }
 
 // SetDescription sets the document description (comments).
-func (cp *CoreProperties) SetDescription(description string) {
+func (cp *CoreProperties) SetDescription(
+	description string,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.description = description
@@ -117,7 +125,9 @@ func (cp *CoreProperties) Language() string {
 }
 
 // SetLanguage sets the document language.
-func (cp *CoreProperties) SetLanguage(language string) {
+func (cp *CoreProperties) SetLanguage(
+	language string,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.language = language
@@ -131,7 +141,9 @@ func (cp *CoreProperties) LastModifiedBy() string {
 }
 
 // SetLastModifiedBy sets the last modifier.
-func (cp *CoreProperties) SetLastModifiedBy(name string) {
+func (cp *CoreProperties) SetLastModifiedBy(
+	name string,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.lastModifiedBy = name
@@ -145,7 +157,9 @@ func (cp *CoreProperties) Revision() string {
 }
 
 // SetRevision sets the document revision number.
-func (cp *CoreProperties) SetRevision(revision string) {
+func (cp *CoreProperties) SetRevision(
+	revision string,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.revision = revision
@@ -159,7 +173,9 @@ func (cp *CoreProperties) Category() string {
 }
 
 // SetCategory sets the document category.
-func (cp *CoreProperties) SetCategory(category string) {
+func (cp *CoreProperties) SetCategory(
+	category string,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.category = category
@@ -173,7 +189,9 @@ func (cp *CoreProperties) ContentStatus() string {
 }
 
 // SetContentStatus sets the document content status.
-func (cp *CoreProperties) SetContentStatus(status string) {
+func (cp *CoreProperties) SetContentStatus(
+	status string,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.contentStatus = status
@@ -187,7 +205,9 @@ func (cp *CoreProperties) Created() *time.Time {
 }
 
 // SetCreated sets the document creation date/time.
-func (cp *CoreProperties) SetCreated(t time.Time) {
+func (cp *CoreProperties) SetCreated(
+	t time.Time,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.created = &t
@@ -201,7 +221,9 @@ func (cp *CoreProperties) Modified() *time.Time {
 }
 
 // SetModified sets the document modification date/time.
-func (cp *CoreProperties) SetModified(t time.Time) {
+func (cp *CoreProperties) SetModified(
+	t time.Time,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.modified = &t
@@ -215,7 +237,9 @@ func (cp *CoreProperties) LastPrinted() *time.Time {
 }
 
 // SetLastPrinted sets the document last printed date/time.
-func (cp *CoreProperties) SetLastPrinted(t time.Time) {
+func (cp *CoreProperties) SetLastPrinted(
+	t time.Time,
+) {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 	cp.lastPrinted = &t
@@ -232,20 +256,20 @@ const (
 // XML types for core properties serialization
 // Using fully qualified namespace URIs for proper XML namespace handling
 type xmlCoreProperties struct {
-	XMLName        xml.Name         `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties coreProperties"`
-	Title          string           `xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
-	Subject        string           `xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
-	Creator        string           `xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
-	Keywords       string           `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties keywords,omitempty"`
-	Description    string           `xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
-	Language       string           `xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
-	LastModifiedBy string           `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties lastModifiedBy,omitempty"`
-	Revision       string           `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties revision,omitempty"`
-	Category       string           `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties category,omitempty"`
-	ContentStatus  string           `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties contentStatus,omitempty"`
-	Created        *xmlDCTermsDate  `xml:"http://purl.org/dc/terms/ created,omitempty"`
-	Modified       *xmlDCTermsDate  `xml:"http://purl.org/dc/terms/ modified,omitempty"`
-	LastPrinted    string           `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties lastPrinted,omitempty"`
+	XMLName        xml.Name        `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties coreProperties"`
+	Title          string          `xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
+	Subject        string          `xml:"http://purl.org/dc/elements/1.1/ subject,omitempty"`
+	Creator        string          `xml:"http://purl.org/dc/elements/1.1/ creator,omitempty"`
+	Keywords       string          `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties keywords,omitempty"`
+	Description    string          `xml:"http://purl.org/dc/elements/1.1/ description,omitempty"`
+	Language       string          `xml:"http://purl.org/dc/elements/1.1/ language,omitempty"`
+	LastModifiedBy string          `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties lastModifiedBy,omitempty"`
+	Revision       string          `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties revision,omitempty"`
+	Category       string          `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties category,omitempty"`
+	ContentStatus  string          `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties contentStatus,omitempty"`
+	Created        *xmlDCTermsDate `xml:"http://purl.org/dc/terms/ created,omitempty"`
+	Modified       *xmlDCTermsDate `xml:"http://purl.org/dc/terms/ modified,omitempty"`
+	LastPrinted    string          `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties lastPrinted,omitempty"`
 }
 
 type xmlDCTermsDate struct {
@@ -273,20 +297,26 @@ func (cp *CoreProperties) MarshalToXML() ([]byte, error) {
 
 	if cp.created != nil {
 		xmlCP.Created = &xmlDCTermsDate{
-			Type:  "dcterms:W3CDTF",
-			Value: cp.created.Format(time.RFC3339),
+			Type: "dcterms:W3CDTF",
+			Value: cp.created.Format(
+				time.RFC3339,
+			),
 		}
 	}
 
 	if cp.modified != nil {
 		xmlCP.Modified = &xmlDCTermsDate{
-			Type:  "dcterms:W3CDTF",
-			Value: cp.modified.Format(time.RFC3339),
+			Type: "dcterms:W3CDTF",
+			Value: cp.modified.Format(
+				time.RFC3339,
+			),
 		}
 	}
 
 	if cp.lastPrinted != nil {
-		xmlCP.LastPrinted = cp.lastPrinted.Format(time.RFC3339)
+		xmlCP.LastPrinted = cp.lastPrinted.Format(
+			time.RFC3339,
+		)
 	}
 
 	var buf bytes.Buffer
@@ -302,7 +332,9 @@ func (cp *CoreProperties) MarshalToXML() ([]byte, error) {
 }
 
 // UnmarshalFromXML deserializes the CoreProperties from XML.
-func (cp *CoreProperties) UnmarshalFromXML(r io.Reader) error {
+func (cp *CoreProperties) UnmarshalFromXML(
+	r io.Reader,
+) error {
 	cp.mu.Lock()
 	defer cp.mu.Unlock()
 
@@ -323,13 +355,15 @@ func (cp *CoreProperties) UnmarshalFromXML(r io.Reader) error {
 	cp.category = xmlCP.Category
 	cp.contentStatus = xmlCP.ContentStatus
 
-	if xmlCP.Created != nil && xmlCP.Created.Value != "" {
+	if xmlCP.Created != nil &&
+		xmlCP.Created.Value != "" {
 		if t, err := time.Parse(time.RFC3339, xmlCP.Created.Value); err == nil {
 			cp.created = &t
 		}
 	}
 
-	if xmlCP.Modified != nil && xmlCP.Modified.Value != "" {
+	if xmlCP.Modified != nil &&
+		xmlCP.Modified.Value != "" {
 		if t, err := time.Parse(time.RFC3339, xmlCP.Modified.Value); err == nil {
 			cp.modified = &t
 		}

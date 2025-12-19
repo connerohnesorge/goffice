@@ -43,7 +43,11 @@ type Fonts struct {
 
 // NewFonts creates a new Fonts element.
 func NewFonts() *Fonts {
-	elem := openxml.NewCompositeElement(NamespaceWML, "fonts", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"fonts",
+		PrefixW,
+	)
 	return &Fonts{CompositeElementBase: elem}
 }
 
@@ -51,7 +55,8 @@ func NewFonts() *Fonts {
 func (f *Fonts) Fonts() iter.Seq[*Font] {
 	return func(yield func(*Font) bool) {
 		for child := range f.Children() {
-			if child.LocalName() == "font" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "font" &&
+				child.NamespaceURI() == NamespaceWML {
 				var font *Font
 				if fn, ok := child.(*Font); ok {
 					font = fn
@@ -102,7 +107,9 @@ func (f *Fonts) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Fonts element.
-func (f *Fonts) CloneNode(deep bool) openxml.Element {
+func (f *Fonts) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Fonts{
 		CompositeElementBase: f.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -115,13 +122,20 @@ type Font struct {
 
 // NewFont creates a new Font element.
 func NewFont() *Font {
-	elem := openxml.NewCompositeElement(NamespaceWML, "font", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"font",
+		PrefixW,
+	)
 	return &Font{CompositeElementBase: elem}
 }
 
 // Name returns the font name.
 func (fn *Font) Name() string {
-	attr, found := fn.GetAttribute("name", NamespaceWML)
+	attr, found := fn.GetAttribute(
+		"name",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -130,7 +144,14 @@ func (fn *Font) Name() string {
 
 // SetName sets the font name.
 func (fn *Font) SetName(name string) {
-	fn.SetAttribute(openxml.NewAttribute(NamespaceWML, "name", PrefixW, name))
+	fn.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"name",
+			PrefixW,
+			name,
+		),
+	)
 }
 
 // Charset returns the font character set.
@@ -139,7 +160,10 @@ func (fn *Font) Charset() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -153,7 +177,14 @@ func (fn *Font) SetCharset(charset string) {
 		return
 	}
 	elem := fn.getOrCreateElement("charset")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, charset))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			charset,
+		),
+	)
 }
 
 // Family returns the font family.
@@ -162,7 +193,10 @@ func (fn *Font) Family() FontFamilyValue {
 	if elem == nil {
 		return FontFamilyAuto
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return FontFamilyAuto
 	}
@@ -170,13 +204,22 @@ func (fn *Font) Family() FontFamilyValue {
 }
 
 // SetFamily sets the font family.
-func (fn *Font) SetFamily(family FontFamilyValue) {
+func (fn *Font) SetFamily(
+	family FontFamilyValue,
+) {
 	if family == FontFamilyAuto {
 		fn.removeElement("family")
 		return
 	}
 	elem := fn.getOrCreateElement("family")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(family)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(family),
+		),
+	)
 }
 
 // Pitch returns the font pitch.
@@ -185,7 +228,10 @@ func (fn *Font) Pitch() FontPitchValue {
 	if elem == nil {
 		return FontPitchDefault
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return FontPitchDefault
 	}
@@ -199,7 +245,14 @@ func (fn *Font) SetPitch(pitch FontPitchValue) {
 		return
 	}
 	elem := fn.getOrCreateElement("pitch")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(pitch)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(pitch),
+		),
+	)
 }
 
 // Panose1 returns the Panose-1 number for the font.
@@ -208,7 +261,10 @@ func (fn *Font) Panose1() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -222,7 +278,14 @@ func (fn *Font) SetPanose1(panose string) {
 		return
 	}
 	elem := fn.getOrCreateElement("panose1")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, panose))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			panose,
+		),
+	)
 }
 
 // AltName returns the alternate font name.
@@ -231,7 +294,10 @@ func (fn *Font) AltName() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -245,12 +311,22 @@ func (fn *Font) SetAltName(name string) {
 		return
 	}
 	elem := fn.getOrCreateElement("altName")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, name))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			name,
+		),
+	)
 }
 
 // EmbedRegular returns the embedded regular font, or nil if not present.
 func (fn *Font) EmbedRegular() *EmbedFont {
-	elem := fn.GetElement("embedRegular", NamespaceWML)
+	elem := fn.GetElement(
+		"embedRegular",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -258,7 +334,10 @@ func (fn *Font) EmbedRegular() *EmbedFont {
 		return ef
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &EmbedFont{CompositeElementBase: comp, fontStyle: "embedRegular"}
+		return &EmbedFont{
+			CompositeElementBase: comp,
+			fontStyle:            "embedRegular",
+		}
 	}
 	return nil
 }
@@ -276,7 +355,10 @@ func (fn *Font) GetOrCreateEmbedRegular() *EmbedFont {
 
 // EmbedBold returns the embedded bold font, or nil if not present.
 func (fn *Font) EmbedBold() *EmbedFont {
-	elem := fn.GetElement("embedBold", NamespaceWML)
+	elem := fn.GetElement(
+		"embedBold",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -284,7 +366,10 @@ func (fn *Font) EmbedBold() *EmbedFont {
 		return ef
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &EmbedFont{CompositeElementBase: comp, fontStyle: "embedBold"}
+		return &EmbedFont{
+			CompositeElementBase: comp,
+			fontStyle:            "embedBold",
+		}
 	}
 	return nil
 }
@@ -302,7 +387,10 @@ func (fn *Font) GetOrCreateEmbedBold() *EmbedFont {
 
 // EmbedItalic returns the embedded italic font, or nil if not present.
 func (fn *Font) EmbedItalic() *EmbedFont {
-	elem := fn.GetElement("embedItalic", NamespaceWML)
+	elem := fn.GetElement(
+		"embedItalic",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -310,7 +398,10 @@ func (fn *Font) EmbedItalic() *EmbedFont {
 		return ef
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &EmbedFont{CompositeElementBase: comp, fontStyle: "embedItalic"}
+		return &EmbedFont{
+			CompositeElementBase: comp,
+			fontStyle:            "embedItalic",
+		}
 	}
 	return nil
 }
@@ -328,7 +419,10 @@ func (fn *Font) GetOrCreateEmbedItalic() *EmbedFont {
 
 // EmbedBoldItalic returns the embedded bold italic font, or nil if not present.
 func (fn *Font) EmbedBoldItalic() *EmbedFont {
-	elem := fn.GetElement("embedBoldItalic", NamespaceWML)
+	elem := fn.GetElement(
+		"embedBoldItalic",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -336,7 +430,10 @@ func (fn *Font) EmbedBoldItalic() *EmbedFont {
 		return ef
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &EmbedFont{CompositeElementBase: comp, fontStyle: "embedBoldItalic"}
+		return &EmbedFont{
+			CompositeElementBase: comp,
+			fontStyle:            "embedBoldItalic",
+		}
 	}
 	return nil
 }
@@ -362,7 +459,9 @@ func (fn *Font) Sig() *FontSig {
 		return fs
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &FontSig{CompositeElementBase: comp}
+		return &FontSig{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -380,12 +479,18 @@ func (fn *Font) GetOrCreateSig() *FontSig {
 
 // Helper methods
 
-func (fn *Font) getOrCreateElement(name string) openxml.Element {
+func (fn *Font) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := fn.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	fn.AppendChild(newElem)
 	return newElem
 }
@@ -405,7 +510,9 @@ func (fn *Font) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Font element.
-func (fn *Font) CloneNode(deep bool) openxml.Element {
+func (fn *Font) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Font{
 		CompositeElementBase: fn.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -419,14 +526,24 @@ type EmbedFont struct {
 
 // NewEmbedFont creates a new EmbedFont element with the specified style.
 func NewEmbedFont(style string) *EmbedFont {
-	elem := openxml.NewCompositeElement(NamespaceWML, style, PrefixW)
-	return &EmbedFont{CompositeElementBase: elem, fontStyle: style}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		style,
+		PrefixW,
+	)
+	return &EmbedFont{
+		CompositeElementBase: elem,
+		fontStyle:            style,
+	}
 }
 
 // RelationshipId returns the relationship ID for the embedded font.
 func (ef *EmbedFont) RelationshipId() string {
 	// The r:id attribute is in the relationships namespace
-	attr, found := ef.GetAttribute("id", openxml.NamespaceRelationships)
+	attr, found := ef.GetAttribute(
+		"id",
+		openxml.NamespaceRelationships,
+	)
 	if !found {
 		return ""
 	}
@@ -434,13 +551,25 @@ func (ef *EmbedFont) RelationshipId() string {
 }
 
 // SetRelationshipId sets the relationship ID for the embedded font.
-func (ef *EmbedFont) SetRelationshipId(id string) {
-	ef.SetAttribute(openxml.NewAttribute(openxml.NamespaceRelationships, "id", "r", id))
+func (ef *EmbedFont) SetRelationshipId(
+	id string,
+) {
+	ef.SetAttribute(
+		openxml.NewAttribute(
+			openxml.NamespaceRelationships,
+			"id",
+			"r",
+			id,
+		),
+	)
 }
 
 // FontKey returns the font key (GUID) for the embedded font.
 func (ef *EmbedFont) FontKey() string {
-	attr, found := ef.GetAttribute("fontKey", NamespaceWML)
+	attr, found := ef.GetAttribute(
+		"fontKey",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -450,15 +579,28 @@ func (ef *EmbedFont) FontKey() string {
 // SetFontKey sets the font key (GUID) for the embedded font.
 func (ef *EmbedFont) SetFontKey(key string) {
 	if key == "" {
-		ef.RemoveAttribute("fontKey", NamespaceWML)
+		ef.RemoveAttribute(
+			"fontKey",
+			NamespaceWML,
+		)
 		return
 	}
-	ef.SetAttribute(openxml.NewAttribute(NamespaceWML, "fontKey", PrefixW, key))
+	ef.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"fontKey",
+			PrefixW,
+			key,
+		),
+	)
 }
 
 // SubsetFontLicensing returns the subset font licensing value.
 func (ef *EmbedFont) SubsetFontLicensing() string {
-	attr, found := ef.GetAttribute("subsetted", NamespaceWML)
+	attr, found := ef.GetAttribute(
+		"subsetted",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -474,7 +616,9 @@ func (ef *EmbedFont) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this EmbedFont element.
-func (ef *EmbedFont) CloneNode(deep bool) openxml.Element {
+func (ef *EmbedFont) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &EmbedFont{
 		CompositeElementBase: ef.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 		fontStyle:            ef.fontStyle,
@@ -488,13 +632,20 @@ type FontSig struct {
 
 // NewFontSig creates a new FontSig element.
 func NewFontSig() *FontSig {
-	elem := openxml.NewCompositeElement(NamespaceWML, "sig", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"sig",
+		PrefixW,
+	)
 	return &FontSig{CompositeElementBase: elem}
 }
 
 // Usb0 returns the first Unicode subset bitfield.
 func (fs *FontSig) Usb0() string {
-	attr, found := fs.GetAttribute("usb0", NamespaceWML)
+	attr, found := fs.GetAttribute(
+		"usb0",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -503,12 +654,22 @@ func (fs *FontSig) Usb0() string {
 
 // SetUsb0 sets the first Unicode subset bitfield.
 func (fs *FontSig) SetUsb0(val string) {
-	fs.SetAttribute(openxml.NewAttribute(NamespaceWML, "usb0", PrefixW, val))
+	fs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"usb0",
+			PrefixW,
+			val,
+		),
+	)
 }
 
 // Usb1 returns the second Unicode subset bitfield.
 func (fs *FontSig) Usb1() string {
-	attr, found := fs.GetAttribute("usb1", NamespaceWML)
+	attr, found := fs.GetAttribute(
+		"usb1",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -517,12 +678,22 @@ func (fs *FontSig) Usb1() string {
 
 // SetUsb1 sets the second Unicode subset bitfield.
 func (fs *FontSig) SetUsb1(val string) {
-	fs.SetAttribute(openxml.NewAttribute(NamespaceWML, "usb1", PrefixW, val))
+	fs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"usb1",
+			PrefixW,
+			val,
+		),
+	)
 }
 
 // Usb2 returns the third Unicode subset bitfield.
 func (fs *FontSig) Usb2() string {
-	attr, found := fs.GetAttribute("usb2", NamespaceWML)
+	attr, found := fs.GetAttribute(
+		"usb2",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -531,12 +702,22 @@ func (fs *FontSig) Usb2() string {
 
 // SetUsb2 sets the third Unicode subset bitfield.
 func (fs *FontSig) SetUsb2(val string) {
-	fs.SetAttribute(openxml.NewAttribute(NamespaceWML, "usb2", PrefixW, val))
+	fs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"usb2",
+			PrefixW,
+			val,
+		),
+	)
 }
 
 // Usb3 returns the fourth Unicode subset bitfield.
 func (fs *FontSig) Usb3() string {
-	attr, found := fs.GetAttribute("usb3", NamespaceWML)
+	attr, found := fs.GetAttribute(
+		"usb3",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -545,12 +726,22 @@ func (fs *FontSig) Usb3() string {
 
 // SetUsb3 sets the fourth Unicode subset bitfield.
 func (fs *FontSig) SetUsb3(val string) {
-	fs.SetAttribute(openxml.NewAttribute(NamespaceWML, "usb3", PrefixW, val))
+	fs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"usb3",
+			PrefixW,
+			val,
+		),
+	)
 }
 
 // Csb0 returns the first code page bitfield.
 func (fs *FontSig) Csb0() string {
-	attr, found := fs.GetAttribute("csb0", NamespaceWML)
+	attr, found := fs.GetAttribute(
+		"csb0",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -559,12 +750,22 @@ func (fs *FontSig) Csb0() string {
 
 // SetCsb0 sets the first code page bitfield.
 func (fs *FontSig) SetCsb0(val string) {
-	fs.SetAttribute(openxml.NewAttribute(NamespaceWML, "csb0", PrefixW, val))
+	fs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"csb0",
+			PrefixW,
+			val,
+		),
+	)
 }
 
 // Csb1 returns the second code page bitfield.
 func (fs *FontSig) Csb1() string {
-	attr, found := fs.GetAttribute("csb1", NamespaceWML)
+	attr, found := fs.GetAttribute(
+		"csb1",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -573,7 +774,14 @@ func (fs *FontSig) Csb1() string {
 
 // SetCsb1 sets the second code page bitfield.
 func (fs *FontSig) SetCsb1(val string) {
-	fs.SetAttribute(openxml.NewAttribute(NamespaceWML, "csb1", PrefixW, val))
+	fs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"csb1",
+			PrefixW,
+			val,
+		),
+	)
 }
 
 // Clone creates a deep copy of this FontSig element.
@@ -584,7 +792,9 @@ func (fs *FontSig) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this FontSig element.
-func (fs *FontSig) CloneNode(deep bool) openxml.Element {
+func (fs *FontSig) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &FontSig{
 		CompositeElementBase: fs.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

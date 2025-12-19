@@ -19,7 +19,10 @@ type Part struct {
 }
 
 // newPart creates a new Part with the given URI and content type.
-func newPart(uri, contentType string, pkg *Package) *Part {
+func newPart(
+	uri, contentType string,
+	pkg *Package,
+) *Part {
 	return &Part{
 		uri:         NormalizeURI(uri),
 		contentType: contentType,
@@ -134,15 +137,24 @@ func (p *Part) Relationships() *Relationships {
 }
 
 // CreateRelationship creates a relationship from this part to a target.
-func (p *Part) CreateRelationship(target, relType, id string) (*Relationship, error) {
+func (p *Part) CreateRelationship(
+	target, relType, id string,
+) (*Relationship, error) {
 	if p.pkg == nil {
 		return nil, ErrPackageClosed
 	}
-	return p.pkg.CreatePartRelationship(p.uri, target, relType, id)
+	return p.pkg.CreatePartRelationship(
+		p.uri,
+		target,
+		relType,
+		id,
+	)
 }
 
 // DeleteRelationship deletes a relationship from this part.
-func (p *Part) DeleteRelationship(id string) error {
+func (p *Part) DeleteRelationship(
+	id string,
+) error {
 	if p.pkg == nil {
 		return ErrPackageClosed
 	}

@@ -39,14 +39,20 @@ type OpenXmlPackage struct {
 }
 
 // NewOpenXmlPackage creates a new OpenXmlPackage wrapping the given OPC package.
-func NewOpenXmlPackage(pkg *packaging.Package) *OpenXmlPackage {
+func NewOpenXmlPackage(
+	pkg *packaging.Package,
+) *OpenXmlPackage {
 	oxp := &OpenXmlPackage{
 		pkg:               pkg,
 		featureCollection: features.NewFeatureCollection(),
-		parts:             make(map[string]OpenXmlPart),
-		partsByURI:        make(map[string]OpenXmlPart),
-		idGenerator:       NewRelationshipIDGenerator(),
-		isDirty:           false,
+		parts: make(
+			map[string]OpenXmlPart,
+		),
+		partsByURI: make(
+			map[string]OpenXmlPart,
+		),
+		idGenerator: NewRelationshipIDGenerator(),
+		isDirty:     false,
 	}
 
 	// Register package-level features
@@ -62,11 +68,17 @@ func NewOpenXmlPackage(pkg *packaging.Package) *OpenXmlPackage {
 func (p *OpenXmlPackage) registerFeatures() {
 	// Register IPackageFeature
 	pkgFeature := &packageFeature{pkg: p}
-	p.featureCollection.SetByType(reflect.TypeFor[features.IPackageFeature](), pkgFeature)
+	p.featureCollection.SetByType(
+		reflect.TypeFor[features.IPackageFeature](),
+		pkgFeature,
+	)
 
 	// Register IContentTypeFeature
 	ctFeature := &contentTypeFeature{pkg: p}
-	p.featureCollection.SetByType(reflect.TypeFor[features.IContentTypeFeature](), ctFeature)
+	p.featureCollection.SetByType(
+		reflect.TypeFor[features.IContentTypeFeature](),
+		ctFeature,
+	)
 }
 
 // loadParts loads OpenXmlParts from the underlying OPC package.
@@ -85,7 +97,10 @@ func (p *OpenXmlPackage) loadParts() {
 		p.idGenerator.Reserve(rel.ID())
 
 		// Resolve target URI
-		targetURI := packaging.ResolvePartURI("/", rel.Target())
+		targetURI := packaging.ResolvePartURI(
+			"/",
+			rel.Target(),
+		)
 
 		// Get the underlying packaging part
 		packPart, err := p.pkg.Part(targetURI)
@@ -95,7 +110,8 @@ func (p *OpenXmlPackage) loadParts() {
 
 		// Create OpenXmlPart based on relationship type or content type
 		var part OpenXmlPart
-		if info, ok := GetPartTypeByRelationship(rel.Type()); ok && info.Factory != nil {
+		if info, ok := GetPartTypeByRelationship(rel.Type()); ok &&
+			info.Factory != nil {
 			part = info.Factory(targetURI, p)
 		} else {
 			part = NewOpenXmlPartData(targetURI, packPart.ContentType(), packPart, p)
@@ -110,7 +126,8 @@ func (p *OpenXmlPackage) loadParts() {
 		p.partsByURI[targetURI] = part
 
 		// Check if this is the main document part
-		if rel.Type() == RelationshipTypeOfficeDocument || rel.Type() == RelationshipTypeDocument {
+		if rel.Type() == RelationshipTypeOfficeDocument ||
+			rel.Type() == RelationshipTypeDocument {
 			p.mainPart = part
 		}
 	}
@@ -125,7 +142,9 @@ func (p *OpenXmlPackage) Package() *packaging.Package {
 
 // GetPackagingPart returns the underlying packaging.Part by its URI.
 // This method doesn't acquire locks and is safe to call during part loading.
-func (p *OpenXmlPackage) GetPackagingPart(uri string) *packaging.Part {
+func (p *OpenXmlPackage) GetPackagingPart(
+	uri string,
+) *packaging.Part {
 	// Don't acquire locks - this is called during initialization
 	// The caller (loadParts) already holds the write lock
 	if p.pkg == nil {
@@ -163,7 +182,9 @@ func (p *OpenXmlPackage) Parts() iter.Seq[OpenXmlPart] {
 }
 
 // GetPartById returns a part by its relationship ID.
-func (p *OpenXmlPackage) GetPartById(id string) (OpenXmlPart, error) {
+func (p *OpenXmlPackage) GetPartById(
+	id string,
+) (OpenXmlPart, error) {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 
@@ -175,7 +196,9 @@ func (p *OpenXmlPackage) GetPartById(id string) (OpenXmlPart, error) {
 }
 
 // GetPartByURI returns a part by its URI.
-func (p *OpenXmlPackage) GetPartByURI(uri string) (OpenXmlPart, error) {
+func (p *OpenXmlPackage) GetPartByURI(
+	uri string,
+) (OpenXmlPart, error) {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 
@@ -188,7 +211,9 @@ func (p *OpenXmlPackage) GetPartByURI(uri string) (OpenXmlPart, error) {
 }
 
 // GetPartsOfType returns an iterator over parts of a specific content type.
-func (p *OpenXmlPackage) GetPartsOfType(contentType string) iter.Seq[OpenXmlPart] {
+func (p *OpenXmlPackage) GetPartsOfType(
+	contentType string,
+) iter.Seq[OpenXmlPart] {
 	return func(yield func(OpenXmlPart) bool) {
 		p.mu.RLock()
 		defer p.mu.RUnlock()
@@ -204,7 +229,10 @@ func (p *OpenXmlPackage) GetPartsOfType(contentType string) iter.Seq[OpenXmlPart
 }
 
 // AddPart adds a part to the package with the given relationship ID.
-func (p *OpenXmlPackage) AddPart(part OpenXmlPart, id string) error {
+func (p *OpenXmlPackage) AddPart(
+	part OpenXmlPart,
+	id string,
+) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -215,7 +243,9 @@ func (p *OpenXmlPackage) AddPart(part OpenXmlPart, id string) error {
 	}
 
 	// Check if part already exists
-	normalizedURI := packaging.NormalizeURI(part.URI())
+	normalizedURI := packaging.NormalizeURI(
+		part.URI(),
+	)
 	if _, exists := p.partsByURI[normalizedURI]; exists {
 		return ErrPartExists
 	}
@@ -233,7 +263,9 @@ func (p *OpenXmlPackage) AddPart(part OpenXmlPart, id string) error {
 }
 
 // AddNewPart creates and adds a new part with the given URI, content type, and relationship type.
-func (p *OpenXmlPackage) AddNewPart(uri, contentType, relType string) (OpenXmlPart, error) {
+func (p *OpenXmlPackage) AddNewPart(
+	uri, contentType, relType string,
+) (OpenXmlPart, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -245,14 +277,18 @@ func (p *OpenXmlPackage) AddNewPart(uri, contentType, relType string) (OpenXmlPa
 	}
 
 	// Create the underlying OPC part
-	packPart, err := p.pkg.CreatePart(uri, contentType)
+	packPart, err := p.pkg.CreatePart(
+		uri,
+		contentType,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	// Create OpenXmlPart
 	var part OpenXmlPart
-	if info, ok := GetPartTypeByContentType(contentType); ok && info.Factory != nil {
+	if info, ok := GetPartTypeByContentType(contentType); ok &&
+		info.Factory != nil {
 		part = info.Factory(normalizedURI, p)
 	} else if info, ok := GetPartTypeByRelationship(relType); ok && info.Factory != nil {
 		part = info.Factory(normalizedURI, p)
@@ -273,7 +309,11 @@ func (p *OpenXmlPackage) AddNewPart(uri, contentType, relType string) (OpenXmlPa
 	if relType == "" {
 		relType = RelationshipTypeDocument
 	}
-	_, err = p.pkg.CreateRelationship(target, relType, id)
+	_, err = p.pkg.CreateRelationship(
+		target,
+		relType,
+		id,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -286,7 +326,9 @@ func (p *OpenXmlPackage) AddNewPart(uri, contentType, relType string) (OpenXmlPa
 }
 
 // DeletePart removes a part by its relationship ID.
-func (p *OpenXmlPackage) DeletePart(id string) error {
+func (p *OpenXmlPackage) DeletePart(
+	id string,
+) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -320,7 +362,9 @@ func (p *OpenXmlPackage) MainPart() OpenXmlPart {
 }
 
 // SetMainPart sets the main document part.
-func (p *OpenXmlPackage) SetMainPart(part OpenXmlPart) {
+func (p *OpenXmlPackage) SetMainPart(
+	part OpenXmlPart,
+) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	p.mainPart = part
@@ -337,7 +381,8 @@ func (p *OpenXmlPackage) IsDirty() bool {
 
 	// Check if any parts are dirty
 	for _, part := range p.parts {
-		if partData, ok := part.(*OpenXmlPartData); ok && partData.IsDirty() {
+		if partData, ok := part.(*OpenXmlPartData); ok &&
+			partData.IsDirty() {
 			return true
 		}
 	}
@@ -352,7 +397,8 @@ func (p *OpenXmlPackage) Save() error {
 
 	// Save all dirty parts
 	for _, part := range p.parts {
-		if partData, ok := part.(*OpenXmlPartData); ok && partData.IsDirty() {
+		if partData, ok := part.(*OpenXmlPartData); ok &&
+			partData.IsDirty() {
 			if err := partData.Save(); err != nil {
 				return err
 			}
@@ -369,13 +415,16 @@ func (p *OpenXmlPackage) Save() error {
 }
 
 // SaveAs saves the package to a new file path.
-func (p *OpenXmlPackage) SaveAs(path string) error {
+func (p *OpenXmlPackage) SaveAs(
+	path string,
+) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
 	// Save all dirty parts first
 	for _, part := range p.parts {
-		if partData, ok := part.(*OpenXmlPartData); ok && partData.IsDirty() {
+		if partData, ok := part.(*OpenXmlPartData); ok &&
+			partData.IsDirty() {
 			if err := partData.Save(); err != nil {
 				return err
 			}
@@ -434,9 +483,12 @@ func (f *packageFeature) Capabilities() features.PackageCapabilities {
 
 	cap := f.pkg.pkg.Capability()
 	return features.PackageCapabilities{
-		CanRead:  cap == packaging.Read || cap == packaging.ReadWrite,
-		CanWrite: cap == packaging.Write || cap == packaging.ReadWrite,
-		CanSave:  cap == packaging.Write || cap == packaging.ReadWrite,
+		CanRead: cap == packaging.Read ||
+			cap == packaging.ReadWrite,
+		CanWrite: cap == packaging.Write ||
+			cap == packaging.ReadWrite,
+		CanSave: cap == packaging.Write ||
+			cap == packaging.ReadWrite,
 	}
 }
 
@@ -450,7 +502,9 @@ type contentTypeFeature struct {
 func (f *contentTypeFeature) featureMarker() {}
 
 // GetContentType returns the content type for a part URI.
-func (f *contentTypeFeature) GetContentType(uri string) (string, error) {
+func (f *contentTypeFeature) GetContentType(
+	uri string,
+) (string, error) {
 	if f.pkg == nil || f.pkg.pkg == nil {
 		return "", ErrPartNotFound
 	}
@@ -464,7 +518,9 @@ func (f *contentTypeFeature) GetContentType(uri string) (string, error) {
 }
 
 // SetContentType sets the content type for a part URI.
-func (f *contentTypeFeature) SetContentType(uri, contentType string) error {
+func (f *contentTypeFeature) SetContentType(
+	uri, contentType string,
+) error {
 	if f.pkg == nil || f.pkg.pkg == nil {
 		return ErrPartNotFound
 	}
@@ -479,7 +535,9 @@ func (f *contentTypeFeature) SetContentType(uri, contentType string) error {
 }
 
 // RemoveContentType removes the content type for a part URI.
-func (f *contentTypeFeature) RemoveContentType(uri string) {
+func (f *contentTypeFeature) RemoveContentType(
+	uri string,
+) {
 	if f.pkg == nil || f.pkg.pkg == nil {
 		return
 	}
@@ -493,8 +551,8 @@ func (f *contentTypeFeature) RemoveContentType(uri string) {
 // mainPartFeature implements IMainPartFeature.
 type mainPartFeature struct {
 	features.FeatureBase
-	pkg             *OpenXmlPackage
-	contentType     string
+	pkg              *OpenXmlPackage
+	contentType      string
 	relationshipType string
 }
 
@@ -520,17 +578,25 @@ func (f *mainPartFeature) RelationshipType() string {
 }
 
 // SetMainPartInfo configures the main part feature with document-specific information.
-func (p *OpenXmlPackage) SetMainPartInfo(contentType, relationshipType string) {
+func (p *OpenXmlPackage) SetMainPartInfo(
+	contentType, relationshipType string,
+) {
 	feature := &mainPartFeature{
-		pkg:             p,
-		contentType:     contentType,
+		pkg:              p,
+		contentType:      contentType,
 		relationshipType: relationshipType,
 	}
-	p.featureCollection.SetByType(reflect.TypeFor[features.IMainPartFeature](), feature)
+	p.featureCollection.SetByType(
+		reflect.TypeFor[features.IMainPartFeature](),
+		feature,
+	)
 }
 
 // OpenPackage opens an existing OpenXML package from a file.
-func OpenPackage(path string, readOnly bool) (*OpenXmlPackage, error) {
+func OpenPackage(
+	path string,
+	readOnly bool,
+) (*OpenXmlPackage, error) {
 	pkg, err := packaging.Open(path, readOnly)
 	if err != nil {
 		return nil, err
@@ -540,7 +606,9 @@ func OpenPackage(path string, readOnly bool) (*OpenXmlPackage, error) {
 }
 
 // CreatePackage creates a new OpenXML package at the given path.
-func CreatePackage(path string) (*OpenXmlPackage, error) {
+func CreatePackage(
+	path string,
+) (*OpenXmlPackage, error) {
 	pkg, err := packaging.Create(path)
 	if err != nil {
 		return nil, err
@@ -550,7 +618,10 @@ func CreatePackage(path string) (*OpenXmlPackage, error) {
 }
 
 // OpenPackageFromReader opens an OpenXML package from an io.ReaderAt.
-func OpenPackageFromReader(r io.ReaderAt, size int64) (*OpenXmlPackage, error) {
+func OpenPackageFromReader(
+	r io.ReaderAt,
+	size int64,
+) (*OpenXmlPackage, error) {
 	pkg, err := packaging.OpenReader(r, size)
 	if err != nil {
 		return nil, err
@@ -560,4 +631,6 @@ func OpenPackageFromReader(r io.ReaderAt, size int64) (*OpenXmlPackage, error) {
 }
 
 // Ensure OpenXmlPackage implements OpenXmlPartContainer.
-var _ OpenXmlPartContainer = (*OpenXmlPackage)(nil)
+var _ OpenXmlPartContainer = (*OpenXmlPackage)(
+	nil,
+)

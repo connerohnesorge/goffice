@@ -18,15 +18,26 @@ const (
 )
 
 // newNumberingPart creates a new numbering definitions part.
-func newNumberingPart(mainPart *MainPart) (*NumberingPart, error) {
+func newNumberingPart(
+	mainPart *MainPart,
+) (*NumberingPart, error) {
 	uri := "/word/numbering.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeNumbering, RelationshipTypeNumbering)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeNumbering,
+		RelationshipTypeNumbering,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeNumbering, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeNumbering,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	np := &NumberingPart{
@@ -65,14 +76,18 @@ func (np *NumberingPart) Numbering() openxml.PartRootElement {
 
 // GetAbstractNum returns an abstract numbering definition by ID.
 // TODO: Implement proper AbstractNum element type.
-func (np *NumberingPart) GetAbstractNum(id int) interface{} {
+func (np *NumberingPart) GetAbstractNum(
+	id int,
+) interface{} {
 	// TODO: Parse numbering and find abstract num by ID
 	return nil
 }
 
 // GetNumInstance returns a numbering instance by ID.
 // TODO: Implement proper NumInstance element type.
-func (np *NumberingPart) GetNumInstance(id int) interface{} {
+func (np *NumberingPart) GetNumInstance(
+	id int,
+) interface{} {
 	// TODO: Parse numbering and find num instance by ID
 	return nil
 }
@@ -86,7 +101,10 @@ func (np *NumberingPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*NumberingPart)(nil)
 
 // NumberingPartFactory creates a NumberingPart from a URI and container.
-func NumberingPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func NumberingPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -97,7 +115,12 @@ func NumberingPartFactory(uri string, container openxml.OpenXmlPartContainer) op
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeNumbering, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeNumbering,
+		packPart,
+		container,
+	)
 	return &NumberingPart{
 		OpenXmlPartData: partData,
 	}
@@ -105,11 +128,13 @@ func NumberingPartFactory(uri string, container openxml.OpenXmlPartContainer) op
 
 // Register the NumberingPart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeNumbering,
-		RelationshipType:   RelationshipTypeNumbering,
-		Factory:            NumberingPartFactory,
-		DefaultURI:         "/word/numbering.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeNumbering,
+			RelationshipType:   RelationshipTypeNumbering,
+			Factory:            NumberingPartFactory,
+			DefaultURI:         "/word/numbering.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

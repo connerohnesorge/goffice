@@ -20,7 +20,9 @@ const PercentageScale = 1000
 
 // NewPercentageValue creates a new PercentageValue with the given raw value.
 // The value is in 1000-based format (50000 = 50%).
-func NewPercentageValue(value int64) *PercentageValue {
+func NewPercentageValue(
+	value int64,
+) *PercentageValue {
 	return &PercentageValue{
 		value:    value,
 		hasValue: true,
@@ -29,18 +31,26 @@ func NewPercentageValue(value int64) *PercentageValue {
 
 // NewPercentageValueFromPercent creates a new PercentageValue from a percentage.
 // For example, 50 creates a value representing 50%.
-func NewPercentageValueFromPercent(percent float64) *PercentageValue {
+func NewPercentageValueFromPercent(
+	percent float64,
+) *PercentageValue {
 	return &PercentageValue{
-		value:    int64(percent * PercentageScale),
+		value: int64(
+			percent * PercentageScale,
+		),
 		hasValue: true,
 	}
 }
 
 // NewPercentageValueFromFloat creates a new PercentageValue from a decimal.
 // For example, 0.5 creates a value representing 50%.
-func NewPercentageValueFromFloat(f float64) *PercentageValue {
+func NewPercentageValueFromFloat(
+	f float64,
+) *PercentageValue {
 	return &PercentageValue{
-		value:    int64(f * 100 * PercentageScale),
+		value: int64(
+			f * 100 * PercentageScale,
+		),
 		hasValue: true,
 	}
 }
@@ -72,7 +82,9 @@ func (pv *PercentageValue) ToFloat() float64 {
 	if !pv.hasValue {
 		return 0
 	}
-	return float64(pv.value) / (100 * PercentageScale)
+	return float64(
+		pv.value,
+	) / (100 * PercentageScale)
 }
 
 // ToPercent returns the percentage as a number (50 for 50%).
@@ -99,7 +111,9 @@ func (pv *PercentageValue) InnerText() string {
 
 // SetInnerText parses the value from a string.
 // Accepts either raw integer values (50000) or percentage strings (50%).
-func (pv *PercentageValue) SetInnerText(text string) error {
+func (pv *PercentageValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		pv.hasValue = false
 		pv.value = 0
@@ -110,12 +124,23 @@ func (pv *PercentageValue) SetInnerText(text string) error {
 
 	// Check if it's a percentage string (e.g., "50%")
 	if strings.HasSuffix(text, "%") {
-		percentStr := strings.TrimSuffix(text, "%")
-		percent, err := strconv.ParseFloat(percentStr, 64)
+		percentStr := strings.TrimSuffix(
+			text,
+			"%",
+		)
+		percent, err := strconv.ParseFloat(
+			percentStr,
+			64,
+		)
 		if err != nil {
-			return fmt.Errorf("invalid percentage value: %w", err)
+			return fmt.Errorf(
+				"invalid percentage value: %w",
+				err,
+			)
 		}
-		pv.value = int64(percent * PercentageScale)
+		pv.value = int64(
+			percent * PercentageScale,
+		)
 		pv.hasValue = true
 		return nil
 	}
@@ -123,7 +148,10 @@ func (pv *PercentageValue) SetInnerText(text string) error {
 	// Otherwise, parse as raw integer
 	v, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid percentage value: %w", err)
+		return fmt.Errorf(
+			"invalid percentage value: %w",
+			err,
+		)
 	}
 	pv.value = v
 	pv.hasValue = true

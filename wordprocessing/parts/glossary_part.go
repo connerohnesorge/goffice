@@ -19,15 +19,26 @@ const (
 )
 
 // newGlossaryPart creates a new glossary document part.
-func newGlossaryPart(mainPart *MainPart) (*GlossaryPart, error) {
+func newGlossaryPart(
+	mainPart *MainPart,
+) (*GlossaryPart, error) {
 	uri := "/word/glossary/document.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeGlossary, RelationshipTypeGlossary)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeGlossary,
+		RelationshipTypeGlossary,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeGlossary, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeGlossary,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	gp := &GlossaryPart{
@@ -74,7 +85,10 @@ func (gp *GlossaryPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*GlossaryPart)(nil)
 
 // GlossaryPartFactory creates a GlossaryPart from a URI and container.
-func GlossaryPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func GlossaryPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -85,7 +99,12 @@ func GlossaryPartFactory(uri string, container openxml.OpenXmlPartContainer) ope
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeGlossary, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeGlossary,
+		packPart,
+		container,
+	)
 	return &GlossaryPart{
 		OpenXmlPartData: partData,
 	}
@@ -93,11 +112,13 @@ func GlossaryPartFactory(uri string, container openxml.OpenXmlPartContainer) ope
 
 // Register the GlossaryPart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeGlossary,
-		RelationshipType:   RelationshipTypeGlossary,
-		Factory:            GlossaryPartFactory,
-		DefaultURI:         "/word/glossary/document.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeGlossary,
+			RelationshipType:   RelationshipTypeGlossary,
+			Factory:            GlossaryPartFactory,
+			DefaultURI:         "/word/glossary/document.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

@@ -5,7 +5,11 @@ package validation
 type Particle interface {
 	// Validate validates the given children against this particle.
 	// Returns validation errors and the number of children consumed.
-	Validate(ctx *ValidationContext, children []ElementInfo, path string) (errors []*ValidationError, consumed int)
+	Validate(
+		ctx *ValidationContext,
+		children []ElementInfo,
+		path string,
+	) (errors []*ValidationError, consumed int)
 
 	// MinOccurs returns the minimum number of times this particle must occur.
 	MinOccurs() int
@@ -40,12 +44,15 @@ type ElementMatcher struct {
 }
 
 // Matches returns true if the given element matches this matcher.
-func (m *ElementMatcher) Matches(info ElementInfo) bool {
+func (m *ElementMatcher) Matches(
+	info ElementInfo,
+) bool {
 	if m.LocalName != info.LocalName {
 		return false
 	}
 	// Empty namespace in matcher means any namespace is OK
-	if m.NamespaceURI != "" && m.NamespaceURI != info.NamespaceURI {
+	if m.NamespaceURI != "" &&
+		m.NamespaceURI != info.NamespaceURI {
 		return false
 	}
 	return true
@@ -66,6 +73,7 @@ type baseParticle struct {
 }
 
 func (p *baseParticle) MinOccurs() int { return p.minOccurs }
+
 func (p *baseParticle) MaxOccurs() int { return p.maxOccurs }
 
 // ElementParticle matches a single element type.
@@ -75,26 +83,44 @@ type ElementParticle struct {
 }
 
 // NewElementParticle creates a particle that matches a single element.
-func NewElementParticle(localName, namespaceURI string, minOccurs, maxOccurs int) *ElementParticle {
+func NewElementParticle(
+	localName, namespaceURI string,
+	minOccurs, maxOccurs int,
+) *ElementParticle {
 	return &ElementParticle{
-		baseParticle: baseParticle{minOccurs: minOccurs, maxOccurs: maxOccurs},
-		Matcher:      ElementMatcher{LocalName: localName, NamespaceURI: namespaceURI},
+		baseParticle: baseParticle{
+			minOccurs: minOccurs,
+			maxOccurs: maxOccurs,
+		},
+		Matcher: ElementMatcher{
+			LocalName:    localName,
+			NamespaceURI: namespaceURI,
+		},
 	}
 }
 
 // WithAvailability sets the version availability for this particle.
-func (p *ElementParticle) WithAvailability(avail *VersionAvailability) *ElementParticle {
+func (p *ElementParticle) WithAvailability(
+	avail *VersionAvailability,
+) *ElementParticle {
 	p.Matcher.Availability = avail
 	return p
 }
 
 // Validate validates children against this element particle.
-func (p *ElementParticle) Validate(ctx *ValidationContext, children []ElementInfo, path string) ([]*ValidationError, int) {
+func (p *ElementParticle) Validate(
+	ctx *ValidationContext,
+	children []ElementInfo,
+	path string,
+) ([]*ValidationError, int) {
 	var errors []*ValidationError
 	consumed := 0
 
 	// Check version availability
-	if p.Matcher.Availability != nil && !ctx.IsVersionAvailable(p.Matcher.Availability) {
+	if p.Matcher.Availability != nil &&
+		!ctx.IsVersionAvailable(
+			p.Matcher.Availability,
+		) {
 		// Element not available in this version, skip matching
 		if p.minOccurs > 0 {
 			return errors, 0
@@ -106,24 +132,33 @@ func (p *ElementParticle) Validate(ctx *ValidationContext, children []ElementInf
 	for consumed < len(children) && p.Matcher.Matches(children[consumed]) {
 		consumed++
 		// Check max occurs
-		if p.maxOccurs >= 0 && consumed > p.maxOccurs {
-			errors = append(errors, NewValidationError(
-				Schema_TooManyElements,
-				"Too many occurrences of element "+p.Matcher.QualifiedName(),
-				path,
-				children[consumed-1].Element,
-			))
+		if p.maxOccurs >= 0 &&
+			consumed > p.maxOccurs {
+			errors = append(
+				errors,
+				NewValidationError(
+					Schema_TooManyElements,
+					"Too many occurrences of element "+p.Matcher.QualifiedName(),
+					path,
+					children[consumed-1].Element,
+				),
+			)
 		}
 	}
 
 	// Check min occurs
 	if consumed < p.minOccurs {
-		errors = append(errors, NewValidationError(
-			Schema_MissingRequiredElement,
-			"Required element "+p.Matcher.QualifiedName()+" is missing (expected at least "+itoa(p.minOccurs)+")",
-			path,
-			nil,
-		))
+		errors = append(
+			errors,
+			NewValidationError(
+				Schema_MissingRequiredElement,
+				"Required element "+p.Matcher.QualifiedName()+" is missing (expected at least "+itoa(
+					p.minOccurs,
+				)+")",
+				path,
+				nil,
+			),
+		)
 	}
 
 	return errors, consumed
@@ -141,15 +176,25 @@ type SequenceParticle struct {
 }
 
 // NewSequenceParticle creates a sequence particle with the given child particles.
-func NewSequenceParticle(minOccurs, maxOccurs int, particles ...Particle) *SequenceParticle {
+func NewSequenceParticle(
+	minOccurs, maxOccurs int,
+	particles ...Particle,
+) *SequenceParticle {
 	return &SequenceParticle{
-		baseParticle: baseParticle{minOccurs: minOccurs, maxOccurs: maxOccurs},
-		Particles:    particles,
+		baseParticle: baseParticle{
+			minOccurs: minOccurs,
+			maxOccurs: maxOccurs,
+		},
+		Particles: particles,
 	}
 }
 
 // Validate validates children against this sequence particle.
-func (p *SequenceParticle) Validate(ctx *ValidationContext, children []ElementInfo, path string) ([]*ValidationError, int) {
+func (p *SequenceParticle) Validate(
+	ctx *ValidationContext,
+	children []ElementInfo,
+	path string,
+) ([]*ValidationError, int) {
 	var allErrors []*ValidationError
 	totalConsumed := 0
 	occurrences := 0
@@ -161,23 +206,34 @@ func (p *SequenceParticle) Validate(ctx *ValidationContext, children []ElementIn
 		}
 
 		// Check if we've reached max occurrences
-		if p.maxOccurs >= 0 && occurrences >= p.maxOccurs {
+		if p.maxOccurs >= 0 &&
+			occurrences >= p.maxOccurs {
 			break
 		}
 
 		// Try to match all particles in sequence
 		sequenceConsumed := 0
-		sequenceErrors := make([]*ValidationError, 0)
+		sequenceErrors := make(
+			[]*ValidationError,
+			0,
+		)
 		remaining := children[totalConsumed:]
 
 		matched := true
 		for _, particle := range p.Particles {
-			if len(remaining) == 0 && particle.MinOccurs() > 0 {
+			if len(remaining) == 0 &&
+				particle.MinOccurs() > 0 {
 				matched = false
 				break
 			}
-			errs, consumed := particle.Validate(ctx, remaining, path)
-			sequenceErrors = append(sequenceErrors, errs...)
+			errs, consumed := particle.Validate(
+				ctx,
+				remaining,
+				path,
+			)
+			sequenceErrors = append(
+				sequenceErrors,
+				errs...)
 			remaining = remaining[consumed:]
 			sequenceConsumed += consumed
 		}
@@ -185,14 +241,18 @@ func (p *SequenceParticle) Validate(ctx *ValidationContext, children []ElementIn
 		// If nothing was consumed and we need more occurrences, break
 		if sequenceConsumed == 0 && !matched {
 			if occurrences < p.minOccurs {
-				allErrors = append(allErrors, sequenceErrors...)
+				allErrors = append(
+					allErrors,
+					sequenceErrors...)
 			}
 			break
 		}
 
 		totalConsumed += sequenceConsumed
 		occurrences++
-		allErrors = append(allErrors, sequenceErrors...)
+		allErrors = append(
+			allErrors,
+			sequenceErrors...)
 
 		// If nothing was consumed, we can't make progress
 		if sequenceConsumed == 0 {
@@ -202,12 +262,17 @@ func (p *SequenceParticle) Validate(ctx *ValidationContext, children []ElementIn
 
 	// Check min occurrences
 	if occurrences < p.minOccurs {
-		allErrors = append(allErrors, NewValidationError(
-			Schema_MissingRequiredElement,
-			"Sequence is required but not found (expected at least "+itoa(p.minOccurs)+" occurrences)",
-			path,
-			nil,
-		))
+		allErrors = append(
+			allErrors,
+			NewValidationError(
+				Schema_MissingRequiredElement,
+				"Sequence is required but not found (expected at least "+itoa(
+					p.minOccurs,
+				)+" occurrences)",
+				path,
+				nil,
+			),
+		)
 	}
 
 	return allErrors, totalConsumed
@@ -225,15 +290,25 @@ type ChoiceParticle struct {
 }
 
 // NewChoiceParticle creates a choice particle with the given alternatives.
-func NewChoiceParticle(minOccurs, maxOccurs int, particles ...Particle) *ChoiceParticle {
+func NewChoiceParticle(
+	minOccurs, maxOccurs int,
+	particles ...Particle,
+) *ChoiceParticle {
 	return &ChoiceParticle{
-		baseParticle: baseParticle{minOccurs: minOccurs, maxOccurs: maxOccurs},
-		Particles:    particles,
+		baseParticle: baseParticle{
+			minOccurs: minOccurs,
+			maxOccurs: maxOccurs,
+		},
+		Particles: particles,
 	}
 }
 
 // Validate validates children against this choice particle.
-func (p *ChoiceParticle) Validate(ctx *ValidationContext, children []ElementInfo, path string) ([]*ValidationError, int) {
+func (p *ChoiceParticle) Validate(
+	ctx *ValidationContext,
+	children []ElementInfo,
+	path string,
+) ([]*ValidationError, int) {
 	var errors []*ValidationError
 	totalConsumed := 0
 	occurrences := 0
@@ -245,7 +320,8 @@ func (p *ChoiceParticle) Validate(ctx *ValidationContext, children []ElementInfo
 		}
 
 		// Check if we've reached max occurrences
-		if p.maxOccurs >= 0 && occurrences >= p.maxOccurs {
+		if p.maxOccurs >= 0 &&
+			occurrences >= p.maxOccurs {
 			break
 		}
 
@@ -255,8 +331,13 @@ func (p *ChoiceParticle) Validate(ctx *ValidationContext, children []ElementInfo
 		remaining := children[totalConsumed:]
 
 		for _, particle := range p.Particles {
-			errs, consumed := particle.Validate(ctx, remaining, path)
-			if consumed > bestConsumed || (consumed == bestConsumed && len(errs) < len(bestErrors)) {
+			errs, consumed := particle.Validate(
+				ctx,
+				remaining,
+				path,
+			)
+			if consumed > bestConsumed ||
+				(consumed == bestConsumed && len(errs) < len(bestErrors)) {
 				bestConsumed = consumed
 				bestErrors = errs
 			}
@@ -274,12 +355,17 @@ func (p *ChoiceParticle) Validate(ctx *ValidationContext, children []ElementInfo
 
 	// Check min occurrences
 	if occurrences < p.minOccurs {
-		errors = append(errors, NewValidationError(
-			Schema_MissingRequiredElement,
-			"Choice is required but no alternative matched (expected at least "+itoa(p.minOccurs)+" occurrences)",
-			path,
-			nil,
-		))
+		errors = append(
+			errors,
+			NewValidationError(
+				Schema_MissingRequiredElement,
+				"Choice is required but no alternative matched (expected at least "+itoa(
+					p.minOccurs,
+				)+" occurrences)",
+				path,
+				nil,
+			),
+		)
 	}
 
 	return errors, totalConsumed
@@ -297,21 +383,34 @@ type AllParticle struct {
 }
 
 // NewAllParticle creates an all particle with the given child particles.
-func NewAllParticle(minOccurs, maxOccurs int, particles ...Particle) *AllParticle {
+func NewAllParticle(
+	minOccurs, maxOccurs int,
+	particles ...Particle,
+) *AllParticle {
 	return &AllParticle{
-		baseParticle: baseParticle{minOccurs: minOccurs, maxOccurs: maxOccurs},
-		Particles:    particles,
+		baseParticle: baseParticle{
+			minOccurs: minOccurs,
+			maxOccurs: maxOccurs,
+		},
+		Particles: particles,
 	}
 }
 
 // Validate validates children against this all particle.
-func (p *AllParticle) Validate(ctx *ValidationContext, children []ElementInfo, path string) ([]*ValidationError, int) {
+func (p *AllParticle) Validate(
+	ctx *ValidationContext,
+	children []ElementInfo,
+	path string,
+) ([]*ValidationError, int) {
 	var errors []*ValidationError
 	totalConsumed := 0
 
 	// Track which particles have been matched
 	matched := make([]bool, len(p.Particles))
-	remaining := make([]ElementInfo, len(children))
+	remaining := make(
+		[]ElementInfo,
+		len(children),
+	)
 	copy(remaining, children)
 
 	// Try to match each child to a particle
@@ -328,7 +427,11 @@ func (p *AllParticle) Validate(ctx *ValidationContext, children []ElementInfo, p
 				continue
 			}
 
-			errs, consumed := particle.Validate(ctx, []ElementInfo{child}, path)
+			errs, consumed := particle.Validate(
+				ctx,
+				[]ElementInfo{child},
+				path,
+			)
 			if consumed > 0 {
 				matched[i] = true
 				foundMatch = true
@@ -347,13 +450,17 @@ func (p *AllParticle) Validate(ctx *ValidationContext, children []ElementInfo, p
 
 	// Check that required particles were matched
 	for i, particle := range p.Particles {
-		if !matched[i] && particle.MinOccurs() > 0 {
-			errors = append(errors, NewValidationError(
-				Schema_MissingRequiredElement,
-				"Required element is missing (in 'all' group): "+particle.Description(),
-				path,
-				nil,
-			))
+		if !matched[i] &&
+			particle.MinOccurs() > 0 {
+			errors = append(
+				errors,
+				NewValidationError(
+					Schema_MissingRequiredElement,
+					"Required element is missing (in 'all' group): "+particle.Description(),
+					path,
+					nil,
+				),
+			)
 		}
 	}
 
@@ -387,27 +494,40 @@ const (
 )
 
 // NewAnyParticle creates a wildcard particle.
-func NewAnyParticle(minOccurs, maxOccurs int, namespace string, mode ProcessContentsMode) *AnyParticle {
+func NewAnyParticle(
+	minOccurs, maxOccurs int,
+	namespace string,
+	mode ProcessContentsMode,
+) *AnyParticle {
 	return &AnyParticle{
-		baseParticle:    baseParticle{minOccurs: minOccurs, maxOccurs: maxOccurs},
+		baseParticle: baseParticle{
+			minOccurs: minOccurs,
+			maxOccurs: maxOccurs,
+		},
 		Namespace:       namespace,
 		ProcessContents: mode,
 	}
 }
 
 // Validate validates children against this any particle.
-func (p *AnyParticle) Validate(ctx *ValidationContext, children []ElementInfo, path string) ([]*ValidationError, int) {
+func (p *AnyParticle) Validate(
+	ctx *ValidationContext,
+	children []ElementInfo,
+	path string,
+) ([]*ValidationError, int) {
 	var errors []*ValidationError
 	consumed := 0
 
 	for consumed < len(children) {
 		// Check max occurs
-		if p.maxOccurs >= 0 && consumed >= p.maxOccurs {
+		if p.maxOccurs >= 0 &&
+			consumed >= p.maxOccurs {
 			break
 		}
 
 		// Check namespace constraint
-		if p.Namespace != "" && p.Namespace != "##any" {
+		if p.Namespace != "" &&
+			p.Namespace != "##any" {
 			if p.Namespace == "##other" {
 				// Must be from a different namespace (not implemented fully)
 			} else if p.Namespace != children[consumed].NamespaceURI {
@@ -420,12 +540,17 @@ func (p *AnyParticle) Validate(ctx *ValidationContext, children []ElementInfo, p
 
 	// Check min occurs
 	if consumed < p.minOccurs {
-		errors = append(errors, NewValidationError(
-			Schema_MissingRequiredElement,
-			"Expected at least "+itoa(p.minOccurs)+" element(s) matching wildcard",
-			path,
-			nil,
-		))
+		errors = append(
+			errors,
+			NewValidationError(
+				Schema_MissingRequiredElement,
+				"Expected at least "+itoa(
+					p.minOccurs,
+				)+" element(s) matching wildcard",
+				path,
+				nil,
+			),
+		)
 	}
 
 	return errors, consumed
@@ -448,14 +573,20 @@ func NewEmptyParticle() *EmptyParticle {
 }
 
 // Validate validates that there are no children.
-func (p *EmptyParticle) Validate(ctx *ValidationContext, children []ElementInfo, path string) ([]*ValidationError, int) {
+func (p *EmptyParticle) Validate(
+	ctx *ValidationContext,
+	children []ElementInfo,
+	path string,
+) ([]*ValidationError, int) {
 	if len(children) > 0 {
-		return []*ValidationError{NewValidationError(
-			Schema_UnexpectedElement,
-			"Element should have no children but found "+children[0].LocalName,
-			path,
-			children[0].Element,
-		)}, 0
+		return []*ValidationError{
+			NewValidationError(
+				Schema_UnexpectedElement,
+				"Element should have no children but found "+children[0].LocalName,
+				path,
+				children[0].Element,
+			),
+		}, 0
 	}
 	return nil, 0
 }
@@ -478,15 +609,21 @@ func NewTextOnlyParticle() *TextOnlyParticle {
 }
 
 // Validate validates that there are no element children (text is allowed).
-func (p *TextOnlyParticle) Validate(ctx *ValidationContext, children []ElementInfo, path string) ([]*ValidationError, int) {
+func (p *TextOnlyParticle) Validate(
+	ctx *ValidationContext,
+	children []ElementInfo,
+	path string,
+) ([]*ValidationError, int) {
 	// For text-only, we shouldn't have element children
 	if len(children) > 0 {
-		return []*ValidationError{NewValidationError(
-			Schema_UnexpectedElement,
-			"Element should contain only text but found child element "+children[0].LocalName,
-			path,
-			children[0].Element,
-		)}, 0
+		return []*ValidationError{
+			NewValidationError(
+				Schema_UnexpectedElement,
+				"Element should contain only text but found child element "+children[0].LocalName,
+				path,
+				children[0].Element,
+			),
+		}, 0
 	}
 	return nil, 0
 }

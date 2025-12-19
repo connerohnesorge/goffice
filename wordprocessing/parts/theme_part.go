@@ -18,15 +18,26 @@ const (
 )
 
 // newThemePart creates a new theme part.
-func newThemePart(mainPart *MainPart) (*ThemePart, error) {
+func newThemePart(
+	mainPart *MainPart,
+) (*ThemePart, error) {
 	uri := "/word/theme/theme1.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeTheme, RelationshipTypeTheme)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeTheme,
+		RelationshipTypeTheme,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeTheme, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeTheme,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	tp := &ThemePart{
@@ -145,7 +156,10 @@ func (tp *ThemePart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*ThemePart)(nil)
 
 // ThemePartFactory creates a ThemePart from a URI and container.
-func ThemePartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func ThemePartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -156,7 +170,12 @@ func ThemePartFactory(uri string, container openxml.OpenXmlPartContainer) openxm
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeTheme, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeTheme,
+		packPart,
+		container,
+	)
 	return &ThemePart{
 		OpenXmlPartData: partData,
 	}
@@ -164,11 +183,13 @@ func ThemePartFactory(uri string, container openxml.OpenXmlPartContainer) openxm
 
 // Register the ThemePart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeTheme,
-		RelationshipType:   RelationshipTypeTheme,
-		Factory:            ThemePartFactory,
-		DefaultURI:         "/word/theme/theme1.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeTheme,
+			RelationshipType:   RelationshipTypeTheme,
+			Factory:            ThemePartFactory,
+			DefaultURI:         "/word/theme/theme1.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

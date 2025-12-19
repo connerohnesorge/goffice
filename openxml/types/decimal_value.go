@@ -55,7 +55,12 @@ func (dv *DecimalValue) InnerText() string {
 		return ""
 	}
 	// Use -1 precision to get minimal representation
-	s := strconv.FormatFloat(dv.value, 'f', -1, 64)
+	s := strconv.FormatFloat(
+		dv.value,
+		'f',
+		-1,
+		64,
+	)
 	// Ensure there's no trailing zeros after decimal point for cleaner output
 	// But preserve at least one decimal place if there is one
 	if strings.Contains(s, ".") {
@@ -67,15 +72,23 @@ func (dv *DecimalValue) InnerText() string {
 
 // SetInnerText parses the value from a decimal string.
 // Returns an error if the string cannot be parsed as a float64.
-func (dv *DecimalValue) SetInnerText(text string) error {
+func (dv *DecimalValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		dv.hasValue = false
 		dv.value = 0
 		return nil
 	}
-	v, err := strconv.ParseFloat(strings.TrimSpace(text), 64)
+	v, err := strconv.ParseFloat(
+		strings.TrimSpace(text),
+		64,
+	)
 	if err != nil {
-		return fmt.Errorf("invalid decimal value: %w", err)
+		return fmt.Errorf(
+			"invalid decimal value: %w",
+			err,
+		)
 	}
 	dv.value = v
 	dv.hasValue = true

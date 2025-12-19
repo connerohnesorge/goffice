@@ -19,15 +19,26 @@ const (
 )
 
 // newCommentsPart creates a new comments part.
-func newCommentsPart(mainPart *MainPart) (*CommentsPart, error) {
+func newCommentsPart(
+	mainPart *MainPart,
+) (*CommentsPart, error) {
 	uri := "/word/comments.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeComments, RelationshipTypeComments)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeComments,
+		RelationshipTypeComments,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeComments, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeComments,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	cp := &CommentsPart{
@@ -69,7 +80,9 @@ func (cp *CommentsPart) Comments() *elements.Comments {
 	}
 	// Wrap the root element as Comments
 	if pre, ok := root.(*openxml.PartRootElementBase); ok {
-		return &elements.Comments{PartRootElementBase: pre}
+		return &elements.Comments{
+			PartRootElementBase: pre,
+		}
 	}
 	return nil
 }
@@ -86,13 +99,17 @@ func (cp *CommentsPart) GetOrCreateComments() *elements.Comments {
 }
 
 // AddComment adds a new comment and returns it.
-func (cp *CommentsPart) AddComment(author, text string) *elements.Comment {
+func (cp *CommentsPart) AddComment(
+	author, text string,
+) *elements.Comment {
 	c := cp.GetOrCreateComments()
 	return c.AddComment(author, text)
 }
 
 // GetComment returns the comment with the specified ID.
-func (cp *CommentsPart) GetComment(id int) *elements.Comment {
+func (cp *CommentsPart) GetComment(
+	id int,
+) *elements.Comment {
 	c := cp.Comments()
 	if c == nil {
 		return nil
@@ -109,7 +126,10 @@ func (cp *CommentsPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*CommentsPart)(nil)
 
 // CommentsPartFactory creates a CommentsPart from a URI and container.
-func CommentsPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func CommentsPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -120,7 +140,12 @@ func CommentsPartFactory(uri string, container openxml.OpenXmlPartContainer) ope
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeComments, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeComments,
+		packPart,
+		container,
+	)
 	return &CommentsPart{
 		OpenXmlPartData: partData,
 	}
@@ -128,11 +153,13 @@ func CommentsPartFactory(uri string, container openxml.OpenXmlPartContainer) ope
 
 // Register the CommentsPart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeComments,
-		RelationshipType:   RelationshipTypeComments,
-		Factory:            CommentsPartFactory,
-		DefaultURI:         "/word/comments.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeComments,
+			RelationshipType:   RelationshipTypeComments,
+			Factory:            CommentsPartFactory,
+			DefaultURI:         "/word/comments.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

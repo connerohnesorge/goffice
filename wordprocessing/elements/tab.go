@@ -11,7 +11,11 @@ type Tab struct {
 
 // NewTab creates a new Tab element.
 func NewTab() *Tab {
-	elem := openxml.NewCompositeElement(NamespaceWML, "tab", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"tab",
+		PrefixW,
+	)
 	return &Tab{CompositeElementBase: elem}
 }
 
@@ -23,7 +27,9 @@ func (t *Tab) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Tab element.
-func (t *Tab) CloneNode(deep bool) openxml.Element {
+func (t *Tab) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Tab{
 		CompositeElementBase: t.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

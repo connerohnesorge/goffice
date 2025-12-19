@@ -12,10 +12,21 @@ type Break struct {
 // NewBreak creates a new Break element with the specified type.
 // If breakType is empty or BreakLine, a line break is created.
 func NewBreak(breakType BreakType) *Break {
-	elem := openxml.NewCompositeElement(NamespaceWML, "br", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"br",
+		PrefixW,
+	)
 	br := &Break{CompositeElementBase: elem}
 	if breakType != "" && breakType != BreakLine {
-		br.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(breakType)))
+		br.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"type",
+				PrefixW,
+				string(breakType),
+			),
+		)
 	}
 	return br
 }
@@ -37,7 +48,10 @@ func NewColumnBreak() *Break {
 
 // Type returns the break type.
 func (br *Break) Type() BreakType {
-	attr, found := br.GetAttribute("type", NamespaceWML)
+	attr, found := br.GetAttribute(
+		"type",
+		NamespaceWML,
+	)
 	if !found {
 		return BreakLine // default
 	}
@@ -55,7 +69,10 @@ func (br *Break) SetType(t BreakType) {
 
 // Clear returns the clear attribute value for text wrapping breaks.
 func (br *Break) Clear() string {
-	attr, found := br.GetAttribute("clear", NamespaceWML)
+	attr, found := br.GetAttribute(
+		"clear",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -79,7 +96,9 @@ func (br *Break) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Break element.
-func (br *Break) CloneNode(deep bool) openxml.Element {
+func (br *Break) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Break{
 		CompositeElementBase: br.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

@@ -17,19 +17,30 @@ type MainPart struct {
 }
 
 // NewMainPart creates a new main document part.
-func NewMainPart(uri, contentType string, container openxml.OpenXmlPartContainer) (*MainPart, error) {
+func NewMainPart(
+	uri, contentType string,
+	container openxml.OpenXmlPartContainer,
+) (*MainPart, error) {
 	// Create the underlying packaging part
 	pkg := container.Package()
 	if pkg == nil {
 		return nil, ErrNilPackage
 	}
 
-	packPart, err := pkg.CreatePart(uri, contentType)
+	packPart, err := pkg.CreatePart(
+		uri,
+		contentType,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, contentType, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		contentType,
+		packPart,
+		container,
+	)
 
 	mp := &MainPart{
 		OpenXmlPartData: partData,
@@ -37,7 +48,11 @@ func NewMainPart(uri, contentType string, container openxml.OpenXmlPartContainer
 	}
 
 	// Create package-level relationship
-	_, err = pkg.CreateRelationship(uri, openxml.RelationshipTypeOfficeDocument, "")
+	_, err = pkg.CreateRelationship(
+		uri,
+		openxml.RelationshipTypeOfficeDocument,
+		"",
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +61,10 @@ func NewMainPart(uri, contentType string, container openxml.OpenXmlPartContainer
 }
 
 // NewMainPartFromData wraps an existing OpenXmlPartData as a MainPart.
-func NewMainPartFromData(data *openxml.OpenXmlPartData, contentType string) *MainPart {
+func NewMainPartFromData(
+	data *openxml.OpenXmlPartData,
+	contentType string,
+) *MainPart {
 	return &MainPart{
 		OpenXmlPartData: data,
 		contentType:     contentType,
@@ -187,7 +205,9 @@ func (mp *MainPart) FooterParts() []*FooterPart {
 }
 
 // AddImagePart adds an image part with the specified type.
-func (mp *MainPart) AddImagePart(imageType ImageType) (*ImagePart, error) {
+func (mp *MainPart) AddImagePart(
+	imageType ImageType,
+) (*ImagePart, error) {
 	return newImagePart(mp, imageType)
 }
 
@@ -271,7 +291,10 @@ func (mp *MainPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*MainPart)(nil)
 
 // MainPartFactory creates a MainPart from a URI and container.
-func MainPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func MainPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	// Get the packaging part from the container directly without lock
 	// This is called during part loading when the container is already locked
 	packPart := container.GetPackagingPart(uri)
@@ -279,8 +302,16 @@ func MainPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, packPart.ContentType(), packPart, container)
-	return NewMainPartFromData(partData, packPart.ContentType())
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		packPart.ContentType(),
+		packPart,
+		container,
+	)
+	return NewMainPartFromData(
+		partData,
+		packPart.ContentType(),
+	)
 }
 
 // Register the MainPart type.
@@ -294,13 +325,15 @@ func init() {
 	}
 
 	for _, ct := range contentTypes {
-		openxml.RegisterPartType(&openxml.PartTypeInfo{
-			ContentType:        ct,
-			RelationshipType:   openxml.RelationshipTypeOfficeDocument,
-			Factory:            MainPartFactory,
-			DefaultURI:         "/word/document.xml",
-			IsFixedContentType: false, // Content type varies by document type
-		})
+		openxml.RegisterPartType(
+			&openxml.PartTypeInfo{
+				ContentType:        ct,
+				RelationshipType:   openxml.RelationshipTypeOfficeDocument,
+				Factory:            MainPartFactory,
+				DefaultURI:         "/word/document.xml",
+				IsFixedContentType: false, // Content type varies by document type
+			},
+		)
 	}
 }
 
@@ -368,20 +401,30 @@ func (mp *MainPart) GlossaryPart() *GlossaryPart {
 }
 
 // Helper to add a child part with the appropriate relationship.
-func (mp *MainPart) addChildPart(uri, contentType, relType string) (*packaging.Part, string, error) {
+func (mp *MainPart) addChildPart(
+	uri, contentType, relType string,
+) (*packaging.Part, string, error) {
 	pkg := mp.Package()
 	if pkg == nil {
 		return nil, "", ErrNilPackage
 	}
 
 	// Create the underlying packaging part
-	packPart, err := pkg.CreatePart(uri, contentType)
+	packPart, err := pkg.CreatePart(
+		uri,
+		contentType,
+	)
 	if err != nil {
 		return nil, "", err
 	}
 
 	// Create relationship from main document to this part
-	rel, err := pkg.CreatePartRelationship(mp.URI(), uri, relType, "")
+	rel, err := pkg.CreatePartRelationship(
+		mp.URI(),
+		uri,
+		relType,
+		"",
+	)
 	if err != nil {
 		return nil, "", err
 	}

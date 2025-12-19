@@ -18,15 +18,26 @@ const (
 )
 
 // newFontsPart creates a new font table part.
-func newFontsPart(mainPart *MainPart) (*FontsPart, error) {
+func newFontsPart(
+	mainPart *MainPart,
+) (*FontsPart, error) {
 	uri := "/word/fontTable.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeFontTable, RelationshipTypeFontTable)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeFontTable,
+		RelationshipTypeFontTable,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeFontTable, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeFontTable,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	fp := &FontsPart{
@@ -77,7 +88,9 @@ func (fp *FontsPart) Fonts() openxml.PartRootElement {
 
 // GetFont returns a font definition by name.
 // TODO: Implement proper Font element type.
-func (fp *FontsPart) GetFont(name string) interface{} {
+func (fp *FontsPart) GetFont(
+	name string,
+) interface{} {
 	// TODO: Parse fonts and find by name
 	return nil
 }
@@ -91,7 +104,10 @@ func (fp *FontsPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*FontsPart)(nil)
 
 // FontsPartFactory creates a FontsPart from a URI and container.
-func FontsPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func FontsPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -102,7 +118,12 @@ func FontsPartFactory(uri string, container openxml.OpenXmlPartContainer) openxm
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeFontTable, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeFontTable,
+		packPart,
+		container,
+	)
 	return &FontsPart{
 		OpenXmlPartData: partData,
 	}
@@ -110,11 +131,13 @@ func FontsPartFactory(uri string, container openxml.OpenXmlPartContainer) openxm
 
 // Register the FontsPart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeFontTable,
-		RelationshipType:   RelationshipTypeFontTable,
-		Factory:            FontsPartFactory,
-		DefaultURI:         "/word/fontTable.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeFontTable,
+			RelationshipType:   RelationshipTypeFontTable,
+			Factory:            FontsPartFactory,
+			DefaultURI:         "/word/fontTable.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

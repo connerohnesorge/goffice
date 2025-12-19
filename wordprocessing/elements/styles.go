@@ -13,13 +13,20 @@ type Styles struct {
 
 // NewStyles creates a new Styles element.
 func NewStyles() *Styles {
-	elem := openxml.NewCompositeElement(NamespaceWML, "styles", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"styles",
+		PrefixW,
+	)
 	return &Styles{CompositeElementBase: elem}
 }
 
 // DocDefaults returns the document defaults element, or nil if not present.
 func (s *Styles) DocDefaults() *DocDefaults {
-	elem := s.GetElement("docDefaults", NamespaceWML)
+	elem := s.GetElement(
+		"docDefaults",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -27,7 +34,9 @@ func (s *Styles) DocDefaults() *DocDefaults {
 		return dd
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &DocDefaults{CompositeElementBase: comp}
+		return &DocDefaults{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -50,7 +59,10 @@ func (s *Styles) GetOrCreateDocDefaults() *DocDefaults {
 
 // LatentStyles returns the latent styles element, or nil if not present.
 func (s *Styles) LatentStyles() *LatentStyles {
-	elem := s.GetElement("latentStyles", NamespaceWML)
+	elem := s.GetElement(
+		"latentStyles",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -58,7 +70,9 @@ func (s *Styles) LatentStyles() *LatentStyles {
 		return ls
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &LatentStyles{CompositeElementBase: comp}
+		return &LatentStyles{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -86,7 +100,8 @@ func (s *Styles) GetOrCreateLatentStyles() *LatentStyles {
 func (s *Styles) Styles() iter.Seq[*Style] {
 	return func(yield func(*Style) bool) {
 		for child := range s.Children() {
-			if child.LocalName() == "style" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "style" &&
+				child.NamespaceURI() == NamespaceWML {
 				var style *Style
 				if st, ok := child.(*Style); ok {
 					style = st
@@ -112,7 +127,9 @@ func (s *Styles) GetStyleById(id string) *Style {
 }
 
 // GetStyleByName returns the style with the given name, or nil if not found.
-func (s *Styles) GetStyleByName(name string) *Style {
+func (s *Styles) GetStyleByName(
+	name string,
+) *Style {
 	for style := range s.Styles() {
 		if style.StyleName() == name {
 			return style
@@ -122,7 +139,9 @@ func (s *Styles) GetStyleByName(name string) *Style {
 }
 
 // GetStylesByType returns an iterator over styles of the specified type.
-func (s *Styles) GetStylesByType(styleType StyleType) iter.Seq[*Style] {
+func (s *Styles) GetStylesByType(
+	styleType StyleType,
+) iter.Seq[*Style] {
 	return func(yield func(*Style) bool) {
 		for style := range s.Styles() {
 			if style.Type() == styleType {
@@ -152,7 +171,9 @@ func (s *Styles) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Styles element.
-func (s *Styles) CloneNode(deep bool) openxml.Element {
+func (s *Styles) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Styles{
 		CompositeElementBase: s.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

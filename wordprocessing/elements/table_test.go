@@ -14,7 +14,10 @@ func TestNewTable(t *testing.T) {
 
 	// Check row count
 	if table.RowCount() != 3 {
-		t.Errorf("Expected 3 rows, got %d", table.RowCount())
+		t.Errorf(
+			"Expected 3 rows, got %d",
+			table.RowCount(),
+		)
 	}
 
 	// Check each row has 4 cells
@@ -24,7 +27,11 @@ func TestNewTable(t *testing.T) {
 			t.Fatalf("Row %d is nil", i)
 		}
 		if row.CellCount() != 4 {
-			t.Errorf("Row %d: expected 4 cells, got %d", i, row.CellCount())
+			t.Errorf(
+				"Row %d: expected 4 cells, got %d",
+				i,
+				row.CellCount(),
+			)
 		}
 	}
 }
@@ -45,7 +52,9 @@ func TestTableGetCell(t *testing.T) {
 	// Out of bounds
 	cell = table.GetCell(5, 5)
 	if cell != nil {
-		t.Error("GetCell(5, 5) should return nil for out of bounds")
+		t.Error(
+			"GetCell(5, 5) should return nil for out of bounds",
+		)
 	}
 }
 
@@ -57,12 +66,18 @@ func TestTableSetCellText(t *testing.T) {
 
 	cell00 := table.GetCell(0, 0)
 	if cell00.InnerText() != "Hello" {
-		t.Errorf("Expected 'Hello', got '%s'", cell00.InnerText())
+		t.Errorf(
+			"Expected 'Hello', got '%s'",
+			cell00.InnerText(),
+		)
 	}
 
 	cell11 := table.GetCell(1, 1)
 	if cell11.InnerText() != "World" {
-		t.Errorf("Expected 'World', got '%s'", cell11.InnerText())
+		t.Errorf(
+			"Expected 'World', got '%s'",
+			cell11.InnerText(),
+		)
 	}
 }
 
@@ -73,7 +88,11 @@ func TestTableAppendRow(t *testing.T) {
 	table.AppendRow(3)
 
 	if table.RowCount() != initialCount+1 {
-		t.Errorf("Expected %d rows, got %d", initialCount+1, table.RowCount())
+		t.Errorf(
+			"Expected %d rows, got %d",
+			initialCount+1,
+			table.RowCount(),
+		)
 	}
 }
 
@@ -90,13 +109,19 @@ func TestTableDeleteRow(t *testing.T) {
 	}
 
 	if table.RowCount() != 2 {
-		t.Errorf("Expected 2 rows, got %d", table.RowCount())
+		t.Errorf(
+			"Expected 2 rows, got %d",
+			table.RowCount(),
+		)
 	}
 
 	// Verify Row2 is now at index 1
 	cell := table.GetCell(1, 0)
 	if cell.InnerText() != "Row2" {
-		t.Errorf("Expected 'Row2', got '%s'", cell.InnerText())
+		t.Errorf(
+			"Expected 'Row2', got '%s'",
+			cell.InnerText(),
+		)
 	}
 }
 
@@ -105,13 +130,18 @@ func TestTableProperties(t *testing.T) {
 
 	props := table.GetOrCreateTableProperties()
 	if props == nil {
-		t.Fatal("GetOrCreateTableProperties returned nil")
+		t.Fatal(
+			"GetOrCreateTableProperties returned nil",
+		)
 	}
 
 	// Set style
 	props.SetTableStyle("TableGrid")
 	if props.TableStyle() != "TableGrid" {
-		t.Errorf("Expected style 'TableGrid', got '%s'", props.TableStyle())
+		t.Errorf(
+			"Expected style 'TableGrid', got '%s'",
+			props.TableStyle(),
+		)
 	}
 
 	// Set width
@@ -121,10 +151,16 @@ func TestTableProperties(t *testing.T) {
 		t.Fatal("TableWidth is nil")
 	}
 	if tw.Width() != 5000 {
-		t.Errorf("Expected width 5000, got %d", tw.Width())
+		t.Errorf(
+			"Expected width 5000, got %d",
+			tw.Width(),
+		)
 	}
 	if tw.Type() != TableWidthTypePct {
-		t.Errorf("Expected type pct, got %s", tw.Type())
+		t.Errorf(
+			"Expected type pct, got %s",
+			tw.Type(),
+		)
 	}
 }
 
@@ -133,7 +169,11 @@ func TestTableBorders(t *testing.T) {
 	props := table.GetOrCreateTableProperties()
 	borders := props.GetOrCreateTableBorders()
 
-	borders.SetAllBorders(BorderSingle, 4, "000000")
+	borders.SetAllBorders(
+		BorderSingle,
+		4,
+		"000000",
+	)
 
 	xml := borders.OuterXml()
 	if !strings.Contains(xml, "top") {
@@ -160,7 +200,14 @@ func TestTableLook(t *testing.T) {
 	table := NewTable(2, 2)
 	props := table.GetOrCreateTableProperties()
 
-	props.SetTableLook(true, false, true, false, true, false)
+	props.SetTableLook(
+		true,
+		false,
+		true,
+		false,
+		true,
+		false,
+	)
 
 	tl := props.TableLook()
 	if tl == nil {
@@ -180,7 +227,9 @@ func TestTableRowProperties(t *testing.T) {
 
 	props := row.GetOrCreateTableRowProperties()
 	if props == nil {
-		t.Fatal("GetOrCreateTableRowProperties returned nil")
+		t.Fatal(
+			"GetOrCreateTableRowProperties returned nil",
+		)
 	}
 
 	// Set height
@@ -204,7 +253,9 @@ func TestTableCellProperties(t *testing.T) {
 
 	props := cell.GetOrCreateTableCellProperties()
 	if props == nil {
-		t.Fatal("GetOrCreateTableCellProperties returned nil")
+		t.Fatal(
+			"GetOrCreateTableCellProperties returned nil",
+		)
 	}
 
 	// Set width
@@ -214,7 +265,10 @@ func TestTableCellProperties(t *testing.T) {
 		t.Fatal("TableCellWidth is nil")
 	}
 	if tcw.Width() != 2000 {
-		t.Errorf("Expected width 2000, got %d", tcw.Width())
+		t.Errorf(
+			"Expected width 2000, got %d",
+			tcw.Width(),
+		)
 	}
 
 	// Set shading
@@ -224,13 +278,19 @@ func TestTableCellProperties(t *testing.T) {
 		t.Fatal("Shading is nil")
 	}
 	if shd.Fill() != "FF0000" {
-		t.Errorf("Expected fill FF0000, got %s", shd.Fill())
+		t.Errorf(
+			"Expected fill FF0000, got %s",
+			shd.Fill(),
+		)
 	}
 
 	// Set grid span
 	props.SetGridSpan(2)
 	if props.GridSpan() != 2 {
-		t.Errorf("Expected gridSpan 2, got %d", props.GridSpan())
+		t.Errorf(
+			"Expected gridSpan 2, got %d",
+			props.GridSpan(),
+		)
 	}
 }
 
@@ -252,7 +312,10 @@ func TestVerticalMerge(t *testing.T) {
 		t.Fatal("VerticalMerge is nil for cell 0")
 	}
 	if vm0.Type() != VerticalMergeRestart {
-		t.Errorf("Expected restart, got %s", vm0.Type())
+		t.Errorf(
+			"Expected restart, got %s",
+			vm0.Type(),
+		)
 	}
 
 	props1 := cell1.TableCellProperties()
@@ -261,7 +324,10 @@ func TestVerticalMerge(t *testing.T) {
 		t.Fatal("VerticalMerge is nil for cell 1")
 	}
 	if vm1.Type() != VerticalMergeContinue {
-		t.Errorf("Expected continue, got %s", vm1.Type())
+		t.Errorf(
+			"Expected continue, got %s",
+			vm1.Type(),
+		)
 	}
 }
 
@@ -270,7 +336,11 @@ func TestTableCellBorders(t *testing.T) {
 	props := cell.GetOrCreateTableCellProperties()
 	borders := props.GetOrCreateTableCellBorders()
 
-	borders.SetAllBorders(BorderDouble, 8, "FF0000")
+	borders.SetAllBorders(
+		BorderDouble,
+		8,
+		"FF0000",
+	)
 
 	xml := borders.OuterXml()
 	if !strings.Contains(xml, "top") {
@@ -292,7 +362,9 @@ func TestTableFluentAPI(t *testing.T) {
 		SetWidth(5000, TableWidthTypePct).
 		SetColumnWidth(0, 2000)
 
-	if table.TableProperties().TableStyle() != "TableGrid" {
+	if table.TableProperties().
+		TableStyle() !=
+		"TableGrid" {
 		t.Error("Style not set correctly")
 	}
 }
@@ -306,7 +378,10 @@ func TestTableCellParagraphs(t *testing.T) {
 		count++
 	}
 	if count != 1 {
-		t.Errorf("Expected 1 paragraph, got %d", count)
+		t.Errorf(
+			"Expected 1 paragraph, got %d",
+			count,
+		)
 	}
 
 	// Append another paragraph
@@ -316,7 +391,10 @@ func TestTableCellParagraphs(t *testing.T) {
 		count++
 	}
 	if count != 2 {
-		t.Errorf("Expected 2 paragraphs, got %d", count)
+		t.Errorf(
+			"Expected 2 paragraphs, got %d",
+			count,
+		)
 	}
 }
 
@@ -334,6 +412,9 @@ func TestTableGrid(t *testing.T) {
 		count++
 	}
 	if count != 3 {
-		t.Errorf("Expected 3 grid columns, got %d", count)
+		t.Errorf(
+			"Expected 3 grid columns, got %d",
+			count,
+		)
 	}
 }

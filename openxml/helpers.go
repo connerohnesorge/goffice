@@ -4,7 +4,9 @@ import "iter"
 
 // First returns the first child element of type T from the parent.
 // Returns the zero value of T if not found.
-func First[T Element](parent CompositeElement) (result T) {
+func First[T Element](
+	parent CompositeElement,
+) (result T) {
 	if parent == nil {
 		return result
 	}
@@ -18,7 +20,9 @@ func First[T Element](parent CompositeElement) (result T) {
 }
 
 // All returns an iterator over all child elements of type T from the parent.
-func All[T Element](parent CompositeElement) iter.Seq[T] {
+func All[T Element](
+	parent CompositeElement,
+) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		if parent == nil {
 			return
@@ -35,7 +39,9 @@ func All[T Element](parent CompositeElement) iter.Seq[T] {
 }
 
 // OfType filters an element sequence to only include elements of type T.
-func OfType[T Element](elements iter.Seq[Element]) iter.Seq[T] {
+func OfType[T Element](
+	elements iter.Seq[Element],
+) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for elem := range elements {
 			if typed, ok := elem.(T); ok {
@@ -48,7 +54,9 @@ func OfType[T Element](elements iter.Seq[Element]) iter.Seq[T] {
 }
 
 // Descendants returns an iterator over all descendant elements (depth-first).
-func Descendants(el CompositeElement) iter.Seq[Element] {
+func Descendants(
+	el CompositeElement,
+) iter.Seq[Element] {
 	return func(yield func(Element) bool) {
 		if el == nil {
 			return
@@ -58,13 +66,19 @@ func Descendants(el CompositeElement) iter.Seq[Element] {
 }
 
 // descendantsRecursive is the recursive helper for Descendants.
-func descendantsRecursive(parent CompositeElement, yield func(Element) bool) bool {
+func descendantsRecursive(
+	parent CompositeElement,
+	yield func(Element) bool,
+) bool {
 	for child := range parent.Children() {
 		if !yield(child) {
 			return false
 		}
 		if childComp, ok := child.(CompositeElement); ok {
-			if !descendantsRecursive(childComp, yield) {
+			if !descendantsRecursive(
+				childComp,
+				yield,
+			) {
 				return false
 			}
 		}
@@ -73,7 +87,9 @@ func descendantsRecursive(parent CompositeElement, yield func(Element) bool) boo
 }
 
 // DescendantsOfType returns an iterator over all descendant elements of type T.
-func DescendantsOfType[T Element](el CompositeElement) iter.Seq[T] {
+func DescendantsOfType[T Element](
+	el CompositeElement,
+) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		if el == nil {
 			return
@@ -83,7 +99,10 @@ func DescendantsOfType[T Element](el CompositeElement) iter.Seq[T] {
 }
 
 // descendantsOfTypeRecursive is the recursive helper for DescendantsOfType.
-func descendantsOfTypeRecursive[T Element](parent CompositeElement, yield func(T) bool) bool {
+func descendantsOfTypeRecursive[T Element](
+	parent CompositeElement,
+	yield func(T) bool,
+) bool {
 	for child := range parent.Children() {
 		if typed, ok := child.(T); ok {
 			if !yield(typed) {
@@ -91,7 +110,10 @@ func descendantsOfTypeRecursive[T Element](parent CompositeElement, yield func(T
 			}
 		}
 		if childComp, ok := child.(CompositeElement); ok {
-			if !descendantsOfTypeRecursive[T](childComp, yield) {
+			if !descendantsOfTypeRecursive[T](
+				childComp,
+				yield,
+			) {
 				return false
 			}
 		}
@@ -115,7 +137,9 @@ func Ancestors(el Element) iter.Seq[Element] {
 }
 
 // AncestorsOfType returns an iterator over all ancestor elements of type T.
-func AncestorsOfType[T Element](el Element) iter.Seq[T] {
+func AncestorsOfType[T Element](
+	el Element,
+) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		if el == nil {
 			return
@@ -132,7 +156,9 @@ func AncestorsOfType[T Element](el Element) iter.Seq[T] {
 }
 
 // FindAncestor returns the first ancestor of type T.
-func FindAncestor[T Element](el Element) (result T, found bool) {
+func FindAncestor[T Element](
+	el Element,
+) (result T, found bool) {
 	for ancestor := range AncestorsOfType[T](el) {
 		return ancestor, true
 	}
@@ -140,7 +166,9 @@ func FindAncestor[T Element](el Element) (result T, found bool) {
 }
 
 // FindDescendant returns the first descendant of type T.
-func FindDescendant[T Element](el CompositeElement) (result T, found bool) {
+func FindDescendant[T Element](
+	el CompositeElement,
+) (result T, found bool) {
 	for desc := range DescendantsOfType[T](el) {
 		return desc, true
 	}
@@ -178,7 +206,9 @@ func SiblingsAfter(el Element) iter.Seq[Element] {
 }
 
 // SiblingsBefore returns an iterator over siblings before the given element.
-func SiblingsBefore(el Element) iter.Seq[Element] {
+func SiblingsBefore(
+	el Element,
+) iter.Seq[Element] {
 	return func(yield func(Element) bool) {
 		if el == nil {
 			return
@@ -222,7 +252,9 @@ func Count(elements iter.Seq[Element]) int {
 }
 
 // CountOfType returns the number of elements of type T in the sequence.
-func CountOfType[T Element](elements iter.Seq[Element]) int {
+func CountOfType[T Element](
+	elements iter.Seq[Element],
+) int {
 	count := 0
 	for elem := range elements {
 		if _, ok := elem.(T); ok {
@@ -233,7 +265,9 @@ func CountOfType[T Element](elements iter.Seq[Element]) int {
 }
 
 // ToSlice converts an element iterator to a slice.
-func ToSlice(elements iter.Seq[Element]) []Element {
+func ToSlice(
+	elements iter.Seq[Element],
+) []Element {
 	var result []Element
 	for elem := range elements {
 		result = append(result, elem)
@@ -242,7 +276,9 @@ func ToSlice(elements iter.Seq[Element]) []Element {
 }
 
 // ToSliceOfType converts an element iterator to a typed slice.
-func ToSliceOfType[T Element](elements iter.Seq[Element]) []T {
+func ToSliceOfType[T Element](
+	elements iter.Seq[Element],
+) []T {
 	var result []T
 	for elem := range elements {
 		if typed, ok := elem.(T); ok {

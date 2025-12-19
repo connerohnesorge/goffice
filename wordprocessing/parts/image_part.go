@@ -129,16 +129,32 @@ const (
 var imageCounter uint64
 
 // newImagePart creates a new image part.
-func newImagePart(mainPart *MainPart, imageType ImageType) (*ImagePart, error) {
+func newImagePart(
+	mainPart *MainPart,
+	imageType ImageType,
+) (*ImagePart, error) {
 	num := atomic.AddUint64(&imageCounter, 1)
-	uri := fmt.Sprintf("/word/media/image%d%s", num, imageType.Extension())
+	uri := fmt.Sprintf(
+		"/word/media/image%d%s",
+		num,
+		imageType.Extension(),
+	)
 
-	packPart, relID, err := mainPart.addChildPart(uri, imageType.ContentType(), RelationshipTypeImage)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		imageType.ContentType(),
+		RelationshipTypeImage,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, imageType.ContentType(), packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		imageType.ContentType(),
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	ip := &ImagePart{
@@ -192,7 +208,10 @@ func (ip *ImagePart) FeedDataBytes(data []byte) {
 var _ openxml.OpenXmlPart = (*ImagePart)(nil)
 
 // ImagePartFactory creates an ImagePart from a URI and container.
-func ImagePartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func ImagePartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -204,9 +223,16 @@ func ImagePartFactory(uri string, container openxml.OpenXmlPartContainer) openxm
 	}
 
 	contentType := packPart.ContentType()
-	imageType := imageTypeFromContentType(contentType)
+	imageType := imageTypeFromContentType(
+		contentType,
+	)
 
-	partData := openxml.NewOpenXmlPartData(uri, contentType, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		contentType,
+		packPart,
+		container,
+	)
 	return &ImagePart{
 		OpenXmlPartData: partData,
 		imageType:       imageType,
@@ -214,7 +240,9 @@ func ImagePartFactory(uri string, container openxml.OpenXmlPartContainer) openxm
 }
 
 // imageTypeFromContentType determines the ImageType from a content type string.
-func imageTypeFromContentType(contentType string) ImageType {
+func imageTypeFromContentType(
+	contentType string,
+) ImageType {
 	switch contentType {
 	case "image/png":
 		return ImageTypePng
@@ -238,7 +266,9 @@ func imageTypeFromContentType(contentType string) ImageType {
 }
 
 // ImageTypeFromExtension determines the ImageType from a file extension.
-func ImageTypeFromExtension(ext string) ImageType {
+func ImageTypeFromExtension(
+	ext string,
+) ImageType {
 	ext = strings.ToLower(ext)
 	if !strings.HasPrefix(ext, ".") {
 		ext = "." + ext
@@ -266,14 +296,25 @@ func ImageTypeFromExtension(ext string) ImageType {
 }
 
 // ImageTypeFromFilename determines the ImageType from a filename.
-func ImageTypeFromFilename(filename string) ImageType {
+func ImageTypeFromFilename(
+	filename string,
+) ImageType {
 	ext := filepath.Ext(filename)
 	return ImageTypeFromExtension(ext)
 }
 
 // Magic byte signatures for image formats
 var (
-	pngMagic  = []byte{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}
+	pngMagic = []byte{
+		0x89,
+		0x50,
+		0x4E,
+		0x47,
+		0x0D,
+		0x0A,
+		0x1A,
+		0x0A,
+	}
 	jpegMagic = []byte{0xFF, 0xD8, 0xFF}
 	gifMagic  = []byte{0x47, 0x49, 0x46}
 	bmpMagic  = []byte{0x42, 0x4D}
@@ -283,14 +324,21 @@ var (
 	// EMF starts with EMF signature
 	emfMagic = []byte{0x01, 0x00, 0x00, 0x00}
 	// WMF starts with placeable header or standard header
-	wmfPlaceableMagic = []byte{0xD7, 0xCD, 0xC6, 0x9A}
+	wmfPlaceableMagic = []byte{
+		0xD7,
+		0xCD,
+		0xC6,
+		0x9A,
+	}
 	// ICO starts with reserved (0) and type (1 for icon)
 	icoMagic = []byte{0x00, 0x00, 0x01, 0x00}
 )
 
 // ImageTypeFromMagicBytes determines the ImageType from the file's magic bytes.
 // Returns the detected image type and true if detected, or ImageTypePng and false if unknown.
-func ImageTypeFromMagicBytes(data []byte) (ImageType, bool) {
+func ImageTypeFromMagicBytes(
+	data []byte,
+) (ImageType, bool) {
 	if len(data) < 8 {
 		return ImageTypePng, false
 	}
@@ -307,7 +355,8 @@ func ImageTypeFromMagicBytes(data []byte) (ImageType, bool) {
 	if bytes.HasPrefix(data, bmpMagic) {
 		return ImageTypeBmp, true
 	}
-	if bytes.HasPrefix(data, tiffLEMagic) || bytes.HasPrefix(data, tiffBEMagic) {
+	if bytes.HasPrefix(data, tiffLEMagic) ||
+		bytes.HasPrefix(data, tiffBEMagic) {
 		return ImageTypeTiff, true
 	}
 	if bytes.HasPrefix(data, wmfPlaceableMagic) {
@@ -318,9 +367,13 @@ func ImageTypeFromMagicBytes(data []byte) (ImageType, bool) {
 	}
 	// EMF detection needs more context as 0x01000000 is not unique
 	// Check for EMF header at offset 40
-	if len(data) >= 44 && bytes.HasPrefix(data, emfMagic) {
+	if len(data) >= 44 &&
+		bytes.HasPrefix(data, emfMagic) {
 		// Additional check: EMF has " EMF" at offset 40
-		if len(data) >= 44 && data[40] == 0x20 && data[41] == 0x45 && data[42] == 0x4D && data[43] == 0x46 {
+		if len(data) >= 44 && data[40] == 0x20 &&
+			data[41] == 0x45 &&
+			data[42] == 0x4D &&
+			data[43] == 0x46 {
 			return ImageTypeEmf, true
 		}
 	}
@@ -329,7 +382,10 @@ func ImageTypeFromMagicBytes(data []byte) (ImageType, bool) {
 }
 
 // DetectImageType attempts to detect the image type from data, falling back to extension.
-func DetectImageType(data []byte, filename string) ImageType {
+func DetectImageType(
+	data []byte,
+	filename string,
+) ImageType {
 	// First try magic bytes
 	if imgType, detected := ImageTypeFromMagicBytes(data); detected {
 		return imgType
@@ -358,12 +414,17 @@ func init() {
 	}
 
 	for _, it := range imageTypes {
-		openxml.RegisterPartType(&openxml.PartTypeInfo{
-			ContentType:        it.ContentType(),
-			RelationshipType:   RelationshipTypeImage,
-			Factory:            ImagePartFactory,
-			DefaultURI:         fmt.Sprintf("/word/media/image1%s", it.Extension()),
-			IsFixedContentType: true,
-		})
+		openxml.RegisterPartType(
+			&openxml.PartTypeInfo{
+				ContentType:      it.ContentType(),
+				RelationshipType: RelationshipTypeImage,
+				Factory:          ImagePartFactory,
+				DefaultURI: fmt.Sprintf(
+					"/word/media/image1%s",
+					it.Extension(),
+				),
+				IsFixedContentType: true,
+			},
+		)
 	}
 }

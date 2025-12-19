@@ -87,7 +87,10 @@ type ValidationContext struct {
 }
 
 // NewValidationContext creates a new validation context with the given settings and version.
-func NewValidationContext(settings *ValidationSettings, version FileFormatVersions) *ValidationContext {
+func NewValidationContext(
+	settings *ValidationSettings,
+	version FileFormatVersions,
+) *ValidationContext {
 	if settings == nil {
 		settings = DefaultSettings()
 	}
@@ -102,7 +105,9 @@ func NewValidationContext(settings *ValidationSettings, version FileFormatVersio
 
 // AddError adds a validation error to the context.
 // Returns true if validation should continue, false if it should stop.
-func (ctx *ValidationContext) AddError(err *ValidationError) bool {
+func (ctx *ValidationContext) AddError(
+	err *ValidationError,
+) bool {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
 
@@ -111,19 +116,24 @@ func (ctx *ValidationContext) AddError(err *ValidationError) bool {
 	}
 
 	// In strict mode, treat warnings as errors
-	if ctx.Settings.StrictMode && err.Severity == SeverityWarning {
+	if ctx.Settings.StrictMode &&
+		err.Severity == SeverityWarning {
 		err.Severity = SeverityError
 	}
 
 	ctx.errors = append(ctx.errors, err)
 
 	// Check if we should stop
-	if ctx.Settings.MaxErrors > 0 && len(ctx.errors) >= ctx.Settings.MaxErrors {
+	if ctx.Settings.MaxErrors > 0 &&
+		len(
+			ctx.errors,
+		) >= ctx.Settings.MaxErrors {
 		ctx.stopped = true
 		return false
 	}
 
-	if !ctx.Settings.ContinueOnError && err.Severity == SeverityError {
+	if !ctx.Settings.ContinueOnError &&
+		err.Severity == SeverityError {
 		ctx.stopped = true
 		return false
 	}
@@ -133,7 +143,9 @@ func (ctx *ValidationContext) AddError(err *ValidationError) bool {
 
 // AddErrors adds multiple validation errors to the context.
 // Returns true if validation should continue, false if it should stop.
-func (ctx *ValidationContext) AddErrors(errs ...*ValidationError) bool {
+func (ctx *ValidationContext) AddErrors(
+	errs ...*ValidationError,
+) bool {
 	for _, err := range errs {
 		if !ctx.AddError(err) {
 			return false
@@ -146,7 +158,10 @@ func (ctx *ValidationContext) AddErrors(errs ...*ValidationError) bool {
 func (ctx *ValidationContext) Errors() ValidationErrors {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
-	result := make(ValidationErrors, len(ctx.errors))
+	result := make(
+		ValidationErrors,
+		len(ctx.errors),
+	)
 	copy(result, ctx.errors)
 	return result
 }
@@ -166,7 +181,9 @@ func (ctx *ValidationContext) Stop() {
 }
 
 // PushPath pushes an element onto the path stack.
-func (ctx *ValidationContext) PushPath(element string) {
+func (ctx *ValidationContext) PushPath(
+	element string,
+) {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
 	ctx.pathStack = append(ctx.pathStack, element)
@@ -189,14 +206,24 @@ func (ctx *ValidationContext) CurrentPath() string {
 }
 
 // PathWithIndex returns the current path with an index suffix for the given element.
-func (ctx *ValidationContext) PathWithIndex(element string, index int) string {
+func (ctx *ValidationContext) PathWithIndex(
+	element string,
+	index int,
+) string {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
-	basePath := "/" + strings.Join(ctx.pathStack, "/")
+	basePath := "/" + strings.Join(
+		ctx.pathStack,
+		"/",
+	)
 	if basePath == "/" {
-		return "/" + element + "[" + itoa(index) + "]"
+		return "/" + element + "[" + itoa(
+			index,
+		) + "]"
 	}
-	return basePath + "/" + element + "[" + itoa(index) + "]"
+	return basePath + "/" + element + "[" + itoa(
+		index,
+	) + "]"
 }
 
 // itoa converts an integer to a string without importing strconv.
@@ -226,7 +253,10 @@ func uitoa(u uint) string {
 
 // TrackID tracks a unique ID for duplicate checking.
 // Returns the existing element if a duplicate, or nil if new.
-func (ctx *ValidationContext) TrackID(id string, element interface{}) interface{} {
+func (ctx *ValidationContext) TrackID(
+	id string,
+	element interface{},
+) interface{} {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
 
@@ -238,7 +268,9 @@ func (ctx *ValidationContext) TrackID(id string, element interface{}) interface{
 }
 
 // HasSeenID returns true if the ID has already been seen.
-func (ctx *ValidationContext) HasSeenID(id string) bool {
+func (ctx *ValidationContext) HasSeenID(
+	id string,
+) bool {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
 	_, ok := ctx.seenIDs[id]
@@ -272,7 +304,9 @@ func (ctx *ValidationContext) ErrorCount() int {
 }
 
 // IsVersionAvailable checks if a feature is available in the current validation version.
-func (ctx *ValidationContext) IsVersionAvailable(avail *VersionAvailability) bool {
+func (ctx *ValidationContext) IsVersionAvailable(
+	avail *VersionAvailability,
+) bool {
 	if avail == nil {
 		return true
 	}

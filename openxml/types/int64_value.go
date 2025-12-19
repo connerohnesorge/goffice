@@ -57,7 +57,9 @@ func (iv *Int64Value) InnerText() string {
 
 // SetInnerText parses the value from a string.
 // Returns an error if the string cannot be parsed as an int64.
-func (iv *Int64Value) SetInnerText(text string) error {
+func (iv *Int64Value) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		iv.hasValue = false
 		iv.value = 0
@@ -65,7 +67,10 @@ func (iv *Int64Value) SetInnerText(text string) error {
 	}
 	v, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid int64 value: %w", err)
+		return fmt.Errorf(
+			"invalid int64 value: %w",
+			err,
+		)
 	}
 	iv.value = v
 	iv.hasValue = true
@@ -130,7 +135,9 @@ func (uv *UInt64Value) InnerText() string {
 
 // SetInnerText parses the value from a string.
 // Returns an error if the string cannot be parsed as a uint64 or is negative.
-func (uv *UInt64Value) SetInnerText(text string) error {
+func (uv *UInt64Value) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		uv.hasValue = false
 		uv.value = 0
@@ -138,11 +145,17 @@ func (uv *UInt64Value) SetInnerText(text string) error {
 	}
 	// Check for negative values
 	if len(text) > 0 && text[0] == '-' {
-		return fmt.Errorf("invalid uint64 value: negative values not allowed: %s", text)
+		return fmt.Errorf(
+			"invalid uint64 value: negative values not allowed: %s",
+			text,
+		)
 	}
 	v, err := strconv.ParseUint(text, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid uint64 value: %w", err)
+		return fmt.Errorf(
+			"invalid uint64 value: %w",
+			err,
+		)
 	}
 	uv.value = v
 	uv.hasValue = true

@@ -8,16 +8,24 @@ type OpenXmlAttribute struct {
 }
 
 // NewAttribute creates a new attribute with the given namespace URI, local name, and value.
-func NewAttribute(namespaceURI, localName, prefix, value string) OpenXmlAttribute {
+func NewAttribute(
+	namespaceURI, localName, prefix, value string,
+) OpenXmlAttribute {
 	return OpenXmlAttribute{
-		qname:  NewQualifiedName(namespaceURI, localName),
+		qname: NewQualifiedName(
+			namespaceURI,
+			localName,
+		),
 		prefix: prefix,
 		value:  value,
 	}
 }
 
 // NewAttributeWithQName creates a new attribute with the given qualified name and value.
-func NewAttributeWithQName(qname OpenXmlQualifiedName, prefix, value string) OpenXmlAttribute {
+func NewAttributeWithQName(
+	qname OpenXmlQualifiedName,
+	prefix, value string,
+) OpenXmlAttribute {
 	return OpenXmlAttribute{
 		qname:  qname,
 		prefix: prefix,
@@ -26,7 +34,9 @@ func NewAttributeWithQName(qname OpenXmlQualifiedName, prefix, value string) Ope
 }
 
 // NewSimpleAttribute creates an attribute with no namespace.
-func NewSimpleAttribute(localName, value string) OpenXmlAttribute {
+func NewSimpleAttribute(
+	localName, value string,
+) OpenXmlAttribute {
 	return OpenXmlAttribute{
 		qname: NewQualifiedName("", localName),
 		value: value,
@@ -59,7 +69,9 @@ func (a OpenXmlAttribute) Value() string {
 }
 
 // SetValue sets the value of the attribute.
-func (a *OpenXmlAttribute) SetValue(value string) {
+func (a *OpenXmlAttribute) SetValue(
+	value string,
+) {
 	a.value = value
 }
 
@@ -79,6 +91,8 @@ func (a OpenXmlAttribute) IsEmpty() bool {
 
 // Equals returns true if this attribute has the same qualified name as the other.
 // Note: This compares by name only, not value.
-func (a OpenXmlAttribute) Equals(other OpenXmlAttribute) bool {
+func (a OpenXmlAttribute) Equals(
+	other OpenXmlAttribute,
+) bool {
 	return a.qname.Equals(other.qname)
 }

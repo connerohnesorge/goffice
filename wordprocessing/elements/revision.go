@@ -14,9 +14,19 @@ type InsertedRun struct {
 }
 
 // NewInsertedRun creates a new InsertedRun element.
-func NewInsertedRun(id int, author string, date time.Time) *InsertedRun {
-	elem := openxml.NewCompositeElement(NamespaceWML, "ins", PrefixW)
-	ins := &InsertedRun{CompositeElementBase: elem}
+func NewInsertedRun(
+	id int,
+	author string,
+	date time.Time,
+) *InsertedRun {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"ins",
+		PrefixW,
+	)
+	ins := &InsertedRun{
+		CompositeElementBase: elem,
+	}
 	ins.SetId(id)
 	ins.SetAuthor(author)
 	ins.SetDate(date)
@@ -25,7 +35,10 @@ func NewInsertedRun(id int, author string, date time.Time) *InsertedRun {
 
 // Id returns the revision ID.
 func (ins *InsertedRun) Id() int {
-	attr, found := ins.GetAttribute("id", NamespaceWML)
+	attr, found := ins.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -35,12 +48,22 @@ func (ins *InsertedRun) Id() int {
 
 // SetId sets the revision ID.
 func (ins *InsertedRun) SetId(id int) {
-	ins.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	ins.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Author returns the author who made this change.
 func (ins *InsertedRun) Author() string {
-	attr, found := ins.GetAttribute("author", NamespaceWML)
+	attr, found := ins.GetAttribute(
+		"author",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -49,12 +72,22 @@ func (ins *InsertedRun) Author() string {
 
 // SetAuthor sets the author who made this change.
 func (ins *InsertedRun) SetAuthor(author string) {
-	ins.SetAttribute(openxml.NewAttribute(NamespaceWML, "author", PrefixW, author))
+	ins.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"author",
+			PrefixW,
+			author,
+		),
+	)
 }
 
 // Date returns the date/time of this change.
 func (ins *InsertedRun) Date() time.Time {
-	attr, found := ins.GetAttribute("date", NamespaceWML)
+	attr, found := ins.GetAttribute(
+		"date",
+		NamespaceWML,
+	)
 	if !found {
 		return time.Time{}
 	}
@@ -64,14 +97,22 @@ func (ins *InsertedRun) Date() time.Time {
 
 // SetDate sets the date/time of this change.
 func (ins *InsertedRun) SetDate(date time.Time) {
-	ins.SetAttribute(openxml.NewAttribute(NamespaceWML, "date", PrefixW, date.Format(time.RFC3339)))
+	ins.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"date",
+			PrefixW,
+			date.Format(time.RFC3339),
+		),
+	)
 }
 
 // Runs returns an iterator over all Run elements in this insertion.
 func (ins *InsertedRun) Runs() iter.Seq[*Run] {
 	return func(yield func(*Run) bool) {
 		for child := range ins.Children() {
-			if child.LocalName() == "r" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "r" &&
+				child.NamespaceURI() == NamespaceWML {
 				var r *Run
 				if run, ok := child.(*Run); ok {
 					r = run
@@ -87,7 +128,9 @@ func (ins *InsertedRun) Runs() iter.Seq[*Run] {
 }
 
 // AppendRun appends a new Run element with the given text.
-func (ins *InsertedRun) AppendRun(text string) *Run {
+func (ins *InsertedRun) AppendRun(
+	text string,
+) *Run {
 	r := NewRun(text)
 	ins.AppendChild(r)
 	return r
@@ -110,7 +153,9 @@ func (ins *InsertedRun) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this InsertedRun element.
-func (ins *InsertedRun) CloneNode(deep bool) openxml.Element {
+func (ins *InsertedRun) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &InsertedRun{
 		CompositeElementBase: ins.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -122,8 +167,16 @@ type DeletedRun struct {
 }
 
 // NewDeletedRun creates a new DeletedRun element.
-func NewDeletedRun(id int, author string, date time.Time) *DeletedRun {
-	elem := openxml.NewCompositeElement(NamespaceWML, "del", PrefixW)
+func NewDeletedRun(
+	id int,
+	author string,
+	date time.Time,
+) *DeletedRun {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"del",
+		PrefixW,
+	)
 	del := &DeletedRun{CompositeElementBase: elem}
 	del.SetId(id)
 	del.SetAuthor(author)
@@ -133,7 +186,10 @@ func NewDeletedRun(id int, author string, date time.Time) *DeletedRun {
 
 // Id returns the revision ID.
 func (del *DeletedRun) Id() int {
-	attr, found := del.GetAttribute("id", NamespaceWML)
+	attr, found := del.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -143,12 +199,22 @@ func (del *DeletedRun) Id() int {
 
 // SetId sets the revision ID.
 func (del *DeletedRun) SetId(id int) {
-	del.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	del.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Author returns the author who made this change.
 func (del *DeletedRun) Author() string {
-	attr, found := del.GetAttribute("author", NamespaceWML)
+	attr, found := del.GetAttribute(
+		"author",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -157,12 +223,22 @@ func (del *DeletedRun) Author() string {
 
 // SetAuthor sets the author who made this change.
 func (del *DeletedRun) SetAuthor(author string) {
-	del.SetAttribute(openxml.NewAttribute(NamespaceWML, "author", PrefixW, author))
+	del.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"author",
+			PrefixW,
+			author,
+		),
+	)
 }
 
 // Date returns the date/time of this change.
 func (del *DeletedRun) Date() time.Time {
-	attr, found := del.GetAttribute("date", NamespaceWML)
+	attr, found := del.GetAttribute(
+		"date",
+		NamespaceWML,
+	)
 	if !found {
 		return time.Time{}
 	}
@@ -172,14 +248,22 @@ func (del *DeletedRun) Date() time.Time {
 
 // SetDate sets the date/time of this change.
 func (del *DeletedRun) SetDate(date time.Time) {
-	del.SetAttribute(openxml.NewAttribute(NamespaceWML, "date", PrefixW, date.Format(time.RFC3339)))
+	del.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"date",
+			PrefixW,
+			date.Format(time.RFC3339),
+		),
+	)
 }
 
 // Runs returns an iterator over all Run elements in this deletion.
 func (del *DeletedRun) Runs() iter.Seq[*Run] {
 	return func(yield func(*Run) bool) {
 		for child := range del.Children() {
-			if child.LocalName() == "r" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "r" &&
+				child.NamespaceURI() == NamespaceWML {
 				var r *Run
 				if run, ok := child.(*Run); ok {
 					r = run
@@ -200,7 +284,8 @@ func (del *DeletedRun) DeletedTexts() iter.Seq[*DeletedText] {
 		// Look inside runs for delText elements
 		for r := range del.Runs() {
 			for child := range r.Children() {
-				if child.LocalName() == "delText" && child.NamespaceURI() == NamespaceWML {
+				if child.LocalName() == "delText" &&
+					child.NamespaceURI() == NamespaceWML {
 					var dt *DeletedText
 					if delText, ok := child.(*DeletedText); ok {
 						dt = delText
@@ -217,7 +302,9 @@ func (del *DeletedRun) DeletedTexts() iter.Seq[*DeletedText] {
 }
 
 // AppendDeletedRun appends a new Run with DeletedText.
-func (del *DeletedRun) AppendDeletedRun(text string) *Run {
+func (del *DeletedRun) AppendDeletedRun(
+	text string,
+) *Run {
 	r := NewRun("")
 	// Remove the default text element
 	t := r.Text()
@@ -248,7 +335,9 @@ func (del *DeletedRun) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this DeletedRun element.
-func (del *DeletedRun) CloneNode(deep bool) openxml.Element {
+func (del *DeletedRun) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &DeletedRun{
 		CompositeElementBase: del.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -261,7 +350,12 @@ type DeletedText struct {
 
 // NewDeletedText creates a new DeletedText element.
 func NewDeletedText(text string) *DeletedText {
-	elem := openxml.NewLeafElementWithText(NamespaceWML, "delText", PrefixW, text)
+	elem := openxml.NewLeafElementWithText(
+		NamespaceWML,
+		"delText",
+		PrefixW,
+		text,
+	)
 	dt := &DeletedText{LeafElementBase: elem}
 	// Preserve whitespace if needed
 	if needsSpacePreserve(text) {
@@ -282,7 +376,10 @@ func (dt *DeletedText) SetText(value string) {
 
 // Space returns the xml:space attribute value.
 func (dt *DeletedText) Space() string {
-	attr, found := dt.GetAttribute("space", NamespaceXML)
+	attr, found := dt.GetAttribute(
+		"space",
+		NamespaceXML,
+	)
 	if !found {
 		return ""
 	}
@@ -291,7 +388,12 @@ func (dt *DeletedText) Space() string {
 
 // SetSpace sets the xml:space attribute.
 func (dt *DeletedText) SetSpace(value string) {
-	attr := openxml.NewAttribute(NamespaceXML, "space", "xml", value)
+	attr := openxml.NewAttribute(
+		NamespaceXML,
+		"space",
+		"xml",
+		value,
+	)
 	dt.SetAttribute(attr)
 }
 
@@ -303,7 +405,9 @@ func (dt *DeletedText) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this DeletedText element.
-func (dt *DeletedText) CloneNode(deep bool) openxml.Element {
+func (dt *DeletedText) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &DeletedText{
 		LeafElementBase: dt.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -315,8 +419,16 @@ type MoveFromRun struct {
 }
 
 // NewMoveFromRun creates a new MoveFromRun element.
-func NewMoveFromRun(id int, author string, date time.Time) *MoveFromRun {
-	elem := openxml.NewCompositeElement(NamespaceWML, "moveFrom", PrefixW)
+func NewMoveFromRun(
+	id int,
+	author string,
+	date time.Time,
+) *MoveFromRun {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"moveFrom",
+		PrefixW,
+	)
 	mf := &MoveFromRun{CompositeElementBase: elem}
 	mf.SetId(id)
 	mf.SetAuthor(author)
@@ -326,7 +438,10 @@ func NewMoveFromRun(id int, author string, date time.Time) *MoveFromRun {
 
 // Id returns the revision ID.
 func (mf *MoveFromRun) Id() int {
-	attr, found := mf.GetAttribute("id", NamespaceWML)
+	attr, found := mf.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -336,12 +451,22 @@ func (mf *MoveFromRun) Id() int {
 
 // SetId sets the revision ID.
 func (mf *MoveFromRun) SetId(id int) {
-	mf.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	mf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Author returns the author who made this change.
 func (mf *MoveFromRun) Author() string {
-	attr, found := mf.GetAttribute("author", NamespaceWML)
+	attr, found := mf.GetAttribute(
+		"author",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -350,12 +475,22 @@ func (mf *MoveFromRun) Author() string {
 
 // SetAuthor sets the author who made this change.
 func (mf *MoveFromRun) SetAuthor(author string) {
-	mf.SetAttribute(openxml.NewAttribute(NamespaceWML, "author", PrefixW, author))
+	mf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"author",
+			PrefixW,
+			author,
+		),
+	)
 }
 
 // Date returns the date/time of this change.
 func (mf *MoveFromRun) Date() time.Time {
-	attr, found := mf.GetAttribute("date", NamespaceWML)
+	attr, found := mf.GetAttribute(
+		"date",
+		NamespaceWML,
+	)
 	if !found {
 		return time.Time{}
 	}
@@ -365,7 +500,14 @@ func (mf *MoveFromRun) Date() time.Time {
 
 // SetDate sets the date/time of this change.
 func (mf *MoveFromRun) SetDate(date time.Time) {
-	mf.SetAttribute(openxml.NewAttribute(NamespaceWML, "date", PrefixW, date.Format(time.RFC3339)))
+	mf.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"date",
+			PrefixW,
+			date.Format(time.RFC3339),
+		),
+	)
 }
 
 // Clone creates a deep copy of this MoveFromRun element.
@@ -381,8 +523,16 @@ type MoveToRun struct {
 }
 
 // NewMoveToRun creates a new MoveToRun element.
-func NewMoveToRun(id int, author string, date time.Time) *MoveToRun {
-	elem := openxml.NewCompositeElement(NamespaceWML, "moveTo", PrefixW)
+func NewMoveToRun(
+	id int,
+	author string,
+	date time.Time,
+) *MoveToRun {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"moveTo",
+		PrefixW,
+	)
 	mt := &MoveToRun{CompositeElementBase: elem}
 	mt.SetId(id)
 	mt.SetAuthor(author)
@@ -392,7 +542,10 @@ func NewMoveToRun(id int, author string, date time.Time) *MoveToRun {
 
 // Id returns the revision ID.
 func (mt *MoveToRun) Id() int {
-	attr, found := mt.GetAttribute("id", NamespaceWML)
+	attr, found := mt.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -402,12 +555,22 @@ func (mt *MoveToRun) Id() int {
 
 // SetId sets the revision ID.
 func (mt *MoveToRun) SetId(id int) {
-	mt.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	mt.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Author returns the author who made this change.
 func (mt *MoveToRun) Author() string {
-	attr, found := mt.GetAttribute("author", NamespaceWML)
+	attr, found := mt.GetAttribute(
+		"author",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -416,12 +579,22 @@ func (mt *MoveToRun) Author() string {
 
 // SetAuthor sets the author who made this change.
 func (mt *MoveToRun) SetAuthor(author string) {
-	mt.SetAttribute(openxml.NewAttribute(NamespaceWML, "author", PrefixW, author))
+	mt.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"author",
+			PrefixW,
+			author,
+		),
+	)
 }
 
 // Date returns the date/time of this change.
 func (mt *MoveToRun) Date() time.Time {
-	attr, found := mt.GetAttribute("date", NamespaceWML)
+	attr, found := mt.GetAttribute(
+		"date",
+		NamespaceWML,
+	)
 	if !found {
 		return time.Time{}
 	}
@@ -431,7 +604,14 @@ func (mt *MoveToRun) Date() time.Time {
 
 // SetDate sets the date/time of this change.
 func (mt *MoveToRun) SetDate(date time.Time) {
-	mt.SetAttribute(openxml.NewAttribute(NamespaceWML, "date", PrefixW, date.Format(time.RFC3339)))
+	mt.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"date",
+			PrefixW,
+			date.Format(time.RFC3339),
+		),
+	)
 }
 
 // Clone creates a deep copy of this MoveToRun element.
@@ -447,9 +627,19 @@ type RunPropertiesChange struct {
 }
 
 // NewRunPropertiesChange creates a new RunPropertiesChange element.
-func NewRunPropertiesChange(id int, author string, date time.Time) *RunPropertiesChange {
-	elem := openxml.NewCompositeElement(NamespaceWML, "rPrChange", PrefixW)
-	rpc := &RunPropertiesChange{CompositeElementBase: elem}
+func NewRunPropertiesChange(
+	id int,
+	author string,
+	date time.Time,
+) *RunPropertiesChange {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"rPrChange",
+		PrefixW,
+	)
+	rpc := &RunPropertiesChange{
+		CompositeElementBase: elem,
+	}
 	rpc.SetId(id)
 	rpc.SetAuthor(author)
 	rpc.SetDate(date)
@@ -458,7 +648,10 @@ func NewRunPropertiesChange(id int, author string, date time.Time) *RunPropertie
 
 // Id returns the revision ID.
 func (rpc *RunPropertiesChange) Id() int {
-	attr, found := rpc.GetAttribute("id", NamespaceWML)
+	attr, found := rpc.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -468,12 +661,22 @@ func (rpc *RunPropertiesChange) Id() int {
 
 // SetId sets the revision ID.
 func (rpc *RunPropertiesChange) SetId(id int) {
-	rpc.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	rpc.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Author returns the author who made this change.
 func (rpc *RunPropertiesChange) Author() string {
-	attr, found := rpc.GetAttribute("author", NamespaceWML)
+	attr, found := rpc.GetAttribute(
+		"author",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -481,13 +684,25 @@ func (rpc *RunPropertiesChange) Author() string {
 }
 
 // SetAuthor sets the author who made this change.
-func (rpc *RunPropertiesChange) SetAuthor(author string) {
-	rpc.SetAttribute(openxml.NewAttribute(NamespaceWML, "author", PrefixW, author))
+func (rpc *RunPropertiesChange) SetAuthor(
+	author string,
+) {
+	rpc.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"author",
+			PrefixW,
+			author,
+		),
+	)
 }
 
 // Date returns the date/time of this change.
 func (rpc *RunPropertiesChange) Date() time.Time {
-	attr, found := rpc.GetAttribute("date", NamespaceWML)
+	attr, found := rpc.GetAttribute(
+		"date",
+		NamespaceWML,
+	)
 	if !found {
 		return time.Time{}
 	}
@@ -496,8 +711,17 @@ func (rpc *RunPropertiesChange) Date() time.Time {
 }
 
 // SetDate sets the date/time of this change.
-func (rpc *RunPropertiesChange) SetDate(date time.Time) {
-	rpc.SetAttribute(openxml.NewAttribute(NamespaceWML, "date", PrefixW, date.Format(time.RFC3339)))
+func (rpc *RunPropertiesChange) SetDate(
+	date time.Time,
+) {
+	rpc.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"date",
+			PrefixW,
+			date.Format(time.RFC3339),
+		),
+	)
 }
 
 // PreviousRunProperties returns the previous run properties.
@@ -510,14 +734,21 @@ func (rpc *RunPropertiesChange) PreviousRunProperties() *RunProperties {
 		return rp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &RunProperties{CompositeElementBase: comp}
+		return &RunProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
 
 // SetPreviousRunProperties sets the previous run properties.
-func (rpc *RunPropertiesChange) SetPreviousRunProperties(rp *RunProperties) {
-	existing := rpc.GetElement("rPr", NamespaceWML)
+func (rpc *RunPropertiesChange) SetPreviousRunProperties(
+	rp *RunProperties,
+) {
+	existing := rpc.GetElement(
+		"rPr",
+		NamespaceWML,
+	)
 	if existing != nil {
 		rpc.RemoveChild(existing)
 	}
@@ -539,9 +770,19 @@ type ParagraphPropertiesChange struct {
 }
 
 // NewParagraphPropertiesChange creates a new ParagraphPropertiesChange element.
-func NewParagraphPropertiesChange(id int, author string, date time.Time) *ParagraphPropertiesChange {
-	elem := openxml.NewCompositeElement(NamespaceWML, "pPrChange", PrefixW)
-	ppc := &ParagraphPropertiesChange{CompositeElementBase: elem}
+func NewParagraphPropertiesChange(
+	id int,
+	author string,
+	date time.Time,
+) *ParagraphPropertiesChange {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"pPrChange",
+		PrefixW,
+	)
+	ppc := &ParagraphPropertiesChange{
+		CompositeElementBase: elem,
+	}
 	ppc.SetId(id)
 	ppc.SetAuthor(author)
 	ppc.SetDate(date)
@@ -550,7 +791,10 @@ func NewParagraphPropertiesChange(id int, author string, date time.Time) *Paragr
 
 // Id returns the revision ID.
 func (ppc *ParagraphPropertiesChange) Id() int {
-	attr, found := ppc.GetAttribute("id", NamespaceWML)
+	attr, found := ppc.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -559,13 +803,25 @@ func (ppc *ParagraphPropertiesChange) Id() int {
 }
 
 // SetId sets the revision ID.
-func (ppc *ParagraphPropertiesChange) SetId(id int) {
-	ppc.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+func (ppc *ParagraphPropertiesChange) SetId(
+	id int,
+) {
+	ppc.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Author returns the author who made this change.
 func (ppc *ParagraphPropertiesChange) Author() string {
-	attr, found := ppc.GetAttribute("author", NamespaceWML)
+	attr, found := ppc.GetAttribute(
+		"author",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -573,13 +829,25 @@ func (ppc *ParagraphPropertiesChange) Author() string {
 }
 
 // SetAuthor sets the author who made this change.
-func (ppc *ParagraphPropertiesChange) SetAuthor(author string) {
-	ppc.SetAttribute(openxml.NewAttribute(NamespaceWML, "author", PrefixW, author))
+func (ppc *ParagraphPropertiesChange) SetAuthor(
+	author string,
+) {
+	ppc.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"author",
+			PrefixW,
+			author,
+		),
+	)
 }
 
 // Date returns the date/time of this change.
 func (ppc *ParagraphPropertiesChange) Date() time.Time {
-	attr, found := ppc.GetAttribute("date", NamespaceWML)
+	attr, found := ppc.GetAttribute(
+		"date",
+		NamespaceWML,
+	)
 	if !found {
 		return time.Time{}
 	}
@@ -588,8 +856,17 @@ func (ppc *ParagraphPropertiesChange) Date() time.Time {
 }
 
 // SetDate sets the date/time of this change.
-func (ppc *ParagraphPropertiesChange) SetDate(date time.Time) {
-	ppc.SetAttribute(openxml.NewAttribute(NamespaceWML, "date", PrefixW, date.Format(time.RFC3339)))
+func (ppc *ParagraphPropertiesChange) SetDate(
+	date time.Time,
+) {
+	ppc.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"date",
+			PrefixW,
+			date.Format(time.RFC3339),
+		),
+	)
 }
 
 // PreviousParagraphProperties returns the previous paragraph properties.
@@ -602,14 +879,21 @@ func (ppc *ParagraphPropertiesChange) PreviousParagraphProperties() *ParagraphPr
 		return pp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &ParagraphProperties{CompositeElementBase: comp}
+		return &ParagraphProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
 
 // SetPreviousParagraphProperties sets the previous paragraph properties.
-func (ppc *ParagraphPropertiesChange) SetPreviousParagraphProperties(pp *ParagraphProperties) {
-	existing := ppc.GetElement("pPr", NamespaceWML)
+func (ppc *ParagraphPropertiesChange) SetPreviousParagraphProperties(
+	pp *ParagraphProperties,
+) {
+	existing := ppc.GetElement(
+		"pPr",
+		NamespaceWML,
+	)
 	if existing != nil {
 		ppc.RemoveChild(existing)
 	}

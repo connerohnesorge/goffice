@@ -20,7 +20,12 @@ type Text struct {
 
 // NewText creates a new Text element with the specified content.
 func NewText(text string) *Text {
-	elem := openxml.NewLeafElementWithText(NamespaceWML, "t", PrefixW, text)
+	elem := openxml.NewLeafElementWithText(
+		NamespaceWML,
+		"t",
+		PrefixW,
+		text,
+	)
 	t := &Text{LeafElementBase: elem}
 	// Preserve whitespace if needed
 	if needsSpacePreserve(text) {
@@ -35,7 +40,9 @@ func needsSpacePreserve(text string) bool {
 		return false
 	}
 	// Check for leading or trailing whitespace
-	if text[0] == ' ' || text[0] == '\t' || text[len(text)-1] == ' ' || text[len(text)-1] == '\t' {
+	if text[0] == ' ' || text[0] == '\t' ||
+		text[len(text)-1] == ' ' ||
+		text[len(text)-1] == '\t' {
 		return true
 	}
 	// Check for multiple consecutive spaces
@@ -59,7 +66,10 @@ func (t *Text) SetText(value string) {
 
 // Space returns the xml:space attribute value.
 func (t *Text) Space() string {
-	attr, found := t.GetAttribute("space", NamespaceXML)
+	attr, found := t.GetAttribute(
+		"space",
+		NamespaceXML,
+	)
 	if !found {
 		return ""
 	}
@@ -68,7 +78,12 @@ func (t *Text) Space() string {
 
 // SetSpace sets the xml:space attribute.
 func (t *Text) SetSpace(value string) {
-	attr := openxml.NewAttribute(NamespaceXML, "space", "xml", value)
+	attr := openxml.NewAttribute(
+		NamespaceXML,
+		"space",
+		"xml",
+		value,
+	)
 	t.SetAttribute(attr)
 }
 
@@ -80,7 +95,9 @@ func (t *Text) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Text element.
-func (t *Text) CloneNode(deep bool) openxml.Element {
+func (t *Text) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Text{
 		LeafElementBase: t.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}

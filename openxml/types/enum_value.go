@@ -19,13 +19,15 @@ type EnumParser[T any] interface {
 // EnumValue is a generic type for enumeration attributes.
 // T must be a string-based type (typically a defined enum type).
 type EnumValue[T EnumStringer] struct {
-	value      T
-	hasValue   bool
+	value       T
+	hasValue    bool
 	validValues map[string]T // Optional mapping of valid string values to enum values
 }
 
 // NewEnumValue creates a new EnumValue with the given enum value.
-func NewEnumValue[T EnumStringer](v T) *EnumValue[T] {
+func NewEnumValue[T EnumStringer](
+	v T,
+) *EnumValue[T] {
 	return &EnumValue[T]{
 		value:    v,
 		hasValue: true,
@@ -34,7 +36,10 @@ func NewEnumValue[T EnumStringer](v T) *EnumValue[T] {
 
 // NewEnumValueWithValidation creates a new EnumValue with validation support.
 // The validValues map defines the set of valid string representations and their enum values.
-func NewEnumValueWithValidation[T EnumStringer](v T, validValues map[string]T) *EnumValue[T] {
+func NewEnumValueWithValidation[T EnumStringer](
+	v T,
+	validValues map[string]T,
+) *EnumValue[T] {
 	return &EnumValue[T]{
 		value:       v,
 		hasValue:    true,
@@ -50,7 +55,9 @@ func NewNilEnumValue[T EnumStringer]() *EnumValue[T] {
 }
 
 // NewNilEnumValueWithValidation creates a new EnumValue in the unset/nil state with validation support.
-func NewNilEnumValueWithValidation[T EnumStringer](validValues map[string]T) *EnumValue[T] {
+func NewNilEnumValueWithValidation[T EnumStringer](
+	validValues map[string]T,
+) *EnumValue[T] {
 	return &EnumValue[T]{
 		hasValue:    false,
 		validValues: validValues,
@@ -80,7 +87,9 @@ func (ev *EnumValue[T]) HasValue() bool {
 
 // SetValidValues sets the mapping of valid string values.
 // This is used for validation during SetInnerText.
-func (ev *EnumValue[T]) SetValidValues(validValues map[string]T) {
+func (ev *EnumValue[T]) SetValidValues(
+	validValues map[string]T,
+) {
 	ev.validValues = validValues
 }
 
@@ -95,7 +104,9 @@ func (ev *EnumValue[T]) InnerText() string {
 // SetInnerText parses the value from a string.
 // If validValues is set, validates that the string is a valid enum value.
 // Returns an error if validation is enabled and the string is not valid.
-func (ev *EnumValue[T]) SetInnerText(text string) error {
+func (ev *EnumValue[T]) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		ev.hasValue = false
 		var zero T
@@ -110,7 +121,10 @@ func (ev *EnumValue[T]) SetInnerText(text string) error {
 			ev.hasValue = true
 			return nil
 		}
-		return fmt.Errorf("invalid enum value: %q", text)
+		return fmt.Errorf(
+			"invalid enum value: %q",
+			text,
+		)
 	}
 
 	// Without validation, accept any string and convert it

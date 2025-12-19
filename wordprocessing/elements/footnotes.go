@@ -29,24 +29,41 @@ type Footnotes struct {
 
 // NewFootnotes creates a new Footnotes element with default separators.
 func NewFootnotes() *Footnotes {
-	elem := openxml.NewPartRootElement(NamespaceWML, "footnotes", PrefixW)
-	fn := &Footnotes{PartRootElementBase: elem, nextID: 1}
+	elem := openxml.NewPartRootElement(
+		NamespaceWML,
+		"footnotes",
+		PrefixW,
+	)
+	fn := &Footnotes{
+		PartRootElementBase: elem,
+		nextID:              1,
+	}
 
 	// Add default separator footnotes
 	fn.addSeparator(-1, FootnoteTypeSeparator)
-	fn.addSeparator(0, FootnoteTypeContinuationSeparator)
+	fn.addSeparator(
+		0,
+		FootnoteTypeContinuationSeparator,
+	)
 
 	return fn
 }
 
 // addSeparator adds a separator footnote with the given ID and type.
-func (fn *Footnotes) addSeparator(id int, fnType FootnoteType) {
+func (fn *Footnotes) addSeparator(
+	id int,
+	fnType FootnoteType,
+) {
 	footnote := newFootnoteWithType(id, fnType)
 
 	// Add separator content
 	p := NewParagraph()
 	r := NewRun("")
-	sep := openxml.NewCompositeElement(NamespaceWML, string(fnType), PrefixW)
+	sep := openxml.NewCompositeElement(
+		NamespaceWML,
+		string(fnType),
+		PrefixW,
+	)
 	r.AppendChild(sep)
 	p.AppendChild(r)
 	footnote.AppendChild(p)
@@ -58,7 +75,8 @@ func (fn *Footnotes) addSeparator(id int, fnType FootnoteType) {
 func (fn *Footnotes) Footnotes() iter.Seq[*Footnote] {
 	return func(yield func(*Footnote) bool) {
 		for child := range fn.Children() {
-			if child.LocalName() == "footnote" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "footnote" &&
+				child.NamespaceURI() == NamespaceWML {
 				var f *Footnote
 				if footnote, ok := child.(*Footnote); ok {
 					f = footnote
@@ -67,7 +85,8 @@ func (fn *Footnotes) Footnotes() iter.Seq[*Footnote] {
 				}
 				if f != nil {
 					// Skip separator footnotes
-					if f.Type() == FootnoteTypeNormal || f.Type() == "" {
+					if f.Type() == FootnoteTypeNormal ||
+						f.Type() == "" {
 						if !yield(f) {
 							return
 						}
@@ -82,7 +101,8 @@ func (fn *Footnotes) Footnotes() iter.Seq[*Footnote] {
 func (fn *Footnotes) AllFootnotes() iter.Seq[*Footnote] {
 	return func(yield func(*Footnote) bool) {
 		for child := range fn.Children() {
-			if child.LocalName() == "footnote" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "footnote" &&
+				child.NamespaceURI() == NamespaceWML {
 				var f *Footnote
 				if footnote, ok := child.(*Footnote); ok {
 					f = footnote
@@ -98,7 +118,9 @@ func (fn *Footnotes) AllFootnotes() iter.Seq[*Footnote] {
 }
 
 // GetFootnote returns the footnote with the specified ID, or nil if not found.
-func (fn *Footnotes) GetFootnote(id int) *Footnote {
+func (fn *Footnotes) GetFootnote(
+	id int,
+) *Footnote {
 	for f := range fn.AllFootnotes() {
 		if f.Id() == id {
 			return f
@@ -108,7 +130,9 @@ func (fn *Footnotes) GetFootnote(id int) *Footnote {
 }
 
 // AddFootnote adds a new footnote with the given text and returns it.
-func (fn *Footnotes) AddFootnote(text string) *Footnote {
+func (fn *Footnotes) AddFootnote(
+	text string,
+) *Footnote {
 	f := NewFootnote(fn.nextID, text)
 	fn.nextID++
 	fn.AppendChild(f)
@@ -134,7 +158,9 @@ func (fn *Footnotes) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Footnotes element.
-func (fn *Footnotes) CloneNode(deep bool) openxml.Element {
+func (fn *Footnotes) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Footnotes{
 		PartRootElementBase: fn.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
 		nextID:              fn.nextID,
@@ -148,7 +174,10 @@ type Footnote struct {
 
 // NewFootnote creates a new Footnote element with the given ID and text.
 func NewFootnote(id int, text string) *Footnote {
-	f := newFootnoteWithType(id, FootnoteTypeNormal)
+	f := newFootnoteWithType(
+		id,
+		FootnoteTypeNormal,
+	)
 	if text != "" {
 		p := NewParagraph(text)
 		f.AppendChild(p)
@@ -157,19 +186,44 @@ func NewFootnote(id int, text string) *Footnote {
 }
 
 // newFootnoteWithType creates a new Footnote with the specified ID and type.
-func newFootnoteWithType(id int, fnType FootnoteType) *Footnote {
-	elem := openxml.NewCompositeElement(NamespaceWML, "footnote", PrefixW)
+func newFootnoteWithType(
+	id int,
+	fnType FootnoteType,
+) *Footnote {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"footnote",
+		PrefixW,
+	)
 	f := &Footnote{CompositeElementBase: elem}
-	f.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
-	if fnType != FootnoteTypeNormal && fnType != "" {
-		f.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(fnType)))
+	f.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
+	if fnType != FootnoteTypeNormal &&
+		fnType != "" {
+		f.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"type",
+				PrefixW,
+				string(fnType),
+			),
+		)
 	}
 	return f
 }
 
 // Id returns the footnote ID.
 func (f *Footnote) Id() int {
-	attr, found := f.GetAttribute("id", NamespaceWML)
+	attr, found := f.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -179,12 +233,22 @@ func (f *Footnote) Id() int {
 
 // SetId sets the footnote ID.
 func (f *Footnote) SetId(id int) {
-	f.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	f.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Type returns the footnote type.
 func (f *Footnote) Type() FootnoteType {
-	attr, found := f.GetAttribute("type", NamespaceWML)
+	attr, found := f.GetAttribute(
+		"type",
+		NamespaceWML,
+	)
 	if !found {
 		return FootnoteTypeNormal
 	}
@@ -193,7 +257,8 @@ func (f *Footnote) Type() FootnoteType {
 
 // SetType sets the footnote type.
 func (f *Footnote) SetType(fnType FootnoteType) {
-	if fnType == FootnoteTypeNormal || fnType == "" {
+	if fnType == FootnoteTypeNormal ||
+		fnType == "" {
 		f.RemoveAttribute("type", NamespaceWML)
 	} else {
 		f.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(fnType)))
@@ -204,7 +269,8 @@ func (f *Footnote) SetType(fnType FootnoteType) {
 func (f *Footnote) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range f.Children() {
-			if child.LocalName() == "p" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "p" &&
+				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
 				if para, ok := child.(*Paragraph); ok {
 					p = para
@@ -220,7 +286,9 @@ func (f *Footnote) Paragraphs() iter.Seq[*Paragraph] {
 }
 
 // AppendParagraph appends a paragraph with the given text.
-func (f *Footnote) AppendParagraph(text string) *Paragraph {
+func (f *Footnote) AppendParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	f.AppendChild(p)
 	return p
@@ -234,7 +302,9 @@ func (f *Footnote) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Footnote element.
-func (f *Footnote) CloneNode(deep bool) openxml.Element {
+func (f *Footnote) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Footnote{
 		CompositeElementBase: f.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -247,16 +317,34 @@ type FootnoteReference struct {
 }
 
 // NewFootnoteReference creates a new FootnoteReference element with the given ID.
-func NewFootnoteReference(id int) *FootnoteReference {
-	elem := openxml.NewCompositeElement(NamespaceWML, "footnoteReference", PrefixW)
-	fr := &FootnoteReference{CompositeElementBase: elem}
-	fr.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+func NewFootnoteReference(
+	id int,
+) *FootnoteReference {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"footnoteReference",
+		PrefixW,
+	)
+	fr := &FootnoteReference{
+		CompositeElementBase: elem,
+	}
+	fr.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 	return fr
 }
 
 // Id returns the referenced footnote ID.
 func (fr *FootnoteReference) Id() int {
-	attr, found := fr.GetAttribute("id", NamespaceWML)
+	attr, found := fr.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -266,7 +354,14 @@ func (fr *FootnoteReference) Id() int {
 
 // SetId sets the referenced footnote ID.
 func (fr *FootnoteReference) SetId(id int) {
-	fr.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	fr.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Clone creates a deep copy of this FootnoteReference element.
@@ -277,7 +372,9 @@ func (fr *FootnoteReference) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this FootnoteReference element.
-func (fr *FootnoteReference) CloneNode(deep bool) openxml.Element {
+func (fr *FootnoteReference) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &FootnoteReference{
 		CompositeElementBase: fr.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

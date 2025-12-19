@@ -14,7 +14,11 @@ type Footer struct {
 
 // NewFooter creates a new Footer element.
 func NewFooter() *Footer {
-	elem := openxml.NewPartRootElement(NamespaceWML, "ftr", PrefixW)
+	elem := openxml.NewPartRootElement(
+		NamespaceWML,
+		"ftr",
+		PrefixW,
+	)
 	return &Footer{PartRootElementBase: elem}
 }
 
@@ -22,7 +26,8 @@ func NewFooter() *Footer {
 func (f *Footer) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range f.Children() {
-			if child.LocalName() == "p" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "p" &&
+				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
 				if para, ok := child.(*Paragraph); ok {
 					p = para
@@ -41,7 +46,8 @@ func (f *Footer) Paragraphs() iter.Seq[*Paragraph] {
 func (f *Footer) Tables() iter.Seq[*Table] {
 	return func(yield func(*Table) bool) {
 		for child := range f.Children() {
-			if child.LocalName() == "tbl" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "tbl" &&
+				child.NamespaceURI() == NamespaceWML {
 				var t *Table
 				if tbl, ok := child.(*Table); ok {
 					t = tbl
@@ -57,14 +63,18 @@ func (f *Footer) Tables() iter.Seq[*Table] {
 }
 
 // AppendParagraph appends a new paragraph with the given text to the footer.
-func (f *Footer) AppendParagraph(text string) *Paragraph {
+func (f *Footer) AppendParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	f.AppendChild(p)
 	return p
 }
 
 // PrependParagraph prepends a new paragraph with the given text to the footer.
-func (f *Footer) PrependParagraph(text string) *Paragraph {
+func (f *Footer) PrependParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	if first := f.FirstChild(); first != nil {
 		f.InsertBefore(p, first)
@@ -75,7 +85,9 @@ func (f *Footer) PrependParagraph(text string) *Paragraph {
 }
 
 // AppendTable appends a new table with the specified dimensions to the footer.
-func (f *Footer) AppendTable(rows, cols int) *Table {
+func (f *Footer) AppendTable(
+	rows, cols int,
+) *Table {
 	t := NewTable(rows, cols)
 	f.AppendChild(t)
 	return t
@@ -94,7 +106,9 @@ func (f *Footer) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Footer element.
-func (f *Footer) CloneNode(deep bool) openxml.Element {
+func (f *Footer) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Footer{
 		PartRootElementBase: f.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
 	}

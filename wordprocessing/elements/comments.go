@@ -16,22 +16,31 @@ type Comments struct {
 
 // NewComments creates a new Comments element.
 func NewComments() *Comments {
-	elem := openxml.NewPartRootElement(NamespaceWML, "comments", PrefixW)
-	return &Comments{PartRootElementBase: elem, nextID: 1}
+	elem := openxml.NewPartRootElement(
+		NamespaceWML,
+		"comments",
+		PrefixW,
+	)
+	return &Comments{
+		PartRootElementBase: elem,
+		nextID:              1,
+	}
 }
 
 // Comments returns an iterator over all Comment elements.
 func (c *Comments) Comments() iter.Seq[*Comment] {
 	return func(yield func(*Comment) bool) {
 		for child := range c.Children() {
-			if child.LocalName() == "comment" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "comment" &&
+				child.NamespaceURI() == NamespaceWML {
 				var comment *Comment
 				if cm, ok := child.(*Comment); ok {
 					comment = cm
 				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 					comment = &Comment{CompositeElementBase: comp}
 				}
-				if comment != nil && !yield(comment) {
+				if comment != nil &&
+					!yield(comment) {
 					return
 				}
 			}
@@ -50,7 +59,9 @@ func (c *Comments) GetComment(id int) *Comment {
 }
 
 // AddComment adds a new comment with the given author and text.
-func (c *Comments) AddComment(author, text string) *Comment {
+func (c *Comments) AddComment(
+	author, text string,
+) *Comment {
 	comment := NewComment(c.nextID, author, text)
 	c.nextID++
 	c.AppendChild(comment)
@@ -76,7 +87,9 @@ func (c *Comments) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Comments element.
-func (c *Comments) CloneNode(deep bool) openxml.Element {
+func (c *Comments) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Comments{
 		PartRootElementBase: c.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
 		nextID:              c.nextID,
@@ -89,8 +102,15 @@ type Comment struct {
 }
 
 // NewComment creates a new Comment element with the given ID, author, and text.
-func NewComment(id int, author, text string) *Comment {
-	elem := openxml.NewCompositeElement(NamespaceWML, "comment", PrefixW)
+func NewComment(
+	id int,
+	author, text string,
+) *Comment {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"comment",
+		PrefixW,
+	)
 	c := &Comment{CompositeElementBase: elem}
 	c.SetId(id)
 	c.SetAuthor(author)
@@ -105,7 +125,10 @@ func NewComment(id int, author, text string) *Comment {
 
 // Id returns the comment ID.
 func (c *Comment) Id() int {
-	attr, found := c.GetAttribute("id", NamespaceWML)
+	attr, found := c.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -115,12 +138,22 @@ func (c *Comment) Id() int {
 
 // SetId sets the comment ID.
 func (c *Comment) SetId(id int) {
-	c.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	c.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Author returns the comment author name.
 func (c *Comment) Author() string {
-	attr, found := c.GetAttribute("author", NamespaceWML)
+	attr, found := c.GetAttribute(
+		"author",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -129,16 +162,29 @@ func (c *Comment) Author() string {
 
 // SetAuthor sets the comment author name.
 func (c *Comment) SetAuthor(name string) {
-	c.SetAttribute(openxml.NewAttribute(NamespaceWML, "author", PrefixW, name))
+	c.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"author",
+			PrefixW,
+			name,
+		),
+	)
 }
 
 // Date returns the comment date.
 func (c *Comment) Date() time.Time {
-	attr, found := c.GetAttribute("date", NamespaceWML)
+	attr, found := c.GetAttribute(
+		"date",
+		NamespaceWML,
+	)
 	if !found {
 		return time.Time{}
 	}
-	t, err := time.Parse(time.RFC3339, attr.Value())
+	t, err := time.Parse(
+		time.RFC3339,
+		attr.Value(),
+	)
 	if err != nil {
 		return time.Time{}
 	}
@@ -147,12 +193,22 @@ func (c *Comment) Date() time.Time {
 
 // SetDate sets the comment date.
 func (c *Comment) SetDate(t time.Time) {
-	c.SetAttribute(openxml.NewAttribute(NamespaceWML, "date", PrefixW, t.Format(time.RFC3339)))
+	c.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"date",
+			PrefixW,
+			t.Format(time.RFC3339),
+		),
+	)
 }
 
 // Initials returns the comment author's initials.
 func (c *Comment) Initials() string {
-	attr, found := c.GetAttribute("initials", NamespaceWML)
+	attr, found := c.GetAttribute(
+		"initials",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -162,7 +218,10 @@ func (c *Comment) Initials() string {
 // SetInitials sets the comment author's initials.
 func (c *Comment) SetInitials(initials string) {
 	if initials == "" {
-		c.RemoveAttribute("initials", NamespaceWML)
+		c.RemoveAttribute(
+			"initials",
+			NamespaceWML,
+		)
 	} else {
 		c.SetAttribute(openxml.NewAttribute(NamespaceWML, "initials", PrefixW, initials))
 	}
@@ -172,7 +231,8 @@ func (c *Comment) SetInitials(initials string) {
 func (c *Comment) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range c.Children() {
-			if child.LocalName() == "p" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "p" &&
+				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
 				if para, ok := child.(*Paragraph); ok {
 					p = para
@@ -188,7 +248,9 @@ func (c *Comment) Paragraphs() iter.Seq[*Paragraph] {
 }
 
 // AppendParagraph appends a paragraph with the given text.
-func (c *Comment) AppendParagraph(text string) *Paragraph {
+func (c *Comment) AppendParagraph(
+	text string,
+) *Paragraph {
 	p := NewParagraph(text)
 	c.AppendChild(p)
 	return p
@@ -202,7 +264,9 @@ func (c *Comment) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Comment element.
-func (c *Comment) CloneNode(deep bool) openxml.Element {
+func (c *Comment) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Comment{
 		CompositeElementBase: c.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -215,16 +279,34 @@ type CommentRangeStart struct {
 }
 
 // NewCommentRangeStart creates a new CommentRangeStart element with the given comment ID.
-func NewCommentRangeStart(id int) *CommentRangeStart {
-	elem := openxml.NewCompositeElement(NamespaceWML, "commentRangeStart", PrefixW)
-	crs := &CommentRangeStart{CompositeElementBase: elem}
-	crs.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+func NewCommentRangeStart(
+	id int,
+) *CommentRangeStart {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"commentRangeStart",
+		PrefixW,
+	)
+	crs := &CommentRangeStart{
+		CompositeElementBase: elem,
+	}
+	crs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 	return crs
 }
 
 // Id returns the associated comment ID.
 func (crs *CommentRangeStart) Id() int {
-	attr, found := crs.GetAttribute("id", NamespaceWML)
+	attr, found := crs.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -234,7 +316,14 @@ func (crs *CommentRangeStart) Id() int {
 
 // SetId sets the associated comment ID.
 func (crs *CommentRangeStart) SetId(id int) {
-	crs.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	crs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Clone creates a deep copy of this CommentRangeStart element.
@@ -245,7 +334,9 @@ func (crs *CommentRangeStart) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this CommentRangeStart element.
-func (crs *CommentRangeStart) CloneNode(deep bool) openxml.Element {
+func (crs *CommentRangeStart) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &CommentRangeStart{
 		CompositeElementBase: crs.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -259,15 +350,31 @@ type CommentRangeEnd struct {
 
 // NewCommentRangeEnd creates a new CommentRangeEnd element with the given comment ID.
 func NewCommentRangeEnd(id int) *CommentRangeEnd {
-	elem := openxml.NewCompositeElement(NamespaceWML, "commentRangeEnd", PrefixW)
-	cre := &CommentRangeEnd{CompositeElementBase: elem}
-	cre.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"commentRangeEnd",
+		PrefixW,
+	)
+	cre := &CommentRangeEnd{
+		CompositeElementBase: elem,
+	}
+	cre.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 	return cre
 }
 
 // Id returns the associated comment ID.
 func (cre *CommentRangeEnd) Id() int {
-	attr, found := cre.GetAttribute("id", NamespaceWML)
+	attr, found := cre.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -277,7 +384,14 @@ func (cre *CommentRangeEnd) Id() int {
 
 // SetId sets the associated comment ID.
 func (cre *CommentRangeEnd) SetId(id int) {
-	cre.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	cre.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Clone creates a deep copy of this CommentRangeEnd element.
@@ -288,7 +402,9 @@ func (cre *CommentRangeEnd) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this CommentRangeEnd element.
-func (cre *CommentRangeEnd) CloneNode(deep bool) openxml.Element {
+func (cre *CommentRangeEnd) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &CommentRangeEnd{
 		CompositeElementBase: cre.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -301,16 +417,34 @@ type CommentReference struct {
 }
 
 // NewCommentReference creates a new CommentReference element with the given comment ID.
-func NewCommentReference(id int) *CommentReference {
-	elem := openxml.NewCompositeElement(NamespaceWML, "commentReference", PrefixW)
-	cr := &CommentReference{CompositeElementBase: elem}
-	cr.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+func NewCommentReference(
+	id int,
+) *CommentReference {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"commentReference",
+		PrefixW,
+	)
+	cr := &CommentReference{
+		CompositeElementBase: elem,
+	}
+	cr.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 	return cr
 }
 
 // Id returns the referenced comment ID.
 func (cr *CommentReference) Id() int {
-	attr, found := cr.GetAttribute("id", NamespaceWML)
+	attr, found := cr.GetAttribute(
+		"id",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -320,7 +454,14 @@ func (cr *CommentReference) Id() int {
 
 // SetId sets the referenced comment ID.
 func (cr *CommentReference) SetId(id int) {
-	cr.SetAttribute(openxml.NewAttribute(NamespaceWML, "id", PrefixW, strconv.Itoa(id)))
+	cr.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"id",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // Clone creates a deep copy of this CommentReference element.
@@ -331,7 +472,9 @@ func (cr *CommentReference) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this CommentReference element.
-func (cr *CommentReference) CloneNode(deep bool) openxml.Element {
+func (cr *CommentReference) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &CommentReference{
 		CompositeElementBase: cr.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

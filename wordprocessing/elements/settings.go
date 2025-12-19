@@ -54,7 +54,11 @@ type Settings struct {
 
 // NewSettings creates a new Settings element.
 func NewSettings() *Settings {
-	elem := openxml.NewCompositeElement(NamespaceWML, "settings", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"settings",
+		PrefixW,
+	)
 	return &Settings{CompositeElementBase: elem}
 }
 
@@ -92,7 +96,10 @@ func (s *Settings) SetZoom(percent int) {
 
 // DefaultTabStop returns the default tab stop element, or nil if not present.
 func (s *Settings) DefaultTabStop() *DefaultTabStop {
-	elem := s.GetElement("defaultTabStop", NamespaceWML)
+	elem := s.GetElement(
+		"defaultTabStop",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -100,7 +107,9 @@ func (s *Settings) DefaultTabStop() *DefaultTabStop {
 		return dt
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &DefaultTabStop{CompositeElementBase: comp}
+		return &DefaultTabStop{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -118,7 +127,10 @@ func (s *Settings) GetOrCreateDefaultTabStop() *DefaultTabStop {
 
 // DocumentProtection returns the document protection element, or nil if not present.
 func (s *Settings) DocumentProtection() *DocumentProtection {
-	elem := s.GetElement("documentProtection", NamespaceWML)
+	elem := s.GetElement(
+		"documentProtection",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -126,7 +138,9 @@ func (s *Settings) DocumentProtection() *DocumentProtection {
 		return dp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &DocumentProtection{CompositeElementBase: comp}
+		return &DocumentProtection{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -174,11 +188,15 @@ func (s *Settings) SetEvenAndOddHeaders(b bool) {
 
 // DisplayBackgroundShape returns whether the background shape is displayed.
 func (s *Settings) DisplayBackgroundShape() bool {
-	return s.hasOnOffElement("displayBackgroundShape")
+	return s.hasOnOffElement(
+		"displayBackgroundShape",
+	)
 }
 
 // SetDisplayBackgroundShape sets whether the background shape is displayed.
-func (s *Settings) SetDisplayBackgroundShape(b bool) {
+func (s *Settings) SetDisplayBackgroundShape(
+	b bool,
+) {
 	s.setOnOffElement("displayBackgroundShape", b)
 }
 
@@ -194,11 +212,15 @@ func (s *Settings) SetHideSpellingErrors(b bool) {
 
 // HideGrammaticalErrors returns whether grammatical errors are hidden.
 func (s *Settings) HideGrammaticalErrors() bool {
-	return s.hasOnOffElement("hideGrammaticalErrors")
+	return s.hasOnOffElement(
+		"hideGrammaticalErrors",
+	)
 }
 
 // SetHideGrammaticalErrors sets whether grammatical errors are hidden.
-func (s *Settings) SetHideGrammaticalErrors(b bool) {
+func (s *Settings) SetHideGrammaticalErrors(
+	b bool,
+) {
 	s.setOnOffElement("hideGrammaticalErrors", b)
 }
 
@@ -212,7 +234,9 @@ func (s *Settings) Compatibility() *Compatibility {
 		return c
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &Compatibility{CompositeElementBase: comp}
+		return &Compatibility{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -230,7 +254,10 @@ func (s *Settings) GetOrCreateCompatibility() *Compatibility {
 
 // MailMerge returns the mail merge settings element, or nil if not present.
 func (s *Settings) MailMerge() *MailMerge {
-	elem := s.GetElement("mailMerge", NamespaceWML)
+	elem := s.GetElement(
+		"mailMerge",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -238,7 +265,9 @@ func (s *Settings) MailMerge() *MailMerge {
 		return mm
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &MailMerge{CompositeElementBase: comp}
+		return &MailMerge{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -256,7 +285,10 @@ func (s *Settings) GetOrCreateMailMerge() *MailMerge {
 
 // WriteProtection returns the write protection element, or nil if not present.
 func (s *Settings) WriteProtection() *WriteProtection {
-	elem := s.GetElement("writeProtection", NamespaceWML)
+	elem := s.GetElement(
+		"writeProtection",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -264,7 +296,9 @@ func (s *Settings) WriteProtection() *WriteProtection {
 		return wp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &WriteProtection{CompositeElementBase: comp}
+		return &WriteProtection{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -286,7 +320,10 @@ func (s *Settings) RsidRoot() string {
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -300,7 +337,14 @@ func (s *Settings) SetRsidRoot(rsid string) {
 		return
 	}
 	elem := s.getOrCreateElement("rsidRoot")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, rsid))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			rsid,
+		),
+	)
 }
 
 // DocumentVariables returns the document variables element, or nil if not present.
@@ -313,7 +357,9 @@ func (s *Settings) DocumentVariables() *DocumentVariables {
 		return dv
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &DocumentVariables{CompositeElementBase: comp}
+		return &DocumentVariables{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -331,7 +377,10 @@ func (s *Settings) GetOrCreateDocumentVariables() *DocumentVariables {
 
 // ProofState returns the proof state element, or nil if not present.
 func (s *Settings) ProofState() *ProofState {
-	elem := s.GetElement("proofState", NamespaceWML)
+	elem := s.GetElement(
+		"proofState",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -339,7 +388,9 @@ func (s *Settings) ProofState() *ProofState {
 		return ps
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &ProofState{CompositeElementBase: comp}
+		return &ProofState{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -357,7 +408,10 @@ func (s *Settings) GetOrCreateProofState() *ProofState {
 
 // RevisionView returns the revision view element, or nil if not present.
 func (s *Settings) RevisionView() *RevisionView {
-	elem := s.GetElement("revisionView", NamespaceWML)
+	elem := s.GetElement(
+		"revisionView",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -365,7 +419,9 @@ func (s *Settings) RevisionView() *RevisionView {
 		return rv
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &RevisionView{CompositeElementBase: comp}
+		return &RevisionView{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -383,7 +439,10 @@ func (s *Settings) GetOrCreateRevisionView() *RevisionView {
 
 // ThemeFontLang returns the theme font language element, or nil if not present.
 func (s *Settings) ThemeFontLang() *ThemeFontLang {
-	elem := s.GetElement("themeFontLang", NamespaceWML)
+	elem := s.GetElement(
+		"themeFontLang",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -391,7 +450,9 @@ func (s *Settings) ThemeFontLang() *ThemeFontLang {
 		return tfl
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &ThemeFontLang{CompositeElementBase: comp}
+		return &ThemeFontLang{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -409,20 +470,29 @@ func (s *Settings) GetOrCreateThemeFontLang() *ThemeFontLang {
 
 // Helper methods
 
-func (s *Settings) hasOnOffElement(name string) bool {
+func (s *Settings) hasOnOffElement(
+	name string,
+) bool {
 	elem := s.GetElement(name, NamespaceWML)
 	if elem == nil {
 		return false
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if found {
 		val := attr.Value()
-		return val != "false" && val != "0" && val != "off"
+		return val != "false" && val != "0" &&
+			val != "off"
 	}
 	return true
 }
 
-func (s *Settings) setOnOffElement(name string, value bool) {
+func (s *Settings) setOnOffElement(
+	name string,
+	value bool,
+) {
 	if value {
 		s.getOrCreateElement(name)
 	} else {
@@ -430,12 +500,18 @@ func (s *Settings) setOnOffElement(name string, value bool) {
 	}
 }
 
-func (s *Settings) getOrCreateElement(name string) openxml.Element {
+func (s *Settings) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := s.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	s.AppendChild(newElem)
 	return newElem
 }
@@ -455,7 +531,9 @@ func (s *Settings) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Settings element.
-func (s *Settings) CloneNode(deep bool) openxml.Element {
+func (s *Settings) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Settings{
 		CompositeElementBase: s.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -468,13 +546,20 @@ type Zoom struct {
 
 // NewZoom creates a new Zoom element.
 func NewZoom() *Zoom {
-	elem := openxml.NewCompositeElement(NamespaceWML, "zoom", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"zoom",
+		PrefixW,
+	)
 	return &Zoom{CompositeElementBase: elem}
 }
 
 // Percent returns the zoom percentage.
 func (z *Zoom) Percent() int {
-	attr, found := z.GetAttribute("percent", NamespaceWML)
+	attr, found := z.GetAttribute(
+		"percent",
+		NamespaceWML,
+	)
 	if !found {
 		return 100 // Default zoom
 	}
@@ -484,12 +569,22 @@ func (z *Zoom) Percent() int {
 
 // SetPercent sets the zoom percentage.
 func (z *Zoom) SetPercent(p int) {
-	z.SetAttribute(openxml.NewAttribute(NamespaceWML, "percent", PrefixW, strconv.Itoa(p)))
+	z.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"percent",
+			PrefixW,
+			strconv.Itoa(p),
+		),
+	)
 }
 
 // Val returns the zoom view type.
 func (z *Zoom) Val() ZoomViewType {
-	attr, found := z.GetAttribute("val", NamespaceWML)
+	attr, found := z.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ZoomViewNone
 	}
@@ -502,7 +597,14 @@ func (z *Zoom) SetVal(t ZoomViewType) {
 		z.RemoveAttribute("val", NamespaceWML)
 		return
 	}
-	z.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(t)))
+	z.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(t),
+		),
+	)
 }
 
 // Clone creates a deep copy of this Zoom element.
@@ -513,7 +615,9 @@ func (z *Zoom) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Zoom element.
-func (z *Zoom) CloneNode(deep bool) openxml.Element {
+func (z *Zoom) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Zoom{
 		CompositeElementBase: z.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -526,13 +630,22 @@ type DefaultTabStop struct {
 
 // NewDefaultTabStop creates a new DefaultTabStop element.
 func NewDefaultTabStop() *DefaultTabStop {
-	elem := openxml.NewCompositeElement(NamespaceWML, "defaultTabStop", PrefixW)
-	return &DefaultTabStop{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"defaultTabStop",
+		PrefixW,
+	)
+	return &DefaultTabStop{
+		CompositeElementBase: elem,
+	}
 }
 
 // Val returns the default tab stop width in twips.
 func (dt *DefaultTabStop) Val() int {
-	attr, found := dt.GetAttribute("val", NamespaceWML)
+	attr, found := dt.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 720 // Default 0.5 inch
 	}
@@ -542,7 +655,14 @@ func (dt *DefaultTabStop) Val() int {
 
 // SetVal sets the default tab stop width in twips.
 func (dt *DefaultTabStop) SetVal(twips int) {
-	dt.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(twips)))
+	dt.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(twips),
+		),
+	)
 }
 
 // Clone creates a deep copy of this DefaultTabStop element.
@@ -553,7 +673,9 @@ func (dt *DefaultTabStop) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this DefaultTabStop element.
-func (dt *DefaultTabStop) CloneNode(deep bool) openxml.Element {
+func (dt *DefaultTabStop) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &DefaultTabStop{
 		CompositeElementBase: dt.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -566,13 +688,22 @@ type DocumentProtection struct {
 
 // NewDocumentProtection creates a new DocumentProtection element.
 func NewDocumentProtection() *DocumentProtection {
-	elem := openxml.NewCompositeElement(NamespaceWML, "documentProtection", PrefixW)
-	return &DocumentProtection{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"documentProtection",
+		PrefixW,
+	)
+	return &DocumentProtection{
+		CompositeElementBase: elem,
+	}
 }
 
 // Edit returns the protection type.
 func (dp *DocumentProtection) Edit() DocumentProtectionType {
-	attr, found := dp.GetAttribute("edit", NamespaceWML)
+	attr, found := dp.GetAttribute(
+		"edit",
+		NamespaceWML,
+	)
 	if !found {
 		return DocumentProtectionNone
 	}
@@ -580,28 +711,50 @@ func (dp *DocumentProtection) Edit() DocumentProtectionType {
 }
 
 // SetEdit sets the protection type.
-func (dp *DocumentProtection) SetEdit(t DocumentProtectionType) {
+func (dp *DocumentProtection) SetEdit(
+	t DocumentProtectionType,
+) {
 	if t == DocumentProtectionNone {
 		dp.RemoveAttribute("edit", NamespaceWML)
 		return
 	}
-	dp.SetAttribute(openxml.NewAttribute(NamespaceWML, "edit", PrefixW, string(t)))
+	dp.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"edit",
+			PrefixW,
+			string(t),
+		),
+	)
 }
 
 // Enforcement returns whether protection is enforced.
 func (dp *DocumentProtection) Enforcement() bool {
-	attr, found := dp.GetAttribute("enforcement", NamespaceWML)
+	attr, found := dp.GetAttribute(
+		"enforcement",
+		NamespaceWML,
+	)
 	if !found {
 		return false
 	}
 	val := attr.Value()
-	return val == "1" || val == "true" || val == "on"
+	return val == "1" || val == "true" ||
+		val == "on"
 }
 
 // SetEnforcement sets whether protection is enforced.
-func (dp *DocumentProtection) SetEnforcement(b bool) {
+func (dp *DocumentProtection) SetEnforcement(
+	b bool,
+) {
 	if b {
-		dp.SetAttribute(openxml.NewAttribute(NamespaceWML, "enforcement", PrefixW, "1"))
+		dp.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"enforcement",
+				PrefixW,
+				"1",
+			),
+		)
 	} else {
 		dp.RemoveAttribute("enforcement", NamespaceWML)
 	}
@@ -609,18 +762,31 @@ func (dp *DocumentProtection) SetEnforcement(b bool) {
 
 // Formatting returns whether formatting is restricted.
 func (dp *DocumentProtection) Formatting() bool {
-	attr, found := dp.GetAttribute("formatting", NamespaceWML)
+	attr, found := dp.GetAttribute(
+		"formatting",
+		NamespaceWML,
+	)
 	if !found {
 		return false
 	}
 	val := attr.Value()
-	return val == "1" || val == "true" || val == "on"
+	return val == "1" || val == "true" ||
+		val == "on"
 }
 
 // SetFormatting sets whether formatting is restricted.
-func (dp *DocumentProtection) SetFormatting(b bool) {
+func (dp *DocumentProtection) SetFormatting(
+	b bool,
+) {
 	if b {
-		dp.SetAttribute(openxml.NewAttribute(NamespaceWML, "formatting", PrefixW, "1"))
+		dp.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"formatting",
+				PrefixW,
+				"1",
+			),
+		)
 	} else {
 		dp.RemoveAttribute("formatting", NamespaceWML)
 	}
@@ -628,7 +794,10 @@ func (dp *DocumentProtection) SetFormatting(b bool) {
 
 // Hash returns the password hash.
 func (dp *DocumentProtection) Hash() string {
-	attr, found := dp.GetAttribute("hash", NamespaceWML)
+	attr, found := dp.GetAttribute(
+		"hash",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -637,7 +806,10 @@ func (dp *DocumentProtection) Hash() string {
 
 // Salt returns the password salt.
 func (dp *DocumentProtection) Salt() string {
-	attr, found := dp.GetAttribute("salt", NamespaceWML)
+	attr, found := dp.GetAttribute(
+		"salt",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -652,7 +824,9 @@ func (dp *DocumentProtection) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this DocumentProtection element.
-func (dp *DocumentProtection) CloneNode(deep bool) openxml.Element {
+func (dp *DocumentProtection) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &DocumentProtection{
 		CompositeElementBase: dp.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -665,8 +839,14 @@ type Compatibility struct {
 
 // NewCompatibility creates a new Compatibility element.
 func NewCompatibility() *Compatibility {
-	elem := openxml.NewCompositeElement(NamespaceWML, "compat", PrefixW)
-	return &Compatibility{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"compat",
+		PrefixW,
+	)
+	return &Compatibility{
+		CompositeElementBase: elem,
+	}
 }
 
 // UseFELayout returns whether Far East layout is used.
@@ -681,12 +861,19 @@ func (c *Compatibility) SetUseFELayout(b bool) {
 
 // UseWord2003TableStyleRules returns whether Word 2003 table style rules are used.
 func (c *Compatibility) UseWord2003TableStyleRules() bool {
-	return c.hasOnOffElement("useWord2003TableStyleRules")
+	return c.hasOnOffElement(
+		"useWord2003TableStyleRules",
+	)
 }
 
 // SetUseWord2003TableStyleRules sets whether Word 2003 table style rules are used.
-func (c *Compatibility) SetUseWord2003TableStyleRules(b bool) {
-	c.setOnOffElement("useWord2003TableStyleRules", b)
+func (c *Compatibility) SetUseWord2003TableStyleRules(
+	b bool,
+) {
+	c.setOnOffElement(
+		"useWord2003TableStyleRules",
+		b,
+	)
 }
 
 // GrowAutofit returns whether autofit grows.
@@ -703,7 +890,8 @@ func (c *Compatibility) SetGrowAutofit(b bool) {
 func (c *Compatibility) CompatSettings() iter.Seq[*CompatSetting] {
 	return func(yield func(*CompatSetting) bool) {
 		for child := range c.Children() {
-			if child.LocalName() == "compatSetting" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "compatSetting" &&
+				child.NamespaceURI() == NamespaceWML {
 				var cs *CompatSetting
 				if setting, ok := child.(*CompatSetting); ok {
 					cs = setting
@@ -719,7 +907,9 @@ func (c *Compatibility) CompatSettings() iter.Seq[*CompatSetting] {
 }
 
 // AddCompatSetting adds a compatibility setting.
-func (c *Compatibility) AddCompatSetting(name, uri, val string) *CompatSetting {
+func (c *Compatibility) AddCompatSetting(
+	name, uri, val string,
+) *CompatSetting {
 	cs := NewCompatSetting()
 	cs.SetName(name)
 	cs.SetUri(uri)
@@ -730,20 +920,29 @@ func (c *Compatibility) AddCompatSetting(name, uri, val string) *CompatSetting {
 
 // Helper methods
 
-func (c *Compatibility) hasOnOffElement(name string) bool {
+func (c *Compatibility) hasOnOffElement(
+	name string,
+) bool {
 	elem := c.GetElement(name, NamespaceWML)
 	if elem == nil {
 		return false
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if found {
 		val := attr.Value()
-		return val != "false" && val != "0" && val != "off"
+		return val != "false" && val != "0" &&
+			val != "off"
 	}
 	return true
 }
 
-func (c *Compatibility) setOnOffElement(name string, value bool) {
+func (c *Compatibility) setOnOffElement(
+	name string,
+	value bool,
+) {
 	if value {
 		c.getOrCreateElement(name)
 	} else {
@@ -751,17 +950,25 @@ func (c *Compatibility) setOnOffElement(name string, value bool) {
 	}
 }
 
-func (c *Compatibility) getOrCreateElement(name string) openxml.Element {
+func (c *Compatibility) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := c.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	c.AppendChild(newElem)
 	return newElem
 }
 
-func (c *Compatibility) removeElement(name string) {
+func (c *Compatibility) removeElement(
+	name string,
+) {
 	elem := c.GetElement(name, NamespaceWML)
 	if elem != nil {
 		c.RemoveChild(elem)
@@ -776,7 +983,9 @@ func (c *Compatibility) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Compatibility element.
-func (c *Compatibility) CloneNode(deep bool) openxml.Element {
+func (c *Compatibility) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Compatibility{
 		CompositeElementBase: c.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -789,13 +998,22 @@ type CompatSetting struct {
 
 // NewCompatSetting creates a new CompatSetting element.
 func NewCompatSetting() *CompatSetting {
-	elem := openxml.NewCompositeElement(NamespaceWML, "compatSetting", PrefixW)
-	return &CompatSetting{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"compatSetting",
+		PrefixW,
+	)
+	return &CompatSetting{
+		CompositeElementBase: elem,
+	}
 }
 
 // Name returns the setting name.
 func (cs *CompatSetting) Name() string {
-	attr, found := cs.GetAttribute("name", NamespaceWML)
+	attr, found := cs.GetAttribute(
+		"name",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -804,12 +1022,22 @@ func (cs *CompatSetting) Name() string {
 
 // SetName sets the setting name.
 func (cs *CompatSetting) SetName(name string) {
-	cs.SetAttribute(openxml.NewAttribute(NamespaceWML, "name", PrefixW, name))
+	cs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"name",
+			PrefixW,
+			name,
+		),
+	)
 }
 
 // Uri returns the setting URI.
 func (cs *CompatSetting) Uri() string {
-	attr, found := cs.GetAttribute("uri", NamespaceWML)
+	attr, found := cs.GetAttribute(
+		"uri",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -818,12 +1046,22 @@ func (cs *CompatSetting) Uri() string {
 
 // SetUri sets the setting URI.
 func (cs *CompatSetting) SetUri(uri string) {
-	cs.SetAttribute(openxml.NewAttribute(NamespaceWML, "uri", PrefixW, uri))
+	cs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"uri",
+			PrefixW,
+			uri,
+		),
+	)
 }
 
 // Val returns the setting value.
 func (cs *CompatSetting) Val() string {
-	attr, found := cs.GetAttribute("val", NamespaceWML)
+	attr, found := cs.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -832,7 +1070,14 @@ func (cs *CompatSetting) Val() string {
 
 // SetVal sets the setting value.
 func (cs *CompatSetting) SetVal(val string) {
-	cs.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, val))
+	cs.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			val,
+		),
+	)
 }
 
 // Clone creates a deep copy of this CompatSetting element.
@@ -843,7 +1088,9 @@ func (cs *CompatSetting) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this CompatSetting element.
-func (cs *CompatSetting) CloneNode(deep bool) openxml.Element {
+func (cs *CompatSetting) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &CompatSetting{
 		CompositeElementBase: cs.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -856,15 +1103,22 @@ type DocumentVariables struct {
 
 // NewDocumentVariables creates a new DocumentVariables element.
 func NewDocumentVariables() *DocumentVariables {
-	elem := openxml.NewCompositeElement(NamespaceWML, "docVars", PrefixW)
-	return &DocumentVariables{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"docVars",
+		PrefixW,
+	)
+	return &DocumentVariables{
+		CompositeElementBase: elem,
+	}
 }
 
 // Variables returns an iterator over document variables.
 func (dv *DocumentVariables) Variables() iter.Seq[*DocumentVariable] {
 	return func(yield func(*DocumentVariable) bool) {
 		for child := range dv.Children() {
-			if child.LocalName() == "docVar" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "docVar" &&
+				child.NamespaceURI() == NamespaceWML {
 				var v *DocumentVariable
 				if variable, ok := child.(*DocumentVariable); ok {
 					v = variable
@@ -880,7 +1134,9 @@ func (dv *DocumentVariables) Variables() iter.Seq[*DocumentVariable] {
 }
 
 // GetVariable returns the value of a variable by name.
-func (dv *DocumentVariables) GetVariable(name string) string {
+func (dv *DocumentVariables) GetVariable(
+	name string,
+) string {
 	for v := range dv.Variables() {
 		if v.Name() == name {
 			return v.Val()
@@ -890,7 +1146,9 @@ func (dv *DocumentVariables) GetVariable(name string) string {
 }
 
 // SetVariable sets or adds a variable.
-func (dv *DocumentVariables) SetVariable(name, value string) {
+func (dv *DocumentVariables) SetVariable(
+	name, value string,
+) {
 	// Look for existing variable
 	for v := range dv.Variables() {
 		if v.Name() == name {
@@ -906,10 +1164,16 @@ func (dv *DocumentVariables) SetVariable(name, value string) {
 }
 
 // RemoveVariable removes a variable by name.
-func (dv *DocumentVariables) RemoveVariable(name string) {
+func (dv *DocumentVariables) RemoveVariable(
+	name string,
+) {
 	for child := range dv.Children() {
-		if child.LocalName() == "docVar" && child.NamespaceURI() == NamespaceWML {
-			attr, found := child.GetAttribute("name", NamespaceWML)
+		if child.LocalName() == "docVar" &&
+			child.NamespaceURI() == NamespaceWML {
+			attr, found := child.GetAttribute(
+				"name",
+				NamespaceWML,
+			)
 			if found && attr.Value() == name {
 				dv.RemoveChild(child)
 				return
@@ -926,7 +1190,9 @@ func (dv *DocumentVariables) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this DocumentVariables element.
-func (dv *DocumentVariables) CloneNode(deep bool) openxml.Element {
+func (dv *DocumentVariables) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &DocumentVariables{
 		CompositeElementBase: dv.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -939,13 +1205,22 @@ type DocumentVariable struct {
 
 // NewDocumentVariable creates a new DocumentVariable element.
 func NewDocumentVariable() *DocumentVariable {
-	elem := openxml.NewCompositeElement(NamespaceWML, "docVar", PrefixW)
-	return &DocumentVariable{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"docVar",
+		PrefixW,
+	)
+	return &DocumentVariable{
+		CompositeElementBase: elem,
+	}
 }
 
 // Name returns the variable name.
 func (v *DocumentVariable) Name() string {
-	attr, found := v.GetAttribute("name", NamespaceWML)
+	attr, found := v.GetAttribute(
+		"name",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -954,12 +1229,22 @@ func (v *DocumentVariable) Name() string {
 
 // SetName sets the variable name.
 func (v *DocumentVariable) SetName(name string) {
-	v.SetAttribute(openxml.NewAttribute(NamespaceWML, "name", PrefixW, name))
+	v.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"name",
+			PrefixW,
+			name,
+		),
+	)
 }
 
 // Val returns the variable value.
 func (v *DocumentVariable) Val() string {
-	attr, found := v.GetAttribute("val", NamespaceWML)
+	attr, found := v.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -968,7 +1253,14 @@ func (v *DocumentVariable) Val() string {
 
 // SetVal sets the variable value.
 func (v *DocumentVariable) SetVal(val string) {
-	v.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, val))
+	v.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			val,
+		),
+	)
 }
 
 // Clone creates a deep copy of this DocumentVariable element.
@@ -979,7 +1271,9 @@ func (v *DocumentVariable) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this DocumentVariable element.
-func (v *DocumentVariable) CloneNode(deep bool) openxml.Element {
+func (v *DocumentVariable) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &DocumentVariable{
 		CompositeElementBase: v.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -992,24 +1286,43 @@ type WriteProtection struct {
 
 // NewWriteProtection creates a new WriteProtection element.
 func NewWriteProtection() *WriteProtection {
-	elem := openxml.NewCompositeElement(NamespaceWML, "writeProtection", PrefixW)
-	return &WriteProtection{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"writeProtection",
+		PrefixW,
+	)
+	return &WriteProtection{
+		CompositeElementBase: elem,
+	}
 }
 
 // Recommended returns whether read-only is recommended.
 func (wp *WriteProtection) Recommended() bool {
-	attr, found := wp.GetAttribute("recommended", NamespaceWML)
+	attr, found := wp.GetAttribute(
+		"recommended",
+		NamespaceWML,
+	)
 	if !found {
 		return false
 	}
 	val := attr.Value()
-	return val == "1" || val == "true" || val == "on"
+	return val == "1" || val == "true" ||
+		val == "on"
 }
 
 // SetRecommended sets whether read-only is recommended.
-func (wp *WriteProtection) SetRecommended(b bool) {
+func (wp *WriteProtection) SetRecommended(
+	b bool,
+) {
 	if b {
-		wp.SetAttribute(openxml.NewAttribute(NamespaceWML, "recommended", PrefixW, "1"))
+		wp.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"recommended",
+				PrefixW,
+				"1",
+			),
+		)
 	} else {
 		wp.RemoveAttribute("recommended", NamespaceWML)
 	}
@@ -1023,7 +1336,9 @@ func (wp *WriteProtection) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this WriteProtection element.
-func (wp *WriteProtection) CloneNode(deep bool) openxml.Element {
+func (wp *WriteProtection) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &WriteProtection{
 		CompositeElementBase: wp.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -1036,13 +1351,20 @@ type ProofState struct {
 
 // NewProofState creates a new ProofState element.
 func NewProofState() *ProofState {
-	elem := openxml.NewCompositeElement(NamespaceWML, "proofState", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"proofState",
+		PrefixW,
+	)
 	return &ProofState{CompositeElementBase: elem}
 }
 
 // Spelling returns the spelling proof state.
 func (ps *ProofState) Spelling() ProofStateValue {
-	attr, found := ps.GetAttribute("spelling", NamespaceWML)
+	attr, found := ps.GetAttribute(
+		"spelling",
+		NamespaceWML,
+	)
 	if !found {
 		return ProofStateDirty
 	}
@@ -1050,13 +1372,25 @@ func (ps *ProofState) Spelling() ProofStateValue {
 }
 
 // SetSpelling sets the spelling proof state.
-func (ps *ProofState) SetSpelling(v ProofStateValue) {
-	ps.SetAttribute(openxml.NewAttribute(NamespaceWML, "spelling", PrefixW, string(v)))
+func (ps *ProofState) SetSpelling(
+	v ProofStateValue,
+) {
+	ps.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"spelling",
+			PrefixW,
+			string(v),
+		),
+	)
 }
 
 // Grammar returns the grammar proof state.
 func (ps *ProofState) Grammar() ProofStateValue {
-	attr, found := ps.GetAttribute("grammar", NamespaceWML)
+	attr, found := ps.GetAttribute(
+		"grammar",
+		NamespaceWML,
+	)
 	if !found {
 		return ProofStateDirty
 	}
@@ -1064,8 +1398,17 @@ func (ps *ProofState) Grammar() ProofStateValue {
 }
 
 // SetGrammar sets the grammar proof state.
-func (ps *ProofState) SetGrammar(v ProofStateValue) {
-	ps.SetAttribute(openxml.NewAttribute(NamespaceWML, "grammar", PrefixW, string(v)))
+func (ps *ProofState) SetGrammar(
+	v ProofStateValue,
+) {
+	ps.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"grammar",
+			PrefixW,
+			string(v),
+		),
+	)
 }
 
 // Clone creates a deep copy of this ProofState element.
@@ -1076,7 +1419,9 @@ func (ps *ProofState) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this ProofState element.
-func (ps *ProofState) CloneNode(deep bool) openxml.Element {
+func (ps *ProofState) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &ProofState{
 		CompositeElementBase: ps.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -1089,18 +1434,28 @@ type RevisionView struct {
 
 // NewRevisionView creates a new RevisionView element.
 func NewRevisionView() *RevisionView {
-	elem := openxml.NewCompositeElement(NamespaceWML, "revisionView", PrefixW)
-	return &RevisionView{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"revisionView",
+		PrefixW,
+	)
+	return &RevisionView{
+		CompositeElementBase: elem,
+	}
 }
 
 // Markup returns whether markup is shown.
 func (rv *RevisionView) Markup() bool {
-	attr, found := rv.GetAttribute("markup", NamespaceWML)
+	attr, found := rv.GetAttribute(
+		"markup",
+		NamespaceWML,
+	)
 	if !found {
 		return true // Default is true
 	}
 	val := attr.Value()
-	return val != "false" && val != "0" && val != "off"
+	return val != "false" && val != "0" &&
+		val != "off"
 }
 
 // SetMarkup sets whether markup is shown.
@@ -1114,18 +1469,25 @@ func (rv *RevisionView) SetMarkup(b bool) {
 
 // Comments returns whether comments are shown.
 func (rv *RevisionView) Comments() bool {
-	attr, found := rv.GetAttribute("comments", NamespaceWML)
+	attr, found := rv.GetAttribute(
+		"comments",
+		NamespaceWML,
+	)
 	if !found {
 		return true
 	}
 	val := attr.Value()
-	return val != "false" && val != "0" && val != "off"
+	return val != "false" && val != "0" &&
+		val != "off"
 }
 
 // SetComments sets whether comments are shown.
 func (rv *RevisionView) SetComments(b bool) {
 	if b {
-		rv.RemoveAttribute("comments", NamespaceWML)
+		rv.RemoveAttribute(
+			"comments",
+			NamespaceWML,
+		)
 	} else {
 		rv.SetAttribute(openxml.NewAttribute(NamespaceWML, "comments", PrefixW, "0"))
 	}
@@ -1133,16 +1495,22 @@ func (rv *RevisionView) SetComments(b bool) {
 
 // InsertionsAndDeletions returns whether insertions and deletions are shown.
 func (rv *RevisionView) InsertionsAndDeletions() bool {
-	attr, found := rv.GetAttribute("insDel", NamespaceWML)
+	attr, found := rv.GetAttribute(
+		"insDel",
+		NamespaceWML,
+	)
 	if !found {
 		return true
 	}
 	val := attr.Value()
-	return val != "false" && val != "0" && val != "off"
+	return val != "false" && val != "0" &&
+		val != "off"
 }
 
 // SetInsertionsAndDeletions sets whether insertions and deletions are shown.
-func (rv *RevisionView) SetInsertionsAndDeletions(b bool) {
+func (rv *RevisionView) SetInsertionsAndDeletions(
+	b bool,
+) {
 	if b {
 		rv.RemoveAttribute("insDel", NamespaceWML)
 	} else {
@@ -1152,18 +1520,25 @@ func (rv *RevisionView) SetInsertionsAndDeletions(b bool) {
 
 // Formatting returns whether formatting changes are shown.
 func (rv *RevisionView) Formatting() bool {
-	attr, found := rv.GetAttribute("formatting", NamespaceWML)
+	attr, found := rv.GetAttribute(
+		"formatting",
+		NamespaceWML,
+	)
 	if !found {
 		return true
 	}
 	val := attr.Value()
-	return val != "false" && val != "0" && val != "off"
+	return val != "false" && val != "0" &&
+		val != "off"
 }
 
 // SetFormatting sets whether formatting changes are shown.
 func (rv *RevisionView) SetFormatting(b bool) {
 	if b {
-		rv.RemoveAttribute("formatting", NamespaceWML)
+		rv.RemoveAttribute(
+			"formatting",
+			NamespaceWML,
+		)
 	} else {
 		rv.SetAttribute(openxml.NewAttribute(NamespaceWML, "formatting", PrefixW, "0"))
 	}
@@ -1177,7 +1552,9 @@ func (rv *RevisionView) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this RevisionView element.
-func (rv *RevisionView) CloneNode(deep bool) openxml.Element {
+func (rv *RevisionView) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &RevisionView{
 		CompositeElementBase: rv.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -1190,17 +1567,27 @@ type MailMerge struct {
 
 // NewMailMerge creates a new MailMerge element.
 func NewMailMerge() *MailMerge {
-	elem := openxml.NewCompositeElement(NamespaceWML, "mailMerge", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"mailMerge",
+		PrefixW,
+	)
 	return &MailMerge{CompositeElementBase: elem}
 }
 
 // MainDocumentType returns the main document type.
 func (mm *MailMerge) MainDocumentType() string {
-	elem := mm.GetElement("mainDocumentType", NamespaceWML)
+	elem := mm.GetElement(
+		"mainDocumentType",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -1208,18 +1595,35 @@ func (mm *MailMerge) MainDocumentType() string {
 }
 
 // SetMainDocumentType sets the main document type.
-func (mm *MailMerge) SetMainDocumentType(docType string) {
-	elem := mm.getOrCreateElement("mainDocumentType")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, docType))
+func (mm *MailMerge) SetMainDocumentType(
+	docType string,
+) {
+	elem := mm.getOrCreateElement(
+		"mainDocumentType",
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			docType,
+		),
+	)
 }
 
 // DataType returns the data source type.
 func (mm *MailMerge) DataType() string {
-	elem := mm.GetElement("dataType", NamespaceWML)
+	elem := mm.GetElement(
+		"dataType",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -1227,17 +1631,32 @@ func (mm *MailMerge) DataType() string {
 }
 
 // SetDataType sets the data source type.
-func (mm *MailMerge) SetDataType(dataType string) {
+func (mm *MailMerge) SetDataType(
+	dataType string,
+) {
 	elem := mm.getOrCreateElement("dataType")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, dataType))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			dataType,
+		),
+	)
 }
 
-func (mm *MailMerge) getOrCreateElement(name string) openxml.Element {
+func (mm *MailMerge) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := mm.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	mm.AppendChild(newElem)
 	return newElem
 }
@@ -1250,7 +1669,9 @@ func (mm *MailMerge) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this MailMerge element.
-func (mm *MailMerge) CloneNode(deep bool) openxml.Element {
+func (mm *MailMerge) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &MailMerge{
 		CompositeElementBase: mm.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -1263,13 +1684,22 @@ type ThemeFontLang struct {
 
 // NewThemeFontLang creates a new ThemeFontLang element.
 func NewThemeFontLang() *ThemeFontLang {
-	elem := openxml.NewCompositeElement(NamespaceWML, "themeFontLang", PrefixW)
-	return &ThemeFontLang{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"themeFontLang",
+		PrefixW,
+	)
+	return &ThemeFontLang{
+		CompositeElementBase: elem,
+	}
 }
 
 // Val returns the primary language.
 func (tfl *ThemeFontLang) Val() string {
-	attr, found := tfl.GetAttribute("val", NamespaceWML)
+	attr, found := tfl.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -1282,12 +1712,22 @@ func (tfl *ThemeFontLang) SetVal(lang string) {
 		tfl.RemoveAttribute("val", NamespaceWML)
 		return
 	}
-	tfl.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, lang))
+	tfl.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			lang,
+		),
+	)
 }
 
 // EastAsia returns the East Asian language.
 func (tfl *ThemeFontLang) EastAsia() string {
-	attr, found := tfl.GetAttribute("eastAsia", NamespaceWML)
+	attr, found := tfl.GetAttribute(
+		"eastAsia",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -1295,17 +1735,32 @@ func (tfl *ThemeFontLang) EastAsia() string {
 }
 
 // SetEastAsia sets the East Asian language.
-func (tfl *ThemeFontLang) SetEastAsia(lang string) {
+func (tfl *ThemeFontLang) SetEastAsia(
+	lang string,
+) {
 	if lang == "" {
-		tfl.RemoveAttribute("eastAsia", NamespaceWML)
+		tfl.RemoveAttribute(
+			"eastAsia",
+			NamespaceWML,
+		)
 		return
 	}
-	tfl.SetAttribute(openxml.NewAttribute(NamespaceWML, "eastAsia", PrefixW, lang))
+	tfl.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"eastAsia",
+			PrefixW,
+			lang,
+		),
+	)
 }
 
 // Bidi returns the bidirectional language.
 func (tfl *ThemeFontLang) Bidi() string {
-	attr, found := tfl.GetAttribute("bidi", NamespaceWML)
+	attr, found := tfl.GetAttribute(
+		"bidi",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -1318,7 +1773,14 @@ func (tfl *ThemeFontLang) SetBidi(lang string) {
 		tfl.RemoveAttribute("bidi", NamespaceWML)
 		return
 	}
-	tfl.SetAttribute(openxml.NewAttribute(NamespaceWML, "bidi", PrefixW, lang))
+	tfl.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"bidi",
+			PrefixW,
+			lang,
+		),
+	)
 }
 
 // Clone creates a deep copy of this ThemeFontLang element.
@@ -1329,7 +1791,9 @@ func (tfl *ThemeFontLang) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this ThemeFontLang element.
-func (tfl *ThemeFontLang) CloneNode(deep bool) openxml.Element {
+func (tfl *ThemeFontLang) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &ThemeFontLang{
 		CompositeElementBase: tfl.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}

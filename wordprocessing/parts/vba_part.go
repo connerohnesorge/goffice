@@ -19,15 +19,26 @@ const (
 )
 
 // newVbaProjectPart creates a new VBA project part.
-func newVbaProjectPart(mainPart *MainPart) (*VbaProjectPart, error) {
+func newVbaProjectPart(
+	mainPart *MainPart,
+) (*VbaProjectPart, error) {
 	uri := "/word/vbaProject.bin"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeVbaProject, RelationshipTypeVbaProject)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeVbaProject,
+		RelationshipTypeVbaProject,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeVbaProject, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeVbaProject,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	vp := &VbaProjectPart{
@@ -51,7 +62,9 @@ func (vp *VbaProjectPart) FixedContentType() string {
 }
 
 // SetVbaData sets the VBA project binary data.
-func (vp *VbaProjectPart) SetVbaData(data []byte) {
+func (vp *VbaProjectPart) SetVbaData(
+	data []byte,
+) {
 	vp.SetData(data)
 }
 
@@ -69,7 +82,10 @@ func (vp *VbaProjectPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*VbaProjectPart)(nil)
 
 // VbaProjectPartFactory creates a VbaProjectPart from a URI and container.
-func VbaProjectPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func VbaProjectPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -80,7 +96,12 @@ func VbaProjectPartFactory(uri string, container openxml.OpenXmlPartContainer) o
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeVbaProject, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeVbaProject,
+		packPart,
+		container,
+	)
 	return &VbaProjectPart{
 		OpenXmlPartData: partData,
 	}
@@ -88,11 +109,13 @@ func VbaProjectPartFactory(uri string, container openxml.OpenXmlPartContainer) o
 
 // Register the VbaProjectPart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeVbaProject,
-		RelationshipType:   RelationshipTypeVbaProject,
-		Factory:            VbaProjectPartFactory,
-		DefaultURI:         "/word/vbaProject.bin",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeVbaProject,
+			RelationshipType:   RelationshipTypeVbaProject,
+			Factory:            VbaProjectPartFactory,
+			DefaultURI:         "/word/vbaProject.bin",
+			IsFixedContentType: true,
+		},
+	)
 }

@@ -14,7 +14,11 @@ type Paragraph struct {
 
 // NewParagraph creates a new Paragraph element with optional initial text.
 func NewParagraph(text ...string) *Paragraph {
-	elem := openxml.NewCompositeElement(NamespaceWML, "p", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"p",
+		PrefixW,
+	)
 	p := &Paragraph{CompositeElementBase: elem}
 	for _, t := range text {
 		if t != "" {
@@ -35,7 +39,9 @@ func (p *Paragraph) Properties() *ParagraphProperties {
 	}
 	// Wrap existing element
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-		return &ParagraphProperties{CompositeElementBase: comp}
+		return &ParagraphProperties{
+			CompositeElementBase: comp,
+		}
 	}
 	return nil
 }
@@ -60,7 +66,8 @@ func (p *Paragraph) GetOrCreateProperties() *ParagraphProperties {
 func (p *Paragraph) Runs() iter.Seq[*Run] {
 	return func(yield func(*Run) bool) {
 		for child := range p.Children() {
-			if child.LocalName() == "r" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "r" &&
+				child.NamespaceURI() == NamespaceWML {
 				var r *Run
 				if run, ok := child.(*Run); ok {
 					r = run
@@ -97,7 +104,8 @@ func (p *Paragraph) PrependRun(text string) *Run {
 	// Find first run or end of properties
 	var insertBefore openxml.Element
 	for child := range p.Children() {
-		if child.LocalName() != "pPr" || child.NamespaceURI() != NamespaceWML {
+		if child.LocalName() != "pPr" ||
+			child.NamespaceURI() != NamespaceWML {
 			insertBefore = child
 			break
 		}
@@ -115,8 +123,12 @@ func (p *Paragraph) SetText(text string) {
 	// Remove all existing runs
 	var runsToRemove []openxml.Element
 	for child := range p.Children() {
-		if child.LocalName() == "r" && child.NamespaceURI() == NamespaceWML {
-			runsToRemove = append(runsToRemove, child)
+		if child.LocalName() == "r" &&
+			child.NamespaceURI() == NamespaceWML {
+			runsToRemove = append(
+				runsToRemove,
+				child,
+			)
 		}
 	}
 	for _, r := range runsToRemove {
@@ -132,8 +144,12 @@ func (p *Paragraph) SetText(text string) {
 func (p *Paragraph) ClearRuns() {
 	var runsToRemove []openxml.Element
 	for child := range p.Children() {
-		if child.LocalName() == "r" && child.NamespaceURI() == NamespaceWML {
-			runsToRemove = append(runsToRemove, child)
+		if child.LocalName() == "r" &&
+			child.NamespaceURI() == NamespaceWML {
+			runsToRemove = append(
+				runsToRemove,
+				child,
+			)
 		}
 	}
 	for _, r := range runsToRemove {
@@ -142,7 +158,9 @@ func (p *Paragraph) ClearRuns() {
 }
 
 // AppendBreak appends a break element to a new run.
-func (p *Paragraph) AppendBreak(breakType BreakType) *Break {
+func (p *Paragraph) AppendBreak(
+	breakType BreakType,
+) *Break {
 	r := NewRun("")
 	br := r.AppendBreak(breakType)
 	p.AppendChild(r)
@@ -157,7 +175,9 @@ func (p *Paragraph) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Paragraph element.
-func (p *Paragraph) CloneNode(deep bool) openxml.Element {
+func (p *Paragraph) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Paragraph{
 		CompositeElementBase: p.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -166,74 +186,113 @@ func (p *Paragraph) CloneNode(deep bool) openxml.Element {
 // Convenience methods for paragraph properties
 
 // SetStyle sets the paragraph style.
-func (p *Paragraph) SetStyle(styleId string) *Paragraph {
-	p.GetOrCreateProperties().SetParagraphStyleId(styleId)
+func (p *Paragraph) SetStyle(
+	styleId string,
+) *Paragraph {
+	p.GetOrCreateProperties().
+		SetParagraphStyleId(styleId)
 	return p
 }
 
 // SetJustification sets the paragraph alignment.
-func (p *Paragraph) SetJustification(j JustificationValue) *Paragraph {
+func (p *Paragraph) SetJustification(
+	j JustificationValue,
+) *Paragraph {
 	p.GetOrCreateProperties().SetJustification(j)
 	return p
 }
 
 // SetKeepNext sets whether to keep with the next paragraph.
-func (p *Paragraph) SetKeepNext(b bool) *Paragraph {
+func (p *Paragraph) SetKeepNext(
+	b bool,
+) *Paragraph {
 	p.GetOrCreateProperties().SetKeepNext(b)
 	return p
 }
 
 // SetKeepLines sets whether to keep lines together.
-func (p *Paragraph) SetKeepLines(b bool) *Paragraph {
+func (p *Paragraph) SetKeepLines(
+	b bool,
+) *Paragraph {
 	p.GetOrCreateProperties().SetKeepLines(b)
 	return p
 }
 
 // SetPageBreakBefore sets whether to insert a page break before.
-func (p *Paragraph) SetPageBreakBefore(b bool) *Paragraph {
-	p.GetOrCreateProperties().SetPageBreakBefore(b)
+func (p *Paragraph) SetPageBreakBefore(
+	b bool,
+) *Paragraph {
+	p.GetOrCreateProperties().
+		SetPageBreakBefore(b)
 	return p
 }
 
 // SetSpacingBefore sets the space before the paragraph in twips.
-func (p *Paragraph) SetSpacingBefore(twips int) *Paragraph {
-	p.GetOrCreateProperties().GetOrCreateSpacingBetweenLines().SetBefore(twips)
+func (p *Paragraph) SetSpacingBefore(
+	twips int,
+) *Paragraph {
+	p.GetOrCreateProperties().
+		GetOrCreateSpacingBetweenLines().
+		SetBefore(twips)
 	return p
 }
 
 // SetSpacingAfter sets the space after the paragraph in twips.
-func (p *Paragraph) SetSpacingAfter(twips int) *Paragraph {
-	p.GetOrCreateProperties().GetOrCreateSpacingBetweenLines().SetAfter(twips)
+func (p *Paragraph) SetSpacingAfter(
+	twips int,
+) *Paragraph {
+	p.GetOrCreateProperties().
+		GetOrCreateSpacingBetweenLines().
+		SetAfter(twips)
 	return p
 }
 
 // SetLeftIndent sets the left indentation in twips.
-func (p *Paragraph) SetLeftIndent(twips int) *Paragraph {
-	p.GetOrCreateProperties().GetOrCreateIndentation().SetLeft(twips)
+func (p *Paragraph) SetLeftIndent(
+	twips int,
+) *Paragraph {
+	p.GetOrCreateProperties().
+		GetOrCreateIndentation().
+		SetLeft(twips)
 	return p
 }
 
 // SetRightIndent sets the right indentation in twips.
-func (p *Paragraph) SetRightIndent(twips int) *Paragraph {
-	p.GetOrCreateProperties().GetOrCreateIndentation().SetRight(twips)
+func (p *Paragraph) SetRightIndent(
+	twips int,
+) *Paragraph {
+	p.GetOrCreateProperties().
+		GetOrCreateIndentation().
+		SetRight(twips)
 	return p
 }
 
 // SetFirstLineIndent sets the first line indentation in twips.
-func (p *Paragraph) SetFirstLineIndent(twips int) *Paragraph {
-	p.GetOrCreateProperties().GetOrCreateIndentation().SetFirstLine(twips)
+func (p *Paragraph) SetFirstLineIndent(
+	twips int,
+) *Paragraph {
+	p.GetOrCreateProperties().
+		GetOrCreateIndentation().
+		SetFirstLine(twips)
 	return p
 }
 
 // SetHangingIndent sets the hanging indentation in twips.
-func (p *Paragraph) SetHangingIndent(twips int) *Paragraph {
-	p.GetOrCreateProperties().GetOrCreateIndentation().SetHanging(twips)
+func (p *Paragraph) SetHangingIndent(
+	twips int,
+) *Paragraph {
+	p.GetOrCreateProperties().
+		GetOrCreateIndentation().
+		SetHanging(twips)
 	return p
 }
 
 // SetNumbering sets the paragraph numbering.
-func (p *Paragraph) SetNumbering(numId, level int) *Paragraph {
-	np := p.GetOrCreateProperties().GetOrCreateNumberingProperties()
+func (p *Paragraph) SetNumbering(
+	numId, level int,
+) *Paragraph {
+	np := p.GetOrCreateProperties().
+		GetOrCreateNumberingProperties()
 	np.SetNumberingId(numId)
 	np.SetNumberingLevel(level)
 	return p
@@ -241,7 +300,9 @@ func (p *Paragraph) SetNumbering(numId, level int) *Paragraph {
 
 // ApplyNumbering applies numbering to the paragraph at the specified level.
 // This is an alias for SetNumbering that matches the spec naming.
-func (p *Paragraph) ApplyNumbering(numId, level int) *Paragraph {
+func (p *Paragraph) ApplyNumbering(
+	numId, level int,
+) *Paragraph {
 	return p.SetNumbering(numId, level)
 }
 
@@ -259,7 +320,9 @@ func (p *Paragraph) RemoveNumbering() *Paragraph {
 }
 
 // SetNumberingLevel sets the numbering level (0-8) for an already numbered paragraph.
-func (p *Paragraph) SetNumberingLevel(level int) *Paragraph {
+func (p *Paragraph) SetNumberingLevel(
+	level int,
+) *Paragraph {
 	props := p.Properties()
 	if props == nil {
 		return p

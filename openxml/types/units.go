@@ -59,7 +59,9 @@ func NewTwipsValue(twips int64) *TwipsValue {
 }
 
 // NewTwipsValueFromPoints creates a new TwipsValue from a point value.
-func NewTwipsValueFromPoints(points float64) *TwipsValue {
+func NewTwipsValueFromPoints(
+	points float64,
+) *TwipsValue {
 	return &TwipsValue{
 		value:    int64(points * TwipsPerPoint),
 		hasValue: true,
@@ -67,7 +69,9 @@ func NewTwipsValueFromPoints(points float64) *TwipsValue {
 }
 
 // NewTwipsValueFromInches creates a new TwipsValue from an inch value.
-func NewTwipsValueFromInches(inches float64) *TwipsValue {
+func NewTwipsValueFromInches(
+	inches float64,
+) *TwipsValue {
 	return &TwipsValue{
 		value:    int64(inches * TwipsPerInch),
 		hasValue: true,
@@ -133,7 +137,9 @@ func (tv *TwipsValue) InnerText() string {
 }
 
 // SetInnerText parses the value from a string.
-func (tv *TwipsValue) SetInnerText(text string) error {
+func (tv *TwipsValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		tv.hasValue = false
 		tv.value = 0
@@ -141,7 +147,10 @@ func (tv *TwipsValue) SetInnerText(text string) error {
 	}
 	v, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid twips value: %w", err)
+		return fmt.Errorf(
+			"invalid twips value: %w",
+			err,
+		)
 	}
 	tv.value = v
 	tv.hasValue = true
@@ -163,7 +172,9 @@ type HalfPointsValue struct {
 }
 
 // NewHalfPointsValue creates a new HalfPointsValue with the given value.
-func NewHalfPointsValue(halfPoints int64) *HalfPointsValue {
+func NewHalfPointsValue(
+	halfPoints int64,
+) *HalfPointsValue {
 	return &HalfPointsValue{
 		value:    halfPoints,
 		hasValue: true,
@@ -171,9 +182,13 @@ func NewHalfPointsValue(halfPoints int64) *HalfPointsValue {
 }
 
 // NewHalfPointsValueFromPoints creates a new HalfPointsValue from a point value.
-func NewHalfPointsValueFromPoints(points float64) *HalfPointsValue {
+func NewHalfPointsValueFromPoints(
+	points float64,
+) *HalfPointsValue {
 	return &HalfPointsValue{
-		value:    int64(points * HalfPointsPerPoint),
+		value: int64(
+			points * HalfPointsPerPoint,
+		),
 		hasValue: true,
 	}
 }
@@ -194,7 +209,9 @@ func (hv *HalfPointsValue) Value() int64 {
 }
 
 // SetValue sets the raw half-points value.
-func (hv *HalfPointsValue) SetValue(halfPoints int64) {
+func (hv *HalfPointsValue) SetValue(
+	halfPoints int64,
+) {
 	hv.value = halfPoints
 	hv.hasValue = true
 }
@@ -212,7 +229,9 @@ func (hv *HalfPointsValue) ToInches() float64 {
 	if !hv.hasValue {
 		return 0
 	}
-	return float64(hv.value) / (HalfPointsPerPoint * PointsPerInch)
+	return float64(
+		hv.value,
+	) / (HalfPointsPerPoint * PointsPerInch)
 }
 
 // HasValue returns true if the value is set.
@@ -229,7 +248,9 @@ func (hv *HalfPointsValue) InnerText() string {
 }
 
 // SetInnerText parses the value from a string.
-func (hv *HalfPointsValue) SetInnerText(text string) error {
+func (hv *HalfPointsValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		hv.hasValue = false
 		hv.value = 0
@@ -237,7 +258,10 @@ func (hv *HalfPointsValue) SetInnerText(text string) error {
 	}
 	v, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid half-points value: %w", err)
+		return fmt.Errorf(
+			"invalid half-points value: %w",
+			err,
+		)
 	}
 	hv.value = v
 	hv.hasValue = true
@@ -267,7 +291,9 @@ func NewEmuValue(emu int64) *EmuValue {
 }
 
 // NewEmuValueFromPoints creates a new EmuValue from a point value.
-func NewEmuValueFromPoints(points float64) *EmuValue {
+func NewEmuValueFromPoints(
+	points float64,
+) *EmuValue {
 	return &EmuValue{
 		value:    int64(points * EmuPerPoint),
 		hasValue: true,
@@ -275,7 +301,9 @@ func NewEmuValueFromPoints(points float64) *EmuValue {
 }
 
 // NewEmuValueFromInches creates a new EmuValue from an inch value.
-func NewEmuValueFromInches(inches float64) *EmuValue {
+func NewEmuValueFromInches(
+	inches float64,
+) *EmuValue {
 	return &EmuValue{
 		value:    int64(inches * EmuPerInch),
 		hasValue: true,
@@ -283,7 +311,9 @@ func NewEmuValueFromInches(inches float64) *EmuValue {
 }
 
 // NewEmuValueFromCentimeters creates a new EmuValue from a centimeter value.
-func NewEmuValueFromCentimeters(cm float64) *EmuValue {
+func NewEmuValueFromCentimeters(
+	cm float64,
+) *EmuValue {
 	return &EmuValue{
 		value:    int64(cm * EmuPerCm),
 		hasValue: true,
@@ -357,7 +387,9 @@ func (ev *EmuValue) InnerText() string {
 }
 
 // SetInnerText parses the value from a string.
-func (ev *EmuValue) SetInnerText(text string) error {
+func (ev *EmuValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		ev.hasValue = false
 		ev.value = 0
@@ -365,7 +397,10 @@ func (ev *EmuValue) SetInnerText(text string) error {
 	}
 	v, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid EMU value: %w", err)
+		return fmt.Errorf(
+			"invalid EMU value: %w",
+			err,
+		)
 	}
 	ev.value = v
 	ev.hasValue = true

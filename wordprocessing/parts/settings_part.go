@@ -18,15 +18,26 @@ const (
 )
 
 // newSettingsPart creates a new document settings part.
-func newSettingsPart(mainPart *MainPart) (*SettingsPart, error) {
+func newSettingsPart(
+	mainPart *MainPart,
+) (*SettingsPart, error) {
 	uri := "/word/settings.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeSettings, RelationshipTypeSettings)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeSettings,
+		RelationshipTypeSettings,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeSettings, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeSettings,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	sp := &SettingsPart{
@@ -77,7 +88,10 @@ func (sp *SettingsPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*SettingsPart)(nil)
 
 // SettingsPartFactory creates a SettingsPart from a URI and container.
-func SettingsPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func SettingsPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -88,7 +102,12 @@ func SettingsPartFactory(uri string, container openxml.OpenXmlPartContainer) ope
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeSettings, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeSettings,
+		packPart,
+		container,
+	)
 	return &SettingsPart{
 		OpenXmlPartData: partData,
 	}
@@ -96,11 +115,13 @@ func SettingsPartFactory(uri string, container openxml.OpenXmlPartContainer) ope
 
 // Register the SettingsPart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeSettings,
-		RelationshipType:   RelationshipTypeSettings,
-		Factory:            SettingsPartFactory,
-		DefaultURI:         "/word/settings.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeSettings,
+			RelationshipType:   RelationshipTypeSettings,
+			Factory:            SettingsPartFactory,
+			DefaultURI:         "/word/settings.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

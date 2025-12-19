@@ -15,18 +15,26 @@ func TestCreateMinimalDocx(t *testing.T) {
 	// Create the minimal docx
 	err := CreateMinimalDocx(docxPath)
 	if err != nil {
-		t.Fatalf("CreateMinimalDocx failed: %v", err)
+		t.Fatalf(
+			"CreateMinimalDocx failed: %v",
+			err,
+		)
 	}
 
 	// Verify the file exists
-	if _, err := os.Stat(docxPath); os.IsNotExist(err) {
+	if _, err := os.Stat(docxPath); os.IsNotExist(
+		err,
+	) {
 		t.Fatal("docx file was not created")
 	}
 
 	// Open and verify the ZIP structure
 	r, err := zip.OpenReader(docxPath)
 	if err != nil {
-		t.Fatalf("Failed to open docx as ZIP: %v", err)
+		t.Fatalf(
+			"Failed to open docx as ZIP: %v",
+			err,
+		)
 	}
 	defer r.Close()
 
@@ -46,7 +54,10 @@ func TestCreateMinimalDocx(t *testing.T) {
 
 	for name, found := range requiredFiles {
 		if !found {
-			t.Errorf("Required file %q not found in docx", name)
+			t.Errorf(
+				"Required file %q not found in docx",
+				name,
+			)
 		}
 	}
 }
@@ -55,7 +66,10 @@ func TestMinimalDocxFilesContents(t *testing.T) {
 	// Verify each minimal docx file has content
 	for name, content := range MinimalDocxFiles {
 		if content == "" {
-			t.Errorf("MinimalDocxFiles[%q] is empty", name)
+			t.Errorf(
+				"MinimalDocxFiles[%q] is empty",
+				name,
+			)
 		}
 	}
 }

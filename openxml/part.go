@@ -23,7 +23,9 @@ type OpenXmlPartContainer interface {
 
 	// GetPartsOfType returns an iterator over all child parts of type T.
 	// This uses generics to filter parts by their concrete type.
-	GetPartsOfType(contentType string) iter.Seq[OpenXmlPart]
+	GetPartsOfType(
+		contentType string,
+	) iter.Seq[OpenXmlPart]
 
 	// AddPart adds a part as a child with the given relationship ID.
 	// If id is empty, a unique ID will be generated.
@@ -52,8 +54,8 @@ type OpenXmlPartData struct {
 	mu sync.RWMutex
 
 	// Identity
-	uri           string
-	contentType   string
+	uri            string
+	contentType    string
 	relationshipID string
 
 	// Underlying OPC part
@@ -81,20 +83,28 @@ type OpenXmlPartData struct {
 }
 
 // NewOpenXmlPartData creates a new part data structure.
-func NewOpenXmlPartData(uri, contentType string, packPart *packaging.Part, container OpenXmlPartContainer) *OpenXmlPartData {
+func NewOpenXmlPartData(
+	uri, contentType string,
+	packPart *packaging.Part,
+	container OpenXmlPartContainer,
+) *OpenXmlPartData {
 	part := &OpenXmlPartData{
 		uri:           uri,
 		contentType:   contentType,
 		packagingPart: packPart,
 		container:     container,
-		childParts:    make(map[string]OpenXmlPart),
-		idGenerator:   NewRelationshipIDGenerator(),
-		isDirty:       false,
+		childParts: make(
+			map[string]OpenXmlPart,
+		),
+		idGenerator: NewRelationshipIDGenerator(),
+		isDirty:     false,
 	}
 
 	// Create features with parent from container
 	if container != nil {
-		part.features = features.NewFeatureCollectionWithParent(container.Features())
+		part.features = features.NewFeatureCollectionWithParent(
+			container.Features(),
+		)
 	} else {
 		part.features = features.NewFeatureCollection()
 	}
@@ -124,7 +134,9 @@ func (p *OpenXmlPartData) RelationshipID() string {
 }
 
 // SetRelationshipID sets the relationship ID.
-func (p *OpenXmlPartData) SetRelationshipID(id string) {
+func (p *OpenXmlPartData) SetRelationshipID(
+	id string,
+) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	p.relationshipID = id
@@ -193,7 +205,9 @@ func (p *OpenXmlPartData) RootElement() PartRootElement {
 }
 
 // SetRootElement sets the root element.
-func (p *OpenXmlPartData) SetRootElement(root PartRootElement) {
+func (p *OpenXmlPartData) SetRootElement(
+	root PartRootElement,
+) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -206,7 +220,9 @@ func (p *OpenXmlPartData) SetRootElement(root PartRootElement) {
 }
 
 // SetRootFactory sets the factory function for lazy loading the root element.
-func (p *OpenXmlPartData) SetRootFactory(factory func() PartRootElement) {
+func (p *OpenXmlPartData) SetRootFactory(
+	factory func() PartRootElement,
+) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	p.rootFactory = factory
@@ -279,7 +295,9 @@ func (p *OpenXmlPartData) Package() *packaging.Package {
 
 // GetPackagingPart returns the underlying packaging.Part by its URI.
 // This delegates to the container which holds the package.
-func (p *OpenXmlPartData) GetPackagingPart(uri string) *packaging.Part {
+func (p *OpenXmlPartData) GetPackagingPart(
+	uri string,
+) *packaging.Part {
 	p.mu.RLock()
 	container := p.container
 	p.mu.RUnlock()
@@ -305,7 +323,9 @@ func (p *OpenXmlPartData) Parts() iter.Seq[OpenXmlPart] {
 }
 
 // GetPartById returns a child part by relationship ID.
-func (p *OpenXmlPartData) GetPartById(id string) (OpenXmlPart, error) {
+func (p *OpenXmlPartData) GetPartById(
+	id string,
+) (OpenXmlPart, error) {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 
@@ -317,7 +337,9 @@ func (p *OpenXmlPartData) GetPartById(id string) (OpenXmlPart, error) {
 }
 
 // GetPartsOfType returns an iterator over child parts of a specific content type.
-func (p *OpenXmlPartData) GetPartsOfType(contentType string) iter.Seq[OpenXmlPart] {
+func (p *OpenXmlPartData) GetPartsOfType(
+	contentType string,
+) iter.Seq[OpenXmlPart] {
 	return func(yield func(OpenXmlPart) bool) {
 		p.mu.RLock()
 		defer p.mu.RUnlock()
@@ -333,7 +355,10 @@ func (p *OpenXmlPartData) GetPartsOfType(contentType string) iter.Seq[OpenXmlPar
 }
 
 // AddPart adds a child part with the given relationship ID.
-func (p *OpenXmlPartData) AddPart(part OpenXmlPart, id string) error {
+func (p *OpenXmlPartData) AddPart(
+	part OpenXmlPart,
+	id string,
+) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -355,7 +380,9 @@ func (p *OpenXmlPartData) AddPart(part OpenXmlPart, id string) error {
 }
 
 // DeletePart removes a child part by relationship ID.
-func (p *OpenXmlPartData) DeletePart(id string) error {
+func (p *OpenXmlPartData) DeletePart(
+	id string,
+) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -407,12 +434,16 @@ type PartTypeInfo struct {
 
 // partTypeRegistry holds registered part types.
 var partTypeRegistry = struct {
-	mu              sync.RWMutex
-	byContentType   map[string]*PartTypeInfo
-	byRelationship  map[string]*PartTypeInfo
+	mu             sync.RWMutex
+	byContentType  map[string]*PartTypeInfo
+	byRelationship map[string]*PartTypeInfo
 }{
-	byContentType:  make(map[string]*PartTypeInfo),
-	byRelationship: make(map[string]*PartTypeInfo),
+	byContentType: make(
+		map[string]*PartTypeInfo,
+	),
+	byRelationship: make(
+		map[string]*PartTypeInfo,
+	),
 }
 
 // RegisterPartType registers a part type for automatic instantiation.
@@ -429,7 +460,9 @@ func RegisterPartType(info *PartTypeInfo) {
 }
 
 // GetPartTypeByContentType returns the part type info for a content type.
-func GetPartTypeByContentType(contentType string) (*PartTypeInfo, bool) {
+func GetPartTypeByContentType(
+	contentType string,
+) (*PartTypeInfo, bool) {
 	partTypeRegistry.mu.RLock()
 	defer partTypeRegistry.mu.RUnlock()
 
@@ -438,7 +471,9 @@ func GetPartTypeByContentType(contentType string) (*PartTypeInfo, bool) {
 }
 
 // GetPartTypeByRelationship returns the part type info for a relationship type.
-func GetPartTypeByRelationship(relType string) (*PartTypeInfo, bool) {
+func GetPartTypeByRelationship(
+	relType string,
+) (*PartTypeInfo, bool) {
 	partTypeRegistry.mu.RLock()
 	defer partTypeRegistry.mu.RUnlock()
 
@@ -448,19 +483,34 @@ func GetPartTypeByRelationship(relType string) (*PartTypeInfo, bool) {
 
 // CreatePartByContentType creates a part instance based on content type.
 // Returns a generic OpenXmlPartData if no registered type matches.
-func CreatePartByContentType(contentType, uri string, packPart *packaging.Part, container OpenXmlPartContainer) OpenXmlPart {
-	info, ok := GetPartTypeByContentType(contentType)
+func CreatePartByContentType(
+	contentType, uri string,
+	packPart *packaging.Part,
+	container OpenXmlPartContainer,
+) OpenXmlPart {
+	info, ok := GetPartTypeByContentType(
+		contentType,
+	)
 	if ok && info.Factory != nil {
 		return info.Factory(uri, container)
 	}
 
 	// Return generic part
-	return NewOpenXmlPartData(uri, contentType, packPart, container)
+	return NewOpenXmlPartData(
+		uri,
+		contentType,
+		packPart,
+		container,
+	)
 }
 
 // CreatePartByRelationship creates a part instance based on relationship type.
 // Returns a generic OpenXmlPartData if no registered type matches.
-func CreatePartByRelationship(relType, uri string, packPart *packaging.Part, container OpenXmlPartContainer) OpenXmlPart {
+func CreatePartByRelationship(
+	relType, uri string,
+	packPart *packaging.Part,
+	container OpenXmlPartContainer,
+) OpenXmlPart {
 	info, ok := GetPartTypeByRelationship(relType)
 	if ok && info.Factory != nil {
 		return info.Factory(uri, container)
@@ -471,12 +521,19 @@ func CreatePartByRelationship(relType, uri string, packPart *packaging.Part, con
 	if packPart != nil {
 		contentType = packPart.ContentType()
 	}
-	return NewOpenXmlPartData(uri, contentType, packPart, container)
+	return NewOpenXmlPartData(
+		uri,
+		contentType,
+		packPart,
+		container,
+	)
 }
 
 // GetPartsOfType is a generic function to iterate over parts of a specific type.
 // Usage: GetPartsOfType[*StylesPart](container)
-func GetPartsOfType[T OpenXmlPart](container OpenXmlPartContainer) iter.Seq[T] {
+func GetPartsOfType[T OpenXmlPart](
+	container OpenXmlPartContainer,
+) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for part := range container.Parts() {
 			if typed, ok := part.(T); ok {
@@ -490,7 +547,9 @@ func GetPartsOfType[T OpenXmlPart](container OpenXmlPartContainer) iter.Seq[T] {
 
 // FirstPartOfType returns the first child part of type T.
 // Returns nil if no matching part is found.
-func FirstPartOfType[T OpenXmlPart](container OpenXmlPartContainer) T {
+func FirstPartOfType[T OpenXmlPart](
+	container OpenXmlPartContainer,
+) T {
 	for part := range GetPartsOfType[T](container) {
 		return part
 	}
@@ -510,10 +569,18 @@ var _ OpenXmlPart = (*OpenXmlPartData)(nil)
 
 // Part errors
 var (
-	ErrPartNotFound     = partError("part not found")
-	ErrPartExists       = partError("part already exists")
-	ErrInvalidPartURI   = partError("invalid part URI")
-	ErrContentTypeMismatch = partError("content type mismatch")
+	ErrPartNotFound = partError(
+		"part not found",
+	)
+	ErrPartExists = partError(
+		"part already exists",
+	)
+	ErrInvalidPartURI = partError(
+		"invalid part URI",
+	)
+	ErrContentTypeMismatch = partError(
+		"content type mismatch",
+	)
 )
 
 type partError string

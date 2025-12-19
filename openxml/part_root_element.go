@@ -15,16 +15,33 @@ type PartRootElementBase struct {
 }
 
 // NewPartRootElement creates a new part root element with the given namespace URI and local name.
-func NewPartRootElement(namespaceURI, localName, prefix string) *PartRootElementBase {
+func NewPartRootElement(
+	namespaceURI, localName, prefix string,
+) *PartRootElementBase {
 	elem := &PartRootElementBase{}
-	InitBaseElement(&elem.BaseElement, namespaceURI, localName, prefix, nil)
+	InitBaseElement(
+		&elem.BaseElement,
+		namespaceURI,
+		localName,
+		prefix,
+		nil,
+	)
 	return elem
 }
 
 // NewPartRootElementWithFeatures creates a new part root element with parent features.
-func NewPartRootElementWithFeatures(namespaceURI, localName, prefix string, parentFeatures *features.FeatureCollection) *PartRootElementBase {
+func NewPartRootElementWithFeatures(
+	namespaceURI, localName, prefix string,
+	parentFeatures *features.FeatureCollection,
+) *PartRootElementBase {
 	elem := &PartRootElementBase{}
-	InitBaseElement(&elem.BaseElement, namespaceURI, localName, prefix, parentFeatures)
+	InitBaseElement(
+		&elem.BaseElement,
+		namespaceURI,
+		localName,
+		prefix,
+		parentFeatures,
+	)
 	return elem
 }
 
@@ -34,7 +51,9 @@ func (p *PartRootElementBase) Part() OpenXmlPart {
 }
 
 // SetPart sets the containing part.
-func (p *PartRootElementBase) SetPart(part OpenXmlPart) {
+func (p *PartRootElementBase) SetPart(
+	part OpenXmlPart,
+) {
 	p.part = part
 }
 
@@ -47,7 +66,9 @@ func (p *PartRootElementBase) Save() error {
 	var buf bytes.Buffer
 
 	// Write XML declaration
-	buf.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n")
+	buf.WriteString(
+		"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n",
+	)
 
 	// Write the element
 	if err := p.WriteXML(&buf); err != nil {
@@ -82,7 +103,9 @@ func (p *PartRootElementBase) Clone() Element {
 // CloneNode creates a copy of this element.
 // If deep is true, children are also cloned.
 // The clone is not associated with any part.
-func (p *PartRootElementBase) CloneNode(deep bool) Element {
+func (p *PartRootElementBase) CloneNode(
+	deep bool,
+) Element {
 	clone := &PartRootElementBase{
 		CompositeElementBase: CompositeElementBase{
 			BaseElement: p.copyBaseElement(),

@@ -32,19 +32,24 @@ func NewDocumentBuilder() *DocumentBuilder {
 }
 
 // AddParagraph adds a paragraph with the given text and returns a ParagraphBuilder.
-func (db *DocumentBuilder) AddParagraph(text string) *ParagraphBuilder {
+func (db *DocumentBuilder) AddParagraph(
+	text string,
+) *ParagraphBuilder {
 	if db.document == nil {
 		db.document = elements.NewDocument()
 	}
 	p := db.document.Body().AppendParagraph(text)
 	return &ParagraphBuilder{
-		paragraph: p,
+		paragraph:  p,
 		docBuilder: db,
 	}
 }
 
 // AddHeading adds a heading paragraph with the given text and level (1-9).
-func (db *DocumentBuilder) AddHeading(text string, level int) *ParagraphBuilder {
+func (db *DocumentBuilder) AddHeading(
+	text string,
+	level int,
+) *ParagraphBuilder {
 	if db.document == nil {
 		db.document = elements.NewDocument()
 	}
@@ -53,22 +58,27 @@ func (db *DocumentBuilder) AddHeading(text string, level int) *ParagraphBuilder 
 	// Apply heading style
 	styleId := "Heading1"
 	if level >= 1 && level <= 9 {
-		styleId = "Heading" + string(rune('0'+level))
+		styleId = "Heading" + string(
+			rune('0'+level),
+		)
 	}
 	p.SetStyle(styleId)
 
 	return &ParagraphBuilder{
-		paragraph: p,
+		paragraph:  p,
 		docBuilder: db,
 	}
 }
 
 // AddTable adds a table with the specified number of rows and columns.
-func (db *DocumentBuilder) AddTable(rows, cols int) *TableBuilder {
+func (db *DocumentBuilder) AddTable(
+	rows, cols int,
+) *TableBuilder {
 	if db.document == nil {
 		db.document = elements.NewDocument()
 	}
-	t := db.document.Body().AppendTable(rows, cols)
+	t := db.document.Body().
+		AppendTable(rows, cols)
 	return &TableBuilder{
 		table:      t,
 		docBuilder: db,
@@ -78,7 +88,10 @@ func (db *DocumentBuilder) AddTable(rows, cols int) *TableBuilder {
 // AddImage adds an image to the document.
 // The image will be added as an inline drawing.
 // Width and height are in EMUs (914400 EMU = 1 inch).
-func (db *DocumentBuilder) AddImage(data []byte, contentType string) *ImageBuilder {
+func (db *DocumentBuilder) AddImage(
+	data []byte,
+	contentType string,
+) *ImageBuilder {
 	return &ImageBuilder{
 		docBuilder:  db,
 		data:        data,
@@ -93,7 +106,9 @@ func (db *DocumentBuilder) AddPageBreak() *DocumentBuilder {
 	if db.document == nil {
 		db.document = elements.NewDocument()
 	}
-	db.document.Body().AppendParagraph("").AppendBreak(elements.BreakPage)
+	db.document.Body().
+		AppendParagraph("").
+		AppendBreak(elements.BreakPage)
 	return db
 }
 
@@ -102,7 +117,9 @@ func (db *DocumentBuilder) AddColumnBreak() *DocumentBuilder {
 	if db.document == nil {
 		db.document = elements.NewDocument()
 	}
-	db.document.Body().AppendParagraph("").AppendBreak(elements.BreakColumn)
+	db.document.Body().
+		AppendParagraph("").
+		AppendBreak(elements.BreakColumn)
 	return db
 }
 
@@ -114,19 +131,27 @@ func (db *DocumentBuilder) AddHorizontalRule() *DocumentBuilder {
 	p := db.document.Body().AppendParagraph("")
 	props := p.GetOrCreateProperties()
 	borders := props.GetOrCreateParagraphBorders()
-	borders.SetBottom(elements.BorderSingle, 6, "auto")
+	borders.SetBottom(
+		elements.BorderSingle,
+		6,
+		"auto",
+	)
 	return db
 }
 
 // SetTitle sets the document title (for core properties).
-func (db *DocumentBuilder) SetTitle(title string) *DocumentBuilder {
+func (db *DocumentBuilder) SetTitle(
+	title string,
+) *DocumentBuilder {
 	// This would set the core properties title
 	// For now, we'll just track it
 	return db
 }
 
 // SetAuthor sets the document author (for core properties).
-func (db *DocumentBuilder) SetAuthor(author string) *DocumentBuilder {
+func (db *DocumentBuilder) SetAuthor(
+	author string,
+) *DocumentBuilder {
 	// This would set the core properties author
 	return db
 }
@@ -191,7 +216,10 @@ func (pb *ParagraphBuilder) Underline() *ParagraphBuilder {
 
 // Font sets the font name and size for all text in the paragraph.
 // Size is in points (e.g., 12 for 12pt).
-func (pb *ParagraphBuilder) Font(name string, size int) *ParagraphBuilder {
+func (pb *ParagraphBuilder) Font(
+	name string,
+	size int,
+) *ParagraphBuilder {
 	halfPoints := size * 2 // Convert points to half-points
 	for r := range pb.paragraph.Runs() {
 		if name != "" {
@@ -206,7 +234,9 @@ func (pb *ParagraphBuilder) Font(name string, size int) *ParagraphBuilder {
 
 // FontSize sets the font size for all text in the paragraph.
 // Size is in points (e.g., 12 for 12pt).
-func (pb *ParagraphBuilder) FontSize(size int) *ParagraphBuilder {
+func (pb *ParagraphBuilder) FontSize(
+	size int,
+) *ParagraphBuilder {
 	halfPoints := size * 2 // Convert points to half-points
 	for r := range pb.paragraph.Runs() {
 		r.SetFontSize(halfPoints)
@@ -216,7 +246,9 @@ func (pb *ParagraphBuilder) FontSize(size int) *ParagraphBuilder {
 
 // Color sets the text color for all text in the paragraph.
 // Color should be a hex value without # (e.g., "FF0000" for red).
-func (pb *ParagraphBuilder) Color(hex string) *ParagraphBuilder {
+func (pb *ParagraphBuilder) Color(
+	hex string,
+) *ParagraphBuilder {
 	for r := range pb.paragraph.Runs() {
 		r.SetColor(hex)
 	}
@@ -224,7 +256,9 @@ func (pb *ParagraphBuilder) Color(hex string) *ParagraphBuilder {
 }
 
 // Highlight sets the highlight color for all text in the paragraph.
-func (pb *ParagraphBuilder) Highlight(color elements.HighlightColor) *ParagraphBuilder {
+func (pb *ParagraphBuilder) Highlight(
+	color elements.HighlightColor,
+) *ParagraphBuilder {
 	for r := range pb.paragraph.Runs() {
 		r.SetHighlight(color)
 	}
@@ -232,7 +266,9 @@ func (pb *ParagraphBuilder) Highlight(color elements.HighlightColor) *ParagraphB
 }
 
 // Align sets the paragraph alignment.
-func (pb *ParagraphBuilder) Align(alignment elements.JustificationValue) *ParagraphBuilder {
+func (pb *ParagraphBuilder) Align(
+	alignment elements.JustificationValue,
+) *ParagraphBuilder {
 	pb.paragraph.SetJustification(alignment)
 	return pb
 }
@@ -258,55 +294,71 @@ func (pb *ParagraphBuilder) AlignJustify() *ParagraphBuilder {
 }
 
 // Style sets the paragraph style.
-func (pb *ParagraphBuilder) Style(styleId string) *ParagraphBuilder {
+func (pb *ParagraphBuilder) Style(
+	styleId string,
+) *ParagraphBuilder {
 	pb.paragraph.SetStyle(styleId)
 	return pb
 }
 
 // SpacingBefore sets the space before the paragraph in points.
-func (pb *ParagraphBuilder) SpacingBefore(points int) *ParagraphBuilder {
+func (pb *ParagraphBuilder) SpacingBefore(
+	points int,
+) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetSpacingBefore(twips)
 	return pb
 }
 
 // SpacingAfter sets the space after the paragraph in points.
-func (pb *ParagraphBuilder) SpacingAfter(points int) *ParagraphBuilder {
+func (pb *ParagraphBuilder) SpacingAfter(
+	points int,
+) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetSpacingAfter(twips)
 	return pb
 }
 
 // LeftIndent sets the left indentation in points.
-func (pb *ParagraphBuilder) LeftIndent(points int) *ParagraphBuilder {
+func (pb *ParagraphBuilder) LeftIndent(
+	points int,
+) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetLeftIndent(twips)
 	return pb
 }
 
 // RightIndent sets the right indentation in points.
-func (pb *ParagraphBuilder) RightIndent(points int) *ParagraphBuilder {
+func (pb *ParagraphBuilder) RightIndent(
+	points int,
+) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetRightIndent(twips)
 	return pb
 }
 
 // FirstLineIndent sets the first line indentation in points.
-func (pb *ParagraphBuilder) FirstLineIndent(points int) *ParagraphBuilder {
+func (pb *ParagraphBuilder) FirstLineIndent(
+	points int,
+) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetFirstLineIndent(twips)
 	return pb
 }
 
 // HangingIndent sets the hanging indentation in points.
-func (pb *ParagraphBuilder) HangingIndent(points int) *ParagraphBuilder {
+func (pb *ParagraphBuilder) HangingIndent(
+	points int,
+) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetHangingIndent(twips)
 	return pb
 }
 
 // AddRun adds a new run with the given text and returns a RunBuilder.
-func (pb *ParagraphBuilder) AddRun(text string) *RunBuilder {
+func (pb *ParagraphBuilder) AddRun(
+	text string,
+) *RunBuilder {
 	r := pb.paragraph.AppendRun(text)
 	return &RunBuilder{
 		run:              r,
@@ -355,43 +407,59 @@ func (rb *RunBuilder) Underline() *RunBuilder {
 }
 
 // UnderlineStyle sets a specific underline style.
-func (rb *RunBuilder) UnderlineStyle(style elements.UnderlineValue) *RunBuilder {
+func (rb *RunBuilder) UnderlineStyle(
+	style elements.UnderlineValue,
+) *RunBuilder {
 	rb.run.SetUnderline(style)
 	return rb
 }
 
 // Font sets the font name.
-func (rb *RunBuilder) Font(name string) *RunBuilder {
+func (rb *RunBuilder) Font(
+	name string,
+) *RunBuilder {
 	rb.run.SetFont(name)
 	return rb
 }
 
 // FontSize sets the font size in points.
-func (rb *RunBuilder) FontSize(points int) *RunBuilder {
-	rb.run.SetFontSize(points * 2) // Convert to half-points
+func (rb *RunBuilder) FontSize(
+	points int,
+) *RunBuilder {
+	rb.run.SetFontSize(
+		points * 2,
+	) // Convert to half-points
 	return rb
 }
 
 // Color sets the text color (hex without #).
-func (rb *RunBuilder) Color(hex string) *RunBuilder {
+func (rb *RunBuilder) Color(
+	hex string,
+) *RunBuilder {
 	rb.run.SetColor(hex)
 	return rb
 }
 
 // Highlight sets the highlight color.
-func (rb *RunBuilder) Highlight(color elements.HighlightColor) *RunBuilder {
+func (rb *RunBuilder) Highlight(
+	color elements.HighlightColor,
+) *RunBuilder {
 	rb.run.SetHighlight(color)
 	return rb
 }
 
 // AddText adds more text to this run.
-func (rb *RunBuilder) AddText(text string) *RunBuilder {
+func (rb *RunBuilder) AddText(
+	text string,
+) *RunBuilder {
 	rb.run.AppendText(text)
 	return rb
 }
 
 // AddBreak adds a break to this run.
-func (rb *RunBuilder) AddBreak(breakType elements.BreakType) *RunBuilder {
+func (rb *RunBuilder) AddBreak(
+	breakType elements.BreakType,
+) *RunBuilder {
 	rb.run.AppendBreak(breakType)
 	return rb
 }
@@ -424,20 +492,31 @@ type TableBuilder struct {
 }
 
 // SetCellText sets the text content of a specific cell.
-func (tb *TableBuilder) SetCellText(row, col int, text string) *TableBuilder {
+func (tb *TableBuilder) SetCellText(
+	row, col int,
+	text string,
+) *TableBuilder {
 	tb.table.SetCellText(row, col, text)
 	return tb
 }
 
 // SetColumnWidth sets the width of a specific column in twips.
-func (tb *TableBuilder) SetColumnWidth(col int, width int) *TableBuilder {
+func (tb *TableBuilder) SetColumnWidth(
+	col int,
+	width int,
+) *TableBuilder {
 	tb.table.SetColumnWidth(col, width)
 	return tb
 }
 
 // SetColumnWidthInches sets the width of a specific column in inches.
-func (tb *TableBuilder) SetColumnWidthInches(col int, inches float64) *TableBuilder {
-	twips := int(inches * 1440) // 1 inch = 1440 twips
+func (tb *TableBuilder) SetColumnWidthInches(
+	col int,
+	inches float64,
+) *TableBuilder {
+	twips := int(
+		inches * 1440,
+	) // 1 inch = 1440 twips
 	return tb.SetColumnWidth(col, twips)
 }
 
@@ -454,26 +533,40 @@ func (tb *TableBuilder) AddRow() *TableBuilder {
 }
 
 // SetStyle sets the table style.
-func (tb *TableBuilder) SetStyle(styleId string) *TableBuilder {
+func (tb *TableBuilder) SetStyle(
+	styleId string,
+) *TableBuilder {
 	tb.table.SetStyle(styleId)
 	return tb
 }
 
 // SetWidth sets the table width.
-func (tb *TableBuilder) SetWidth(width int, widthType elements.TableWidthType) *TableBuilder {
+func (tb *TableBuilder) SetWidth(
+	width int,
+	widthType elements.TableWidthType,
+) *TableBuilder {
 	tb.table.SetWidth(width, widthType)
 	return tb
 }
 
 // SetWidthPercent sets the table width as a percentage.
-func (tb *TableBuilder) SetWidthPercent(percent int) *TableBuilder {
+func (tb *TableBuilder) SetWidthPercent(
+	percent int,
+) *TableBuilder {
 	// PCT is in fiftieths of a percent (5000 = 100%)
 	pct := percent * 50
-	return tb.SetWidth(pct, elements.TableWidthTypePct)
+	return tb.SetWidth(
+		pct,
+		elements.TableWidthTypePct,
+	)
 }
 
 // SetBorders sets all table borders.
-func (tb *TableBuilder) SetBorders(style elements.BorderStyle, size int, color string) *TableBuilder {
+func (tb *TableBuilder) SetBorders(
+	style elements.BorderStyle,
+	size int,
+	color string,
+) *TableBuilder {
 	props := tb.table.GetOrCreateTableProperties()
 	borders := props.GetOrCreateTableBorders()
 	borders.SetAllBorders(style, size, color)
@@ -481,7 +574,9 @@ func (tb *TableBuilder) SetBorders(style elements.BorderStyle, size int, color s
 }
 
 // Cell returns a TableCellBuilder for the specified cell.
-func (tb *TableBuilder) Cell(row, col int) *TableCellBuilder {
+func (tb *TableBuilder) Cell(
+	row, col int,
+) *TableCellBuilder {
 	cell := tb.table.GetCell(row, col)
 	if cell == nil {
 		return nil
@@ -493,7 +588,9 @@ func (tb *TableBuilder) Cell(row, col int) *TableCellBuilder {
 }
 
 // Row returns a TableRowBuilder for the specified row.
-func (tb *TableBuilder) Row(index int) *TableRowBuilder {
+func (tb *TableBuilder) Row(
+	index int,
+) *TableRowBuilder {
 	row := tb.table.GetRow(index)
 	if row == nil {
 		return nil
@@ -521,19 +618,26 @@ type TableRowBuilder struct {
 }
 
 // SetHeight sets the row height.
-func (trb *TableRowBuilder) SetHeight(height int, rule elements.HeightRule) *TableRowBuilder {
+func (trb *TableRowBuilder) SetHeight(
+	height int,
+	rule elements.HeightRule,
+) *TableRowBuilder {
 	trb.row.SetHeight(height, rule)
 	return trb
 }
 
 // SetHeaderRow marks this row as a header row.
-func (trb *TableRowBuilder) SetHeaderRow(isHeader bool) *TableRowBuilder {
+func (trb *TableRowBuilder) SetHeaderRow(
+	isHeader bool,
+) *TableRowBuilder {
 	trb.row.SetHeaderRow(isHeader)
 	return trb
 }
 
 // Cell returns a TableCellBuilder for the specified cell in this row.
-func (trb *TableRowBuilder) Cell(col int) *TableCellBuilder {
+func (trb *TableRowBuilder) Cell(
+	col int,
+) *TableCellBuilder {
 	cell := trb.row.GetCell(col)
 	if cell == nil {
 		return nil
@@ -561,13 +665,17 @@ type TableCellBuilder struct {
 }
 
 // SetText sets the cell text content.
-func (tcb *TableCellBuilder) SetText(text string) *TableCellBuilder {
+func (tcb *TableCellBuilder) SetText(
+	text string,
+) *TableCellBuilder {
 	tcb.cell.SetText(text)
 	return tcb
 }
 
 // AddParagraph adds a paragraph to the cell.
-func (tcb *TableCellBuilder) AddParagraph(text string) *ParagraphBuilder {
+func (tcb *TableCellBuilder) AddParagraph(
+	text string,
+) *ParagraphBuilder {
 	p := tcb.cell.AppendParagraph(text)
 	return &ParagraphBuilder{
 		paragraph:  p,
@@ -576,32 +684,46 @@ func (tcb *TableCellBuilder) AddParagraph(text string) *ParagraphBuilder {
 }
 
 // SetWidth sets the cell width.
-func (tcb *TableCellBuilder) SetWidth(width int, widthType elements.TableWidthType) *TableCellBuilder {
+func (tcb *TableCellBuilder) SetWidth(
+	width int,
+	widthType elements.TableWidthType,
+) *TableCellBuilder {
 	tcb.cell.SetWidth(width, widthType)
 	return tcb
 }
 
 // SetShading sets the cell background color.
-func (tcb *TableCellBuilder) SetShading(fillColor string) *TableCellBuilder {
+func (tcb *TableCellBuilder) SetShading(
+	fillColor string,
+) *TableCellBuilder {
 	tcb.cell.SetShading(fillColor)
 	return tcb
 }
 
 // SetVerticalMerge sets vertical cell merge.
-func (tcb *TableCellBuilder) SetVerticalMerge(mergeType elements.VerticalMergeType) *TableCellBuilder {
+func (tcb *TableCellBuilder) SetVerticalMerge(
+	mergeType elements.VerticalMergeType,
+) *TableCellBuilder {
 	tcb.cell.SetVerticalMerge(mergeType)
 	return tcb
 }
 
 // SetHorizontalMerge sets horizontal cell span (gridSpan).
-func (tcb *TableCellBuilder) SetHorizontalMerge(span int) *TableCellBuilder {
+func (tcb *TableCellBuilder) SetHorizontalMerge(
+	span int,
+) *TableCellBuilder {
 	tcb.cell.SetHorizontalMerge(span)
 	return tcb
 }
 
 // SetBorders sets all cell borders.
-func (tcb *TableCellBuilder) SetBorders(style elements.BorderStyle, size int, color string) *TableCellBuilder {
-	borders := tcb.cell.GetOrCreateTableCellProperties().GetOrCreateTableCellBorders()
+func (tcb *TableCellBuilder) SetBorders(
+	style elements.BorderStyle,
+	size int,
+	color string,
+) *TableCellBuilder {
+	borders := tcb.cell.GetOrCreateTableCellProperties().
+		GetOrCreateTableCellBorders()
 	borders.SetAllBorders(style, size, color)
 	return tcb
 }
@@ -627,55 +749,82 @@ type ImageBuilder struct {
 }
 
 // Width sets the image width in EMUs.
-func (ib *ImageBuilder) Width(emus int64) *ImageBuilder {
+func (ib *ImageBuilder) Width(
+	emus int64,
+) *ImageBuilder {
 	ib.width = emus
 	return ib
 }
 
 // Height sets the image height in EMUs.
-func (ib *ImageBuilder) Height(emus int64) *ImageBuilder {
+func (ib *ImageBuilder) Height(
+	emus int64,
+) *ImageBuilder {
 	ib.height = emus
 	return ib
 }
 
 // WidthInches sets the image width in inches.
-func (ib *ImageBuilder) WidthInches(inches float64) *ImageBuilder {
-	ib.width = int64(inches * float64(elements.EMUsPerInch))
+func (ib *ImageBuilder) WidthInches(
+	inches float64,
+) *ImageBuilder {
+	ib.width = int64(
+		inches * float64(elements.EMUsPerInch),
+	)
 	return ib
 }
 
 // HeightInches sets the image height in inches.
-func (ib *ImageBuilder) HeightInches(inches float64) *ImageBuilder {
-	ib.height = int64(inches * float64(elements.EMUsPerInch))
+func (ib *ImageBuilder) HeightInches(
+	inches float64,
+) *ImageBuilder {
+	ib.height = int64(
+		inches * float64(elements.EMUsPerInch),
+	)
 	return ib
 }
 
 // WidthCm sets the image width in centimeters.
-func (ib *ImageBuilder) WidthCm(cm float64) *ImageBuilder {
-	ib.width = int64(cm * float64(elements.EMUsPerCm))
+func (ib *ImageBuilder) WidthCm(
+	cm float64,
+) *ImageBuilder {
+	ib.width = int64(
+		cm * float64(elements.EMUsPerCm),
+	)
 	return ib
 }
 
 // HeightCm sets the image height in centimeters.
-func (ib *ImageBuilder) HeightCm(cm float64) *ImageBuilder {
-	ib.height = int64(cm * float64(elements.EMUsPerCm))
+func (ib *ImageBuilder) HeightCm(
+	cm float64,
+) *ImageBuilder {
+	ib.height = int64(
+		cm * float64(elements.EMUsPerCm),
+	)
 	return ib
 }
 
 // Size sets both width and height in EMUs.
-func (ib *ImageBuilder) Size(width, height int64) *ImageBuilder {
+func (ib *ImageBuilder) Size(
+	width, height int64,
+) *ImageBuilder {
 	ib.width = width
 	ib.height = height
 	return ib
 }
 
 // SizeInches sets both width and height in inches.
-func (ib *ImageBuilder) SizeInches(width, height float64) *ImageBuilder {
-	return ib.WidthInches(width).HeightInches(height)
+func (ib *ImageBuilder) SizeInches(
+	width, height float64,
+) *ImageBuilder {
+	return ib.WidthInches(width).
+		HeightInches(height)
 }
 
 // SizeCm sets both width and height in centimeters.
-func (ib *ImageBuilder) SizeCm(width, height float64) *ImageBuilder {
+func (ib *ImageBuilder) SizeCm(
+	width, height float64,
+) *ImageBuilder {
 	return ib.WidthCm(width).HeightCm(height)
 }
 
@@ -689,12 +838,15 @@ func (ib *ImageBuilder) Inline() *ImageBuilder {
 // Note: The actual image part creation happens in Build() when a package is available.
 func (ib *ImageBuilder) Insert() *DocumentBuilder {
 	// Store the image data for later processing
-	ib.docBuilder.images = append(ib.docBuilder.images, imageData{
-		data:        ib.data,
-		contentType: ib.contentType,
-		width:       ib.width,
-		height:      ib.height,
-	})
+	ib.docBuilder.images = append(
+		ib.docBuilder.images,
+		imageData{
+			data:        ib.data,
+			contentType: ib.contentType,
+			width:       ib.width,
+			height:      ib.height,
+		},
+	)
 
 	// For now, create a placeholder drawing
 	// In a full implementation, this would need a relationship ID
@@ -704,12 +856,17 @@ func (ib *ImageBuilder) Insert() *DocumentBuilder {
 	}
 
 	// Create a paragraph with the drawing
-	p := ib.docBuilder.document.Body().AppendParagraph("")
+	p := ib.docBuilder.document.Body().
+		AppendParagraph("")
 	r := p.AppendRun("")
 
 	// Create inline drawing with placeholder relationship ID
 	// The actual relationship will be set when the document is saved
-	drawing := elements.NewInlineDrawing(ib.width, ib.height, "rId1")
+	drawing := elements.NewInlineDrawing(
+		ib.width,
+		ib.height,
+		"rId1",
+	)
 	r.AppendChild(drawing)
 
 	return ib.docBuilder

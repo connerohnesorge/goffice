@@ -34,16 +34,27 @@ var (
 )
 
 // newHeaderPart creates a new header part.
-func newHeaderPart(mainPart *MainPart) (*HeaderPart, error) {
+func newHeaderPart(
+	mainPart *MainPart,
+) (*HeaderPart, error) {
 	num := atomic.AddUint64(&headerCounter, 1)
 	uri := fmt.Sprintf("/word/header%d.xml", num)
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeHeader, RelationshipTypeHeader)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeHeader,
+		RelationshipTypeHeader,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeHeader, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeHeader,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	hp := &HeaderPart{
@@ -90,7 +101,9 @@ func (hp *HeaderPart) Header() *elements.Header {
 	}
 	// Wrap the root element as a Header
 	if pre, ok := root.(*openxml.PartRootElementBase); ok {
-		return &elements.Header{PartRootElementBase: pre}
+		return &elements.Header{
+			PartRootElementBase: pre,
+		}
 	}
 	return nil
 }
@@ -115,16 +128,27 @@ func (hp *HeaderPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*HeaderPart)(nil)
 
 // newFooterPart creates a new footer part.
-func newFooterPart(mainPart *MainPart) (*FooterPart, error) {
+func newFooterPart(
+	mainPart *MainPart,
+) (*FooterPart, error) {
 	num := atomic.AddUint64(&footerCounter, 1)
 	uri := fmt.Sprintf("/word/footer%d.xml", num)
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeFooter, RelationshipTypeFooter)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeFooter,
+		RelationshipTypeFooter,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeFooter, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeFooter,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	fp := &FooterPart{
@@ -171,7 +195,9 @@ func (fp *FooterPart) Footer() *elements.Footer {
 	}
 	// Wrap the root element as a Footer
 	if pre, ok := root.(*openxml.PartRootElementBase); ok {
-		return &elements.Footer{PartRootElementBase: pre}
+		return &elements.Footer{
+			PartRootElementBase: pre,
+		}
 	}
 	return nil
 }
@@ -196,7 +222,10 @@ func (fp *FooterPart) GetStream() io.Reader {
 var _ openxml.OpenXmlPart = (*FooterPart)(nil)
 
 // HeaderPartFactory creates a HeaderPart from a URI and container.
-func HeaderPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func HeaderPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -207,14 +236,22 @@ func HeaderPartFactory(uri string, container openxml.OpenXmlPartContainer) openx
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeHeader, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeHeader,
+		packPart,
+		container,
+	)
 	return &HeaderPart{
 		OpenXmlPartData: partData,
 	}
 }
 
 // FooterPartFactory creates a FooterPart from a URI and container.
-func FooterPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func FooterPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -225,7 +262,12 @@ func FooterPartFactory(uri string, container openxml.OpenXmlPartContainer) openx
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeFooter, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeFooter,
+		packPart,
+		container,
+	)
 	return &FooterPart{
 		OpenXmlPartData: partData,
 	}
@@ -233,19 +275,23 @@ func FooterPartFactory(uri string, container openxml.OpenXmlPartContainer) openx
 
 // Register the HeaderPart and FooterPart types.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeHeader,
-		RelationshipType:   RelationshipTypeHeader,
-		Factory:            HeaderPartFactory,
-		DefaultURI:         "/word/header1.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeHeader,
+			RelationshipType:   RelationshipTypeHeader,
+			Factory:            HeaderPartFactory,
+			DefaultURI:         "/word/header1.xml",
+			IsFixedContentType: true,
+		},
+	)
 
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeFooter,
-		RelationshipType:   RelationshipTypeFooter,
-		Factory:            FooterPartFactory,
-		DefaultURI:         "/word/footer1.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeFooter,
+			RelationshipType:   RelationshipTypeFooter,
+			Factory:            FooterPartFactory,
+			DefaultURI:         "/word/footer1.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

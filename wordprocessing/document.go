@@ -113,7 +113,10 @@ type Document struct {
 
 // New creates a new Word document at the specified path.
 // The document type determines the file extension and content types.
-func New(path string, docType DocType) (*Document, error) {
+func New(
+	path string,
+	docType DocType,
+) (*Document, error) {
 	// Create the underlying package
 	pkg, err := openxml.CreatePackage(path)
 	if err != nil {
@@ -138,7 +141,10 @@ func New(path string, docType DocType) (*Document, error) {
 }
 
 // NewWriter creates a new Word document that writes to the given io.Writer.
-func NewWriter(w io.Writer, docType DocType) (*Document, error) {
+func NewWriter(
+	w io.Writer,
+	docType DocType,
+) (*Document, error) {
 	// Create the underlying package
 	pkg, err := packaging.CreateWriter(w)
 	if err != nil {
@@ -146,7 +152,9 @@ func NewWriter(w io.Writer, docType DocType) (*Document, error) {
 	}
 
 	doc := &Document{
-		pkg:        openxml.NewOpenXmlPackage(pkg),
+		pkg: openxml.NewOpenXmlPackage(
+			pkg,
+		),
 		docType:    docType,
 		settings:   DefaultOpenSettings(),
 		isEditable: true,
@@ -163,13 +171,27 @@ func NewWriter(w io.Writer, docType DocType) (*Document, error) {
 
 // Open opens an existing Word document from the specified path.
 // If editable is true, the document can be modified and saved.
-func Open(path string, editable bool) (*Document, error) {
-	return OpenWithSettings(path, editable, DefaultOpenSettings())
+func Open(
+	path string,
+	editable bool,
+) (*Document, error) {
+	return OpenWithSettings(
+		path,
+		editable,
+		DefaultOpenSettings(),
+	)
 }
 
 // OpenReader opens a Word document from an io.ReaderAt.
-func OpenReader(r io.ReaderAt, size int64, editable bool) (*Document, error) {
-	pkg, err := openxml.OpenPackageFromReader(r, size)
+func OpenReader(
+	r io.ReaderAt,
+	size int64,
+	editable bool,
+) (*Document, error) {
+	pkg, err := openxml.OpenPackageFromReader(
+		r,
+		size,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -187,8 +209,15 @@ func OpenReader(r io.ReaderAt, size int64, editable bool) (*Document, error) {
 }
 
 // OpenWithSettings opens a Word document with custom settings.
-func OpenWithSettings(path string, editable bool, settings *OpenSettings) (*Document, error) {
-	pkg, err := openxml.OpenPackage(path, !editable)
+func OpenWithSettings(
+	path string,
+	editable bool,
+	settings *OpenSettings,
+) (*Document, error) {
+	pkg, err := openxml.OpenPackage(
+		path,
+		!editable,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -208,7 +237,10 @@ func OpenWithSettings(path string, editable bool, settings *OpenSettings) (*Docu
 
 // NewFromTemplate creates a new document from a template.
 // If attachTemplate is true, the template remains linked to the document.
-func NewFromTemplate(templatePath string, attachTemplate bool) (*Document, error) {
+func NewFromTemplate(
+	templatePath string,
+	attachTemplate bool,
+) (*Document, error) {
 	// Open the template as read-only
 	templateDoc, err := Open(templatePath, false)
 	if err != nil {
@@ -224,7 +256,9 @@ func NewFromTemplate(templatePath string, attachTemplate bool) (*Document, error
 	}
 
 	doc := &Document{
-		pkg:        openxml.NewOpenXmlPackage(pkg),
+		pkg: openxml.NewOpenXmlPackage(
+			pkg,
+		),
 		docType:    DocTypeDocument, // Templates create documents
 		settings:   DefaultOpenSettings(),
 		isEditable: true,
@@ -332,7 +366,10 @@ func (d *Document) MainPart() *parts.MainPart {
 
 	// Create wrapper for existing part data
 	if partData, ok := mainPart.(*openxml.OpenXmlPartData); ok {
-		mp := parts.NewMainPartFromData(partData, d.docType.ContentType())
+		mp := parts.NewMainPartFromData(
+			partData,
+			d.docType.ContentType(),
+		)
 		d.mainPart = mp
 		return mp
 	}
@@ -348,7 +385,11 @@ func (d *Document) AddMainPart() (*parts.MainPart, error) {
 	}
 
 	// Create the main document part
-	mainPart, err := parts.NewMainPart("/word/document.xml", d.docType.ContentType(), d.pkg)
+	mainPart, err := parts.NewMainPart(
+		"/word/document.xml",
+		d.docType.ContentType(),
+		d.pkg,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -408,7 +449,9 @@ func (d *Document) SaveTo(w io.Writer) error {
 	}
 
 	// Use saveToWriter via the packaging layer
-	return pkg.SaveAs(d.path) // TODO: Implement proper SaveTo for writers
+	return pkg.SaveAs(
+		d.path,
+	) // TODO: Implement proper SaveTo for writers
 }
 
 // Close closes the document and releases all resources.
@@ -419,7 +462,9 @@ func (d *Document) Close() error {
 	}
 
 	// Auto-save if enabled
-	if d.settings.AutoSave && d.isEditable && d.path != "" && d.pkg.IsDirty() {
+	if d.settings.AutoSave && d.isEditable &&
+		d.path != "" &&
+		d.pkg.IsDirty() {
 		if err := d.Save(); err != nil {
 			// Log but don't fail on auto-save errors
 			_ = err
@@ -434,7 +479,9 @@ func (d *Document) Close() error {
 
 // ChangeType changes the document type.
 // This updates the content type of the main document part.
-func (d *Document) ChangeType(newType DocType) error {
+func (d *Document) ChangeType(
+	newType DocType,
+) error {
 	if !d.isEditable {
 		return ErrReadOnly
 	}
@@ -452,7 +499,10 @@ func (d *Document) ChangeType(newType DocType) error {
 	// Update content type in the package
 	ct := d.pkg.Package().ContentTypes()
 	if ct != nil {
-		ct.SetOverride(mainPart.URI(), newType.ContentType())
+		ct.SetOverride(
+			mainPart.URI(),
+			newType.ContentType(),
+		)
 	}
 
 	d.docType = newType
@@ -461,11 +511,19 @@ func (d *Document) ChangeType(newType DocType) error {
 
 // Errors
 var (
-	ErrReadOnly       = docError("document is read-only")
-	ErrNoPath         = docError("document has no file path")
+	ErrReadOnly = docError(
+		"document is read-only",
+	)
+	ErrNoPath = docError(
+		"document has no file path",
+	)
 	ErrPackageNil     = docError("package is nil")
-	ErrMainPartExists = docError("main document part already exists")
-	ErrNoMainPart     = docError("no main document part")
+	ErrMainPartExists = docError(
+		"main document part already exists",
+	)
+	ErrNoMainPart = docError(
+		"no main document part",
+	)
 )
 
 type docError string
@@ -481,7 +539,9 @@ var _ io.Closer = (*Document)(nil)
 
 // AddHeader adds a new header part of the specified type and returns the Header element.
 // The header is also linked to the document's section properties.
-func (d *Document) AddHeader(hfType elements.HeaderFooterType) (*elements.Header, error) {
+func (d *Document) AddHeader(
+	hfType elements.HeaderFooterType,
+) (*elements.Header, error) {
 	mainPart := d.MainPart()
 	if mainPart == nil {
 		return nil, ErrNoMainPart
@@ -502,7 +562,9 @@ func (d *Document) AddHeader(hfType elements.HeaderFooterType) (*elements.Header
 }
 
 // AddFooter adds a new footer part of the specified type and returns the Footer element.
-func (d *Document) AddFooter(hfType elements.HeaderFooterType) (*elements.Footer, error) {
+func (d *Document) AddFooter(
+	hfType elements.HeaderFooterType,
+) (*elements.Footer, error) {
 	mainPart := d.MainPart()
 	if mainPart == nil {
 		return nil, ErrNoMainPart
@@ -602,7 +664,9 @@ func (d *Document) CommentsPart() (*parts.CommentsPart, error) {
 }
 
 // AddComment adds a new comment to the document and returns it.
-func (d *Document) AddComment(author, text string) (*elements.Comment, error) {
+func (d *Document) AddComment(
+	author, text string,
+) (*elements.Comment, error) {
 	cp, err := d.CommentsPart()
 	if err != nil {
 		return nil, err
@@ -614,14 +678,22 @@ func (d *Document) AddComment(author, text string) (*elements.Comment, error) {
 // Validate validates the document structure against the specified Office version.
 // It checks for schema compliance and semantic constraints.
 // Returns validation errors if any issues are found, or an empty slice if valid.
-func (d *Document) Validate(version validation.FileFormatVersions) validation.ValidationErrors {
-	return d.ValidateWithSettings(version, validation.DefaultSettings())
+func (d *Document) Validate(
+	version validation.FileFormatVersions,
+) validation.ValidationErrors {
+	return d.ValidateWithSettings(
+		version,
+		validation.DefaultSettings(),
+	)
 }
 
 // ValidateWithSettings validates the document with custom validation settings.
 // This allows control over validation behavior such as maximum errors to collect,
 // whether to validate semantics, and strict mode.
-func (d *Document) ValidateWithSettings(version validation.FileFormatVersions, settings *validation.ValidationSettings) validation.ValidationErrors {
+func (d *Document) ValidateWithSettings(
+	version validation.FileFormatVersions,
+	settings *validation.ValidationSettings,
+) validation.ValidationErrors {
 	if d.pkg == nil {
 		return validation.ValidationErrors{
 			validation.NewValidationError(
@@ -634,12 +706,18 @@ func (d *Document) ValidateWithSettings(version validation.FileFormatVersions, s
 	}
 
 	// Use the validation framework to validate the package
-	return validation.Validate(d.pkg, version, settings)
+	return validation.Validate(
+		d.pkg,
+		version,
+		settings,
+	)
 }
 
 // IsValid returns true if the document has no validation errors for the specified version.
 // This is a convenience method that calls Validate and checks if there are any errors.
-func (d *Document) IsValid(version validation.FileFormatVersions) bool {
+func (d *Document) IsValid(
+	version validation.FileFormatVersions,
+) bool {
 	errors := d.Validate(version)
 	return !errors.HasErrors()
 }

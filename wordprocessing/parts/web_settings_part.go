@@ -18,15 +18,26 @@ const (
 )
 
 // newWebSettingsPart creates a new web settings part.
-func newWebSettingsPart(mainPart *MainPart) (*WebSettingsPart, error) {
+func newWebSettingsPart(
+	mainPart *MainPart,
+) (*WebSettingsPart, error) {
 	uri := "/word/webSettings.xml"
 
-	packPart, relID, err := mainPart.addChildPart(uri, ContentTypeWebSettings, RelationshipTypeWebSettings)
+	packPart, relID, err := mainPart.addChildPart(
+		uri,
+		ContentTypeWebSettings,
+		RelationshipTypeWebSettings,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeWebSettings, packPart, mainPart)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeWebSettings,
+		packPart,
+		mainPart,
+	)
 	partData.SetRelationshipID(relID)
 
 	wsp := &WebSettingsPart{
@@ -71,10 +82,15 @@ func (wsp *WebSettingsPart) GetStream() io.Reader {
 }
 
 // Ensure WebSettingsPart implements OpenXmlPart.
-var _ openxml.OpenXmlPart = (*WebSettingsPart)(nil)
+var _ openxml.OpenXmlPart = (*WebSettingsPart)(
+	nil,
+)
 
 // WebSettingsPartFactory creates a WebSettingsPart from a URI and container.
-func WebSettingsPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart {
+func WebSettingsPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
 	pkg := container.Package()
 	if pkg == nil {
 		return nil
@@ -85,7 +101,12 @@ func WebSettingsPartFactory(uri string, container openxml.OpenXmlPartContainer) 
 		return nil
 	}
 
-	partData := openxml.NewOpenXmlPartData(uri, ContentTypeWebSettings, packPart, container)
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeWebSettings,
+		packPart,
+		container,
+	)
 	return &WebSettingsPart{
 		OpenXmlPartData: partData,
 	}
@@ -93,11 +114,13 @@ func WebSettingsPartFactory(uri string, container openxml.OpenXmlPartContainer) 
 
 // Register the WebSettingsPart type.
 func init() {
-	openxml.RegisterPartType(&openxml.PartTypeInfo{
-		ContentType:        ContentTypeWebSettings,
-		RelationshipType:   RelationshipTypeWebSettings,
-		Factory:            WebSettingsPartFactory,
-		DefaultURI:         "/word/webSettings.xml",
-		IsFixedContentType: true,
-	})
+	openxml.RegisterPartType(
+		&openxml.PartTypeInfo{
+			ContentType:        ContentTypeWebSettings,
+			RelationshipType:   RelationshipTypeWebSettings,
+			Factory:            WebSettingsPartFactory,
+			DefaultURI:         "/word/webSettings.xml",
+			IsFixedContentType: true,
+		},
+	)
 }

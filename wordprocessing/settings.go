@@ -77,21 +77,27 @@ func DefaultOpenSettings() *OpenSettings {
 }
 
 // WithAutoSave returns a copy of the settings with AutoSave enabled.
-func (s *OpenSettings) WithAutoSave(autoSave bool) *OpenSettings {
+func (s *OpenSettings) WithAutoSave(
+	autoSave bool,
+) *OpenSettings {
 	copy := *s
 	copy.AutoSave = autoSave
 	return &copy
 }
 
 // WithMaxCharacters returns a copy of the settings with the specified max characters.
-func (s *OpenSettings) WithMaxCharacters(max int64) *OpenSettings {
+func (s *OpenSettings) WithMaxCharacters(
+	max int64,
+) *OpenSettings {
 	copy := *s
 	copy.MaxCharactersInPart = max
 	return &copy
 }
 
 // WithTargetVersion returns a copy of the settings with the specified target version.
-func (s *OpenSettings) WithTargetVersion(version FileFormatVersion) *OpenSettings {
+func (s *OpenSettings) WithTargetVersion(
+	version FileFormatVersion,
+) *OpenSettings {
 	copy := *s
 	copy.MarkupCompatibilityProcessSettings.TargetFileFormatVersions = version
 	return &copy

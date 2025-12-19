@@ -28,7 +28,9 @@ func NewFeatureCollection() *FeatureCollection {
 
 // NewFeatureCollectionWithParent creates a new feature collection with the given parent.
 // Features not found in this collection will be looked up in the parent chain.
-func NewFeatureCollectionWithParent(parent *FeatureCollection) *FeatureCollection {
+func NewFeatureCollectionWithParent(
+	parent *FeatureCollection,
+) *FeatureCollection {
 	return &FeatureCollection{
 		parent:   parent,
 		features: make(map[reflect.Type]Feature),
@@ -43,7 +45,9 @@ func (fc *FeatureCollection) Parent() *FeatureCollection {
 }
 
 // SetParent sets the parent feature collection.
-func (fc *FeatureCollection) SetParent(parent *FeatureCollection) {
+func (fc *FeatureCollection) SetParent(
+	parent *FeatureCollection,
+) {
 	fc.mu.Lock()
 	defer fc.mu.Unlock()
 	fc.parent = parent
@@ -52,7 +56,9 @@ func (fc *FeatureCollection) SetParent(parent *FeatureCollection) {
 // Set registers a feature in the collection.
 // The feature is stored by its concrete type. If a feature of the same type
 // already exists, it is replaced.
-func (fc *FeatureCollection) Set(feature Feature) {
+func (fc *FeatureCollection) Set(
+	feature Feature,
+) {
 	if feature == nil {
 		return
 	}
@@ -66,7 +72,10 @@ func (fc *FeatureCollection) Set(feature Feature) {
 
 // SetByType registers a feature under a specific interface type.
 // This allows registering a feature that should be retrieved by its interface type.
-func (fc *FeatureCollection) SetByType(featureType reflect.Type, feature Feature) {
+func (fc *FeatureCollection) SetByType(
+	featureType reflect.Type,
+	feature Feature,
+) {
 	if feature == nil {
 		return
 	}
@@ -79,7 +88,9 @@ func (fc *FeatureCollection) SetByType(featureType reflect.Type, feature Feature
 
 // get returns a feature by type, searching the parent chain if not found locally.
 // Returns nil if not found.
-func (fc *FeatureCollection) get(t reflect.Type) Feature {
+func (fc *FeatureCollection) get(
+	t reflect.Type,
+) Feature {
 	fc.mu.RLock()
 	feature, ok := fc.features[t]
 	parent := fc.parent
@@ -97,7 +108,9 @@ func (fc *FeatureCollection) get(t reflect.Type) Feature {
 }
 
 // getLocal returns a feature by type from this collection only (no parent chain).
-func (fc *FeatureCollection) getLocal(t reflect.Type) Feature {
+func (fc *FeatureCollection) getLocal(
+	t reflect.Type,
+) Feature {
 	fc.mu.RLock()
 	defer fc.mu.RUnlock()
 	return fc.features[t]
@@ -105,7 +118,9 @@ func (fc *FeatureCollection) getLocal(t reflect.Type) Feature {
 
 // Remove removes a feature from the collection by its type.
 // Returns true if a feature was removed.
-func (fc *FeatureCollection) Remove(featureType reflect.Type) bool {
+func (fc *FeatureCollection) Remove(
+	featureType reflect.Type,
+) bool {
 	fc.mu.Lock()
 	defer fc.mu.Unlock()
 
@@ -117,12 +132,16 @@ func (fc *FeatureCollection) Remove(featureType reflect.Type) bool {
 }
 
 // Has returns true if the collection (or parent chain) contains a feature of the given type.
-func (fc *FeatureCollection) Has(featureType reflect.Type) bool {
+func (fc *FeatureCollection) Has(
+	featureType reflect.Type,
+) bool {
 	return fc.get(featureType) != nil
 }
 
 // HasLocal returns true if this collection directly contains a feature of the given type.
-func (fc *FeatureCollection) HasLocal(featureType reflect.Type) bool {
+func (fc *FeatureCollection) HasLocal(
+	featureType reflect.Type,
+) bool {
 	return fc.getLocal(featureType) != nil
 }
 
@@ -152,7 +171,9 @@ func Get[T Feature](fc *FeatureCollection) T {
 }
 
 // GetLocal retrieves a feature by its type T from this collection only (no parent chain).
-func GetLocal[T Feature](fc *FeatureCollection) T {
+func GetLocal[T Feature](
+	fc *FeatureCollection,
+) T {
 	if fc == nil {
 		var zero T
 		return zero
@@ -176,11 +197,15 @@ func GetLocal[T Feature](fc *FeatureCollection) T {
 
 // GetRequired retrieves a feature by its type T, panicking if not found.
 // Use this when a feature is known to be required.
-func GetRequired[T Feature](fc *FeatureCollection) T {
+func GetRequired[T Feature](
+	fc *FeatureCollection,
+) T {
 	result := Get[T](fc)
 	if reflect.ValueOf(result).IsNil() {
 		t := reflect.TypeFor[T]()
-		panic("required feature not found: " + t.String())
+		panic(
+			"required feature not found: " + t.String(),
+		)
 	}
 	return result
 }

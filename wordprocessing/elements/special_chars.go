@@ -12,7 +12,11 @@ type CarriageReturn struct {
 
 // NewCarriageReturn creates a new CarriageReturn element.
 func NewCarriageReturn() *CarriageReturn {
-	elem := openxml.NewLeafElement(NamespaceWML, "cr", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"cr",
+		PrefixW,
+	)
 	return &CarriageReturn{LeafElementBase: elem}
 }
 
@@ -24,7 +28,9 @@ func (cr *CarriageReturn) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this CarriageReturn element.
-func (cr *CarriageReturn) CloneNode(deep bool) openxml.Element {
+func (cr *CarriageReturn) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &CarriageReturn{
 		LeafElementBase: cr.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -38,7 +44,11 @@ type SoftHyphen struct {
 
 // NewSoftHyphen creates a new SoftHyphen element.
 func NewSoftHyphen() *SoftHyphen {
-	elem := openxml.NewLeafElement(NamespaceWML, "softHyphen", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"softHyphen",
+		PrefixW,
+	)
 	return &SoftHyphen{LeafElementBase: elem}
 }
 
@@ -50,7 +60,9 @@ func (sh *SoftHyphen) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this SoftHyphen element.
-func (sh *SoftHyphen) CloneNode(deep bool) openxml.Element {
+func (sh *SoftHyphen) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &SoftHyphen{
 		LeafElementBase: sh.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -64,7 +76,11 @@ type NoBreakHyphen struct {
 
 // NewNoBreakHyphen creates a new NoBreakHyphen element.
 func NewNoBreakHyphen() *NoBreakHyphen {
-	elem := openxml.NewLeafElement(NamespaceWML, "noBreakHyphen", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"noBreakHyphen",
+		PrefixW,
+	)
 	return &NoBreakHyphen{LeafElementBase: elem}
 }
 
@@ -76,7 +92,9 @@ func (nbh *NoBreakHyphen) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this NoBreakHyphen element.
-func (nbh *NoBreakHyphen) CloneNode(deep bool) openxml.Element {
+func (nbh *NoBreakHyphen) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &NoBreakHyphen{
 		LeafElementBase: nbh.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -91,8 +109,14 @@ type LastRenderedPageBreak struct {
 
 // NewLastRenderedPageBreak creates a new LastRenderedPageBreak element.
 func NewLastRenderedPageBreak() *LastRenderedPageBreak {
-	elem := openxml.NewLeafElement(NamespaceWML, "lastRenderedPageBreak", PrefixW)
-	return &LastRenderedPageBreak{LeafElementBase: elem}
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"lastRenderedPageBreak",
+		PrefixW,
+	)
+	return &LastRenderedPageBreak{
+		LeafElementBase: elem,
+	}
 }
 
 // Clone creates a deep copy of this LastRenderedPageBreak element.
@@ -103,7 +127,9 @@ func (lrpb *LastRenderedPageBreak) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this LastRenderedPageBreak element.
-func (lrpb *LastRenderedPageBreak) CloneNode(deep bool) openxml.Element {
+func (lrpb *LastRenderedPageBreak) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &LastRenderedPageBreak{
 		LeafElementBase: lrpb.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -119,20 +145,41 @@ type Symbol struct {
 // The font parameter specifies the symbol font name (e.g., "Wingdings", "Symbol").
 // The char parameter specifies the character code in hexadecimal (e.g., "F041").
 func NewSymbol(font, char string) *Symbol {
-	elem := openxml.NewLeafElement(NamespaceWML, "sym", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"sym",
+		PrefixW,
+	)
 	s := &Symbol{LeafElementBase: elem}
 	if font != "" {
-		s.SetAttribute(openxml.NewAttribute(NamespaceWML, "font", PrefixW, font))
+		s.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"font",
+				PrefixW,
+				font,
+			),
+		)
 	}
 	if char != "" {
-		s.SetAttribute(openxml.NewAttribute(NamespaceWML, "char", PrefixW, char))
+		s.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"char",
+				PrefixW,
+				char,
+			),
+		)
 	}
 	return s
 }
 
 // Font returns the symbol font name.
 func (s *Symbol) Font() string {
-	attr, found := s.GetAttribute("font", NamespaceWML)
+	attr, found := s.GetAttribute(
+		"font",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -150,7 +197,10 @@ func (s *Symbol) SetFont(font string) {
 
 // Char returns the character code in hexadecimal.
 func (s *Symbol) Char() string {
-	attr, found := s.GetAttribute("char", NamespaceWML)
+	attr, found := s.GetAttribute(
+		"char",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -174,7 +224,9 @@ func (s *Symbol) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Symbol element.
-func (s *Symbol) CloneNode(deep bool) openxml.Element {
+func (s *Symbol) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Symbol{
 		LeafElementBase: s.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -199,18 +251,34 @@ type FieldChar struct {
 }
 
 // NewFieldChar creates a new FieldChar element with the specified type.
-func NewFieldChar(charType FieldCharType) *FieldChar {
-	elem := openxml.NewLeafElement(NamespaceWML, "fldChar", PrefixW)
+func NewFieldChar(
+	charType FieldCharType,
+) *FieldChar {
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"fldChar",
+		PrefixW,
+	)
 	fc := &FieldChar{LeafElementBase: elem}
 	if charType != "" {
-		fc.SetAttribute(openxml.NewAttribute(NamespaceWML, "fldCharType", PrefixW, string(charType)))
+		fc.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"fldCharType",
+				PrefixW,
+				string(charType),
+			),
+		)
 	}
 	return fc
 }
 
 // Type returns the field character type.
 func (fc *FieldChar) Type() FieldCharType {
-	attr, found := fc.GetAttribute("fldCharType", NamespaceWML)
+	attr, found := fc.GetAttribute(
+		"fldCharType",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -218,9 +286,14 @@ func (fc *FieldChar) Type() FieldCharType {
 }
 
 // SetType sets the field character type.
-func (fc *FieldChar) SetType(charType FieldCharType) {
+func (fc *FieldChar) SetType(
+	charType FieldCharType,
+) {
 	if charType == "" {
-		fc.RemoveAttribute("fldCharType", NamespaceWML)
+		fc.RemoveAttribute(
+			"fldCharType",
+			NamespaceWML,
+		)
 	} else {
 		fc.SetAttribute(openxml.NewAttribute(NamespaceWML, "fldCharType", PrefixW, string(charType)))
 	}
@@ -228,17 +301,28 @@ func (fc *FieldChar) SetType(charType FieldCharType) {
 
 // Dirty returns whether the field result should be recalculated.
 func (fc *FieldChar) Dirty() bool {
-	attr, found := fc.GetAttribute("dirty", NamespaceWML)
+	attr, found := fc.GetAttribute(
+		"dirty",
+		NamespaceWML,
+	)
 	if !found {
 		return false
 	}
-	return attr.Value() == "true" || attr.Value() == "1"
+	return attr.Value() == "true" ||
+		attr.Value() == "1"
 }
 
 // SetDirty sets whether the field result should be recalculated.
 func (fc *FieldChar) SetDirty(dirty bool) {
 	if dirty {
-		fc.SetAttribute(openxml.NewAttribute(NamespaceWML, "dirty", PrefixW, "true"))
+		fc.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"dirty",
+				PrefixW,
+				"true",
+			),
+		)
 	} else {
 		fc.RemoveAttribute("dirty", NamespaceWML)
 	}
@@ -252,7 +336,9 @@ func (fc *FieldChar) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this FieldChar element.
-func (fc *FieldChar) CloneNode(deep bool) openxml.Element {
+func (fc *FieldChar) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &FieldChar{
 		LeafElementBase: fc.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -266,7 +352,12 @@ type InstrText struct {
 
 // NewInstrText creates a new InstrText element with the specified instruction text.
 func NewInstrText(text string) *InstrText {
-	elem := openxml.NewLeafElementWithText(NamespaceWML, "instrText", PrefixW, text)
+	elem := openxml.NewLeafElementWithText(
+		NamespaceWML,
+		"instrText",
+		PrefixW,
+		text,
+	)
 	it := &InstrText{LeafElementBase: elem}
 	// Preserve whitespace if the text contains significant spaces
 	if needsSpacePreserve(text) {
@@ -292,7 +383,10 @@ func (it *InstrText) SetText(text string) {
 
 // Space returns the xml:space attribute value.
 func (it *InstrText) Space() string {
-	attr, found := it.GetAttribute("space", NamespaceXML)
+	attr, found := it.GetAttribute(
+		"space",
+		NamespaceXML,
+	)
 	if !found {
 		return ""
 	}
@@ -301,7 +395,12 @@ func (it *InstrText) Space() string {
 
 // SetSpace sets the xml:space attribute.
 func (it *InstrText) SetSpace(value string) {
-	attr := openxml.NewAttribute(NamespaceXML, "space", "xml", value)
+	attr := openxml.NewAttribute(
+		NamespaceXML,
+		"space",
+		"xml",
+		value,
+	)
 	it.SetAttribute(attr)
 }
 
@@ -313,7 +412,9 @@ func (it *InstrText) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this InstrText element.
-func (it *InstrText) CloneNode(deep bool) openxml.Element {
+func (it *InstrText) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &InstrText{
 		LeafElementBase: it.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -365,12 +466,20 @@ type PositionalTab struct {
 
 // NewPositionalTab creates a new PositionalTab element.
 func NewPositionalTab() *PositionalTab {
-	elem := openxml.NewLeafElement(NamespaceWML, "ptab", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"ptab",
+		PrefixW,
+	)
 	return &PositionalTab{LeafElementBase: elem}
 }
 
 // NewPositionalTabWithOptions creates a new PositionalTab element with specified options.
-func NewPositionalTabWithOptions(alignment PositionalTabAlignment, relativeTo PositionalTabRelativeTo, leader PositionalTabLeader) *PositionalTab {
+func NewPositionalTabWithOptions(
+	alignment PositionalTabAlignment,
+	relativeTo PositionalTabRelativeTo,
+	leader PositionalTabLeader,
+) *PositionalTab {
 	pt := NewPositionalTab()
 	if alignment != "" {
 		pt.SetAlignment(alignment)
@@ -386,7 +495,10 @@ func NewPositionalTabWithOptions(alignment PositionalTabAlignment, relativeTo Po
 
 // Alignment returns the positional tab alignment.
 func (pt *PositionalTab) Alignment() PositionalTabAlignment {
-	attr, found := pt.GetAttribute("alignment", NamespaceWML)
+	attr, found := pt.GetAttribute(
+		"alignment",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -394,9 +506,14 @@ func (pt *PositionalTab) Alignment() PositionalTabAlignment {
 }
 
 // SetAlignment sets the positional tab alignment.
-func (pt *PositionalTab) SetAlignment(alignment PositionalTabAlignment) {
+func (pt *PositionalTab) SetAlignment(
+	alignment PositionalTabAlignment,
+) {
 	if alignment == "" {
-		pt.RemoveAttribute("alignment", NamespaceWML)
+		pt.RemoveAttribute(
+			"alignment",
+			NamespaceWML,
+		)
 	} else {
 		pt.SetAttribute(openxml.NewAttribute(NamespaceWML, "alignment", PrefixW, string(alignment)))
 	}
@@ -404,7 +521,10 @@ func (pt *PositionalTab) SetAlignment(alignment PositionalTabAlignment) {
 
 // RelativeTo returns what the positional tab is relative to.
 func (pt *PositionalTab) RelativeTo() PositionalTabRelativeTo {
-	attr, found := pt.GetAttribute("relativeTo", NamespaceWML)
+	attr, found := pt.GetAttribute(
+		"relativeTo",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -412,9 +532,14 @@ func (pt *PositionalTab) RelativeTo() PositionalTabRelativeTo {
 }
 
 // SetRelativeTo sets what the positional tab is relative to.
-func (pt *PositionalTab) SetRelativeTo(relativeTo PositionalTabRelativeTo) {
+func (pt *PositionalTab) SetRelativeTo(
+	relativeTo PositionalTabRelativeTo,
+) {
 	if relativeTo == "" {
-		pt.RemoveAttribute("relativeTo", NamespaceWML)
+		pt.RemoveAttribute(
+			"relativeTo",
+			NamespaceWML,
+		)
 	} else {
 		pt.SetAttribute(openxml.NewAttribute(NamespaceWML, "relativeTo", PrefixW, string(relativeTo)))
 	}
@@ -422,7 +547,10 @@ func (pt *PositionalTab) SetRelativeTo(relativeTo PositionalTabRelativeTo) {
 
 // Leader returns the leader character.
 func (pt *PositionalTab) Leader() PositionalTabLeader {
-	attr, found := pt.GetAttribute("leader", NamespaceWML)
+	attr, found := pt.GetAttribute(
+		"leader",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -430,7 +558,9 @@ func (pt *PositionalTab) Leader() PositionalTabLeader {
 }
 
 // SetLeader sets the leader character.
-func (pt *PositionalTab) SetLeader(leader PositionalTabLeader) {
+func (pt *PositionalTab) SetLeader(
+	leader PositionalTabLeader,
+) {
 	if leader == "" {
 		pt.RemoveAttribute("leader", NamespaceWML)
 	} else {
@@ -446,7 +576,9 @@ func (pt *PositionalTab) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this PositionalTab element.
-func (pt *PositionalTab) CloneNode(deep bool) openxml.Element {
+func (pt *PositionalTab) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &PositionalTab{
 		LeafElementBase: pt.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -460,7 +592,11 @@ type Separator struct {
 
 // NewSeparator creates a new Separator element.
 func NewSeparator() *Separator {
-	elem := openxml.NewLeafElement(NamespaceWML, "separator", PrefixW)
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"separator",
+		PrefixW,
+	)
 	return &Separator{LeafElementBase: elem}
 }
 
@@ -472,7 +608,9 @@ func (s *Separator) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Separator element.
-func (s *Separator) CloneNode(deep bool) openxml.Element {
+func (s *Separator) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Separator{
 		LeafElementBase: s.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
@@ -487,8 +625,14 @@ type ContinuationSeparator struct {
 
 // NewContinuationSeparator creates a new ContinuationSeparator element.
 func NewContinuationSeparator() *ContinuationSeparator {
-	elem := openxml.NewLeafElement(NamespaceWML, "continuationSeparator", PrefixW)
-	return &ContinuationSeparator{LeafElementBase: elem}
+	elem := openxml.NewLeafElement(
+		NamespaceWML,
+		"continuationSeparator",
+		PrefixW,
+	)
+	return &ContinuationSeparator{
+		LeafElementBase: elem,
+	}
 }
 
 // Clone creates a deep copy of this ContinuationSeparator element.
@@ -499,7 +643,9 @@ func (cs *ContinuationSeparator) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this ContinuationSeparator element.
-func (cs *ContinuationSeparator) CloneNode(deep bool) openxml.Element {
+func (cs *ContinuationSeparator) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &ContinuationSeparator{
 		LeafElementBase: cs.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}

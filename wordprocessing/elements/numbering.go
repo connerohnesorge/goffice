@@ -16,7 +16,11 @@ type Numbering struct {
 
 // NewNumbering creates a new Numbering element.
 func NewNumbering() *Numbering {
-	elem := openxml.NewCompositeElement(NamespaceWML, "numbering", PrefixW)
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"numbering",
+		PrefixW,
+	)
 	return &Numbering{
 		CompositeElementBase: elem,
 		nextAbstractNumId:    0,
@@ -28,7 +32,8 @@ func NewNumbering() *Numbering {
 func (n *Numbering) AbstractNums() iter.Seq[*AbstractNum] {
 	return func(yield func(*AbstractNum) bool) {
 		for child := range n.Children() {
-			if child.LocalName() == "abstractNum" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "abstractNum" &&
+				child.NamespaceURI() == NamespaceWML {
 				var an *AbstractNum
 				if absNum, ok := child.(*AbstractNum); ok {
 					an = absNum
@@ -47,7 +52,8 @@ func (n *Numbering) AbstractNums() iter.Seq[*AbstractNum] {
 func (n *Numbering) NumInstances() iter.Seq[*NumberingInstance] {
 	return func(yield func(*NumberingInstance) bool) {
 		for child := range n.Children() {
-			if child.LocalName() == "num" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "num" &&
+				child.NamespaceURI() == NamespaceWML {
 				var ni *NumberingInstance
 				if numInst, ok := child.(*NumberingInstance); ok {
 					ni = numInst
@@ -63,7 +69,9 @@ func (n *Numbering) NumInstances() iter.Seq[*NumberingInstance] {
 }
 
 // GetAbstractNum returns the AbstractNum with the given ID, or nil if not found.
-func (n *Numbering) GetAbstractNum(id int) *AbstractNum {
+func (n *Numbering) GetAbstractNum(
+	id int,
+) *AbstractNum {
 	for an := range n.AbstractNums() {
 		if an.AbstractNumId() == id {
 			return an
@@ -73,7 +81,9 @@ func (n *Numbering) GetAbstractNum(id int) *AbstractNum {
 }
 
 // GetNumInstance returns the NumberingInstance with the given ID, or nil if not found.
-func (n *Numbering) GetNumInstance(id int) *NumberingInstance {
+func (n *Numbering) GetNumInstance(
+	id int,
+) *NumberingInstance {
 	for ni := range n.NumInstances() {
 		if ni.NumId() == id {
 			return ni
@@ -83,7 +93,9 @@ func (n *Numbering) GetNumInstance(id int) *NumberingInstance {
 }
 
 // AddAbstractNum adds an abstract numbering definition and returns the assigned ID.
-func (n *Numbering) AddAbstractNum(abstractNum *AbstractNum) int {
+func (n *Numbering) AddAbstractNum(
+	abstractNum *AbstractNum,
+) int {
 	// Find the highest existing ID
 	maxId := -1
 	for an := range n.AbstractNums() {
@@ -103,7 +115,8 @@ func (n *Numbering) AddAbstractNum(abstractNum *AbstractNum) int {
 	// Insert before num elements (abstractNum elements come first)
 	var insertBefore openxml.Element
 	for child := range n.Children() {
-		if child.LocalName() == "num" && child.NamespaceURI() == NamespaceWML {
+		if child.LocalName() == "num" &&
+			child.NamespaceURI() == NamespaceWML {
 			insertBefore = child
 			break
 		}
@@ -118,7 +131,9 @@ func (n *Numbering) AddAbstractNum(abstractNum *AbstractNum) int {
 }
 
 // AddNumInstance adds a numbering instance and returns the assigned ID.
-func (n *Numbering) AddNumInstance(instance *NumberingInstance) int {
+func (n *Numbering) AddNumInstance(
+	instance *NumberingInstance,
+) int {
 	// Find the highest existing ID
 	maxId := 0
 	for ni := range n.NumInstances() {
@@ -140,7 +155,9 @@ func (n *Numbering) AddNumInstance(instance *NumberingInstance) int {
 }
 
 // CreateNumberingInstance creates a new numbering instance referencing an abstract num.
-func (n *Numbering) CreateNumberingInstance(abstractNumId int) *NumberingInstance {
+func (n *Numbering) CreateNumberingInstance(
+	abstractNumId int,
+) *NumberingInstance {
 	ni := NewNumberingInstance(abstractNumId)
 	n.AddNumInstance(ni)
 	return ni
@@ -156,7 +173,9 @@ func (n *Numbering) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this Numbering element.
-func (n *Numbering) CloneNode(deep bool) openxml.Element {
+func (n *Numbering) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &Numbering{
 		CompositeElementBase: n.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 		nextAbstractNumId:    n.nextAbstractNumId,
@@ -170,16 +189,27 @@ type NumberingInstance struct {
 }
 
 // NewNumberingInstance creates a new NumberingInstance element.
-func NewNumberingInstance(abstractNumId int) *NumberingInstance {
-	elem := openxml.NewCompositeElement(NamespaceWML, "num", PrefixW)
-	ni := &NumberingInstance{CompositeElementBase: elem}
+func NewNumberingInstance(
+	abstractNumId int,
+) *NumberingInstance {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"num",
+		PrefixW,
+	)
+	ni := &NumberingInstance{
+		CompositeElementBase: elem,
+	}
 	ni.SetAbstractNumIdRef(abstractNumId)
 	return ni
 }
 
 // NumId returns the numbering instance ID.
 func (ni *NumberingInstance) NumId() int {
-	attr, found := ni.GetAttribute("numId", NamespaceWML)
+	attr, found := ni.GetAttribute(
+		"numId",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -192,16 +222,29 @@ func (ni *NumberingInstance) NumId() int {
 
 // SetNumId sets the numbering instance ID.
 func (ni *NumberingInstance) SetNumId(id int) {
-	ni.SetAttribute(openxml.NewAttribute(NamespaceWML, "numId", PrefixW, strconv.Itoa(id)))
+	ni.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"numId",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // AbstractNumId returns the referenced abstract numbering definition ID.
 func (ni *NumberingInstance) AbstractNumId() int {
-	elem := ni.GetElement("abstractNumId", NamespaceWML)
+	elem := ni.GetElement(
+		"abstractNumId",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return 0
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -213,20 +256,37 @@ func (ni *NumberingInstance) AbstractNumId() int {
 }
 
 // SetAbstractNumIdRef sets the referenced abstract numbering definition ID.
-func (ni *NumberingInstance) SetAbstractNumIdRef(id int) {
-	elem := ni.GetElement("abstractNumId", NamespaceWML)
+func (ni *NumberingInstance) SetAbstractNumIdRef(
+	id int,
+) {
+	elem := ni.GetElement(
+		"abstractNumId",
+		NamespaceWML,
+	)
 	if elem == nil {
-		elem = openxml.NewCompositeElement(NamespaceWML, "abstractNumId", PrefixW)
+		elem = openxml.NewCompositeElement(
+			NamespaceWML,
+			"abstractNumId",
+			PrefixW,
+		)
 		ni.AppendChild(elem)
 	}
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(id)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // LevelOverrides returns an iterator over all level overrides.
 func (ni *NumberingInstance) LevelOverrides() iter.Seq[*LevelOverride] {
 	return func(yield func(*LevelOverride) bool) {
 		for child := range ni.Children() {
-			if child.LocalName() == "lvlOverride" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "lvlOverride" &&
+				child.NamespaceURI() == NamespaceWML {
 				var lo *LevelOverride
 				if lvlOvr, ok := child.(*LevelOverride); ok {
 					lo = lvlOvr
@@ -242,7 +302,9 @@ func (ni *NumberingInstance) LevelOverrides() iter.Seq[*LevelOverride] {
 }
 
 // AddLevelOverride adds a level override at the specified level.
-func (ni *NumberingInstance) AddLevelOverride(levelIndex int) *LevelOverride {
+func (ni *NumberingInstance) AddLevelOverride(
+	levelIndex int,
+) *LevelOverride {
 	lo := NewLevelOverride(levelIndex)
 	ni.AppendChild(lo)
 	return lo
@@ -261,16 +323,27 @@ type LevelOverride struct {
 }
 
 // NewLevelOverride creates a new LevelOverride element.
-func NewLevelOverride(levelIndex int) *LevelOverride {
-	elem := openxml.NewCompositeElement(NamespaceWML, "lvlOverride", PrefixW)
-	lo := &LevelOverride{CompositeElementBase: elem}
+func NewLevelOverride(
+	levelIndex int,
+) *LevelOverride {
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"lvlOverride",
+		PrefixW,
+	)
+	lo := &LevelOverride{
+		CompositeElementBase: elem,
+	}
 	lo.SetLevelIndex(levelIndex)
 	return lo
 }
 
 // LevelIndex returns the level being overridden (0-8).
 func (lo *LevelOverride) LevelIndex() int {
-	attr, found := lo.GetAttribute("ilvl", NamespaceWML)
+	attr, found := lo.GetAttribute(
+		"ilvl",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -282,17 +355,32 @@ func (lo *LevelOverride) LevelIndex() int {
 }
 
 // SetLevelIndex sets the level being overridden (0-8).
-func (lo *LevelOverride) SetLevelIndex(index int) {
-	lo.SetAttribute(openxml.NewAttribute(NamespaceWML, "ilvl", PrefixW, strconv.Itoa(index)))
+func (lo *LevelOverride) SetLevelIndex(
+	index int,
+) {
+	lo.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"ilvl",
+			PrefixW,
+			strconv.Itoa(index),
+		),
+	)
 }
 
 // StartOverride returns the overridden start value, or -1 if not set.
 func (lo *LevelOverride) StartOverride() int {
-	elem := lo.GetElement("startOverride", NamespaceWML)
+	elem := lo.GetElement(
+		"startOverride",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return -1
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return -1
 	}
@@ -304,13 +392,29 @@ func (lo *LevelOverride) StartOverride() int {
 }
 
 // SetStartOverride sets the overridden start value.
-func (lo *LevelOverride) SetStartOverride(start int) {
-	elem := lo.GetElement("startOverride", NamespaceWML)
+func (lo *LevelOverride) SetStartOverride(
+	start int,
+) {
+	elem := lo.GetElement(
+		"startOverride",
+		NamespaceWML,
+	)
 	if elem == nil {
-		elem = openxml.NewCompositeElement(NamespaceWML, "startOverride", PrefixW)
+		elem = openxml.NewCompositeElement(
+			NamespaceWML,
+			"startOverride",
+			PrefixW,
+		)
 		lo.AppendChild(elem)
 	}
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, strconv.Itoa(start)))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			strconv.Itoa(start),
+		),
+	)
 }
 
 // Level returns the complete level override definition, or nil if not set.

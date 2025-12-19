@@ -36,7 +36,10 @@ func NewOnOffValue(v bool) *OnOffValue {
 }
 
 // NewOnOffValueWithFormat creates a new OnOffValue with the given boolean and output format.
-func NewOnOffValueWithFormat(v bool, format OnOffOutputFormat) *OnOffValue {
+func NewOnOffValueWithFormat(
+	v bool,
+	format OnOffOutputFormat,
+) *OnOffValue {
 	return &OnOffValue{
 		value:        v,
 		hasValue:     true,
@@ -73,7 +76,9 @@ func (ov *OnOffValue) HasValue() bool {
 }
 
 // SetOutputFormat sets the format used for serialization.
-func (ov *OnOffValue) SetOutputFormat(format OnOffOutputFormat) {
+func (ov *OnOffValue) SetOutputFormat(
+	format OnOffOutputFormat,
+) {
 	ov.outputFormat = format
 }
 
@@ -109,13 +114,17 @@ func (ov *OnOffValue) InnerText() string {
 // SetInnerText parses the value from a string.
 // Accepts "on", "off", "true", "false", "1", "0" (case-insensitive for text values).
 // Returns an error if the string cannot be parsed.
-func (ov *OnOffValue) SetInnerText(text string) error {
+func (ov *OnOffValue) SetInnerText(
+	text string,
+) error {
 	if text == "" {
 		ov.hasValue = false
 		ov.value = false
 		return nil
 	}
-	lower := strings.ToLower(strings.TrimSpace(text))
+	lower := strings.ToLower(
+		strings.TrimSpace(text),
+	)
 	switch lower {
 	case "on", "true", "1":
 		ov.value = true
@@ -126,7 +135,10 @@ func (ov *OnOffValue) SetInnerText(text string) error {
 		ov.hasValue = true
 		return nil
 	default:
-		return fmt.Errorf("invalid on/off value: %q (expected on, off, true, false, 1, or 0)", text)
+		return fmt.Errorf(
+			"invalid on/off value: %q (expected on, off, true, false, 1, or 0)",
+			text,
+		)
 	}
 }
 

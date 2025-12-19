@@ -25,16 +25,33 @@ type CompositeElementBase struct {
 }
 
 // NewCompositeElement creates a new composite element with the given namespace URI and local name.
-func NewCompositeElement(namespaceURI, localName, prefix string) *CompositeElementBase {
+func NewCompositeElement(
+	namespaceURI, localName, prefix string,
+) *CompositeElementBase {
 	elem := &CompositeElementBase{}
-	InitBaseElement(&elem.BaseElement, namespaceURI, localName, prefix, nil)
+	InitBaseElement(
+		&elem.BaseElement,
+		namespaceURI,
+		localName,
+		prefix,
+		nil,
+	)
 	return elem
 }
 
 // NewCompositeElementWithFeatures creates a new composite element with parent features.
-func NewCompositeElementWithFeatures(namespaceURI, localName, prefix string, parentFeatures *features.FeatureCollection) *CompositeElementBase {
+func NewCompositeElementWithFeatures(
+	namespaceURI, localName, prefix string,
+	parentFeatures *features.FeatureCollection,
+) *CompositeElementBase {
 	elem := &CompositeElementBase{}
-	InitBaseElement(&elem.BaseElement, namespaceURI, localName, prefix, parentFeatures)
+	InitBaseElement(
+		&elem.BaseElement,
+		namespaceURI,
+		localName,
+		prefix,
+		parentFeatures,
+	)
 	return elem
 }
 
@@ -66,9 +83,12 @@ func (c *CompositeElementBase) LastChild() Element {
 }
 
 // GetElement returns the first child element with the given local name and namespace URI.
-func (c *CompositeElementBase) GetElement(localName, namespaceURI string) Element {
+func (c *CompositeElementBase) GetElement(
+	localName, namespaceURI string,
+) Element {
 	for node := c.firstChild; node != nil; node = node.next {
-		if node.element.LocalName() == localName && node.element.NamespaceURI() == namespaceURI {
+		if node.element.LocalName() == localName &&
+			node.element.NamespaceURI() == namespaceURI {
 			return node.element
 		}
 	}
@@ -76,7 +96,9 @@ func (c *CompositeElementBase) GetElement(localName, namespaceURI string) Elemen
 }
 
 // findNode finds the node containing the given element.
-func (c *CompositeElementBase) findNode(element Element) *childNode {
+func (c *CompositeElementBase) findNode(
+	element Element,
+) *childNode {
 	for node := c.firstChild; node != nil; node = node.next {
 		if node.element == element {
 			return node
@@ -86,7 +108,9 @@ func (c *CompositeElementBase) findNode(element Element) *childNode {
 }
 
 // AppendChild adds a child element at the end of the children list.
-func (c *CompositeElementBase) AppendChild(child Element) {
+func (c *CompositeElementBase) AppendChild(
+	child Element,
+) {
 	if child == nil {
 		return
 	}
@@ -115,7 +139,9 @@ func (c *CompositeElementBase) AppendChild(child Element) {
 }
 
 // PrependChild adds a child element at the beginning of the children list.
-func (c *CompositeElementBase) PrependChild(child Element) {
+func (c *CompositeElementBase) PrependChild(
+	child Element,
+) {
 	if child == nil {
 		return
 	}
@@ -145,7 +171,9 @@ func (c *CompositeElementBase) PrependChild(child Element) {
 
 // InsertBefore inserts newChild immediately before refChild.
 // If refChild is nil, newChild is appended.
-func (c *CompositeElementBase) InsertBefore(newChild, refChild Element) {
+func (c *CompositeElementBase) InsertBefore(
+	newChild, refChild Element,
+) {
 	if newChild == nil {
 		return
 	}
@@ -186,7 +214,9 @@ func (c *CompositeElementBase) InsertBefore(newChild, refChild Element) {
 
 // InsertAfter inserts newChild immediately after refChild.
 // If refChild is nil, newChild is prepended.
-func (c *CompositeElementBase) InsertAfter(newChild, refChild Element) {
+func (c *CompositeElementBase) InsertAfter(
+	newChild, refChild Element,
+) {
 	if newChild == nil {
 		return
 	}
@@ -226,7 +256,9 @@ func (c *CompositeElementBase) InsertAfter(newChild, refChild Element) {
 }
 
 // RemoveChild removes the specified child from this element.
-func (c *CompositeElementBase) RemoveChild(child Element) bool {
+func (c *CompositeElementBase) RemoveChild(
+	child Element,
+) bool {
 	if child == nil {
 		return false
 	}
@@ -265,7 +297,9 @@ func (c *CompositeElementBase) RemoveAllChildren() {
 }
 
 // ReplaceChild replaces oldChild with newChild.
-func (c *CompositeElementBase) ReplaceChild(newChild, oldChild Element) bool {
+func (c *CompositeElementBase) ReplaceChild(
+	newChild, oldChild Element,
+) bool {
 	if newChild == nil || oldChild == nil {
 		return false
 	}
@@ -303,7 +337,8 @@ func (c *CompositeElementBase) NextSibling() Element {
 
 	if parentComp, ok := c.parent.(*CompositeElementBase); ok {
 		for node := parentComp.firstChild; node != nil; node = node.next {
-			if node.element == Element(c) && node.next != nil {
+			if node.element == Element(c) &&
+				node.next != nil {
 				return node.next.element
 			}
 		}
@@ -319,7 +354,8 @@ func (c *CompositeElementBase) PreviousSibling() Element {
 
 	if parentComp, ok := c.parent.(*CompositeElementBase); ok {
 		for node := parentComp.firstChild; node != nil; node = node.next {
-			if node.element == Element(c) && node.prev != nil {
+			if node.element == Element(c) &&
+				node.prev != nil {
 				return node.prev.element
 			}
 		}
@@ -344,7 +380,9 @@ func (c *CompositeElementBase) InnerXml() string {
 }
 
 // WriteXML writes the XML representation to the given writer.
-func (c *CompositeElementBase) WriteXML(w io.Writer) error {
+func (c *CompositeElementBase) WriteXML(
+	w io.Writer,
+) error {
 	if c.childCount == 0 {
 		return c.writeStartElement(w, true)
 	}
@@ -369,7 +407,9 @@ func (c *CompositeElementBase) Clone() Element {
 
 // CloneNode creates a copy of this element.
 // If deep is true, children are also cloned.
-func (c *CompositeElementBase) CloneNode(deep bool) Element {
+func (c *CompositeElementBase) CloneNode(
+	deep bool,
+) Element {
 	clone := &CompositeElementBase{
 		BaseElement: c.copyBaseElement(),
 	}
@@ -385,7 +425,9 @@ func (c *CompositeElementBase) CloneNode(deep bool) Element {
 }
 
 // Elements returns an iterator over child elements of a specific type.
-func Elements[T Element](parent CompositeElement) iter.Seq[T] {
+func Elements[T Element](
+	parent CompositeElement,
+) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for child := range parent.Children() {
 			if typed, ok := child.(T); ok {
@@ -398,7 +440,9 @@ func Elements[T Element](parent CompositeElement) iter.Seq[T] {
 }
 
 // GetElementTyped returns the first child element of type T.
-func GetElementTyped[T Element](parent CompositeElement) (result T, found bool) {
+func GetElementTyped[T Element](
+	parent CompositeElement,
+) (result T, found bool) {
 	for child := range parent.Children() {
 		if typed, ok := child.(T); ok {
 			return typed, true

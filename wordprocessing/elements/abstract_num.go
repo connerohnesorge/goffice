@@ -26,13 +26,22 @@ type AbstractNum struct {
 
 // NewAbstractNum creates a new AbstractNum element.
 func NewAbstractNum() *AbstractNum {
-	elem := openxml.NewCompositeElement(NamespaceWML, "abstractNum", PrefixW)
-	return &AbstractNum{CompositeElementBase: elem}
+	elem := openxml.NewCompositeElement(
+		NamespaceWML,
+		"abstractNum",
+		PrefixW,
+	)
+	return &AbstractNum{
+		CompositeElementBase: elem,
+	}
 }
 
 // AbstractNumId returns the abstract numbering definition ID.
 func (an *AbstractNum) AbstractNumId() int {
-	attr, found := an.GetAttribute("abstractNumId", NamespaceWML)
+	attr, found := an.GetAttribute(
+		"abstractNumId",
+		NamespaceWML,
+	)
 	if !found {
 		return 0
 	}
@@ -45,16 +54,29 @@ func (an *AbstractNum) AbstractNumId() int {
 
 // SetAbstractNumId sets the abstract numbering definition ID.
 func (an *AbstractNum) SetAbstractNumId(id int) {
-	an.SetAttribute(openxml.NewAttribute(NamespaceWML, "abstractNumId", PrefixW, strconv.Itoa(id)))
+	an.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"abstractNumId",
+			PrefixW,
+			strconv.Itoa(id),
+		),
+	)
 }
 
 // MultiLevelType returns the multi-level numbering type.
 func (an *AbstractNum) MultiLevelType() MultiLevelTypeValue {
-	elem := an.GetElement("multiLevelType", NamespaceWML)
+	elem := an.GetElement(
+		"multiLevelType",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return MultiLevelSingleLevel
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return MultiLevelSingleLevel
 	}
@@ -62,18 +84,35 @@ func (an *AbstractNum) MultiLevelType() MultiLevelTypeValue {
 }
 
 // SetMultiLevelType sets the multi-level numbering type.
-func (an *AbstractNum) SetMultiLevelType(t MultiLevelTypeValue) {
-	elem := an.getOrCreateElement("multiLevelType")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, string(t)))
+func (an *AbstractNum) SetMultiLevelType(
+	t MultiLevelTypeValue,
+) {
+	elem := an.getOrCreateElement(
+		"multiLevelType",
+	)
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			string(t),
+		),
+	)
 }
 
 // NumberingStyleLink returns the linked numbering style ID.
 func (an *AbstractNum) NumberingStyleLink() string {
-	elem := an.GetElement("numStyleLink", NamespaceWML)
+	elem := an.GetElement(
+		"numStyleLink",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -81,22 +120,37 @@ func (an *AbstractNum) NumberingStyleLink() string {
 }
 
 // SetNumberingStyleLink sets the linked numbering style ID.
-func (an *AbstractNum) SetNumberingStyleLink(styleId string) {
+func (an *AbstractNum) SetNumberingStyleLink(
+	styleId string,
+) {
 	if styleId == "" {
 		an.removeElement("numStyleLink")
 		return
 	}
 	elem := an.getOrCreateElement("numStyleLink")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, styleId))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			styleId,
+		),
+	)
 }
 
 // StyleLink returns the linked style ID.
 func (an *AbstractNum) StyleLink() string {
-	elem := an.GetElement("styleLink", NamespaceWML)
+	elem := an.GetElement(
+		"styleLink",
+		NamespaceWML,
+	)
 	if elem == nil {
 		return ""
 	}
-	attr, found := elem.GetAttribute("val", NamespaceWML)
+	attr, found := elem.GetAttribute(
+		"val",
+		NamespaceWML,
+	)
 	if !found {
 		return ""
 	}
@@ -104,20 +158,30 @@ func (an *AbstractNum) StyleLink() string {
 }
 
 // SetStyleLink sets the linked style ID.
-func (an *AbstractNum) SetStyleLink(styleId string) {
+func (an *AbstractNum) SetStyleLink(
+	styleId string,
+) {
 	if styleId == "" {
 		an.removeElement("styleLink")
 		return
 	}
 	elem := an.getOrCreateElement("styleLink")
-	elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, styleId))
+	elem.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceWML,
+			"val",
+			PrefixW,
+			styleId,
+		),
+	)
 }
 
 // Levels returns an iterator over all Level elements.
 func (an *AbstractNum) Levels() iter.Seq[*Level] {
 	return func(yield func(*Level) bool) {
 		for child := range an.Children() {
-			if child.LocalName() == "lvl" && child.NamespaceURI() == NamespaceWML {
+			if child.LocalName() == "lvl" &&
+				child.NamespaceURI() == NamespaceWML {
 				var lvl *Level
 				if level, ok := child.(*Level); ok {
 					lvl = level
@@ -133,7 +197,9 @@ func (an *AbstractNum) Levels() iter.Seq[*Level] {
 }
 
 // GetLevel returns the level at the specified index (0-8), or nil if not found.
-func (an *AbstractNum) GetLevel(index int) *Level {
+func (an *AbstractNum) GetLevel(
+	index int,
+) *Level {
 	for lvl := range an.Levels() {
 		if lvl.LevelIndex() == index {
 			return lvl
@@ -143,14 +209,18 @@ func (an *AbstractNum) GetLevel(index int) *Level {
 }
 
 // AddLevel adds a new level at the specified index.
-func (an *AbstractNum) AddLevel(index int) *Level {
+func (an *AbstractNum) AddLevel(
+	index int,
+) *Level {
 	lvl := NewLevel(index)
 	an.AppendChild(lvl)
 	return lvl
 }
 
 // GetOrCreateLevel returns the level at the specified index, creating if needed.
-func (an *AbstractNum) GetOrCreateLevel(index int) *Level {
+func (an *AbstractNum) GetOrCreateLevel(
+	index int,
+) *Level {
 	lvl := an.GetLevel(index)
 	if lvl != nil {
 		return lvl
@@ -158,17 +228,25 @@ func (an *AbstractNum) GetOrCreateLevel(index int) *Level {
 	return an.AddLevel(index)
 }
 
-func (an *AbstractNum) getOrCreateElement(name string) openxml.Element {
+func (an *AbstractNum) getOrCreateElement(
+	name string,
+) openxml.Element {
 	elem := an.GetElement(name, NamespaceWML)
 	if elem != nil {
 		return elem
 	}
-	newElem := openxml.NewCompositeElement(NamespaceWML, name, PrefixW)
+	newElem := openxml.NewCompositeElement(
+		NamespaceWML,
+		name,
+		PrefixW,
+	)
 	an.AppendChild(newElem)
 	return newElem
 }
 
-func (an *AbstractNum) removeElement(name string) {
+func (an *AbstractNum) removeElement(
+	name string,
+) {
 	elem := an.GetElement(name, NamespaceWML)
 	if elem != nil {
 		an.RemoveChild(elem)
@@ -183,7 +261,9 @@ func (an *AbstractNum) Clone() openxml.Element {
 }
 
 // CloneNode creates a copy of this AbstractNum element.
-func (an *AbstractNum) CloneNode(deep bool) openxml.Element {
+func (an *AbstractNum) CloneNode(
+	deep bool,
+) openxml.Element {
 	return &AbstractNum{
 		CompositeElementBase: an.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
 	}
@@ -192,9 +272,13 @@ func (an *AbstractNum) CloneNode(deep bool) openxml.Element {
 // Factory functions for common list types
 
 // NewBulletList creates a bullet list abstract numbering definition.
-func NewBulletList(bulletChar, fontName string) *AbstractNum {
+func NewBulletList(
+	bulletChar, fontName string,
+) *AbstractNum {
 	an := NewAbstractNum()
-	an.SetMultiLevelType(MultiLevelHybridMultilevel)
+	an.SetMultiLevelType(
+		MultiLevelHybridMultilevel,
+	)
 
 	// Create 9 levels with the same bullet
 	for i := 0; i < 9; i++ {
@@ -202,7 +286,9 @@ func NewBulletList(bulletChar, fontName string) *AbstractNum {
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatBullet)
 		lvl.SetLevelText(bulletChar)
-		lvl.SetLevelJustification(JustificationLeft)
+		lvl.SetLevelJustification(
+			JustificationLeft,
+		)
 
 		// Set indentation: each level indented 720 twips (0.5 inch) more
 		indent := (i + 1) * 720
@@ -211,7 +297,8 @@ func NewBulletList(bulletChar, fontName string) *AbstractNum {
 
 		// Set the bullet font
 		if fontName != "" {
-			lvl.GetOrCreateNumberingRunProperties().SetFont(fontName)
+			lvl.GetOrCreateNumberingRunProperties().
+				SetFont(fontName)
 		}
 	}
 
@@ -224,26 +311,57 @@ func NewStandardBulletList() *AbstractNum {
 		char string
 		font string
 	}{
-		{"\uF0B7", "Symbol"},       // Level 0: solid bullet
-		{"o", "Courier New"},       // Level 1: open bullet
-		{"\uF0A7", "Wingdings"},    // Level 2: square bullet
-		{"\uF0B7", "Symbol"},       // Level 3: solid bullet
-		{"o", "Courier New"},       // Level 4: open bullet
-		{"\uF0A7", "Wingdings"},    // Level 5: square bullet
-		{"\uF0B7", "Symbol"},       // Level 6: solid bullet
-		{"o", "Courier New"},       // Level 7: open bullet
-		{"\uF0A7", "Wingdings"},    // Level 8: square bullet
+		{
+			"\uF0B7",
+			"Symbol",
+		}, // Level 0: solid bullet
+		{
+			"o",
+			"Courier New",
+		}, // Level 1: open bullet
+		{
+			"\uF0A7",
+			"Wingdings",
+		}, // Level 2: square bullet
+		{
+			"\uF0B7",
+			"Symbol",
+		}, // Level 3: solid bullet
+		{
+			"o",
+			"Courier New",
+		}, // Level 4: open bullet
+		{
+			"\uF0A7",
+			"Wingdings",
+		}, // Level 5: square bullet
+		{
+			"\uF0B7",
+			"Symbol",
+		}, // Level 6: solid bullet
+		{
+			"o",
+			"Courier New",
+		}, // Level 7: open bullet
+		{
+			"\uF0A7",
+			"Wingdings",
+		}, // Level 8: square bullet
 	}
 
 	an := NewAbstractNum()
-	an.SetMultiLevelType(MultiLevelHybridMultilevel)
+	an.SetMultiLevelType(
+		MultiLevelHybridMultilevel,
+	)
 
 	for i := 0; i < 9; i++ {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatBullet)
 		lvl.SetLevelText(bullets[i].char)
-		lvl.SetLevelJustification(JustificationLeft)
+		lvl.SetLevelJustification(
+			JustificationLeft,
+		)
 
 		// Set indentation
 		indent := (i + 1) * 720
@@ -251,7 +369,8 @@ func NewStandardBulletList() *AbstractNum {
 		lvl.SetIndentation(indent, hanging)
 
 		// Set the bullet font
-		lvl.GetOrCreateNumberingRunProperties().SetFont(bullets[i].font)
+		lvl.GetOrCreateNumberingRunProperties().
+			SetFont(bullets[i].font)
 	}
 
 	return an
@@ -260,14 +379,20 @@ func NewStandardBulletList() *AbstractNum {
 // NewDecimalList creates a decimal numbered list (1, 2, 3...).
 func NewDecimalList() *AbstractNum {
 	an := NewAbstractNum()
-	an.SetMultiLevelType(MultiLevelHybridMultilevel)
+	an.SetMultiLevelType(
+		MultiLevelHybridMultilevel,
+	)
 
 	for i := 0; i < 9; i++ {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatDecimal)
-		lvl.SetLevelText("%" + strconv.Itoa(i+1) + ".")
-		lvl.SetLevelJustification(JustificationLeft)
+		lvl.SetLevelText(
+			"%" + strconv.Itoa(i+1) + ".",
+		)
+		lvl.SetLevelJustification(
+			JustificationLeft,
+		)
 
 		// Set indentation
 		indent := (i + 1) * 720
@@ -279,9 +404,13 @@ func NewDecimalList() *AbstractNum {
 }
 
 // NewAlphabeticList creates an alphabetic list (a, b, c... or A, B, C...).
-func NewAlphabeticList(lowercase bool) *AbstractNum {
+func NewAlphabeticList(
+	lowercase bool,
+) *AbstractNum {
 	an := NewAbstractNum()
-	an.SetMultiLevelType(MultiLevelHybridMultilevel)
+	an.SetMultiLevelType(
+		MultiLevelHybridMultilevel,
+	)
 
 	format := NumberFormatUpperLetter
 	if lowercase {
@@ -292,8 +421,12 @@ func NewAlphabeticList(lowercase bool) *AbstractNum {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(format)
-		lvl.SetLevelText("%" + strconv.Itoa(i+1) + ".")
-		lvl.SetLevelJustification(JustificationLeft)
+		lvl.SetLevelText(
+			"%" + strconv.Itoa(i+1) + ".",
+		)
+		lvl.SetLevelJustification(
+			JustificationLeft,
+		)
 
 		// Set indentation
 		indent := (i + 1) * 720
@@ -305,9 +438,13 @@ func NewAlphabeticList(lowercase bool) *AbstractNum {
 }
 
 // NewRomanNumeralList creates a Roman numeral list (i, ii, iii... or I, II, III...).
-func NewRomanNumeralList(lowercase bool) *AbstractNum {
+func NewRomanNumeralList(
+	lowercase bool,
+) *AbstractNum {
 	an := NewAbstractNum()
-	an.SetMultiLevelType(MultiLevelHybridMultilevel)
+	an.SetMultiLevelType(
+		MultiLevelHybridMultilevel,
+	)
 
 	format := NumberFormatUpperRoman
 	if lowercase {
@@ -318,8 +455,12 @@ func NewRomanNumeralList(lowercase bool) *AbstractNum {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(format)
-		lvl.SetLevelText("%" + strconv.Itoa(i+1) + ".")
-		lvl.SetLevelJustification(JustificationLeft)
+		lvl.SetLevelText(
+			"%" + strconv.Itoa(i+1) + ".",
+		)
+		lvl.SetLevelJustification(
+			JustificationLeft,
+		)
 
 		// Set indentation
 		indent := (i + 1) * 720
@@ -349,7 +490,9 @@ func NewOutlineList() *AbstractNum {
 			text += "%" + strconv.Itoa(j+1)
 		}
 		lvl.SetLevelText(text)
-		lvl.SetLevelJustification(JustificationLeft)
+		lvl.SetLevelJustification(
+			JustificationLeft,
+		)
 
 		// Set indentation
 		indent := (i + 1) * 720
