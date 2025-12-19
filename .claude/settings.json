@@ -1,45 +1,13 @@
 {
   "hooks": {
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "conclaude Hooks PreCompact"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "conclaude Hooks Stop"
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "conclaude Hooks SessionStart"
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "conclaude Hooks SessionEnd"
+            "command": "conclaude Hooks SessionStart",
+            "timeout": 600
           }
         ]
       }
@@ -50,18 +18,32 @@
         "hooks": [
           {
             "type": "command",
-            "command": "conclaude Hooks UserPromptSubmit"
+            "command": "conclaude Hooks UserPromptSubmit",
+            "timeout": 600
           }
         ]
       }
     ],
-    "PostToolUse": [
+    "PreCompact": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "conclaude Hooks PostToolUse"
+            "command": "conclaude Hooks PreCompact",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "conclaude Hooks SessionEnd",
+            "timeout": 600
           }
         ]
       }
@@ -72,40 +54,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "conclaude Hooks SubagentStart"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "conclaude Hooks PermissionRequest"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "conclaude Hooks PreToolUse"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "conclaude Hooks Notification"
+            "command": "conclaude Hooks SubagentStart",
+            "timeout": 600
           }
         ]
       }
@@ -116,7 +66,68 @@
         "hooks": [
           {
             "type": "command",
-            "command": "conclaude Hooks SubagentStop"
+            "command": "conclaude Hooks SubagentStop",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "conclaude Hooks PostToolUse",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "conclaude Hooks PermissionRequest",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "conclaude Hooks Notification",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "conclaude Hooks Stop",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "conclaude Hooks PreToolUse",
+            "timeout": 600
           }
         ]
       }
