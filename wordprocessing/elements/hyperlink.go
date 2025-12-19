@@ -34,6 +34,7 @@ func NewHyperlink(text, relId string) *Hyperlink {
 		r.SetUnderline(UnderlineSingle)
 		h.AppendChild(r)
 	}
+
 	return h
 }
 
@@ -63,6 +64,7 @@ func NewInternalHyperlink(
 		r.SetUnderline(UnderlineSingle)
 		h.AppendChild(r)
 	}
+
 	return h
 }
 
@@ -75,6 +77,7 @@ func (h *Hyperlink) RelationshipId() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -101,6 +104,7 @@ func (h *Hyperlink) Anchor() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -122,6 +126,7 @@ func (h *Hyperlink) Tooltip() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -144,6 +149,7 @@ func (h *Hyperlink) History() bool {
 		return true // default
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0"
 }
 
@@ -165,6 +171,7 @@ func (h *Hyperlink) DocLocation() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -194,6 +201,7 @@ func (h *Hyperlink) IsInternal() bool {
 func (h *Hyperlink) AppendRun(text string) *Run {
 	r := NewRun(text)
 	h.AppendChild(r)
+
 	return r
 }
 

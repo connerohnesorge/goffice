@@ -976,6 +976,7 @@ func TestResettableInterface(t *testing.T) {
 				"resettables[%d] does not implement SimpleValue",
 				i,
 			)
+
 			continue
 		}
 		if sv.HasValue() {

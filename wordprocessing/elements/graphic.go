@@ -18,6 +18,7 @@ func NewGraphic() *Graphic {
 		"graphic",
 		PrefixA,
 	)
+
 	return &Graphic{CompositeElementBase: elem}
 }
 
@@ -58,6 +59,7 @@ func (g *Graphic) GraphicData() *GraphicData {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -84,6 +86,7 @@ func NewGraphicData(uri string) *GraphicData {
 	gd.SetAttribute(
 		openxml.NewAttribute("", "uri", "", uri),
 	)
+
 	return gd
 }
 
@@ -93,6 +96,7 @@ func (gd *GraphicData) URI() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -113,6 +117,7 @@ func (gd *GraphicData) Picture() *Picture {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -175,6 +180,7 @@ func (p *Picture) NonVisualPictureProperties() *NonVisualPictureProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -195,6 +201,7 @@ func (p *Picture) BlipFill() *BlipFill {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -215,6 +222,7 @@ func (p *Picture) ShapeProperties() *ShapeProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -336,6 +344,7 @@ func (bf *BlipFill) Blip() *Blip {
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &Blip{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 
@@ -360,6 +369,7 @@ func NewBlip(relId string) *Blip {
 	)
 	blip := &Blip{CompositeElementBase: elem}
 	blip.SetEmbed(relId)
+
 	return blip
 }
 
@@ -372,6 +382,7 @@ func (b *Blip) Embed() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -393,6 +404,7 @@ func (b *Blip) CompressionState() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -464,6 +476,7 @@ func (sp *ShapeProperties) Transform2D() *Transform2D {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -484,6 +497,7 @@ func (sp *ShapeProperties) PresetGeometry() *PresetGeometry {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -570,6 +584,7 @@ func (xfrm *Transform2D) Rotation() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -591,6 +606,7 @@ func (xfrm *Transform2D) FlipH() bool {
 	if !found {
 		return false
 	}
+
 	return attr.Value() == "1"
 }
 
@@ -616,6 +632,7 @@ func (xfrm *Transform2D) FlipV() bool {
 	if !found {
 		return false
 	}
+
 	return attr.Value() == "1"
 }
 
@@ -685,6 +702,7 @@ func (pg *PresetGeometry) Preset() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 

@@ -96,6 +96,7 @@ func (b *BaseElement) Attributes() []OpenXmlAttribute {
 		len(b.attributes),
 	)
 	copy(result, b.attributes)
+
 	return result
 }
 
@@ -109,6 +110,7 @@ func (b *BaseElement) GetAttribute(
 			return attr, true
 		}
 	}
+
 	return OpenXmlAttribute{}, false
 }
 
@@ -121,6 +123,7 @@ func (b *BaseElement) SetAttribute(
 		if existing.LocalName() == attr.LocalName() &&
 			existing.NamespaceURI() == attr.NamespaceURI() {
 			b.attributes[i] = attr
+
 			return
 		}
 	}
@@ -138,9 +141,11 @@ func (b *BaseElement) RemoveAttribute(
 			b.attributes = append(
 				b.attributes[:i],
 				b.attributes[i+1:]...)
+
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -226,6 +231,7 @@ func (b *BaseElement) writeStartElement(
 	}
 
 	_, err := w.Write(buf.Bytes())
+
 	return err
 }
 
@@ -242,6 +248,7 @@ func (b *BaseElement) writeEndElement(
 	buf.WriteString(b.qname.LocalName())
 	buf.WriteByte('>')
 	_, err := w.Write(buf.Bytes())
+
 	return err
 }
 
@@ -264,6 +271,7 @@ func escapeXmlAttr(s string) string {
 			buf.WriteRune(r)
 		}
 	}
+
 	return buf.String()
 }
 
@@ -282,6 +290,7 @@ func escapeXmlText(s string) string {
 			buf.WriteRune(r)
 		}
 	}
+
 	return buf.String()
 }
 

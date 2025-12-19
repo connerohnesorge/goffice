@@ -35,6 +35,7 @@ func (qn OpenXmlQualifiedName) String() string {
 	if qn.namespaceURI == "" {
 		return qn.localName
 	}
+
 	return "{" + qn.namespaceURI + "}" + qn.localName
 }
 

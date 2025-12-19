@@ -162,6 +162,7 @@ func (rs *Relationships) Get(
 	if rel, ok := rs.rels[id]; ok {
 		return rel, nil
 	}
+
 	return nil, ErrRelationshipNotFound
 }
 
@@ -176,6 +177,7 @@ func (rs *Relationships) Delete(id string) error {
 	}
 
 	delete(rs.rels, id)
+
 	return nil
 }
 
@@ -215,6 +217,7 @@ func (rs *Relationships) All() iter.Seq[*Relationship] {
 func (rs *Relationships) Count() int {
 	rs.mu.RLock()
 	defer rs.mu.RUnlock()
+
 	return len(rs.rels)
 }
 

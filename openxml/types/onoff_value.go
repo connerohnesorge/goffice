@@ -61,6 +61,7 @@ func (ov *OnOffValue) Value() bool {
 	if !ov.hasValue {
 		return false
 	}
+
 	return ov.value
 }
 
@@ -97,16 +98,19 @@ func (ov *OnOffValue) InnerText() string {
 		if ov.value {
 			return "true"
 		}
+
 		return "false"
 	case OnOffFormatOneZero:
 		if ov.value {
 			return "1"
 		}
+
 		return "0"
 	default: // OnOffFormatOnOff
 		if ov.value {
 			return "on"
 		}
+
 		return "off"
 	}
 }
@@ -120,6 +124,7 @@ func (ov *OnOffValue) SetInnerText(
 	if text == "" {
 		ov.hasValue = false
 		ov.value = false
+
 		return nil
 	}
 	lower := strings.ToLower(
@@ -129,10 +134,12 @@ func (ov *OnOffValue) SetInnerText(
 	case "on", "true", "1":
 		ov.value = true
 		ov.hasValue = true
+
 		return nil
 	case "off", "false", "0":
 		ov.value = false
 		ov.hasValue = true
+
 		return nil
 	default:
 		return fmt.Errorf(

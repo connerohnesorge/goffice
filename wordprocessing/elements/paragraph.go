@@ -25,6 +25,7 @@ func NewParagraph(text ...string) *Paragraph {
 			p.AppendChild(NewRun(t))
 		}
 	}
+
 	return p
 }
 
@@ -43,6 +44,7 @@ func (p *Paragraph) Properties() *ParagraphProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -59,6 +61,7 @@ func (p *Paragraph) GetOrCreateProperties() *ParagraphProperties {
 	} else {
 		p.AppendChild(props)
 	}
+
 	return props
 }
 
@@ -88,6 +91,7 @@ func (p *Paragraph) InnerText() string {
 	for r := range p.Runs() {
 		sb.WriteString(r.InnerText())
 	}
+
 	return sb.String()
 }
 
@@ -95,6 +99,7 @@ func (p *Paragraph) InnerText() string {
 func (p *Paragraph) AppendRun(text string) *Run {
 	r := NewRun(text)
 	p.AppendChild(r)
+
 	return r
 }
 
@@ -107,6 +112,7 @@ func (p *Paragraph) PrependRun(text string) *Run {
 		if child.LocalName() != "pPr" ||
 			child.NamespaceURI() != NamespaceWML {
 			insertBefore = child
+
 			break
 		}
 	}
@@ -115,6 +121,7 @@ func (p *Paragraph) PrependRun(text string) *Run {
 	} else {
 		p.AppendChild(r)
 	}
+
 	return r
 }
 
@@ -164,6 +171,7 @@ func (p *Paragraph) AppendBreak(
 	r := NewRun("")
 	br := r.AppendBreak(breakType)
 	p.AppendChild(r)
+
 	return br
 }
 
@@ -191,6 +199,7 @@ func (p *Paragraph) SetStyle(
 ) *Paragraph {
 	p.GetOrCreateProperties().
 		SetParagraphStyleId(styleId)
+
 	return p
 }
 
@@ -199,6 +208,7 @@ func (p *Paragraph) SetJustification(
 	j JustificationValue,
 ) *Paragraph {
 	p.GetOrCreateProperties().SetJustification(j)
+
 	return p
 }
 
@@ -207,6 +217,7 @@ func (p *Paragraph) SetKeepNext(
 	b bool,
 ) *Paragraph {
 	p.GetOrCreateProperties().SetKeepNext(b)
+
 	return p
 }
 
@@ -215,6 +226,7 @@ func (p *Paragraph) SetKeepLines(
 	b bool,
 ) *Paragraph {
 	p.GetOrCreateProperties().SetKeepLines(b)
+
 	return p
 }
 
@@ -224,6 +236,7 @@ func (p *Paragraph) SetPageBreakBefore(
 ) *Paragraph {
 	p.GetOrCreateProperties().
 		SetPageBreakBefore(b)
+
 	return p
 }
 
@@ -234,6 +247,7 @@ func (p *Paragraph) SetSpacingBefore(
 	p.GetOrCreateProperties().
 		GetOrCreateSpacingBetweenLines().
 		SetBefore(twips)
+
 	return p
 }
 
@@ -244,6 +258,7 @@ func (p *Paragraph) SetSpacingAfter(
 	p.GetOrCreateProperties().
 		GetOrCreateSpacingBetweenLines().
 		SetAfter(twips)
+
 	return p
 }
 
@@ -254,6 +269,7 @@ func (p *Paragraph) SetLeftIndent(
 	p.GetOrCreateProperties().
 		GetOrCreateIndentation().
 		SetLeft(twips)
+
 	return p
 }
 
@@ -264,6 +280,7 @@ func (p *Paragraph) SetRightIndent(
 	p.GetOrCreateProperties().
 		GetOrCreateIndentation().
 		SetRight(twips)
+
 	return p
 }
 
@@ -274,6 +291,7 @@ func (p *Paragraph) SetFirstLineIndent(
 	p.GetOrCreateProperties().
 		GetOrCreateIndentation().
 		SetFirstLine(twips)
+
 	return p
 }
 
@@ -284,6 +302,7 @@ func (p *Paragraph) SetHangingIndent(
 	p.GetOrCreateProperties().
 		GetOrCreateIndentation().
 		SetHanging(twips)
+
 	return p
 }
 
@@ -295,6 +314,7 @@ func (p *Paragraph) SetNumbering(
 		GetOrCreateNumberingProperties()
 	np.SetNumberingId(numId)
 	np.SetNumberingLevel(level)
+
 	return p
 }
 
@@ -316,6 +336,7 @@ func (p *Paragraph) RemoveNumbering() *Paragraph {
 	if np != nil {
 		props.RemoveChild(np)
 	}
+
 	return p
 }
 
@@ -331,6 +352,7 @@ func (p *Paragraph) SetNumberingLevel(
 	if np != nil {
 		np.SetNumberingLevel(level)
 	}
+
 	return p
 }
 
@@ -344,6 +366,7 @@ func (p *Paragraph) NumberingId() int {
 	if np == nil {
 		return 0
 	}
+
 	return np.NumberingId()
 }
 
@@ -357,6 +380,7 @@ func (p *Paragraph) NumberingLevel() int {
 	if np == nil {
 		return -1
 	}
+
 	return np.NumberingLevelReference()
 }
 
@@ -366,5 +390,6 @@ func (p *Paragraph) IsNumbered() bool {
 	if props == nil {
 		return false
 	}
+
 	return props.NumberingProperties() != nil
 }

@@ -134,6 +134,7 @@ func New(
 	// Initialize the document structure
 	if err := doc.initializeDocument(); err != nil {
 		pkg.Close()
+
 		return nil, err
 	}
 
@@ -163,6 +164,7 @@ func NewWriter(
 	// Initialize the document structure
 	if err := doc.initializeDocument(); err != nil {
 		doc.pkg.Close()
+
 		return nil, err
 	}
 
@@ -268,6 +270,7 @@ func NewFromTemplate(
 	// For now, just initialize with basic structure
 	if err := doc.initializeDocument(); err != nil {
 		doc.pkg.Close()
+
 		return nil, err
 	}
 
@@ -295,6 +298,7 @@ func (d *Document) detectDocumentType() {
 	mainPart := d.pkg.MainPart()
 	if mainPart == nil {
 		d.docType = DocTypeDocument
+
 		return
 	}
 
@@ -361,6 +365,7 @@ func (d *Document) MainPart() *parts.MainPart {
 	// Wrap it as a MainPart if needed
 	if mp, ok := mainPart.(*parts.MainPart); ok {
 		d.mainPart = mp
+
 		return mp
 	}
 
@@ -371,6 +376,7 @@ func (d *Document) MainPart() *parts.MainPart {
 			d.docType.ContentType(),
 		)
 		d.mainPart = mp
+
 		return mp
 	}
 
@@ -418,6 +424,7 @@ func (d *Document) ExtendedProperties() openxml.OpenXmlPart {
 	for part := range d.pkg.GetPartsOfType(openxml.ContentTypeExtendedProperties) {
 		return part
 	}
+
 	return nil
 }
 
@@ -474,6 +481,7 @@ func (d *Document) Close() error {
 	err := d.pkg.Close()
 	d.pkg = nil
 	d.mainPart = nil
+
 	return err
 }
 
@@ -506,6 +514,7 @@ func (d *Document) ChangeType(
 	}
 
 	d.docType = newType
+
 	return nil
 }
 
@@ -719,5 +728,6 @@ func (d *Document) IsValid(
 	version validation.FileFormatVersions,
 ) bool {
 	errors := d.Validate(version)
+
 	return !errors.HasErrors()
 }

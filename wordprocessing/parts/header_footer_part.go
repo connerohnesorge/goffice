@@ -105,6 +105,7 @@ func (hp *HeaderPart) Header() *elements.Header {
 			PartRootElementBase: pre,
 		}
 	}
+
 	return nil
 }
 
@@ -116,6 +117,7 @@ func (hp *HeaderPart) GetOrCreateHeader() *elements.Header {
 	}
 	h = elements.NewHeader()
 	hp.SetRootElement(h)
+
 	return h
 }
 
@@ -199,6 +201,7 @@ func (fp *FooterPart) Footer() *elements.Footer {
 			PartRootElementBase: pre,
 		}
 	}
+
 	return nil
 }
 
@@ -210,6 +213,7 @@ func (fp *FooterPart) GetOrCreateFooter() *elements.Footer {
 	}
 	f = elements.NewFooter()
 	fp.SetRootElement(f)
+
 	return f
 }
 
@@ -242,6 +246,7 @@ func HeaderPartFactory(
 		packPart,
 		container,
 	)
+
 	return &HeaderPart{
 		OpenXmlPartData: partData,
 	}
@@ -268,6 +273,7 @@ func FooterPartFactory(
 		packPart,
 		container,
 	)
+
 	return &FooterPart{
 		OpenXmlPartData: partData,
 	}

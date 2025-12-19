@@ -90,6 +90,7 @@ func (tv *TwipsValue) Value() int64 {
 	if !tv.hasValue {
 		return 0
 	}
+
 	return tv.value
 }
 
@@ -104,6 +105,7 @@ func (tv *TwipsValue) ToPoints() float64 {
 	if !tv.hasValue {
 		return 0
 	}
+
 	return float64(tv.value) / TwipsPerPoint
 }
 
@@ -112,6 +114,7 @@ func (tv *TwipsValue) ToInches() float64 {
 	if !tv.hasValue {
 		return 0
 	}
+
 	return float64(tv.value) / TwipsPerInch
 }
 
@@ -120,6 +123,7 @@ func (tv *TwipsValue) ToCentimeters() float64 {
 	if !tv.hasValue {
 		return 0
 	}
+
 	return float64(tv.value) / TwipsPerCm
 }
 
@@ -133,6 +137,7 @@ func (tv *TwipsValue) InnerText() string {
 	if !tv.hasValue {
 		return ""
 	}
+
 	return strconv.FormatInt(tv.value, 10)
 }
 
@@ -143,6 +148,7 @@ func (tv *TwipsValue) SetInnerText(
 	if text == "" {
 		tv.hasValue = false
 		tv.value = 0
+
 		return nil
 	}
 	v, err := strconv.ParseInt(text, 10, 64)
@@ -154,6 +160,7 @@ func (tv *TwipsValue) SetInnerText(
 	}
 	tv.value = v
 	tv.hasValue = true
+
 	return nil
 }
 
@@ -205,6 +212,7 @@ func (hv *HalfPointsValue) Value() int64 {
 	if !hv.hasValue {
 		return 0
 	}
+
 	return hv.value
 }
 
@@ -221,6 +229,7 @@ func (hv *HalfPointsValue) ToPoints() float64 {
 	if !hv.hasValue {
 		return 0
 	}
+
 	return float64(hv.value) / HalfPointsPerPoint
 }
 
@@ -229,6 +238,7 @@ func (hv *HalfPointsValue) ToInches() float64 {
 	if !hv.hasValue {
 		return 0
 	}
+
 	return float64(
 		hv.value,
 	) / (HalfPointsPerPoint * PointsPerInch)
@@ -244,6 +254,7 @@ func (hv *HalfPointsValue) InnerText() string {
 	if !hv.hasValue {
 		return ""
 	}
+
 	return strconv.FormatInt(hv.value, 10)
 }
 
@@ -254,6 +265,7 @@ func (hv *HalfPointsValue) SetInnerText(
 	if text == "" {
 		hv.hasValue = false
 		hv.value = 0
+
 		return nil
 	}
 	v, err := strconv.ParseInt(text, 10, 64)
@@ -265,6 +277,7 @@ func (hv *HalfPointsValue) SetInnerText(
 	}
 	hv.value = v
 	hv.hasValue = true
+
 	return nil
 }
 
@@ -332,6 +345,7 @@ func (ev *EmuValue) Value() int64 {
 	if !ev.hasValue {
 		return 0
 	}
+
 	return ev.value
 }
 
@@ -346,6 +360,7 @@ func (ev *EmuValue) ToPoints() float64 {
 	if !ev.hasValue {
 		return 0
 	}
+
 	return float64(ev.value) / EmuPerPoint
 }
 
@@ -354,6 +369,7 @@ func (ev *EmuValue) ToInches() float64 {
 	if !ev.hasValue {
 		return 0
 	}
+
 	return float64(ev.value) / EmuPerInch
 }
 
@@ -362,6 +378,7 @@ func (ev *EmuValue) ToCentimeters() float64 {
 	if !ev.hasValue {
 		return 0
 	}
+
 	return float64(ev.value) / EmuPerCm
 }
 
@@ -370,6 +387,7 @@ func (ev *EmuValue) ToTwips() int64 {
 	if !ev.hasValue {
 		return 0
 	}
+
 	return ev.value / EmuPerTwip
 }
 
@@ -383,6 +401,7 @@ func (ev *EmuValue) InnerText() string {
 	if !ev.hasValue {
 		return ""
 	}
+
 	return strconv.FormatInt(ev.value, 10)
 }
 
@@ -393,6 +412,7 @@ func (ev *EmuValue) SetInnerText(
 	if text == "" {
 		ev.hasValue = false
 		ev.value = 0
+
 		return nil
 	}
 	v, err := strconv.ParseInt(text, 10, 64)
@@ -404,6 +424,7 @@ func (ev *EmuValue) SetInnerText(
 	}
 	ev.value = v
 	ev.hasValue = true
+
 	return nil
 }
 

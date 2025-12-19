@@ -69,8 +69,10 @@ func NewNilEnumValueWithValidation[T EnumStringer](
 func (ev *EnumValue[T]) Value() T {
 	if !ev.hasValue {
 		var zero T
+
 		return zero
 	}
+
 	return ev.value
 }
 
@@ -98,6 +100,7 @@ func (ev *EnumValue[T]) InnerText() string {
 	if !ev.hasValue {
 		return ""
 	}
+
 	return string(ev.value)
 }
 
@@ -111,6 +114,7 @@ func (ev *EnumValue[T]) SetInnerText(
 		ev.hasValue = false
 		var zero T
 		ev.value = zero
+
 		return nil
 	}
 
@@ -119,8 +123,10 @@ func (ev *EnumValue[T]) SetInnerText(
 		if v, ok := ev.validValues[text]; ok {
 			ev.value = v
 			ev.hasValue = true
+
 			return nil
 		}
+
 		return fmt.Errorf(
 			"invalid enum value: %q",
 			text,
@@ -130,6 +136,7 @@ func (ev *EnumValue[T]) SetInnerText(
 	// Without validation, accept any string and convert it
 	ev.value = T(text)
 	ev.hasValue = true
+
 	return nil
 }
 

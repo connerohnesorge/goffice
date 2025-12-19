@@ -48,6 +48,7 @@ func NewFonts() *Fonts {
 		"fonts",
 		PrefixW,
 	)
+
 	return &Fonts{CompositeElementBase: elem}
 }
 
@@ -78,6 +79,7 @@ func (f *Fonts) GetFont(name string) *Font {
 			return font
 		}
 	}
+
 	return nil
 }
 
@@ -91,6 +93,7 @@ func (f *Fonts) AddFontByName(name string) *Font {
 	font := NewFont()
 	font.SetName(name)
 	f.AppendChild(font)
+
 	return font
 }
 
@@ -127,6 +130,7 @@ func NewFont() *Font {
 		"font",
 		PrefixW,
 	)
+
 	return &Font{CompositeElementBase: elem}
 }
 
@@ -139,6 +143,7 @@ func (fn *Font) Name() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -167,6 +172,7 @@ func (fn *Font) Charset() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -174,6 +180,7 @@ func (fn *Font) Charset() string {
 func (fn *Font) SetCharset(charset string) {
 	if charset == "" {
 		fn.removeElement("charset")
+
 		return
 	}
 	elem := fn.getOrCreateElement("charset")
@@ -200,6 +207,7 @@ func (fn *Font) Family() FontFamilyValue {
 	if !found {
 		return FontFamilyAuto
 	}
+
 	return FontFamilyValue(attr.Value())
 }
 
@@ -209,6 +217,7 @@ func (fn *Font) SetFamily(
 ) {
 	if family == FontFamilyAuto {
 		fn.removeElement("family")
+
 		return
 	}
 	elem := fn.getOrCreateElement("family")
@@ -235,6 +244,7 @@ func (fn *Font) Pitch() FontPitchValue {
 	if !found {
 		return FontPitchDefault
 	}
+
 	return FontPitchValue(attr.Value())
 }
 
@@ -242,6 +252,7 @@ func (fn *Font) Pitch() FontPitchValue {
 func (fn *Font) SetPitch(pitch FontPitchValue) {
 	if pitch == FontPitchDefault {
 		fn.removeElement("pitch")
+
 		return
 	}
 	elem := fn.getOrCreateElement("pitch")
@@ -268,6 +279,7 @@ func (fn *Font) Panose1() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -275,6 +287,7 @@ func (fn *Font) Panose1() string {
 func (fn *Font) SetPanose1(panose string) {
 	if panose == "" {
 		fn.removeElement("panose1")
+
 		return
 	}
 	elem := fn.getOrCreateElement("panose1")
@@ -301,6 +314,7 @@ func (fn *Font) AltName() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -308,6 +322,7 @@ func (fn *Font) AltName() string {
 func (fn *Font) SetAltName(name string) {
 	if name == "" {
 		fn.removeElement("altName")
+
 		return
 	}
 	elem := fn.getOrCreateElement("altName")
@@ -339,6 +354,7 @@ func (fn *Font) EmbedRegular() *EmbedFont {
 			fontStyle:            "embedRegular",
 		}
 	}
+
 	return nil
 }
 
@@ -350,6 +366,7 @@ func (fn *Font) GetOrCreateEmbedRegular() *EmbedFont {
 	}
 	ef = NewEmbedFont("embedRegular")
 	fn.AppendChild(ef)
+
 	return ef
 }
 
@@ -371,6 +388,7 @@ func (fn *Font) EmbedBold() *EmbedFont {
 			fontStyle:            "embedBold",
 		}
 	}
+
 	return nil
 }
 
@@ -382,6 +400,7 @@ func (fn *Font) GetOrCreateEmbedBold() *EmbedFont {
 	}
 	ef = NewEmbedFont("embedBold")
 	fn.AppendChild(ef)
+
 	return ef
 }
 
@@ -403,6 +422,7 @@ func (fn *Font) EmbedItalic() *EmbedFont {
 			fontStyle:            "embedItalic",
 		}
 	}
+
 	return nil
 }
 
@@ -414,6 +434,7 @@ func (fn *Font) GetOrCreateEmbedItalic() *EmbedFont {
 	}
 	ef = NewEmbedFont("embedItalic")
 	fn.AppendChild(ef)
+
 	return ef
 }
 
@@ -435,6 +456,7 @@ func (fn *Font) EmbedBoldItalic() *EmbedFont {
 			fontStyle:            "embedBoldItalic",
 		}
 	}
+
 	return nil
 }
 
@@ -446,6 +468,7 @@ func (fn *Font) GetOrCreateEmbedBoldItalic() *EmbedFont {
 	}
 	ef = NewEmbedFont("embedBoldItalic")
 	fn.AppendChild(ef)
+
 	return ef
 }
 
@@ -463,6 +486,7 @@ func (fn *Font) Sig() *FontSig {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -474,6 +498,7 @@ func (fn *Font) GetOrCreateSig() *FontSig {
 	}
 	fs = NewFontSig()
 	fn.AppendChild(fs)
+
 	return fs
 }
 
@@ -492,6 +517,7 @@ func (fn *Font) getOrCreateElement(
 		PrefixW,
 	)
 	fn.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -531,6 +557,7 @@ func NewEmbedFont(style string) *EmbedFont {
 		style,
 		PrefixW,
 	)
+
 	return &EmbedFont{
 		CompositeElementBase: elem,
 		fontStyle:            style,
@@ -547,6 +574,7 @@ func (ef *EmbedFont) RelationshipId() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -573,6 +601,7 @@ func (ef *EmbedFont) FontKey() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -583,6 +612,7 @@ func (ef *EmbedFont) SetFontKey(key string) {
 			"fontKey",
 			NamespaceWML,
 		)
+
 		return
 	}
 	ef.SetAttribute(
@@ -604,6 +634,7 @@ func (ef *EmbedFont) SubsetFontLicensing() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -637,6 +668,7 @@ func NewFontSig() *FontSig {
 		"sig",
 		PrefixW,
 	)
+
 	return &FontSig{CompositeElementBase: elem}
 }
 
@@ -649,6 +681,7 @@ func (fs *FontSig) Usb0() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -673,6 +706,7 @@ func (fs *FontSig) Usb1() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -697,6 +731,7 @@ func (fs *FontSig) Usb2() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -721,6 +756,7 @@ func (fs *FontSig) Usb3() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -745,6 +781,7 @@ func (fs *FontSig) Csb0() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -769,6 +806,7 @@ func (fs *FontSig) Csb1() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 

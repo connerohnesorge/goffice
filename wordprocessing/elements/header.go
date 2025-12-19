@@ -19,6 +19,7 @@ func NewHeader() *Header {
 		"hdr",
 		PrefixW,
 	)
+
 	return &Header{PartRootElementBase: elem}
 }
 
@@ -68,6 +69,7 @@ func (h *Header) AppendParagraph(
 ) *Paragraph {
 	p := NewParagraph(text)
 	h.AppendChild(p)
+
 	return p
 }
 
@@ -81,6 +83,7 @@ func (h *Header) PrependParagraph(
 	} else {
 		h.AppendChild(p)
 	}
+
 	return p
 }
 
@@ -90,6 +93,7 @@ func (h *Header) AppendTable(
 ) *Table {
 	t := NewTable(rows, cols)
 	h.AppendChild(t)
+
 	return t
 }
 

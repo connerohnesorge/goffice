@@ -147,6 +147,7 @@ func Open(
 	}
 
 	pkg.path = path
+
 	return pkg, nil
 }
 
@@ -233,6 +234,7 @@ func (p *Package) loadContentTypes() error {
 			)
 		}
 	}
+
 	return ErrInvalidPackage
 }
 
@@ -302,6 +304,7 @@ func (p *Package) loadParts() error {
 		rels := NewRelationships(sourceURI)
 		if err := rels.UnmarshalFromXML(rc); err != nil {
 			rc.Close()
+
 			return err
 		}
 		rc.Close()
@@ -471,6 +474,7 @@ func writeZipFile(
 		return err
 	}
 	_, err = w.Write(data)
+
 	return err
 }
 
@@ -501,6 +505,7 @@ func (p *Package) Close() error {
 func (p *Package) Capability() PackageCapability {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.capability
 }
 
@@ -509,6 +514,7 @@ func (p *Package) Capability() PackageCapability {
 func (p *Package) Path() string {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.path
 }
 
@@ -516,6 +522,7 @@ func (p *Package) Path() string {
 func (p *Package) IsClosed() bool {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.closed
 }
 
@@ -662,6 +669,7 @@ func (p *Package) Parts() iter.Seq[*Part] {
 func (p *Package) PartCount() int {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return len(p.parts)
 }
 
@@ -669,6 +677,7 @@ func (p *Package) PartCount() int {
 func (p *Package) ContentTypes() *ContentTypes {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.contentTypes
 }
 
@@ -751,6 +760,7 @@ func (p *Package) DeleteRelationship(
 func (p *Package) Relationships() *Relationships {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.relationships
 }
 
@@ -763,6 +773,7 @@ func (p *Package) PartRelationships(
 	defer p.mu.RUnlock()
 
 	normalizedURI := NormalizeURI(partURI)
+
 	return p.partRels[normalizedURI]
 }
 
@@ -821,6 +832,7 @@ func (p *Package) DeletePartRelationship(
 func (p *Package) CoreProperties() *CoreProperties {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.coreProperties
 }
 
@@ -868,5 +880,6 @@ func (p *Package) EnsureCorePropertiesPart() error {
 	}
 
 	p.parts[uri].SetData(data)
+
 	return nil
 }

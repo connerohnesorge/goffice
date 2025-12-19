@@ -33,6 +33,7 @@ func (iv *Int32Value) Value() int32 {
 	if !iv.hasValue {
 		return 0
 	}
+
 	return iv.value
 }
 
@@ -52,6 +53,7 @@ func (iv *Int32Value) InnerText() string {
 	if !iv.hasValue {
 		return ""
 	}
+
 	return strconv.FormatInt(int64(iv.value), 10)
 }
 
@@ -63,6 +65,7 @@ func (iv *Int32Value) SetInnerText(
 	if text == "" {
 		iv.hasValue = false
 		iv.value = 0
+
 		return nil
 	}
 	v, err := strconv.ParseInt(text, 10, 32)
@@ -74,6 +77,7 @@ func (iv *Int32Value) SetInnerText(
 	}
 	iv.value = int32(v)
 	iv.hasValue = true
+
 	return nil
 }
 
@@ -111,6 +115,7 @@ func (uv *UInt32Value) Value() uint32 {
 	if !uv.hasValue {
 		return 0
 	}
+
 	return uv.value
 }
 
@@ -130,6 +135,7 @@ func (uv *UInt32Value) InnerText() string {
 	if !uv.hasValue {
 		return ""
 	}
+
 	return strconv.FormatUint(
 		uint64(uv.value),
 		10,
@@ -144,6 +150,7 @@ func (uv *UInt32Value) SetInnerText(
 	if text == "" {
 		uv.hasValue = false
 		uv.value = 0
+
 		return nil
 	}
 	// Check for negative values
@@ -162,6 +169,7 @@ func (uv *UInt32Value) SetInnerText(
 	}
 	uv.value = uint32(v)
 	uv.hasValue = true
+
 	return nil
 }
 

@@ -102,6 +102,7 @@ func VbaProjectPartFactory(
 		packPart,
 		container,
 	)
+
 	return &VbaProjectPart{
 		OpenXmlPartData: partData,
 	}

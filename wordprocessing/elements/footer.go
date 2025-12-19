@@ -19,6 +19,7 @@ func NewFooter() *Footer {
 		"ftr",
 		PrefixW,
 	)
+
 	return &Footer{PartRootElementBase: elem}
 }
 
@@ -68,6 +69,7 @@ func (f *Footer) AppendParagraph(
 ) *Paragraph {
 	p := NewParagraph(text)
 	f.AppendChild(p)
+
 	return p
 }
 
@@ -81,6 +83,7 @@ func (f *Footer) PrependParagraph(
 	} else {
 		f.AppendChild(p)
 	}
+
 	return p
 }
 
@@ -90,6 +93,7 @@ func (f *Footer) AppendTable(
 ) *Table {
 	t := NewTable(rows, cols)
 	f.AppendChild(t)
+
 	return t
 }
 

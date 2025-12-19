@@ -55,6 +55,7 @@ func (xw *XMLWriter) WriteDeclaration() error {
 	if xw.pretty {
 		_, err = io.WriteString(xw.w, "\n")
 	}
+
 	return err
 }
 
@@ -144,6 +145,7 @@ func (xw *XMLWriter) WriteElementWithNamespaces(
 	}
 
 	_, err := xw.w.Write(buf.Bytes())
+
 	return err
 }
 
@@ -230,6 +232,7 @@ func WriteDocumentElement(
 
 	// Write element with namespaces
 	xw := NewXMLWriter(w)
+
 	return xw.WriteElementWithNamespaces(
 		elem,
 		namespaces,
@@ -247,5 +250,6 @@ func OuterXmlWithNamespaces(
 		elem,
 		namespaces,
 	)
+
 	return buf.String()
 }

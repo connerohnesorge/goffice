@@ -138,6 +138,7 @@ func (va *VersionAvailability) IsDeprecatedIn(
 	if va == nil || va.DeprecatedIn == 0 {
 		return false
 	}
+
 	return version >= va.DeprecatedIn
 }
 
@@ -146,6 +147,7 @@ func (va *VersionAvailability) Deprecated(
 	version FileFormatVersions,
 ) *VersionAvailability {
 	va.DeprecatedIn = version
+
 	return va
 }
 
@@ -154,6 +156,7 @@ func (va *VersionAvailability) Removed(
 	version FileFormatVersions,
 ) *VersionAvailability {
 	va.RemovedIn = version
+
 	return va
 }
 
@@ -199,5 +202,6 @@ func CheckElementVersion(
 			)
 		}
 	}
+
 	return nil
 }

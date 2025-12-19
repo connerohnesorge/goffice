@@ -136,6 +136,7 @@ func StylesPartFactory(
 		packPart,
 		container,
 	)
+
 	return &StylesPart{
 		OpenXmlPartData: partData,
 	}

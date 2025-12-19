@@ -109,6 +109,7 @@ func (mp *MainPart) StylesPart() *StylesPart {
 			return sp
 		}
 	}
+
 	return nil
 }
 
@@ -124,6 +125,7 @@ func (mp *MainPart) NumberingPart() *NumberingPart {
 			return np
 		}
 	}
+
 	return nil
 }
 
@@ -139,6 +141,7 @@ func (mp *MainPart) SettingsPart() *SettingsPart {
 			return sp
 		}
 	}
+
 	return nil
 }
 
@@ -154,6 +157,7 @@ func (mp *MainPart) WebSettingsPart() *WebSettingsPart {
 			return wsp
 		}
 	}
+
 	return nil
 }
 
@@ -169,6 +173,7 @@ func (mp *MainPart) FontsPart() *FontsPart {
 			return fp
 		}
 	}
+
 	return nil
 }
 
@@ -185,6 +190,7 @@ func (mp *MainPart) HeaderParts() []*HeaderPart {
 			headers = append(headers, hp)
 		}
 	}
+
 	return headers
 }
 
@@ -201,6 +207,7 @@ func (mp *MainPart) FooterParts() []*FooterPart {
 			footers = append(footers, fp)
 		}
 	}
+
 	return footers
 }
 
@@ -219,6 +226,7 @@ func (mp *MainPart) ImageParts() []*ImagePart {
 			images = append(images, ip)
 		}
 	}
+
 	return images
 }
 
@@ -234,6 +242,7 @@ func (mp *MainPart) FootnotesPart() *FootnotesPart {
 			return fp
 		}
 	}
+
 	return nil
 }
 
@@ -249,6 +258,7 @@ func (mp *MainPart) EndnotesPart() *EndnotesPart {
 			return ep
 		}
 	}
+
 	return nil
 }
 
@@ -264,6 +274,7 @@ func (mp *MainPart) CommentsPart() *CommentsPart {
 			return cp
 		}
 	}
+
 	return nil
 }
 
@@ -279,6 +290,7 @@ func (mp *MainPart) ThemePart() *ThemePart {
 			return tp
 		}
 	}
+
 	return nil
 }
 
@@ -308,6 +320,7 @@ func MainPartFactory(
 		packPart,
 		container,
 	)
+
 	return NewMainPartFromData(
 		partData,
 		packPart.ContentType(),
@@ -367,6 +380,7 @@ func (mp *MainPart) CustomXmlParts() []*CustomXmlPart {
 			parts = append(parts, cp)
 		}
 	}
+
 	return parts
 }
 
@@ -382,6 +396,7 @@ func (mp *MainPart) VbaProjectPart() *VbaProjectPart {
 			return vp
 		}
 	}
+
 	return nil
 }
 
@@ -397,6 +412,7 @@ func (mp *MainPart) GlossaryPart() *GlossaryPart {
 			return gp
 		}
 	}
+
 	return nil
 }
 

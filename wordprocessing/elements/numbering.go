@@ -21,6 +21,7 @@ func NewNumbering() *Numbering {
 		"numbering",
 		PrefixW,
 	)
+
 	return &Numbering{
 		CompositeElementBase: elem,
 		nextAbstractNumId:    0,
@@ -77,6 +78,7 @@ func (n *Numbering) GetAbstractNum(
 			return an
 		}
 	}
+
 	return nil
 }
 
@@ -89,6 +91,7 @@ func (n *Numbering) GetNumInstance(
 			return ni
 		}
 	}
+
 	return nil
 }
 
@@ -118,6 +121,7 @@ func (n *Numbering) AddAbstractNum(
 		if child.LocalName() == "num" &&
 			child.NamespaceURI() == NamespaceWML {
 			insertBefore = child
+
 			break
 		}
 	}
@@ -151,6 +155,7 @@ func (n *Numbering) AddNumInstance(
 	n.nextNumId++
 
 	n.AppendChild(instance)
+
 	return id
 }
 
@@ -160,6 +165,7 @@ func (n *Numbering) CreateNumberingInstance(
 ) *NumberingInstance {
 	ni := NewNumberingInstance(abstractNumId)
 	n.AddNumInstance(ni)
+
 	return ni
 }
 
@@ -201,6 +207,7 @@ func NewNumberingInstance(
 		CompositeElementBase: elem,
 	}
 	ni.SetAbstractNumIdRef(abstractNumId)
+
 	return ni
 }
 
@@ -217,6 +224,7 @@ func (ni *NumberingInstance) NumId() int {
 	if err != nil {
 		return 0
 	}
+
 	return val
 }
 
@@ -252,6 +260,7 @@ func (ni *NumberingInstance) AbstractNumId() int {
 	if err != nil {
 		return 0
 	}
+
 	return val
 }
 
@@ -307,6 +316,7 @@ func (ni *NumberingInstance) AddLevelOverride(
 ) *LevelOverride {
 	lo := NewLevelOverride(levelIndex)
 	ni.AppendChild(lo)
+
 	return lo
 }
 
@@ -335,6 +345,7 @@ func NewLevelOverride(
 		CompositeElementBase: elem,
 	}
 	lo.SetLevelIndex(levelIndex)
+
 	return lo
 }
 
@@ -351,6 +362,7 @@ func (lo *LevelOverride) LevelIndex() int {
 	if err != nil {
 		return 0
 	}
+
 	return val
 }
 
@@ -388,6 +400,7 @@ func (lo *LevelOverride) StartOverride() int {
 	if err != nil {
 		return -1
 	}
+
 	return val
 }
 
@@ -429,6 +442,7 @@ func (lo *LevelOverride) Level() *Level {
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &Level{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 

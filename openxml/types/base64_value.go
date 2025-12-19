@@ -19,6 +19,7 @@ func NewBase64BinaryValue(
 	// Make a copy to avoid aliasing issues
 	valueCopy := make([]byte, len(v))
 	copy(valueCopy, v)
+
 	return &Base64BinaryValue{
 		value:    valueCopy,
 		hasValue: true,
@@ -34,6 +35,7 @@ func NewBase64BinaryValueFromString(
 	if err := bv.SetInnerText(s); err != nil {
 		return nil, err
 	}
+
 	return bv, nil
 }
 
@@ -53,6 +55,7 @@ func (bv *Base64BinaryValue) Value() []byte {
 	// Return a copy to prevent modification of internal state
 	valueCopy := make([]byte, len(bv.value))
 	copy(valueCopy, bv.value)
+
 	return valueCopy
 }
 
@@ -74,6 +77,7 @@ func (bv *Base64BinaryValue) InnerText() string {
 	if !bv.hasValue {
 		return ""
 	}
+
 	return base64.StdEncoding.EncodeToString(
 		bv.value,
 	)
@@ -87,6 +91,7 @@ func (bv *Base64BinaryValue) SetInnerText(
 	if text == "" {
 		bv.hasValue = false
 		bv.value = nil
+
 		return nil
 	}
 	decoded, err := base64.StdEncoding.DecodeString(
@@ -100,6 +105,7 @@ func (bv *Base64BinaryValue) SetInnerText(
 	}
 	bv.value = decoded
 	bv.hasValue = true
+
 	return nil
 }
 
@@ -115,6 +121,7 @@ func (bv *Base64BinaryValue) Len() int {
 	if !bv.hasValue {
 		return 0
 	}
+
 	return len(bv.value)
 }
 

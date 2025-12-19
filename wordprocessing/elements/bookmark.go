@@ -40,6 +40,7 @@ func NewBookmarkStart(
 			name,
 		),
 	)
+
 	return bs
 }
 
@@ -53,6 +54,7 @@ func (bs *BookmarkStart) Id() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -77,6 +79,7 @@ func (bs *BookmarkStart) Name() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -129,6 +132,7 @@ func NewBookmarkEnd(id int) *BookmarkEnd {
 			strconv.Itoa(id),
 		),
 	)
+
 	return be
 }
 
@@ -142,6 +146,7 @@ func (be *BookmarkEnd) Id() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 

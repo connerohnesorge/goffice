@@ -18,6 +18,7 @@ func NewDocDefaults() *DocDefaults {
 		"docDefaults",
 		PrefixW,
 	)
+
 	return &DocDefaults{
 		CompositeElementBase: elem,
 	}
@@ -40,6 +41,7 @@ func (dd *DocDefaults) RunPropertiesDefault() *RunPropertiesDefault {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -56,6 +58,7 @@ func (dd *DocDefaults) GetOrCreateRunPropertiesDefault() *RunPropertiesDefault {
 	} else {
 		dd.AppendChild(rpd)
 	}
+
 	return rpd
 }
 
@@ -76,6 +79,7 @@ func (dd *DocDefaults) ParagraphPropertiesDefault() *ParagraphPropertiesDefault 
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -87,6 +91,7 @@ func (dd *DocDefaults) GetOrCreateParagraphPropertiesDefault() *ParagraphPropert
 	}
 	ppd = NewParagraphPropertiesDefault()
 	dd.AppendChild(ppd)
+
 	return ppd
 }
 
@@ -118,6 +123,7 @@ func NewRunPropertiesDefault() *RunPropertiesDefault {
 		"rPrDefault",
 		PrefixW,
 	)
+
 	return &RunPropertiesDefault{
 		CompositeElementBase: elem,
 	}
@@ -137,6 +143,7 @@ func (rpd *RunPropertiesDefault) RunProperties() *DefaultRunProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -148,6 +155,7 @@ func (rpd *RunPropertiesDefault) GetOrCreateRunProperties() *DefaultRunPropertie
 	}
 	rp = NewDefaultRunProperties()
 	rpd.AppendChild(rp)
+
 	return rp
 }
 
@@ -170,6 +178,7 @@ func NewParagraphPropertiesDefault() *ParagraphPropertiesDefault {
 		"pPrDefault",
 		PrefixW,
 	)
+
 	return &ParagraphPropertiesDefault{
 		CompositeElementBase: elem,
 	}
@@ -189,6 +198,7 @@ func (ppd *ParagraphPropertiesDefault) ParagraphProperties() *DefaultParagraphPr
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -200,6 +210,7 @@ func (ppd *ParagraphPropertiesDefault) GetOrCreateParagraphProperties() *Default
 	}
 	pp = NewDefaultParagraphProperties()
 	ppd.AppendChild(pp)
+
 	return pp
 }
 
@@ -222,6 +233,7 @@ func NewDefaultRunProperties() *DefaultRunProperties {
 		"rPr",
 		PrefixW,
 	)
+
 	return &DefaultRunProperties{
 		CompositeElementBase: elem,
 	}
@@ -233,6 +245,7 @@ func (rp *DefaultRunProperties) SetFontSize(
 ) {
 	if halfPoints <= 0 {
 		rp.removeElement("sz")
+
 		return
 	}
 	elem := rp.getOrCreateElement("sz")
@@ -252,6 +265,7 @@ func (rp *DefaultRunProperties) SetFontSizeComplexScript(
 ) {
 	if halfPoints <= 0 {
 		rp.removeElement("szCs")
+
 		return
 	}
 	elem := rp.getOrCreateElement("szCs")
@@ -350,6 +364,7 @@ func (rp *DefaultRunProperties) getOrCreateElement(
 		PrefixW,
 	)
 	rp.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -381,6 +396,7 @@ func NewDefaultParagraphProperties() *DefaultParagraphProperties {
 		"pPr",
 		PrefixW,
 	)
+
 	return &DefaultParagraphProperties{
 		CompositeElementBase: elem,
 	}
@@ -455,6 +471,7 @@ func (pp *DefaultParagraphProperties) getOrCreateElement(
 		PrefixW,
 	)
 	pp.AppendChild(newElem)
+
 	return newElem
 }
 

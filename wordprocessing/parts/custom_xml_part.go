@@ -112,6 +112,7 @@ func CustomXmlPartFactory(
 		packPart,
 		container,
 	)
+
 	return &CustomXmlPart{
 		OpenXmlPartData: partData,
 	}

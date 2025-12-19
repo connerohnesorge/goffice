@@ -41,6 +41,7 @@ func NewFeatureCollectionWithParent(
 func (fc *FeatureCollection) Parent() *FeatureCollection {
 	fc.mu.RLock()
 	defer fc.mu.RUnlock()
+
 	return fc.parent
 }
 
@@ -113,6 +114,7 @@ func (fc *FeatureCollection) getLocal(
 ) Feature {
 	fc.mu.RLock()
 	defer fc.mu.RUnlock()
+
 	return fc.features[t]
 }
 
@@ -126,8 +128,10 @@ func (fc *FeatureCollection) Remove(
 
 	if _, ok := fc.features[featureType]; ok {
 		delete(fc.features, featureType)
+
 		return true
 	}
+
 	return false
 }
 
@@ -151,6 +155,7 @@ func (fc *FeatureCollection) HasLocal(
 func Get[T Feature](fc *FeatureCollection) T {
 	if fc == nil {
 		var zero T
+
 		return zero
 	}
 
@@ -159,6 +164,7 @@ func Get[T Feature](fc *FeatureCollection) T {
 
 	if feature == nil {
 		var zero T
+
 		return zero
 	}
 
@@ -167,6 +173,7 @@ func Get[T Feature](fc *FeatureCollection) T {
 	}
 
 	var zero T
+
 	return zero
 }
 
@@ -176,6 +183,7 @@ func GetLocal[T Feature](
 ) T {
 	if fc == nil {
 		var zero T
+
 		return zero
 	}
 
@@ -184,6 +192,7 @@ func GetLocal[T Feature](
 
 	if feature == nil {
 		var zero T
+
 		return zero
 	}
 
@@ -192,6 +201,7 @@ func GetLocal[T Feature](
 	}
 
 	var zero T
+
 	return zero
 }
 
@@ -207,5 +217,6 @@ func GetRequired[T Feature](
 			"required feature not found: " + t.String(),
 		)
 	}
+
 	return result
 }

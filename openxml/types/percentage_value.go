@@ -68,6 +68,7 @@ func (pv *PercentageValue) Value() int64 {
 	if !pv.hasValue {
 		return 0
 	}
+
 	return pv.value
 }
 
@@ -82,6 +83,7 @@ func (pv *PercentageValue) ToFloat() float64 {
 	if !pv.hasValue {
 		return 0
 	}
+
 	return float64(
 		pv.value,
 	) / (100 * PercentageScale)
@@ -92,6 +94,7 @@ func (pv *PercentageValue) ToPercent() float64 {
 	if !pv.hasValue {
 		return 0
 	}
+
 	return float64(pv.value) / PercentageScale
 }
 
@@ -106,6 +109,7 @@ func (pv *PercentageValue) InnerText() string {
 	if !pv.hasValue {
 		return ""
 	}
+
 	return strconv.FormatInt(pv.value, 10)
 }
 
@@ -117,6 +121,7 @@ func (pv *PercentageValue) SetInnerText(
 	if text == "" {
 		pv.hasValue = false
 		pv.value = 0
+
 		return nil
 	}
 
@@ -142,6 +147,7 @@ func (pv *PercentageValue) SetInnerText(
 			percent * PercentageScale,
 		)
 		pv.hasValue = true
+
 		return nil
 	}
 
@@ -155,6 +161,7 @@ func (pv *PercentageValue) SetInnerText(
 	}
 	pv.value = v
 	pv.hasValue = true
+
 	return nil
 }
 

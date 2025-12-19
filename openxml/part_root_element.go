@@ -26,6 +26,7 @@ func NewPartRootElement(
 		prefix,
 		nil,
 	)
+
 	return elem
 }
 
@@ -42,6 +43,7 @@ func NewPartRootElementWithFeatures(
 		prefix,
 		parentFeatures,
 	)
+
 	return elem
 }
 
@@ -76,6 +78,7 @@ func (p *PartRootElementBase) Save() error {
 	}
 
 	p.part.SetData(buf.Bytes())
+
 	return nil
 }
 

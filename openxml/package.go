@@ -137,6 +137,7 @@ func (p *OpenXmlPackage) loadParts() {
 func (p *OpenXmlPackage) Package() *packaging.Package {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.pkg
 }
 
@@ -154,6 +155,7 @@ func (p *OpenXmlPackage) GetPackagingPart(
 	if err != nil {
 		return nil
 	}
+
 	return part
 }
 
@@ -192,6 +194,7 @@ func (p *OpenXmlPackage) GetPartById(
 	if !ok {
 		return nil, ErrPartNotFound
 	}
+
 	return part, nil
 }
 
@@ -207,6 +210,7 @@ func (p *OpenXmlPackage) GetPartByURI(
 	if !ok {
 		return nil, ErrPartNotFound
 	}
+
 	return part, nil
 }
 
@@ -358,6 +362,7 @@ func (p *OpenXmlPackage) DeletePart(
 func (p *OpenXmlPackage) MainPart() OpenXmlPart {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.mainPart
 }
 
@@ -411,6 +416,7 @@ func (p *OpenXmlPackage) Save() error {
 	}
 
 	p.isDirty = false
+
 	return nil
 }
 
@@ -437,6 +443,7 @@ func (p *OpenXmlPackage) SaveAs(
 	}
 
 	p.isDirty = false
+
 	return nil
 }
 
@@ -451,8 +458,10 @@ func (p *OpenXmlPackage) Close() error {
 		p.parts = nil
 		p.partsByURI = nil
 		p.mainPart = nil
+
 		return err
 	}
+
 	return nil
 }
 
@@ -472,6 +481,7 @@ func (f *packageFeature) Package() any {
 	if f.pkg != nil {
 		return f.pkg.pkg
 	}
+
 	return nil
 }
 
@@ -482,6 +492,7 @@ func (f *packageFeature) Capabilities() features.PackageCapabilities {
 	}
 
 	cap := f.pkg.pkg.Capability()
+
 	return features.PackageCapabilities{
 		CanRead: cap == packaging.Read ||
 			cap == packaging.ReadWrite,
@@ -531,6 +542,7 @@ func (f *contentTypeFeature) SetContentType(
 	}
 
 	ct.SetOverride(uri, contentType)
+
 	return nil
 }
 
@@ -564,6 +576,7 @@ func (f *mainPartFeature) MainPart() any {
 	if f.pkg != nil {
 		return f.pkg.MainPart()
 	}
+
 	return nil
 }
 

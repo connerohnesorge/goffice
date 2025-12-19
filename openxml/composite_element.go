@@ -36,6 +36,7 @@ func NewCompositeElement(
 		prefix,
 		nil,
 	)
+
 	return elem
 }
 
@@ -52,6 +53,7 @@ func NewCompositeElementWithFeatures(
 		prefix,
 		parentFeatures,
 	)
+
 	return elem
 }
 
@@ -71,6 +73,7 @@ func (c *CompositeElementBase) FirstChild() Element {
 	if c.firstChild == nil {
 		return nil
 	}
+
 	return c.firstChild.element
 }
 
@@ -79,6 +82,7 @@ func (c *CompositeElementBase) LastChild() Element {
 	if c.lastChild == nil {
 		return nil
 	}
+
 	return c.lastChild.element
 }
 
@@ -92,6 +96,7 @@ func (c *CompositeElementBase) GetElement(
 			return node.element
 		}
 	}
+
 	return nil
 }
 
@@ -104,6 +109,7 @@ func (c *CompositeElementBase) findNode(
 			return node
 		}
 	}
+
 	return nil
 }
 
@@ -180,6 +186,7 @@ func (c *CompositeElementBase) InsertBefore(
 
 	if refChild == nil {
 		c.AppendChild(newChild)
+
 		return
 	}
 
@@ -187,6 +194,7 @@ func (c *CompositeElementBase) InsertBefore(
 	if refNode == nil {
 		// refChild not found, append
 		c.AppendChild(newChild)
+
 		return
 	}
 
@@ -223,6 +231,7 @@ func (c *CompositeElementBase) InsertAfter(
 
 	if refChild == nil {
 		c.PrependChild(newChild)
+
 		return
 	}
 
@@ -230,6 +239,7 @@ func (c *CompositeElementBase) InsertAfter(
 	if refNode == nil {
 		// refChild not found, append
 		c.AppendChild(newChild)
+
 		return
 	}
 
@@ -283,6 +293,7 @@ func (c *CompositeElementBase) RemoveChild(
 
 	child.setParent(nil)
 	c.childCount--
+
 	return true
 }
 
@@ -343,6 +354,7 @@ func (c *CompositeElementBase) NextSibling() Element {
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -360,6 +372,7 @@ func (c *CompositeElementBase) PreviousSibling() Element {
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -367,6 +380,7 @@ func (c *CompositeElementBase) PreviousSibling() Element {
 func (c *CompositeElementBase) OuterXml() string {
 	var buf bytes.Buffer
 	_ = c.WriteXML(&buf)
+
 	return buf.String()
 }
 
@@ -376,6 +390,7 @@ func (c *CompositeElementBase) InnerXml() string {
 	for node := c.firstChild; node != nil; node = node.next {
 		_ = node.element.WriteXML(&buf)
 	}
+
 	return buf.String()
 }
 
@@ -448,5 +463,6 @@ func GetElementTyped[T Element](
 			return typed, true
 		}
 	}
+
 	return result, false
 }

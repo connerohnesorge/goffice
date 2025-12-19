@@ -30,6 +30,7 @@ func Example_createDocument() {
 	doc, err := builder.Build()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -66,6 +67,7 @@ func Example_documentBuilder() {
 		Build()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -112,6 +114,7 @@ func Example_addTable() {
 	doc, err := builder.Build()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -161,6 +164,7 @@ func Example_formatting() {
 	doc, err := builder.Build()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -225,6 +229,7 @@ func Example_paragraphAlignment() {
 	doc, err := builder.Build()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -273,7 +278,7 @@ func Example_tableWithFormatting() {
 	}
 
 	// Set header cells with shading
-	for col := 0; col < 3; col++ {
+	for col := range 3 {
 		cell := tb.Cell(0, col)
 		if cell != nil {
 			cell.SetText(fmt.Sprintf("Header %d", col+1)).
@@ -283,7 +288,7 @@ func Example_tableWithFormatting() {
 
 	// Fill data cells
 	for row := 1; row < 3; row++ {
-		for col := 0; col < 3; col++ {
+		for col := range 3 {
 			cell := tb.Cell(row, col)
 			if cell != nil {
 				cell.SetText(
@@ -300,6 +305,7 @@ func Example_tableWithFormatting() {
 	doc, err := builder.Build()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -348,6 +354,7 @@ func Example_paragraphSpacing() {
 	doc, err := builder.Build()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -376,6 +383,7 @@ func Example_pageBreaks() {
 	doc, err := builder.Build()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -414,6 +422,7 @@ func Example_runFormatting() {
 	doc, err := builder.Build()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 
@@ -441,6 +450,7 @@ func Example_buildToBytes() {
 	data, err := builder.BuildToBytes()
 	if err != nil {
 		fmt.Println("Error:", err)
+
 		return
 	}
 

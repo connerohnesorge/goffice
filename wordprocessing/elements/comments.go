@@ -21,6 +21,7 @@ func NewComments() *Comments {
 		"comments",
 		PrefixW,
 	)
+
 	return &Comments{
 		PartRootElementBase: elem,
 		nextID:              1,
@@ -55,6 +56,7 @@ func (c *Comments) GetComment(id int) *Comment {
 			return comment
 		}
 	}
+
 	return nil
 }
 
@@ -65,6 +67,7 @@ func (c *Comments) AddComment(
 	comment := NewComment(c.nextID, author, text)
 	c.nextID++
 	c.AppendChild(comment)
+
 	return comment
 }
 
@@ -120,6 +123,7 @@ func NewComment(
 		p := NewParagraph(text)
 		c.AppendChild(p)
 	}
+
 	return c
 }
 
@@ -133,6 +137,7 @@ func (c *Comment) Id() int {
 		return 0
 	}
 	id, _ := strconv.Atoi(attr.Value())
+
 	return id
 }
 
@@ -157,6 +162,7 @@ func (c *Comment) Author() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -188,6 +194,7 @@ func (c *Comment) Date() time.Time {
 	if err != nil {
 		return time.Time{}
 	}
+
 	return t
 }
 
@@ -212,6 +219,7 @@ func (c *Comment) Initials() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -253,6 +261,7 @@ func (c *Comment) AppendParagraph(
 ) *Paragraph {
 	p := NewParagraph(text)
 	c.AppendChild(p)
+
 	return p
 }
 
@@ -298,6 +307,7 @@ func NewCommentRangeStart(
 			strconv.Itoa(id),
 		),
 	)
+
 	return crs
 }
 
@@ -311,6 +321,7 @@ func (crs *CommentRangeStart) Id() int {
 		return 0
 	}
 	id, _ := strconv.Atoi(attr.Value())
+
 	return id
 }
 
@@ -366,6 +377,7 @@ func NewCommentRangeEnd(id int) *CommentRangeEnd {
 			strconv.Itoa(id),
 		),
 	)
+
 	return cre
 }
 
@@ -379,6 +391,7 @@ func (cre *CommentRangeEnd) Id() int {
 		return 0
 	}
 	id, _ := strconv.Atoi(attr.Value())
+
 	return id
 }
 
@@ -436,6 +449,7 @@ func NewCommentReference(
 			strconv.Itoa(id),
 		),
 	)
+
 	return cr
 }
 
@@ -449,6 +463,7 @@ func (cr *CommentReference) Id() int {
 		return 0
 	}
 	id, _ := strconv.Atoi(attr.Value())
+
 	return id
 }
 

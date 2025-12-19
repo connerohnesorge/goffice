@@ -82,6 +82,7 @@ func (s *OpenSettings) WithAutoSave(
 ) *OpenSettings {
 	copy := *s
 	copy.AutoSave = autoSave
+
 	return &copy
 }
 
@@ -91,6 +92,7 @@ func (s *OpenSettings) WithMaxCharacters(
 ) *OpenSettings {
 	copy := *s
 	copy.MaxCharactersInPart = max
+
 	return &copy
 }
 
@@ -100,5 +102,6 @@ func (s *OpenSettings) WithTargetVersion(
 ) *OpenSettings {
 	copy := *s
 	copy.MarkupCompatibilityProcessSettings.TargetFileFormatVersions = version
+
 	return &copy
 }

@@ -31,6 +31,7 @@ func NewAbstractNum() *AbstractNum {
 		"abstractNum",
 		PrefixW,
 	)
+
 	return &AbstractNum{
 		CompositeElementBase: elem,
 	}
@@ -49,6 +50,7 @@ func (an *AbstractNum) AbstractNumId() int {
 	if err != nil {
 		return 0
 	}
+
 	return val
 }
 
@@ -80,6 +82,7 @@ func (an *AbstractNum) MultiLevelType() MultiLevelTypeValue {
 	if !found {
 		return MultiLevelSingleLevel
 	}
+
 	return MultiLevelTypeValue(attr.Value())
 }
 
@@ -116,6 +119,7 @@ func (an *AbstractNum) NumberingStyleLink() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -125,6 +129,7 @@ func (an *AbstractNum) SetNumberingStyleLink(
 ) {
 	if styleId == "" {
 		an.removeElement("numStyleLink")
+
 		return
 	}
 	elem := an.getOrCreateElement("numStyleLink")
@@ -154,6 +159,7 @@ func (an *AbstractNum) StyleLink() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -163,6 +169,7 @@ func (an *AbstractNum) SetStyleLink(
 ) {
 	if styleId == "" {
 		an.removeElement("styleLink")
+
 		return
 	}
 	elem := an.getOrCreateElement("styleLink")
@@ -205,6 +212,7 @@ func (an *AbstractNum) GetLevel(
 			return lvl
 		}
 	}
+
 	return nil
 }
 
@@ -214,6 +222,7 @@ func (an *AbstractNum) AddLevel(
 ) *Level {
 	lvl := NewLevel(index)
 	an.AppendChild(lvl)
+
 	return lvl
 }
 
@@ -225,6 +234,7 @@ func (an *AbstractNum) GetOrCreateLevel(
 	if lvl != nil {
 		return lvl
 	}
+
 	return an.AddLevel(index)
 }
 
@@ -241,6 +251,7 @@ func (an *AbstractNum) getOrCreateElement(
 		PrefixW,
 	)
 	an.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -281,7 +292,7 @@ func NewBulletList(
 	)
 
 	// Create 9 levels with the same bullet
-	for i := 0; i < 9; i++ {
+	for i := range 9 {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatBullet)
@@ -354,7 +365,7 @@ func NewStandardBulletList() *AbstractNum {
 		MultiLevelHybridMultilevel,
 	)
 
-	for i := 0; i < 9; i++ {
+	for i := range 9 {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatBullet)
@@ -383,7 +394,7 @@ func NewDecimalList() *AbstractNum {
 		MultiLevelHybridMultilevel,
 	)
 
-	for i := 0; i < 9; i++ {
+	for i := range 9 {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatDecimal)
@@ -417,7 +428,7 @@ func NewAlphabeticList(
 		format = NumberFormatLowerLetter
 	}
 
-	for i := 0; i < 9; i++ {
+	for i := range 9 {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(format)
@@ -451,7 +462,7 @@ func NewRomanNumeralList(
 		format = NumberFormatLowerRoman
 	}
 
-	for i := 0; i < 9; i++ {
+	for i := range 9 {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(format)
@@ -476,7 +487,7 @@ func NewOutlineList() *AbstractNum {
 	an := NewAbstractNum()
 	an.SetMultiLevelType(MultiLevelMultilevel)
 
-	for i := 0; i < 9; i++ {
+	for i := range 9 {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatDecimal)

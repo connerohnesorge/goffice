@@ -19,6 +19,7 @@ func NewLatentStyles() *LatentStyles {
 		"latentStyles",
 		PrefixW,
 	)
+
 	return &LatentStyles{
 		CompositeElementBase: elem,
 	}
@@ -34,6 +35,7 @@ func (ls *LatentStyles) DefLockedState() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -66,6 +68,7 @@ func (ls *LatentStyles) DefSemiHidden() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -96,6 +99,7 @@ func (ls *LatentStyles) DefUnhideWhenUsed() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -128,6 +132,7 @@ func (ls *LatentStyles) DefQFormat() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -161,6 +166,7 @@ func (ls *LatentStyles) DefUIPriority() int {
 	if err != nil {
 		return 99
 	}
+
 	return val
 }
 
@@ -191,6 +197,7 @@ func (ls *LatentStyles) Count() int {
 	if err != nil {
 		return 0
 	}
+
 	return val
 }
 
@@ -235,6 +242,7 @@ func (ls *LatentStyles) GetException(
 			return ex
 		}
 	}
+
 	return nil
 }
 
@@ -244,6 +252,7 @@ func (ls *LatentStyles) AddException(
 ) *LatentStyleException {
 	lse := NewLatentStyleException(name)
 	ls.AppendChild(lse)
+
 	return lse
 }
 
@@ -281,6 +290,7 @@ func NewLatentStyleException(
 		CompositeElementBase: elem,
 	}
 	lse.SetName(name)
+
 	return lse
 }
 
@@ -293,6 +303,7 @@ func (lse *LatentStyleException) Name() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -320,6 +331,7 @@ func (lse *LatentStyleException) Locked() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -352,6 +364,7 @@ func (lse *LatentStyleException) SemiHidden() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -384,6 +397,7 @@ func (lse *LatentStyleException) UnhideWhenUsed() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -416,6 +430,7 @@ func (lse *LatentStyleException) QFormat() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -451,6 +466,7 @@ func (lse *LatentStyleException) UIPriority() int {
 	if err != nil {
 		return -1
 	}
+
 	return val
 }
 
@@ -463,6 +479,7 @@ func (lse *LatentStyleException) SetUIPriority(
 			"uiPriority",
 			NamespaceWML,
 		)
+
 		return
 	}
 	lse.SetAttribute(

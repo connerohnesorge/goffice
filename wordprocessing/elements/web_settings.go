@@ -44,6 +44,7 @@ func NewWebSettings() *WebSettings {
 		"webSettings",
 		PrefixW,
 	)
+
 	return &WebSettings{
 		CompositeElementBase: elem,
 	}
@@ -89,6 +90,7 @@ func (ws *WebSettings) TargetScreenSize() TargetScreenSizeValue {
 	if !found {
 		return ""
 	}
+
 	return TargetScreenSizeValue(attr.Value())
 }
 
@@ -98,6 +100,7 @@ func (ws *WebSettings) SetTargetScreenSize(
 ) {
 	if size == "" {
 		ws.removeElement("targetScreenSz")
+
 		return
 	}
 	elem := ws.getOrCreateElement(
@@ -129,6 +132,7 @@ func (ws *WebSettings) Encoding() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -136,6 +140,7 @@ func (ws *WebSettings) Encoding() string {
 func (ws *WebSettings) SetEncoding(enc string) {
 	if enc == "" {
 		ws.removeElement("encoding")
+
 		return
 	}
 	elem := ws.getOrCreateElement("encoding")
@@ -239,6 +244,7 @@ func (ws *WebSettings) PixelsPerInch() int {
 	if val == 0 {
 		return 96
 	}
+
 	return val
 }
 
@@ -246,6 +252,7 @@ func (ws *WebSettings) PixelsPerInch() int {
 func (ws *WebSettings) SetPixelsPerInch(ppi int) {
 	if ppi <= 0 {
 		ws.removeElement("pixelsPerInch")
+
 		return
 	}
 	elem := ws.getOrCreateElement("pixelsPerInch")
@@ -287,6 +294,7 @@ func (ws *WebSettings) Divs() *Divs {
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &Divs{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 
@@ -298,6 +306,7 @@ func (ws *WebSettings) GetOrCreateDivs() *Divs {
 	}
 	d = NewDivs()
 	ws.AppendChild(d)
+
 	return d
 }
 
@@ -316,9 +325,11 @@ func (ws *WebSettings) hasOnOffElement(
 	)
 	if found {
 		val := attr.Value()
+
 		return val != "false" && val != "0" &&
 			val != "off"
 	}
+
 	return true
 }
 
@@ -346,6 +357,7 @@ func (ws *WebSettings) getOrCreateElement(
 		PrefixW,
 	)
 	ws.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -386,6 +398,7 @@ func NewDivs() *Divs {
 		"divs",
 		PrefixW,
 	)
+
 	return &Divs{CompositeElementBase: elem}
 }
 

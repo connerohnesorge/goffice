@@ -21,7 +21,7 @@ func TestNewTable(t *testing.T) {
 	}
 
 	// Check each row has 4 cells
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		row := table.GetRow(i)
 		if row == nil {
 			t.Fatalf("Row %d is nil", i)

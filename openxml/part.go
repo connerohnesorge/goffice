@@ -116,6 +116,7 @@ func NewOpenXmlPartData(
 func (p *OpenXmlPartData) URI() string {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.uri
 }
 
@@ -123,6 +124,7 @@ func (p *OpenXmlPartData) URI() string {
 func (p *OpenXmlPartData) ContentType() string {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.contentType
 }
 
@@ -130,6 +132,7 @@ func (p *OpenXmlPartData) ContentType() string {
 func (p *OpenXmlPartData) RelationshipID() string {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.relationshipID
 }
 
@@ -146,6 +149,7 @@ func (p *OpenXmlPartData) SetRelationshipID(
 func (p *OpenXmlPartData) Container() OpenXmlPartContainer {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.container
 }
 
@@ -162,6 +166,7 @@ func (p *OpenXmlPartData) GetStream() io.Reader {
 	if p.packagingPart != nil {
 		return p.packagingPart.GetStream()
 	}
+
 	return bytes.NewReader(nil)
 }
 
@@ -184,6 +189,7 @@ func (p *OpenXmlPartData) GetData() []byte {
 	if p.packagingPart != nil {
 		return p.packagingPart.GetData()
 	}
+
 	return nil
 }
 
@@ -233,6 +239,7 @@ func (p *OpenXmlPartData) SetRootFactory(
 func (p *OpenXmlPartData) IsDirty() bool {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.isDirty
 }
 
@@ -265,6 +272,7 @@ func (p *OpenXmlPartData) Save() error {
 	}
 
 	p.ClearDirty()
+
 	return nil
 }
 
@@ -290,6 +298,7 @@ func (p *OpenXmlPartData) Package() *packaging.Package {
 	if container != nil {
 		return container.Package()
 	}
+
 	return nil
 }
 
@@ -305,6 +314,7 @@ func (p *OpenXmlPartData) GetPackagingPart(
 	if container != nil {
 		return container.GetPackagingPart(uri)
 	}
+
 	return nil
 }
 
@@ -333,6 +343,7 @@ func (p *OpenXmlPartData) GetPartById(
 	if !ok {
 		return nil, ErrPartNotFound
 	}
+
 	return part, nil
 }
 
@@ -400,6 +411,7 @@ func (p *OpenXmlPartData) DeletePart(
 func (p *OpenXmlPartData) PackagingPart() *packaging.Part {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.packagingPart
 }
 
@@ -467,6 +479,7 @@ func GetPartTypeByContentType(
 	defer partTypeRegistry.mu.RUnlock()
 
 	info, ok := partTypeRegistry.byContentType[contentType]
+
 	return info, ok
 }
 
@@ -478,6 +491,7 @@ func GetPartTypeByRelationship(
 	defer partTypeRegistry.mu.RUnlock()
 
 	info, ok := partTypeRegistry.byRelationship[relType]
+
 	return info, ok
 }
 
@@ -521,6 +535,7 @@ func CreatePartByRelationship(
 	if packPart != nil {
 		contentType = packPart.ContentType()
 	}
+
 	return NewOpenXmlPartData(
 		uri,
 		contentType,
@@ -554,6 +569,7 @@ func FirstPartOfType[T OpenXmlPart](
 		return part
 	}
 	var zero T
+
 	return zero
 }
 

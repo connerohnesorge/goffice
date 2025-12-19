@@ -28,6 +28,7 @@ func (sv *StringValue) Value() string {
 	if !sv.hasValue {
 		return ""
 	}
+
 	return sv.value
 }
 
@@ -47,6 +48,7 @@ func (sv *StringValue) InnerText() string {
 	if !sv.hasValue {
 		return ""
 	}
+
 	return sv.value
 }
 
@@ -58,6 +60,7 @@ func (sv *StringValue) SetInnerText(
 ) error {
 	sv.value = text
 	sv.hasValue = true
+
 	return nil
 }
 

@@ -35,6 +35,7 @@ func (t *Table) TableProperties() *TableProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -51,6 +52,7 @@ func (t *Table) GetOrCreateTableProperties() *TableProperties {
 	} else {
 		t.AppendChild(props)
 	}
+
 	return props
 }
 
@@ -68,6 +70,7 @@ func (t *Table) TableGrid() *TableGrid {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -100,6 +103,7 @@ func (t *Table) GetRow(index int) *TableRow {
 		}
 		i++
 	}
+
 	return nil
 }
 
@@ -109,6 +113,7 @@ func (t *Table) RowCount() int {
 	for range t.Rows() {
 		count++
 	}
+
 	return count
 }
 
@@ -116,6 +121,7 @@ func (t *Table) RowCount() int {
 func (t *Table) AppendRow(cols int) *TableRow {
 	tr := NewTableRow(cols)
 	t.AppendChild(tr)
+
 	return tr
 }
 
@@ -130,6 +136,7 @@ func (t *Table) InsertRow(
 	} else {
 		t.AppendChild(tr)
 	}
+
 	return tr
 }
 
@@ -139,6 +146,7 @@ func (t *Table) DeleteRow(index int) bool {
 	if row != nil {
 		return t.RemoveChild(row)
 	}
+
 	return false
 }
 
@@ -148,6 +156,7 @@ func (t *Table) GetCell(row, col int) *TableCell {
 	if r == nil {
 		return nil
 	}
+
 	return r.GetCell(col)
 }
 
@@ -166,6 +175,7 @@ func (t *Table) SetCellText(
 func (t *Table) SetStyle(styleId string) *Table {
 	t.GetOrCreateTableProperties().
 		SetTableStyle(styleId)
+
 	return t
 }
 
@@ -176,6 +186,7 @@ func (t *Table) SetWidth(
 ) *Table {
 	t.GetOrCreateTableProperties().
 		SetTableWidth(width, widthType)
+
 	return t
 }
 
@@ -187,6 +198,7 @@ func (t *Table) SetColumnWidth(
 	if grid != nil {
 		grid.SetColumnWidth(col, width)
 	}
+
 	return t
 }
 
@@ -202,6 +214,7 @@ func NewTableProperties() *TableProperties {
 		"tblPr",
 		PrefixW,
 	)
+
 	return &TableProperties{
 		CompositeElementBase: elem,
 	}
@@ -223,6 +236,7 @@ func (tp *TableProperties) TableStyle() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -271,6 +285,7 @@ func (tp *TableProperties) TableWidth() *TableWidth {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -306,6 +321,7 @@ func (tp *TableProperties) TableBorders() *TableBorders {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -317,6 +333,7 @@ func (tp *TableProperties) GetOrCreateTableBorders() *TableBorders {
 	}
 	borders = NewTableBorders()
 	tp.AppendChild(borders)
+
 	return borders
 }
 
@@ -334,6 +351,7 @@ func (tp *TableProperties) TableLook() *TableLook {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -379,6 +397,7 @@ func NewTableWidth(
 	tw := &TableWidth{CompositeElementBase: elem}
 	tw.SetWidth(width)
 	tw.SetType(widthType)
+
 	return tw
 }
 
@@ -392,6 +411,7 @@ func (tw *TableWidth) Width() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -416,6 +436,7 @@ func (tw *TableWidth) Type() TableWidthType {
 	if !found {
 		return TableWidthTypeAuto
 	}
+
 	return TableWidthType(attr.Value())
 }
 
@@ -452,6 +473,7 @@ func NewTableBorders() *TableBorders {
 		"tblBorders",
 		PrefixW,
 	)
+
 	return &TableBorders{
 		CompositeElementBase: elem,
 	}
@@ -593,6 +615,7 @@ func NewTableLook() *TableLook {
 		"tblLook",
 		PrefixW,
 	)
+
 	return &TableLook{CompositeElementBase: elem}
 }
 
@@ -672,6 +695,7 @@ func boolToOnOff(val bool) string {
 	if val {
 		return "1"
 	}
+
 	return "0"
 }
 
@@ -694,6 +718,7 @@ func NewTableGrid() *TableGrid {
 		"tblGrid",
 		PrefixW,
 	)
+
 	return &TableGrid{CompositeElementBase: elem}
 }
 
@@ -725,6 +750,7 @@ func (tg *TableGrid) SetColumnWidth(
 	for gc := range tg.GridColumns() {
 		if i == col {
 			gc.SetWidth(width)
+
 			return
 		}
 		i++
@@ -754,6 +780,7 @@ func NewGridColumn(width int) *GridColumn {
 	if width > 0 {
 		gc.SetWidth(width)
 	}
+
 	return gc
 }
 
@@ -767,6 +794,7 @@ func (gc *GridColumn) Width() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -803,6 +831,7 @@ func (tr *TableRow) TableRowProperties() *TableRowProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -819,6 +848,7 @@ func (tr *TableRow) GetOrCreateTableRowProperties() *TableRowProperties {
 	} else {
 		tr.AppendChild(props)
 	}
+
 	return props
 }
 
@@ -853,6 +883,7 @@ func (tr *TableRow) GetCell(
 		}
 		i++
 	}
+
 	return nil
 }
 
@@ -862,6 +893,7 @@ func (tr *TableRow) CellCount() int {
 	for range tr.Cells() {
 		count++
 	}
+
 	return count
 }
 
@@ -869,6 +901,7 @@ func (tr *TableRow) CellCount() int {
 func (tr *TableRow) AppendCell() *TableCell {
 	tc := NewTableCell()
 	tr.AppendChild(tc)
+
 	return tc
 }
 
@@ -899,6 +932,7 @@ func NewTableRowProperties() *TableRowProperties {
 		"trPr",
 		PrefixW,
 	)
+
 	return &TableRowProperties{
 		CompositeElementBase: elem,
 	}
@@ -996,6 +1030,7 @@ func (tc *TableCell) TableCellProperties() *TableCellProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -1012,6 +1047,7 @@ func (tc *TableCell) GetOrCreateTableCellProperties() *TableCellProperties {
 	} else {
 		tc.AppendChild(props)
 	}
+
 	return props
 }
 
@@ -1041,6 +1077,7 @@ func (tc *TableCell) AppendParagraph(
 ) *Paragraph {
 	p := NewParagraph(text)
 	tc.AppendChild(p)
+
 	return p
 }
 
@@ -1070,6 +1107,7 @@ func (tc *TableCell) InnerText() string {
 		}
 		text += p.InnerText()
 	}
+
 	return text
 }
 
@@ -1118,6 +1156,7 @@ func NewTableCellProperties() *TableCellProperties {
 		"tcPr",
 		PrefixW,
 	)
+
 	return &TableCellProperties{
 		CompositeElementBase: elem,
 	}
@@ -1137,6 +1176,7 @@ func (tcp *TableCellProperties) TableCellWidth() *TableCellWidth {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -1184,6 +1224,7 @@ func (tcp *TableCellProperties) VerticalMerge() *VerticalMerge {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -1217,6 +1258,7 @@ func (tcp *TableCellProperties) GridSpan() int {
 		return 1
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1260,6 +1302,7 @@ func (tcp *TableCellProperties) Shading() *Shading {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -1296,6 +1339,7 @@ func (tcp *TableCellProperties) TableCellBorders() *TableCellBorders {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -1307,6 +1351,7 @@ func (tcp *TableCellProperties) GetOrCreateTableCellBorders() *TableCellBorders 
 	}
 	borders = NewTableCellBorders()
 	tcp.AppendChild(borders)
+
 	return borders
 }
 
@@ -1337,6 +1382,7 @@ func NewTableCellWidth(
 	}
 	tcw.SetWidth(width)
 	tcw.SetType(widthType)
+
 	return tcw
 }
 
@@ -1350,6 +1396,7 @@ func (tcw *TableCellWidth) Width() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1374,6 +1421,7 @@ func (tcw *TableCellWidth) Type() TableWidthType {
 	if !found {
 		return TableWidthTypeAuto
 	}
+
 	return TableWidthType(attr.Value())
 }
 
@@ -1431,6 +1479,7 @@ func (vm *VerticalMerge) Type() VerticalMergeType {
 	if !found {
 		return VerticalMergeContinue // Default when no val attribute
 	}
+
 	return VerticalMergeType(attr.Value())
 }
 
@@ -1471,6 +1520,7 @@ func NewTableCellBorders() *TableCellBorders {
 		"tcBorders",
 		PrefixW,
 	)
+
 	return &TableCellBorders{
 		CompositeElementBase: elem,
 	}

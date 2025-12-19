@@ -108,6 +108,7 @@ func SettingsPartFactory(
 		packPart,
 		container,
 	)
+
 	return &SettingsPart{
 		OpenXmlPartData: partData,
 	}

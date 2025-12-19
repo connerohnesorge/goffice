@@ -31,6 +31,7 @@ func NewText(text string) *Text {
 	if needsSpacePreserve(text) {
 		t.SetSpace("preserve")
 	}
+
 	return t
 }
 
@@ -46,11 +47,12 @@ func needsSpacePreserve(text string) bool {
 		return true
 	}
 	// Check for multiple consecutive spaces
-	for i := 0; i < len(text)-1; i++ {
+	for i := range len(text) - 1 {
 		if text[i] == ' ' && text[i+1] == ' ' {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -73,6 +75,7 @@ func (t *Text) Space() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 

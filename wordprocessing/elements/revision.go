@@ -30,6 +30,7 @@ func NewInsertedRun(
 	ins.SetId(id)
 	ins.SetAuthor(author)
 	ins.SetDate(date)
+
 	return ins
 }
 
@@ -43,6 +44,7 @@ func (ins *InsertedRun) Id() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -67,6 +69,7 @@ func (ins *InsertedRun) Author() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -92,6 +95,7 @@ func (ins *InsertedRun) Date() time.Time {
 		return time.Time{}
 	}
 	t, _ := time.Parse(time.RFC3339, attr.Value())
+
 	return t
 }
 
@@ -133,6 +137,7 @@ func (ins *InsertedRun) AppendRun(
 ) *Run {
 	r := NewRun(text)
 	ins.AppendChild(r)
+
 	return r
 }
 
@@ -142,6 +147,7 @@ func (ins *InsertedRun) InnerText() string {
 	for r := range ins.Runs() {
 		text += r.InnerText()
 	}
+
 	return text
 }
 
@@ -181,6 +187,7 @@ func NewDeletedRun(
 	del.SetId(id)
 	del.SetAuthor(author)
 	del.SetDate(date)
+
 	return del
 }
 
@@ -194,6 +201,7 @@ func (del *DeletedRun) Id() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -218,6 +226,7 @@ func (del *DeletedRun) Author() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -243,6 +252,7 @@ func (del *DeletedRun) Date() time.Time {
 		return time.Time{}
 	}
 	t, _ := time.Parse(time.RFC3339, attr.Value())
+
 	return t
 }
 
@@ -315,6 +325,7 @@ func (del *DeletedRun) AppendDeletedRun(
 	delText := NewDeletedText(text)
 	r.AppendChild(delText)
 	del.AppendChild(r)
+
 	return r
 }
 
@@ -324,6 +335,7 @@ func (del *DeletedRun) InnerText() string {
 	for dt := range del.DeletedTexts() {
 		text += dt.InnerText()
 	}
+
 	return text
 }
 
@@ -361,6 +373,7 @@ func NewDeletedText(text string) *DeletedText {
 	if needsSpacePreserve(text) {
 		dt.SetSpace("preserve")
 	}
+
 	return dt
 }
 
@@ -383,6 +396,7 @@ func (dt *DeletedText) Space() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -433,6 +447,7 @@ func NewMoveFromRun(
 	mf.SetId(id)
 	mf.SetAuthor(author)
 	mf.SetDate(date)
+
 	return mf
 }
 
@@ -446,6 +461,7 @@ func (mf *MoveFromRun) Id() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -470,6 +486,7 @@ func (mf *MoveFromRun) Author() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -495,6 +512,7 @@ func (mf *MoveFromRun) Date() time.Time {
 		return time.Time{}
 	}
 	t, _ := time.Parse(time.RFC3339, attr.Value())
+
 	return t
 }
 
@@ -537,6 +555,7 @@ func NewMoveToRun(
 	mt.SetId(id)
 	mt.SetAuthor(author)
 	mt.SetDate(date)
+
 	return mt
 }
 
@@ -550,6 +569,7 @@ func (mt *MoveToRun) Id() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -574,6 +594,7 @@ func (mt *MoveToRun) Author() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -599,6 +620,7 @@ func (mt *MoveToRun) Date() time.Time {
 		return time.Time{}
 	}
 	t, _ := time.Parse(time.RFC3339, attr.Value())
+
 	return t
 }
 
@@ -643,6 +665,7 @@ func NewRunPropertiesChange(
 	rpc.SetId(id)
 	rpc.SetAuthor(author)
 	rpc.SetDate(date)
+
 	return rpc
 }
 
@@ -656,6 +679,7 @@ func (rpc *RunPropertiesChange) Id() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -680,6 +704,7 @@ func (rpc *RunPropertiesChange) Author() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -707,6 +732,7 @@ func (rpc *RunPropertiesChange) Date() time.Time {
 		return time.Time{}
 	}
 	t, _ := time.Parse(time.RFC3339, attr.Value())
+
 	return t
 }
 
@@ -738,6 +764,7 @@ func (rpc *RunPropertiesChange) PreviousRunProperties() *RunProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -786,6 +813,7 @@ func NewParagraphPropertiesChange(
 	ppc.SetId(id)
 	ppc.SetAuthor(author)
 	ppc.SetDate(date)
+
 	return ppc
 }
 
@@ -799,6 +827,7 @@ func (ppc *ParagraphPropertiesChange) Id() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -825,6 +854,7 @@ func (ppc *ParagraphPropertiesChange) Author() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -852,6 +882,7 @@ func (ppc *ParagraphPropertiesChange) Date() time.Time {
 		return time.Time{}
 	}
 	t, _ := time.Parse(time.RFC3339, attr.Value())
+
 	return t
 }
 
@@ -883,6 +914,7 @@ func (ppc *ParagraphPropertiesChange) PreviousParagraphProperties() *ParagraphPr
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 

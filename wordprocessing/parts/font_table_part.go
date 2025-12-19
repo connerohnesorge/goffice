@@ -124,6 +124,7 @@ func FontsPartFactory(
 		packPart,
 		container,
 	)
+
 	return &FontsPart{
 		OpenXmlPartData: partData,
 	}

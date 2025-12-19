@@ -34,6 +34,7 @@ func (dv *DecimalValue) Value() float64 {
 	if !dv.hasValue {
 		return 0
 	}
+
 	return dv.value
 }
 
@@ -67,6 +68,7 @@ func (dv *DecimalValue) InnerText() string {
 		s = strings.TrimRight(s, "0")
 		s = strings.TrimRight(s, ".")
 	}
+
 	return s
 }
 
@@ -78,6 +80,7 @@ func (dv *DecimalValue) SetInnerText(
 	if text == "" {
 		dv.hasValue = false
 		dv.value = 0
+
 		return nil
 	}
 	v, err := strconv.ParseFloat(
@@ -92,6 +95,7 @@ func (dv *DecimalValue) SetInnerText(
 	}
 	dv.value = v
 	dv.hasValue = true
+
 	return nil
 }
 

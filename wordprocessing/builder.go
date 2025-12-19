@@ -39,6 +39,7 @@ func (db *DocumentBuilder) AddParagraph(
 		db.document = elements.NewDocument()
 	}
 	p := db.document.Body().AppendParagraph(text)
+
 	return &ParagraphBuilder{
 		paragraph:  p,
 		docBuilder: db,
@@ -79,6 +80,7 @@ func (db *DocumentBuilder) AddTable(
 	}
 	t := db.document.Body().
 		AppendTable(rows, cols)
+
 	return &TableBuilder{
 		table:      t,
 		docBuilder: db,
@@ -109,6 +111,7 @@ func (db *DocumentBuilder) AddPageBreak() *DocumentBuilder {
 	db.document.Body().
 		AppendParagraph("").
 		AppendBreak(elements.BreakPage)
+
 	return db
 }
 
@@ -120,6 +123,7 @@ func (db *DocumentBuilder) AddColumnBreak() *DocumentBuilder {
 	db.document.Body().
 		AppendParagraph("").
 		AppendBreak(elements.BreakColumn)
+
 	return db
 }
 
@@ -136,6 +140,7 @@ func (db *DocumentBuilder) AddHorizontalRule() *DocumentBuilder {
 		6,
 		"auto",
 	)
+
 	return db
 }
 
@@ -195,6 +200,7 @@ func (pb *ParagraphBuilder) Bold() *ParagraphBuilder {
 	for r := range pb.paragraph.Runs() {
 		r.SetBold(true)
 	}
+
 	return pb
 }
 
@@ -203,6 +209,7 @@ func (pb *ParagraphBuilder) Italic() *ParagraphBuilder {
 	for r := range pb.paragraph.Runs() {
 		r.SetItalic(true)
 	}
+
 	return pb
 }
 
@@ -211,6 +218,7 @@ func (pb *ParagraphBuilder) Underline() *ParagraphBuilder {
 	for r := range pb.paragraph.Runs() {
 		r.SetUnderline(elements.UnderlineSingle)
 	}
+
 	return pb
 }
 
@@ -229,6 +237,7 @@ func (pb *ParagraphBuilder) Font(
 			r.SetFontSize(halfPoints)
 		}
 	}
+
 	return pb
 }
 
@@ -241,6 +250,7 @@ func (pb *ParagraphBuilder) FontSize(
 	for r := range pb.paragraph.Runs() {
 		r.SetFontSize(halfPoints)
 	}
+
 	return pb
 }
 
@@ -252,6 +262,7 @@ func (pb *ParagraphBuilder) Color(
 	for r := range pb.paragraph.Runs() {
 		r.SetColor(hex)
 	}
+
 	return pb
 }
 
@@ -262,6 +273,7 @@ func (pb *ParagraphBuilder) Highlight(
 	for r := range pb.paragraph.Runs() {
 		r.SetHighlight(color)
 	}
+
 	return pb
 }
 
@@ -270,6 +282,7 @@ func (pb *ParagraphBuilder) Align(
 	alignment elements.JustificationValue,
 ) *ParagraphBuilder {
 	pb.paragraph.SetJustification(alignment)
+
 	return pb
 }
 
@@ -298,6 +311,7 @@ func (pb *ParagraphBuilder) Style(
 	styleId string,
 ) *ParagraphBuilder {
 	pb.paragraph.SetStyle(styleId)
+
 	return pb
 }
 
@@ -307,6 +321,7 @@ func (pb *ParagraphBuilder) SpacingBefore(
 ) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetSpacingBefore(twips)
+
 	return pb
 }
 
@@ -316,6 +331,7 @@ func (pb *ParagraphBuilder) SpacingAfter(
 ) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetSpacingAfter(twips)
+
 	return pb
 }
 
@@ -325,6 +341,7 @@ func (pb *ParagraphBuilder) LeftIndent(
 ) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetLeftIndent(twips)
+
 	return pb
 }
 
@@ -334,6 +351,7 @@ func (pb *ParagraphBuilder) RightIndent(
 ) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetRightIndent(twips)
+
 	return pb
 }
 
@@ -343,6 +361,7 @@ func (pb *ParagraphBuilder) FirstLineIndent(
 ) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetFirstLineIndent(twips)
+
 	return pb
 }
 
@@ -352,6 +371,7 @@ func (pb *ParagraphBuilder) HangingIndent(
 ) *ParagraphBuilder {
 	twips := points * 20 // Convert points to twips
 	pb.paragraph.SetHangingIndent(twips)
+
 	return pb
 }
 
@@ -360,6 +380,7 @@ func (pb *ParagraphBuilder) AddRun(
 	text string,
 ) *RunBuilder {
 	r := pb.paragraph.AppendRun(text)
+
 	return &RunBuilder{
 		run:              r,
 		paragraphBuilder: pb,
@@ -369,6 +390,7 @@ func (pb *ParagraphBuilder) AddRun(
 // AddLineBreak adds a line break to the paragraph.
 func (pb *ParagraphBuilder) AddLineBreak() *ParagraphBuilder {
 	pb.paragraph.AppendBreak(elements.BreakLine)
+
 	return pb
 }
 
@@ -391,18 +413,21 @@ type RunBuilder struct {
 // Bold makes this run bold.
 func (rb *RunBuilder) Bold() *RunBuilder {
 	rb.run.SetBold(true)
+
 	return rb
 }
 
 // Italic makes this run italic.
 func (rb *RunBuilder) Italic() *RunBuilder {
 	rb.run.SetItalic(true)
+
 	return rb
 }
 
 // Underline adds underline to this run.
 func (rb *RunBuilder) Underline() *RunBuilder {
 	rb.run.SetUnderline(elements.UnderlineSingle)
+
 	return rb
 }
 
@@ -411,6 +436,7 @@ func (rb *RunBuilder) UnderlineStyle(
 	style elements.UnderlineValue,
 ) *RunBuilder {
 	rb.run.SetUnderline(style)
+
 	return rb
 }
 
@@ -419,6 +445,7 @@ func (rb *RunBuilder) Font(
 	name string,
 ) *RunBuilder {
 	rb.run.SetFont(name)
+
 	return rb
 }
 
@@ -429,6 +456,7 @@ func (rb *RunBuilder) FontSize(
 	rb.run.SetFontSize(
 		points * 2,
 	) // Convert to half-points
+
 	return rb
 }
 
@@ -437,6 +465,7 @@ func (rb *RunBuilder) Color(
 	hex string,
 ) *RunBuilder {
 	rb.run.SetColor(hex)
+
 	return rb
 }
 
@@ -445,6 +474,7 @@ func (rb *RunBuilder) Highlight(
 	color elements.HighlightColor,
 ) *RunBuilder {
 	rb.run.SetHighlight(color)
+
 	return rb
 }
 
@@ -453,6 +483,7 @@ func (rb *RunBuilder) AddText(
 	text string,
 ) *RunBuilder {
 	rb.run.AppendText(text)
+
 	return rb
 }
 
@@ -461,12 +492,14 @@ func (rb *RunBuilder) AddBreak(
 	breakType elements.BreakType,
 ) *RunBuilder {
 	rb.run.AppendBreak(breakType)
+
 	return rb
 }
 
 // AddTab adds a tab to this run.
 func (rb *RunBuilder) AddTab() *RunBuilder {
 	rb.run.AppendTab()
+
 	return rb
 }
 
@@ -497,6 +530,7 @@ func (tb *TableBuilder) SetCellText(
 	text string,
 ) *TableBuilder {
 	tb.table.SetCellText(row, col, text)
+
 	return tb
 }
 
@@ -506,6 +540,7 @@ func (tb *TableBuilder) SetColumnWidth(
 	width int,
 ) *TableBuilder {
 	tb.table.SetColumnWidth(col, width)
+
 	return tb
 }
 
@@ -517,6 +552,7 @@ func (tb *TableBuilder) SetColumnWidthInches(
 	twips := int(
 		inches * 1440,
 	) // 1 inch = 1440 twips
+
 	return tb.SetColumnWidth(col, twips)
 }
 
@@ -529,6 +565,7 @@ func (tb *TableBuilder) AddRow() *TableBuilder {
 		cols = firstRow.CellCount()
 	}
 	tb.table.AppendRow(cols)
+
 	return tb
 }
 
@@ -537,6 +574,7 @@ func (tb *TableBuilder) SetStyle(
 	styleId string,
 ) *TableBuilder {
 	tb.table.SetStyle(styleId)
+
 	return tb
 }
 
@@ -546,6 +584,7 @@ func (tb *TableBuilder) SetWidth(
 	widthType elements.TableWidthType,
 ) *TableBuilder {
 	tb.table.SetWidth(width, widthType)
+
 	return tb
 }
 
@@ -555,6 +594,7 @@ func (tb *TableBuilder) SetWidthPercent(
 ) *TableBuilder {
 	// PCT is in fiftieths of a percent (5000 = 100%)
 	pct := percent * 50
+
 	return tb.SetWidth(
 		pct,
 		elements.TableWidthTypePct,
@@ -570,6 +610,7 @@ func (tb *TableBuilder) SetBorders(
 	props := tb.table.GetOrCreateTableProperties()
 	borders := props.GetOrCreateTableBorders()
 	borders.SetAllBorders(style, size, color)
+
 	return tb
 }
 
@@ -581,6 +622,7 @@ func (tb *TableBuilder) Cell(
 	if cell == nil {
 		return nil
 	}
+
 	return &TableCellBuilder{
 		cell:         cell,
 		tableBuilder: tb,
@@ -595,6 +637,7 @@ func (tb *TableBuilder) Row(
 	if row == nil {
 		return nil
 	}
+
 	return &TableRowBuilder{
 		row:          row,
 		tableBuilder: tb,
@@ -623,6 +666,7 @@ func (trb *TableRowBuilder) SetHeight(
 	rule elements.HeightRule,
 ) *TableRowBuilder {
 	trb.row.SetHeight(height, rule)
+
 	return trb
 }
 
@@ -631,6 +675,7 @@ func (trb *TableRowBuilder) SetHeaderRow(
 	isHeader bool,
 ) *TableRowBuilder {
 	trb.row.SetHeaderRow(isHeader)
+
 	return trb
 }
 
@@ -642,6 +687,7 @@ func (trb *TableRowBuilder) Cell(
 	if cell == nil {
 		return nil
 	}
+
 	return &TableCellBuilder{
 		cell:         cell,
 		tableBuilder: trb.tableBuilder,
@@ -669,6 +715,7 @@ func (tcb *TableCellBuilder) SetText(
 	text string,
 ) *TableCellBuilder {
 	tcb.cell.SetText(text)
+
 	return tcb
 }
 
@@ -677,6 +724,7 @@ func (tcb *TableCellBuilder) AddParagraph(
 	text string,
 ) *ParagraphBuilder {
 	p := tcb.cell.AppendParagraph(text)
+
 	return &ParagraphBuilder{
 		paragraph:  p,
 		docBuilder: tcb.tableBuilder.docBuilder,
@@ -689,6 +737,7 @@ func (tcb *TableCellBuilder) SetWidth(
 	widthType elements.TableWidthType,
 ) *TableCellBuilder {
 	tcb.cell.SetWidth(width, widthType)
+
 	return tcb
 }
 
@@ -697,6 +746,7 @@ func (tcb *TableCellBuilder) SetShading(
 	fillColor string,
 ) *TableCellBuilder {
 	tcb.cell.SetShading(fillColor)
+
 	return tcb
 }
 
@@ -705,6 +755,7 @@ func (tcb *TableCellBuilder) SetVerticalMerge(
 	mergeType elements.VerticalMergeType,
 ) *TableCellBuilder {
 	tcb.cell.SetVerticalMerge(mergeType)
+
 	return tcb
 }
 
@@ -713,6 +764,7 @@ func (tcb *TableCellBuilder) SetHorizontalMerge(
 	span int,
 ) *TableCellBuilder {
 	tcb.cell.SetHorizontalMerge(span)
+
 	return tcb
 }
 
@@ -725,6 +777,7 @@ func (tcb *TableCellBuilder) SetBorders(
 	borders := tcb.cell.GetOrCreateTableCellProperties().
 		GetOrCreateTableCellBorders()
 	borders.SetAllBorders(style, size, color)
+
 	return tcb
 }
 
@@ -753,6 +806,7 @@ func (ib *ImageBuilder) Width(
 	emus int64,
 ) *ImageBuilder {
 	ib.width = emus
+
 	return ib
 }
 
@@ -761,6 +815,7 @@ func (ib *ImageBuilder) Height(
 	emus int64,
 ) *ImageBuilder {
 	ib.height = emus
+
 	return ib
 }
 
@@ -771,6 +826,7 @@ func (ib *ImageBuilder) WidthInches(
 	ib.width = int64(
 		inches * float64(elements.EMUsPerInch),
 	)
+
 	return ib
 }
 
@@ -781,6 +837,7 @@ func (ib *ImageBuilder) HeightInches(
 	ib.height = int64(
 		inches * float64(elements.EMUsPerInch),
 	)
+
 	return ib
 }
 
@@ -791,6 +848,7 @@ func (ib *ImageBuilder) WidthCm(
 	ib.width = int64(
 		cm * float64(elements.EMUsPerCm),
 	)
+
 	return ib
 }
 
@@ -801,6 +859,7 @@ func (ib *ImageBuilder) HeightCm(
 	ib.height = int64(
 		cm * float64(elements.EMUsPerCm),
 	)
+
 	return ib
 }
 
@@ -810,6 +869,7 @@ func (ib *ImageBuilder) Size(
 ) *ImageBuilder {
 	ib.width = width
 	ib.height = height
+
 	return ib
 }
 
@@ -831,6 +891,7 @@ func (ib *ImageBuilder) SizeCm(
 // Inline makes the image inline (default).
 func (ib *ImageBuilder) Inline() *ImageBuilder {
 	ib.inline = true
+
 	return ib
 }
 

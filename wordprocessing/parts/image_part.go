@@ -182,6 +182,7 @@ func (ip *ImagePart) FeedData(r io.Reader) error {
 		return err
 	}
 	ip.SetData(data)
+
 	return nil
 }
 
@@ -196,6 +197,7 @@ func (ip *ImagePart) GetData() ([]byte, error) {
 	if stream == nil {
 		return nil, nil
 	}
+
 	return io.ReadAll(stream)
 }
 
@@ -233,6 +235,7 @@ func ImagePartFactory(
 		packPart,
 		container,
 	)
+
 	return &ImagePart{
 		OpenXmlPartData: partData,
 		imageType:       imageType,
@@ -300,6 +303,7 @@ func ImageTypeFromFilename(
 	filename string,
 ) ImageType {
 	ext := filepath.Ext(filename)
+
 	return ImageTypeFromExtension(ext)
 }
 

@@ -18,6 +18,7 @@ func NewSectionProperties() *SectionProperties {
 		"sectPr",
 		PrefixW,
 	)
+
 	return &SectionProperties{
 		CompositeElementBase: elem,
 	}
@@ -37,6 +38,7 @@ func (sp *SectionProperties) PageSize() *PageSize {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -48,6 +50,7 @@ func (sp *SectionProperties) GetOrCreatePageSize() *PageSize {
 	}
 	ps = NewPageSize()
 	sp.AppendChild(ps)
+
 	return ps
 }
 
@@ -65,6 +68,7 @@ func (sp *SectionProperties) PageMargins() *PageMargins {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -76,6 +80,7 @@ func (sp *SectionProperties) GetOrCreatePageMargins() *PageMargins {
 	}
 	pm = NewPageMargins()
 	sp.AppendChild(pm)
+
 	return pm
 }
 
@@ -93,6 +98,7 @@ func (sp *SectionProperties) Columns() *Columns {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -104,6 +110,7 @@ func (sp *SectionProperties) GetOrCreateColumns() *Columns {
 	}
 	cols = NewColumns()
 	sp.AppendChild(cols)
+
 	return cols
 }
 
@@ -120,6 +127,7 @@ func (sp *SectionProperties) HeaderReferences() []*HeaderReference {
 			}
 		}
 	}
+
 	return refs
 }
 
@@ -136,6 +144,7 @@ func (sp *SectionProperties) FooterReferences() []*FooterReference {
 			}
 		}
 	}
+
 	return refs
 }
 
@@ -146,6 +155,7 @@ func (sp *SectionProperties) AddHeaderReference(
 ) *HeaderReference {
 	hr := NewHeaderReference(relId, hfType)
 	sp.AppendChild(hr)
+
 	return hr
 }
 
@@ -156,6 +166,7 @@ func (sp *SectionProperties) AddFooterReference(
 ) *FooterReference {
 	fr := NewFooterReference(relId, hfType)
 	sp.AppendChild(fr)
+
 	return fr
 }
 
@@ -168,6 +179,7 @@ func (sp *SectionProperties) GetHeaderReference(
 			return hr
 		}
 	}
+
 	return nil
 }
 
@@ -180,6 +192,7 @@ func (sp *SectionProperties) GetFooterReference(
 			return fr
 		}
 	}
+
 	return nil
 }
 
@@ -191,9 +204,11 @@ func (sp *SectionProperties) RemoveHeaderReference(
 	for _, hr := range sp.HeaderReferences() {
 		if hr.Type() == hfType {
 			sp.RemoveChild(hr)
+
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -205,9 +220,11 @@ func (sp *SectionProperties) RemoveFooterReference(
 	for _, fr := range sp.FooterReferences() {
 		if fr.Type() == hfType {
 			sp.RemoveChild(fr)
+
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -217,6 +234,7 @@ func (sp *SectionProperties) SetHeaderReference(
 	hfType HeaderFooterType,
 ) *HeaderReference {
 	sp.RemoveHeaderReference(hfType)
+
 	return sp.AddHeaderReference(relId, hfType)
 }
 
@@ -226,6 +244,7 @@ func (sp *SectionProperties) SetFooterReference(
 	hfType HeaderFooterType,
 ) *FooterReference {
 	sp.RemoveFooterReference(hfType)
+
 	return sp.AddFooterReference(relId, hfType)
 }
 
@@ -241,8 +260,10 @@ func (sp *SectionProperties) TitlePage() bool {
 	)
 	if found {
 		val := attr.Value()
+
 		return val != "false" && val != "0"
 	}
+
 	return true
 }
 
@@ -271,6 +292,7 @@ func (sp *SectionProperties) GetOrCreateTitlePage() *TitlePageElement {
 	if elem == nil {
 		tp := NewTitlePageElement()
 		sp.AppendChild(tp)
+
 		return tp
 	}
 	if tp, ok := elem.(*TitlePageElement); ok {
@@ -281,6 +303,7 @@ func (sp *SectionProperties) GetOrCreateTitlePage() *TitlePageElement {
 			LeafElementBase: leaf,
 		}
 	}
+
 	return nil
 }
 
@@ -296,6 +319,7 @@ func (sp *SectionProperties) SectionTypeElement() *SectionType {
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
 		return &SectionType{LeafElementBase: leaf}
 	}
+
 	return nil
 }
 
@@ -305,6 +329,7 @@ func (sp *SectionProperties) GetSectionType() SectionTypeValue {
 	if st == nil {
 		return SectionTypeNextPage
 	}
+
 	return st.Value()
 }
 
@@ -336,6 +361,7 @@ func (sp *SectionProperties) PageNumberTypeElement() *PageNumberType {
 			LeafElementBase: leaf,
 		}
 	}
+
 	return nil
 }
 
@@ -347,6 +373,7 @@ func (sp *SectionProperties) GetOrCreatePageNumberType() *PageNumberType {
 	}
 	pn = NewPageNumberType()
 	sp.AppendChild(pn)
+
 	return pn
 }
 
@@ -367,6 +394,7 @@ func (sp *SectionProperties) FormProtectionElement() *FormProtection {
 			LeafElementBase: leaf,
 		}
 	}
+
 	return nil
 }
 
@@ -397,6 +425,7 @@ func (sp *SectionProperties) VerticalTextAlignmentElement() *VerticalTextAlignme
 			LeafElementBase: leaf,
 		}
 	}
+
 	return nil
 }
 
@@ -406,6 +435,7 @@ func (sp *SectionProperties) GetVerticalTextAlignment() VerticalTextAlignmentVal
 	if vta == nil {
 		return VerticalTextAlignTop
 	}
+
 	return vta.Value()
 }
 
@@ -437,6 +467,7 @@ func (sp *SectionProperties) NoEndnoteElement() *NoEndnote {
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
 		return &NoEndnote{LeafElementBase: leaf}
 	}
+
 	return nil
 }
 
@@ -468,6 +499,7 @@ func (sp *SectionProperties) PaperSourceElement() *PaperSource {
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
 		return &PaperSource{LeafElementBase: leaf}
 	}
+
 	return nil
 }
 
@@ -479,6 +511,7 @@ func (sp *SectionProperties) GetOrCreatePaperSource() *PaperSource {
 	}
 	ps = NewPaperSource()
 	sp.AppendChild(ps)
+
 	return ps
 }
 
@@ -499,6 +532,7 @@ func (sp *SectionProperties) LineNumberTypeElement() *LineNumberType {
 			LeafElementBase: leaf,
 		}
 	}
+
 	return nil
 }
 
@@ -510,6 +544,7 @@ func (sp *SectionProperties) GetOrCreateLineNumberType() *LineNumberType {
 	}
 	ln = NewLineNumberType()
 	sp.AppendChild(ln)
+
 	return ln
 }
 
@@ -530,6 +565,7 @@ func (sp *SectionProperties) TextDirectionElement() *TextDirection {
 			LeafElementBase: leaf,
 		}
 	}
+
 	return nil
 }
 
@@ -539,6 +575,7 @@ func (sp *SectionProperties) GetTextDirection() TextDirectionValue {
 	if td == nil {
 		return TextDirectionLrTb
 	}
+
 	return td.Value()
 }
 
@@ -570,6 +607,7 @@ func (sp *SectionProperties) RTLGutterElement() *RTLGutter {
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
 		return &RTLGutter{LeafElementBase: leaf}
 	}
+
 	return nil
 }
 
@@ -598,6 +636,7 @@ func (sp *SectionProperties) DocGridElement() *DocGrid {
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
 		return &DocGrid{LeafElementBase: leaf}
 	}
+
 	return nil
 }
 
@@ -609,6 +648,7 @@ func (sp *SectionProperties) GetOrCreateDocGrid() *DocGrid {
 	}
 	dg = NewDocGrid()
 	sp.AppendChild(dg)
+
 	return dg
 }
 
@@ -644,6 +684,7 @@ func NewPageSize() *PageSize {
 	// Default to Letter size (8.5 x 11 inches = 12240 x 15840 twips)
 	ps.SetWidth(12240)
 	ps.SetHeight(15840)
+
 	return ps
 }
 
@@ -657,6 +698,7 @@ func (ps *PageSize) Width() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -682,6 +724,7 @@ func (ps *PageSize) Height() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -706,6 +749,7 @@ func (ps *PageSize) Orient() PageOrientation {
 	if !found {
 		return PageOrientationPortrait
 	}
+
 	return PageOrientation(attr.Value())
 }
 
@@ -756,6 +800,7 @@ func NewPageMargins() *PageMargins {
 	pm.SetRight(1440)
 	pm.SetHeader(720)
 	pm.SetFooter(720)
+
 	return pm
 }
 
@@ -889,6 +934,7 @@ func (pm *PageMargins) getIntAttribute(
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -920,6 +966,7 @@ func NewColumns() *Columns {
 		"cols",
 		PrefixW,
 	)
+
 	return &Columns{CompositeElementBase: elem}
 }
 
@@ -933,6 +980,7 @@ func (c *Columns) Num() int {
 		return 1
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -958,6 +1006,7 @@ func (c *Columns) Space() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -983,6 +1032,7 @@ func (c *Columns) EqualWidth() bool {
 		return true // default
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0"
 }
 
@@ -1048,6 +1098,7 @@ func NewHeaderReference(
 			string(hfType),
 		),
 	)
+
 	return hr
 }
 
@@ -1060,6 +1111,7 @@ func (hr *HeaderReference) RelationshipId() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1072,6 +1124,7 @@ func (hr *HeaderReference) Type() HeaderFooterType {
 	if !found {
 		return HeaderFooterDefault
 	}
+
 	return HeaderFooterType(attr.Value())
 }
 
@@ -1125,6 +1178,7 @@ func NewFooterReference(
 			string(hfType),
 		),
 	)
+
 	return fr
 }
 
@@ -1137,6 +1191,7 @@ func (fr *FooterReference) RelationshipId() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1149,6 +1204,7 @@ func (fr *FooterReference) Type() HeaderFooterType {
 	if !found {
 		return HeaderFooterDefault
 	}
+
 	return HeaderFooterType(attr.Value())
 }
 
@@ -1200,6 +1256,7 @@ func NewSectionType(
 	)
 	st := &SectionType{LeafElementBase: elem}
 	st.SetValue(val)
+
 	return st
 }
 
@@ -1212,6 +1269,7 @@ func (st *SectionType) Value() SectionTypeValue {
 	if !found {
 		return SectionTypeNextPage
 	}
+
 	return SectionTypeValue(attr.Value())
 }
 
@@ -1258,6 +1316,7 @@ func NewTitlePageElement() *TitlePageElement {
 		"titlePg",
 		PrefixW,
 	)
+
 	return &TitlePageElement{
 		LeafElementBase: elem,
 	}
@@ -1313,6 +1372,7 @@ func NewPageNumberType() *PageNumberType {
 		"pgNumType",
 		PrefixW,
 	)
+
 	return &PageNumberType{LeafElementBase: elem}
 }
 
@@ -1325,6 +1385,7 @@ func (pn *PageNumberType) Format() PageNumberFormatValue {
 	if !found {
 		return PageNumberFormatDecimal
 	}
+
 	return PageNumberFormatValue(attr.Value())
 }
 
@@ -1352,6 +1413,7 @@ func (pn *PageNumberType) Start() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1377,6 +1439,7 @@ func (pn *PageNumberType) ChapStyle() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1403,6 +1466,7 @@ func (pn *PageNumberType) ChapSep() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1460,6 +1524,7 @@ func NewFormProtection(
 			),
 		)
 	}
+
 	return fp
 }
 
@@ -1473,6 +1538,7 @@ func (fp *FormProtection) Enabled() bool {
 		return true // default is true when element is present
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0"
 }
 
@@ -1535,6 +1601,7 @@ func NewVerticalTextAlignment(
 		LeafElementBase: elem,
 	}
 	vta.SetValue(val)
+
 	return vta
 }
 
@@ -1547,6 +1614,7 @@ func (vta *VerticalTextAlignment) Value() VerticalTextAlignmentValue {
 	if !found {
 		return VerticalTextAlignTop
 	}
+
 	return VerticalTextAlignmentValue(
 		attr.Value(),
 	)
@@ -1605,6 +1673,7 @@ func NewNoEndnote(suppress bool) *NoEndnote {
 			),
 		)
 	}
+
 	return ne
 }
 
@@ -1618,6 +1687,7 @@ func (ne *NoEndnote) Suppressed() bool {
 		return true // default is true when element is present
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0"
 }
 
@@ -1660,6 +1730,7 @@ func NewPaperSource() *PaperSource {
 		"paperSrc",
 		PrefixW,
 	)
+
 	return &PaperSource{LeafElementBase: elem}
 }
 
@@ -1673,6 +1744,7 @@ func (ps *PaperSource) First() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1695,6 +1767,7 @@ func (ps *PaperSource) Other() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1747,6 +1820,7 @@ func NewLineNumberType() *LineNumberType {
 		"lnNumType",
 		PrefixW,
 	)
+
 	return &LineNumberType{LeafElementBase: elem}
 }
 
@@ -1760,6 +1834,7 @@ func (ln *LineNumberType) CountBy() int {
 		return 1
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1785,6 +1860,7 @@ func (ln *LineNumberType) Start() int {
 		return 1
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1807,6 +1883,7 @@ func (ln *LineNumberType) Distance() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1831,6 +1908,7 @@ func (ln *LineNumberType) Restart() LineNumberRestartValue {
 	if !found {
 		return LineNumberRestartNewPage
 	}
+
 	return LineNumberRestartValue(attr.Value())
 }
 
@@ -1898,6 +1976,7 @@ func NewTextDirection(
 	)
 	td := &TextDirection{LeafElementBase: elem}
 	td.SetValue(val)
+
 	return td
 }
 
@@ -1910,6 +1989,7 @@ func (td *TextDirection) Value() TextDirectionValue {
 	if !found {
 		return TextDirectionLrTb
 	}
+
 	return TextDirectionValue(attr.Value())
 }
 
@@ -1966,6 +2046,7 @@ func NewRTLGutter(enabled bool) *RTLGutter {
 			),
 		)
 	}
+
 	return rg
 }
 
@@ -1979,6 +2060,7 @@ func (rg *RTLGutter) Enabled() bool {
 		return true // default is true when element is present
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0"
 }
 
@@ -2033,6 +2115,7 @@ func NewDocGrid() *DocGrid {
 		"docGrid",
 		PrefixW,
 	)
+
 	return &DocGrid{LeafElementBase: elem}
 }
 
@@ -2045,6 +2128,7 @@ func (dg *DocGrid) Type() DocGridTypeValue {
 	if !found {
 		return DocGridDefault
 	}
+
 	return DocGridTypeValue(attr.Value())
 }
 
@@ -2067,6 +2151,7 @@ func (dg *DocGrid) LinePitch() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -2092,6 +2177,7 @@ func (dg *DocGrid) CharSpace() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 

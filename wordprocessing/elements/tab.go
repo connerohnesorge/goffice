@@ -16,6 +16,7 @@ func NewTab() *Tab {
 		"tab",
 		PrefixW,
 	)
+
 	return &Tab{CompositeElementBase: elem}
 }
 

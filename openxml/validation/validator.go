@@ -86,6 +86,7 @@ func (v *SchemaValidator) WithAttribute(
 			attr.LocalName,
 		)
 	}
+
 	return v
 }
 
@@ -173,6 +174,7 @@ func (v *SchemaValidator) validateAttributes(
 					element,
 				),
 			)
+
 			continue
 		}
 
@@ -182,6 +184,7 @@ func (v *SchemaValidator) validateAttributes(
 			for _, allowed := range schema.Values {
 				if value == allowed {
 					found = true
+
 					break
 				}
 			}
@@ -236,6 +239,7 @@ func (v *AttributeValidator) Validate(
 				),
 			)
 		}
+
 		return errors
 	}
 
@@ -245,6 +249,7 @@ func (v *AttributeValidator) Validate(
 		for _, allowed := range v.Schema.Values {
 			if value == allowed {
 				found = true
+
 				break
 			}
 		}
@@ -282,6 +287,7 @@ func (v *SemanticValidator) AddConstraint(
 	c Constraint,
 ) *SemanticValidator {
 	v.constraints = append(v.constraints, c)
+
 	return v
 }
 
@@ -529,5 +535,6 @@ func joinStrings(
 	for i := 1; i < len(strs); i++ {
 		result += sep + strs[i]
 	}
+
 	return result
 }

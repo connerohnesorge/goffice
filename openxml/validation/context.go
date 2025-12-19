@@ -94,6 +94,7 @@ func NewValidationContext(
 	if settings == nil {
 		settings = DefaultSettings()
 	}
+
 	return &ValidationContext{
 		Settings:  settings,
 		Version:   version,
@@ -129,12 +130,14 @@ func (ctx *ValidationContext) AddError(
 			ctx.errors,
 		) >= ctx.Settings.MaxErrors {
 		ctx.stopped = true
+
 		return false
 	}
 
 	if !ctx.Settings.ContinueOnError &&
 		err.Severity == SeverityError {
 		ctx.stopped = true
+
 		return false
 	}
 
@@ -151,6 +154,7 @@ func (ctx *ValidationContext) AddErrors(
 			return false
 		}
 	}
+
 	return true
 }
 
@@ -163,6 +167,7 @@ func (ctx *ValidationContext) Errors() ValidationErrors {
 		len(ctx.errors),
 	)
 	copy(result, ctx.errors)
+
 	return result
 }
 
@@ -170,6 +175,7 @@ func (ctx *ValidationContext) Errors() ValidationErrors {
 func (ctx *ValidationContext) ShouldStop() bool {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
+
 	return ctx.stopped
 }
 
@@ -202,6 +208,7 @@ func (ctx *ValidationContext) PopPath() {
 func (ctx *ValidationContext) CurrentPath() string {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
+
 	return "/" + strings.Join(ctx.pathStack, "/")
 }
 
@@ -221,6 +228,7 @@ func (ctx *ValidationContext) PathWithIndex(
 			index,
 		) + "]"
 	}
+
 	return basePath + "/" + element + "[" + itoa(
 		index,
 	) + "]"
@@ -234,6 +242,7 @@ func itoa(i int) string {
 	if i < 0 {
 		return "-" + uitoa(uint(-i))
 	}
+
 	return uitoa(uint(i))
 }
 
@@ -248,6 +257,7 @@ func uitoa(u uint) string {
 	}
 	i--
 	buf[i] = byte('0' + u)
+
 	return string(buf[i:])
 }
 
@@ -264,6 +274,7 @@ func (ctx *ValidationContext) TrackID(
 		return existing
 	}
 	ctx.seenIDs[id] = element
+
 	return nil
 }
 
@@ -274,6 +285,7 @@ func (ctx *ValidationContext) HasSeenID(
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
 	_, ok := ctx.seenIDs[id]
+
 	return ok
 }
 
@@ -300,6 +312,7 @@ func (ctx *ValidationContext) Reset() {
 func (ctx *ValidationContext) ErrorCount() int {
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
+
 	return len(ctx.errors)
 }
 
@@ -310,5 +323,6 @@ func (ctx *ValidationContext) IsVersionAvailable(
 	if avail == nil {
 		return true
 	}
+
 	return avail.IsAvailableIn(ctx.Version)
 }

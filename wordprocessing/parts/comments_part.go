@@ -84,6 +84,7 @@ func (cp *CommentsPart) Comments() *elements.Comments {
 			PartRootElementBase: pre,
 		}
 	}
+
 	return nil
 }
 
@@ -95,6 +96,7 @@ func (cp *CommentsPart) GetOrCreateComments() *elements.Comments {
 	}
 	c = elements.NewComments()
 	cp.SetRootElement(c)
+
 	return c
 }
 
@@ -103,6 +105,7 @@ func (cp *CommentsPart) AddComment(
 	author, text string,
 ) *elements.Comment {
 	c := cp.GetOrCreateComments()
+
 	return c.AddComment(author, text)
 }
 
@@ -114,6 +117,7 @@ func (cp *CommentsPart) GetComment(
 	if c == nil {
 		return nil
 	}
+
 	return c.GetComment(id)
 }
 
@@ -146,6 +150,7 @@ func CommentsPartFactory(
 		packPart,
 		container,
 	)
+
 	return &CommentsPart{
 		OpenXmlPartData: partData,
 	}

@@ -43,6 +43,7 @@ func mapToAttrs(
 			mockAttribute{name: k, value: v},
 		)
 	}
+
 	return attrs
 }
 
@@ -53,6 +54,7 @@ func elementsToInterfaces(
 	for i, e := range elements {
 		result[i] = e
 	}
+
 	return result
 }
 
@@ -70,6 +72,7 @@ func (e *mockElement) withNS(
 	ns string,
 ) *mockElement {
 	e.namespaceURI = ns
+
 	return e
 }
 
@@ -77,6 +80,7 @@ func (e *mockElement) withAttr(
 	name, value string,
 ) *mockElement {
 	e.attributes[name] = value
+
 	return e
 }
 
@@ -85,6 +89,7 @@ func (e *mockElement) withChild(
 ) *mockElement {
 	child.parent = e
 	e.children = append(e.children, child)
+
 	return e
 }
 
@@ -845,6 +850,7 @@ func TestConstraints(t *testing.T) {
 					if me, ok := e.(*mockElement); ok {
 						return me.attributes["id"]
 					}
+
 					return ""
 				},
 			)

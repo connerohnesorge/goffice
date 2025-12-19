@@ -23,6 +23,7 @@ func NewRun(text string) *Run {
 	if text != "" {
 		r.AppendChild(NewText(text))
 	}
+
 	return r
 }
 
@@ -41,6 +42,7 @@ func (r *Run) Properties() *RunProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -57,6 +59,7 @@ func (r *Run) GetOrCreateProperties() *RunProperties {
 	} else {
 		r.AppendChild(props)
 	}
+
 	return props
 }
 
@@ -73,6 +76,7 @@ func (r *Run) Text() *Text {
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
 		return &Text{LeafElementBase: leaf}
 	}
+
 	return nil
 }
 
@@ -102,6 +106,7 @@ func (r *Run) InnerText() string {
 	for t := range r.Texts() {
 		sb.WriteString(t.InnerText())
 	}
+
 	return sb.String()
 }
 
@@ -131,6 +136,7 @@ func (r *Run) SetText(value string) {
 func (r *Run) AppendText(value string) *Text {
 	t := NewText(value)
 	r.AppendChild(t)
+
 	return t
 }
 
@@ -140,6 +146,7 @@ func (r *Run) AppendBreak(
 ) *Break {
 	br := NewBreak(breakType)
 	r.AppendChild(br)
+
 	return br
 }
 
@@ -147,6 +154,7 @@ func (r *Run) AppendBreak(
 func (r *Run) AppendTab() *Tab {
 	tab := NewTab()
 	r.AppendChild(tab)
+
 	return tab
 }
 
@@ -171,12 +179,14 @@ func (r *Run) CloneNode(
 // SetBold sets bold formatting on this run.
 func (r *Run) SetBold(b bool) *Run {
 	r.GetOrCreateProperties().SetBold(b)
+
 	return r
 }
 
 // SetItalic sets italic formatting on this run.
 func (r *Run) SetItalic(b bool) *Run {
 	r.GetOrCreateProperties().SetItalic(b)
+
 	return r
 }
 
@@ -185,6 +195,7 @@ func (r *Run) SetUnderline(
 	u UnderlineValue,
 ) *Run {
 	r.GetOrCreateProperties().SetUnderline(u)
+
 	return r
 }
 
@@ -192,18 +203,21 @@ func (r *Run) SetUnderline(
 func (r *Run) SetFontSize(halfPoints int) *Run {
 	r.GetOrCreateProperties().
 		SetFontSize(halfPoints)
+
 	return r
 }
 
 // SetFont sets the font name.
 func (r *Run) SetFont(fontName string) *Run {
 	r.GetOrCreateProperties().SetFont(fontName)
+
 	return r
 }
 
 // SetColor sets the text color.
 func (r *Run) SetColor(hex string) *Run {
 	r.GetOrCreateProperties().SetColor(hex)
+
 	return r
 }
 
@@ -212,6 +226,7 @@ func (r *Run) SetHighlight(
 	color HighlightColor,
 ) *Run {
 	r.GetOrCreateProperties().SetHighlight(color)
+
 	return r
 }
 
@@ -221,6 +236,7 @@ func (r *Run) AppendFootnoteReference(
 ) *FootnoteReference {
 	fr := NewFootnoteReference(id)
 	r.AppendChild(fr)
+
 	return fr
 }
 
@@ -230,6 +246,7 @@ func (r *Run) AppendEndnoteReference(
 ) *EndnoteReference {
 	er := NewEndnoteReference(id)
 	r.AppendChild(er)
+
 	return er
 }
 
@@ -239,6 +256,7 @@ func (r *Run) AppendCommentReference(
 ) *CommentReference {
 	cr := NewCommentReference(id)
 	r.AppendChild(cr)
+
 	return cr
 }
 
@@ -246,6 +264,7 @@ func (r *Run) AppendCommentReference(
 func (r *Run) AppendCarriageReturn() *CarriageReturn {
 	cr := NewCarriageReturn()
 	r.AppendChild(cr)
+
 	return cr
 }
 
@@ -253,6 +272,7 @@ func (r *Run) AppendCarriageReturn() *CarriageReturn {
 func (r *Run) AppendSoftHyphen() *SoftHyphen {
 	sh := NewSoftHyphen()
 	r.AppendChild(sh)
+
 	return sh
 }
 
@@ -260,6 +280,7 @@ func (r *Run) AppendSoftHyphen() *SoftHyphen {
 func (r *Run) AppendNoBreakHyphen() *NoBreakHyphen {
 	nbh := NewNoBreakHyphen()
 	r.AppendChild(nbh)
+
 	return nbh
 }
 
@@ -269,6 +290,7 @@ func (r *Run) AppendSymbol(
 ) *Symbol {
 	s := NewSymbol(font, char)
 	r.AppendChild(s)
+
 	return s
 }
 
@@ -278,6 +300,7 @@ func (r *Run) AppendFieldChar(
 ) *FieldChar {
 	fc := NewFieldChar(charType)
 	r.AppendChild(fc)
+
 	return fc
 }
 
@@ -287,6 +310,7 @@ func (r *Run) AppendInstrText(
 ) *InstrText {
 	it := NewInstrText(text)
 	r.AppendChild(it)
+
 	return it
 }
 
@@ -294,6 +318,7 @@ func (r *Run) AppendInstrText(
 func (r *Run) AppendPositionalTab() *PositionalTab {
 	pt := NewPositionalTab()
 	r.AppendChild(pt)
+
 	return pt
 }
 
@@ -301,6 +326,7 @@ func (r *Run) AppendPositionalTab() *PositionalTab {
 func (r *Run) AppendSeparator() *Separator {
 	s := NewSeparator()
 	r.AppendChild(s)
+
 	return s
 }
 
@@ -308,6 +334,7 @@ func (r *Run) AppendSeparator() *Separator {
 func (r *Run) AppendContinuationSeparator() *ContinuationSeparator {
 	cs := NewContinuationSeparator()
 	r.AppendChild(cs)
+
 	return cs
 }
 
@@ -315,5 +342,6 @@ func (r *Run) AppendContinuationSeparator() *ContinuationSeparator {
 func (r *Run) AppendLastRenderedPageBreak() *LastRenderedPageBreak {
 	lrpb := NewLastRenderedPageBreak()
 	r.AppendChild(lrpb)
+
 	return lrpb
 }

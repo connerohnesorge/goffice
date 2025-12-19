@@ -519,7 +519,7 @@ func TestIntegrationTableOperations(
 	}
 
 	// Set cell content and formatting
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		cell := tb.Cell(0, i)
 		if cell != nil {
 			cell.SetText("Header " + string(rune('A'+i))).
@@ -529,7 +529,7 @@ func TestIntegrationTableOperations(
 
 	// Fill data rows
 	for row := 1; row < 4; row++ {
-		for col := 0; col < 4; col++ {
+		for col := range 4 {
 			cell := tb.Cell(row, col)
 			if cell != nil {
 				cell.SetText(

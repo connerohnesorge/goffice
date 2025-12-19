@@ -105,6 +105,7 @@ func (fp *FootnotesPart) Footnotes() *elements.Footnotes {
 			PartRootElementBase: pre,
 		}
 	}
+
 	return nil
 }
 
@@ -116,6 +117,7 @@ func (fp *FootnotesPart) GetOrCreateFootnotes() *elements.Footnotes {
 	}
 	fn = elements.NewFootnotes()
 	fp.SetRootElement(fn)
+
 	return fn
 }
 
@@ -124,6 +126,7 @@ func (fp *FootnotesPart) AddFootnote(
 	text string,
 ) *elements.Footnote {
 	fn := fp.GetOrCreateFootnotes()
+
 	return fn.AddFootnote(text)
 }
 
@@ -135,6 +138,7 @@ func (fp *FootnotesPart) GetFootnote(
 	if fn == nil {
 		return nil
 	}
+
 	return fn.GetFootnote(id)
 }
 
@@ -226,6 +230,7 @@ func (ep *EndnotesPart) Endnotes() *elements.Endnotes {
 			PartRootElementBase: pre,
 		}
 	}
+
 	return nil
 }
 
@@ -237,6 +242,7 @@ func (ep *EndnotesPart) GetOrCreateEndnotes() *elements.Endnotes {
 	}
 	en = elements.NewEndnotes()
 	ep.SetRootElement(en)
+
 	return en
 }
 
@@ -245,6 +251,7 @@ func (ep *EndnotesPart) AddEndnote(
 	text string,
 ) *elements.Endnote {
 	en := ep.GetOrCreateEndnotes()
+
 	return en.AddEndnote(text)
 }
 
@@ -256,6 +263,7 @@ func (ep *EndnotesPart) GetEndnote(
 	if en == nil {
 		return nil
 	}
+
 	return en.GetEndnote(id)
 }
 
@@ -288,6 +296,7 @@ func FootnotesPartFactory(
 		packPart,
 		container,
 	)
+
 	return &FootnotesPart{
 		OpenXmlPartData: partData,
 	}
@@ -314,6 +323,7 @@ func EndnotesPartFactory(
 		packPart,
 		container,
 	)
+
 	return &EndnotesPart{
 		OpenXmlPartData: partData,
 	}

@@ -284,6 +284,7 @@ func TestOpenXmlPartDataRootElement(
 			part2.SetRootFactory(
 				func() PartRootElement {
 					factoryCalled = true
+
 					return NewPartRootElement(
 						NamespaceWordprocessingML,
 						"styles",

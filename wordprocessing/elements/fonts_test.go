@@ -271,6 +271,7 @@ func TestFontsFontsIterator(t *testing.T) {
 		for _, name := range names {
 			if name == expected {
 				found = true
+
 				break
 			}
 		}

@@ -26,6 +26,7 @@ func NewLeafElement(
 		prefix,
 		nil,
 	)
+
 	return elem
 }
 
@@ -42,6 +43,7 @@ func NewLeafElementWithFeatures(
 		prefix,
 		parentFeatures,
 	)
+
 	return elem
 }
 
@@ -55,6 +57,7 @@ func NewLeafElementWithText(
 		prefix,
 	)
 	elem.innerText = text
+
 	return elem
 }
 
@@ -84,6 +87,7 @@ func (l *LeafElementBase) NextSibling() Element {
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -101,6 +105,7 @@ func (l *LeafElementBase) PreviousSibling() Element {
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -108,6 +113,7 @@ func (l *LeafElementBase) PreviousSibling() Element {
 func (l *LeafElementBase) OuterXml() string {
 	var buf bytes.Buffer
 	_ = l.WriteXML(&buf)
+
 	return buf.String()
 }
 

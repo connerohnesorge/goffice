@@ -18,6 +18,7 @@ func NewHexBinaryValue(v []byte) *HexBinaryValue {
 	// Make a copy to avoid aliasing issues
 	valueCopy := make([]byte, len(v))
 	copy(valueCopy, v)
+
 	return &HexBinaryValue{
 		value:    valueCopy,
 		hasValue: true,
@@ -33,6 +34,7 @@ func NewHexBinaryValueFromString(
 	if err := hv.SetInnerText(s); err != nil {
 		return nil, err
 	}
+
 	return hv, nil
 }
 
@@ -52,6 +54,7 @@ func (hv *HexBinaryValue) Value() []byte {
 	// Return a copy to prevent modification of internal state
 	valueCopy := make([]byte, len(hv.value))
 	copy(valueCopy, hv.value)
+
 	return valueCopy
 }
 
@@ -73,6 +76,7 @@ func (hv *HexBinaryValue) InnerText() string {
 	if !hv.hasValue {
 		return ""
 	}
+
 	return strings.ToUpper(
 		hex.EncodeToString(hv.value),
 	)
@@ -87,6 +91,7 @@ func (hv *HexBinaryValue) SetInnerText(
 	if text == "" {
 		hv.hasValue = false
 		hv.value = nil
+
 		return nil
 	}
 	decoded, err := hex.DecodeString(text)
@@ -98,6 +103,7 @@ func (hv *HexBinaryValue) SetInnerText(
 	}
 	hv.value = decoded
 	hv.hasValue = true
+
 	return nil
 }
 
@@ -113,6 +119,7 @@ func (hv *HexBinaryValue) Len() int {
 	if !hv.hasValue {
 		return 0
 	}
+
 	return len(hv.value)
 }
 

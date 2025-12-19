@@ -48,6 +48,7 @@ func (dv *DateTimeValue) Value() time.Time {
 	if !dv.hasValue {
 		return time.Time{}
 	}
+
 	return dv.value
 }
 
@@ -68,6 +69,7 @@ func (dv *DateTimeValue) InnerText() string {
 	if !dv.hasValue {
 		return ""
 	}
+
 	return dv.value.Format(time.RFC3339)
 }
 
@@ -80,6 +82,7 @@ func (dv *DateTimeValue) SetInnerText(
 	if text == "" {
 		dv.hasValue = false
 		dv.value = time.Time{}
+
 		return nil
 	}
 
@@ -90,6 +93,7 @@ func (dv *DateTimeValue) SetInnerText(
 		if err == nil {
 			dv.value = t
 			dv.hasValue = true
+
 			return nil
 		}
 		parseErr = err

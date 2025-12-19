@@ -116,6 +116,7 @@ func URIDirectory(uri string) string {
 	if dir == "." {
 		return "/"
 	}
+
 	return dir
 }
 
@@ -130,6 +131,7 @@ func URIFilename(uri string) string {
 func IsRelationshipURI(uri string) bool {
 	filename := path.Base(uri)
 	dir := path.Dir(uri)
+
 	return strings.HasSuffix(filename, ".rels") &&
 		strings.HasSuffix(dir, "_rels")
 }

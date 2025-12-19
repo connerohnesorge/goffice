@@ -175,6 +175,7 @@ func TestDocumentValidateClosedDocument(
 	for _, e := range errors {
 		if e.Description == "Document package is nil or closed" {
 			found = true
+
 			break
 		}
 	}

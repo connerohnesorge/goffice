@@ -81,6 +81,7 @@ func (a OpenXmlAttribute) String() string {
 	if a.prefix != "" {
 		name = a.prefix + ":" + name
 	}
+
 	return name + "=\"" + a.value + "\""
 }
 

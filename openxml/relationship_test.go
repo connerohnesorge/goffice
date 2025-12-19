@@ -365,7 +365,7 @@ func TestRelationshipIDGenerator(t *testing.T) {
 		gen := NewRelationshipIDGenerator()
 
 		ids := make(map[string]bool)
-		for i := 0; i < 100; i++ {
+		for range 100 {
 			id := gen.Next()
 			if ids[id] {
 				t.Errorf(
@@ -406,7 +406,7 @@ func TestGenerateUniqueID(t *testing.T) {
 		"generates unique IDs",
 		func(t *testing.T) {
 			ids := make(map[string]bool)
-			for i := 0; i < 100; i++ {
+			for range 100 {
 				id := GenerateUniqueID()
 				if ids[id] {
 					t.Errorf(
@@ -702,9 +702,9 @@ func TestRelationshipIDGeneratorConcurrent(
 	ids := make(chan string, 1000)
 
 	// Spawn multiple goroutines generating IDs
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		go func() {
-			for j := 0; j < 100; j++ {
+			for range 100 {
 				ids <- gen.Next()
 			}
 			done <- true
@@ -712,7 +712,7 @@ func TestRelationshipIDGeneratorConcurrent(
 	}
 
 	// Wait for all goroutines
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		<-done
 	}
 	close(ids)

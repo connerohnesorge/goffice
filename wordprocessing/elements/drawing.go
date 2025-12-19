@@ -52,6 +52,7 @@ func NewDrawing() *Drawing {
 		"drawing",
 		PrefixW,
 	)
+
 	return &Drawing{CompositeElementBase: elem}
 }
 
@@ -67,6 +68,7 @@ func NewInlineDrawing(
 		relId,
 	)
 	d.AppendChild(inline)
+
 	return d
 }
 
@@ -82,6 +84,7 @@ func NewAnchorDrawing(
 		relId,
 	)
 	d.AppendChild(anchor)
+
 	return d
 }
 
@@ -102,6 +105,7 @@ func (d *Drawing) Inline() *InlineDrawing {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -122,6 +126,7 @@ func (d *Drawing) Anchor() *AnchorDrawing {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -247,6 +252,7 @@ func (i *InlineDrawing) Width() int64 {
 	if extent != nil {
 		return extent.Width()
 	}
+
 	return 0
 }
 
@@ -256,6 +262,7 @@ func (i *InlineDrawing) Height() int64 {
 	if extent != nil {
 		return extent.Height()
 	}
+
 	return 0
 }
 
@@ -274,6 +281,7 @@ func (i *InlineDrawing) Extent() *Extent {
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &Extent{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 
@@ -294,6 +302,7 @@ func (i *InlineDrawing) DocProperties() *DocProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -314,6 +323,7 @@ func (i *InlineDrawing) Graphic() *Graphic {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -574,6 +584,7 @@ func (a *AnchorDrawing) Width() int64 {
 	if extent != nil {
 		return extent.Width()
 	}
+
 	return 0
 }
 
@@ -583,6 +594,7 @@ func (a *AnchorDrawing) Height() int64 {
 	if extent != nil {
 		return extent.Height()
 	}
+
 	return 0
 }
 
@@ -601,6 +613,7 @@ func (a *AnchorDrawing) Extent() *Extent {
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &Extent{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 
@@ -628,6 +641,7 @@ func (a *AnchorDrawing) SimplePos() bool {
 	if !found {
 		return false
 	}
+
 	return attr.Value() == "1"
 }
 
@@ -648,6 +662,7 @@ func (a *AnchorDrawing) PositionH() *PositionH {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -668,6 +683,7 @@ func (a *AnchorDrawing) PositionV() *PositionV {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -695,6 +711,7 @@ func (a *AnchorDrawing) BehindDoc() bool {
 	if !found {
 		return false
 	}
+
 	return attr.Value() == "1"
 }
 
@@ -844,6 +861,7 @@ func (a *AnchorDrawing) removeWrapElements() {
 			if child.LocalName() == wrapName &&
 				child.NamespaceURI() == NamespaceDrawingMLWordprocessing {
 				toRemove = append(toRemove, child)
+
 				break
 			}
 		}
@@ -892,6 +910,7 @@ func (a *AnchorDrawing) DocProperties() *DocProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -912,6 +931,7 @@ func (a *AnchorDrawing) Graphic() *Graphic {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -951,6 +971,7 @@ func NewExtent(width, height int64) *Extent {
 			strconv.FormatInt(height, 10),
 		),
 	)
+
 	return ext
 }
 
@@ -965,6 +986,7 @@ func (e *Extent) Width() int64 {
 		10,
 		64,
 	)
+
 	return val
 }
 
@@ -991,6 +1013,7 @@ func (e *Extent) Height() int64 {
 		10,
 		64,
 	)
+
 	return val
 }
 
@@ -1062,6 +1085,7 @@ func NewEffectExtent(
 			strconv.FormatInt(bottom, 10),
 		),
 	)
+
 	return ee
 }
 
@@ -1106,6 +1130,7 @@ func NewDocProperties(
 			name,
 		),
 	)
+
 	return dp
 }
 
@@ -1116,6 +1141,7 @@ func (dp *DocProperties) Id() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1137,6 +1163,7 @@ func (dp *DocProperties) Name() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1158,6 +1185,7 @@ func (dp *DocProperties) Description() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1228,6 +1256,7 @@ func (ph *PositionH) RelativeFrom() RelativeFromH {
 	if !found {
 		return RelativeFromHColumn
 	}
+
 	return RelativeFromH(attr.Value())
 }
 
@@ -1260,8 +1289,10 @@ func (ph *PositionH) Offset() int64 {
 			10,
 			64,
 		)
+
 		return val
 	}
+
 	return 0
 }
 
@@ -1333,6 +1364,7 @@ func (pv *PositionV) RelativeFrom() RelativeFromV {
 	if !found {
 		return RelativeFromVParagraph
 	}
+
 	return RelativeFromV(attr.Value())
 }
 
@@ -1365,8 +1397,10 @@ func (pv *PositionV) Offset() int64 {
 			10,
 			64,
 		)
+
 		return val
 	}
+
 	return 0
 }
 

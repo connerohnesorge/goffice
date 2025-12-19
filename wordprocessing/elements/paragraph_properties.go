@@ -18,6 +18,7 @@ func NewParagraphProperties() *ParagraphProperties {
 		"pPr",
 		PrefixW,
 	)
+
 	return &ParagraphProperties{
 		CompositeElementBase: elem,
 	}
@@ -36,6 +37,7 @@ func (pp *ParagraphProperties) ParagraphStyleId() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -45,6 +47,7 @@ func (pp *ParagraphProperties) SetParagraphStyleId(
 ) {
 	if id == "" {
 		pp.removeElement("pStyle")
+
 		return
 	}
 	elem := pp.getOrCreateElement("pStyle")
@@ -71,6 +74,7 @@ func (pp *ParagraphProperties) Justification() JustificationValue {
 	if !found {
 		return JustificationLeft
 	}
+
 	return JustificationValue(attr.Value())
 }
 
@@ -80,6 +84,7 @@ func (pp *ParagraphProperties) SetJustification(
 ) {
 	if j == "" || j == JustificationLeft {
 		pp.removeElement("jc")
+
 		return
 	}
 	elem := pp.getOrCreateElement("jc")
@@ -107,6 +112,7 @@ func (pp *ParagraphProperties) Indentation() *Indentation {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -129,6 +135,7 @@ func (pp *ParagraphProperties) GetOrCreateIndentation() *Indentation {
 	}
 	ind = NewIndentation()
 	pp.AppendChild(ind)
+
 	return ind
 }
 
@@ -146,6 +153,7 @@ func (pp *ParagraphProperties) SpacingBetweenLines() *SpacingBetweenLines {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -157,6 +165,7 @@ func (pp *ParagraphProperties) GetOrCreateSpacingBetweenLines() *SpacingBetweenL
 	}
 	sp = NewSpacingBetweenLines()
 	pp.AppendChild(sp)
+
 	return sp
 }
 
@@ -214,6 +223,7 @@ func (pp *ParagraphProperties) WidowControl() bool {
 		return true // element present with no val means true
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0" &&
 		val != "off"
 }
@@ -246,6 +256,7 @@ func (pp *ParagraphProperties) NumberingProperties() *NumberingProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -257,6 +268,7 @@ func (pp *ParagraphProperties) GetOrCreateNumberingProperties() *NumberingProper
 	}
 	np = NewNumberingProperties()
 	pp.AppendChild(np)
+
 	return np
 }
 
@@ -272,6 +284,7 @@ func (pp *ParagraphProperties) Tabs() *Tabs {
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &Tabs{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 
@@ -283,6 +296,7 @@ func (pp *ParagraphProperties) GetOrCreateTabs() *Tabs {
 	}
 	tabs = NewTabs()
 	pp.AppendChild(tabs)
+
 	return tabs
 }
 
@@ -300,6 +314,7 @@ func (pp *ParagraphProperties) ParagraphBorders() *ParagraphBorders {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -311,6 +326,7 @@ func (pp *ParagraphProperties) GetOrCreateParagraphBorders() *ParagraphBorders {
 	}
 	pb = NewParagraphBorders()
 	pp.AppendChild(pb)
+
 	return pb
 }
 
@@ -328,6 +344,7 @@ func (pp *ParagraphProperties) Shading() *Shading {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -339,6 +356,7 @@ func (pp *ParagraphProperties) GetOrCreateShading() *Shading {
 	}
 	shd = NewShading()
 	pp.AppendChild(shd)
+
 	return shd
 }
 
@@ -362,6 +380,7 @@ func (pp *ParagraphProperties) OutlineLevel() int {
 	if err != nil {
 		return -1
 	}
+
 	return val
 }
 
@@ -371,6 +390,7 @@ func (pp *ParagraphProperties) SetOutlineLevel(
 ) {
 	if level < 0 || level > 8 {
 		pp.removeElement("outlineLvl")
+
 		return
 	}
 	elem := pp.getOrCreateElement("outlineLvl")
@@ -398,6 +418,7 @@ func (pp *ParagraphProperties) ParagraphMarkRunProperties() *RunProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -475,6 +496,7 @@ func (pp *ParagraphProperties) SnapToGrid() bool {
 		return true // element present with no val means true
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0" &&
 		val != "off"
 }
@@ -509,6 +531,7 @@ func (pp *ParagraphProperties) TextAlignment() TextAlignmentValue {
 	if !found {
 		return TextAlignmentAuto
 	}
+
 	return TextAlignmentValue(attr.Value())
 }
 
@@ -518,6 +541,7 @@ func (pp *ParagraphProperties) SetTextAlignment(
 ) {
 	if align == "" || align == TextAlignmentAuto {
 		pp.removeElement("textAlignment")
+
 		return
 	}
 	elem := pp.getOrCreateElement("textAlignment")
@@ -561,6 +585,7 @@ func (pp *ParagraphProperties) OverflowPunct() bool {
 		return true // element present with no val means true
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0" &&
 		val != "off"
 }
@@ -594,9 +619,11 @@ func (pp *ParagraphProperties) hasOnOffElement(
 	)
 	if found {
 		val := attr.Value()
+
 		return val != "false" && val != "0" &&
 			val != "off"
 	}
+
 	return true
 }
 
@@ -624,6 +651,7 @@ func (pp *ParagraphProperties) getOrCreateElement(
 		PrefixW,
 	)
 	pp.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -664,6 +692,7 @@ func NewIndentation() *Indentation {
 		"ind",
 		PrefixW,
 	)
+
 	return &Indentation{
 		CompositeElementBase: elem,
 	}
@@ -748,6 +777,7 @@ func (ind *Indentation) getIntAttribute(
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -770,6 +800,7 @@ func NewSpacingBetweenLines() *SpacingBetweenLines {
 		"spacing",
 		PrefixW,
 	)
+
 	return &SpacingBetweenLines{
 		CompositeElementBase: elem,
 	}
@@ -841,6 +872,7 @@ func (sp *SpacingBetweenLines) LineRule() LineSpacingRule {
 	if !found {
 		return LineSpacingAuto
 	}
+
 	return LineSpacingRule(attr.Value())
 }
 
@@ -869,6 +901,7 @@ func (sp *SpacingBetweenLines) getIntAttribute(
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -891,6 +924,7 @@ func NewNumberingProperties() *NumberingProperties {
 		"numPr",
 		PrefixW,
 	)
+
 	return &NumberingProperties{
 		CompositeElementBase: elem,
 	}
@@ -910,6 +944,7 @@ func (np *NumberingProperties) NumberingId() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -942,6 +977,7 @@ func (np *NumberingProperties) NumberingLevelReference() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -973,6 +1009,7 @@ func (np *NumberingProperties) getOrCreateElement(
 		PrefixW,
 	)
 	np.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -995,6 +1032,7 @@ func NewTabs() *Tabs {
 		"tabs",
 		PrefixW,
 	)
+
 	return &Tabs{CompositeElementBase: elem}
 }
 
@@ -1006,6 +1044,7 @@ func (t *Tabs) AddTab(
 ) *TabStop {
 	tab := NewTabStop(position, align, leader)
 	t.AppendChild(tab)
+
 	return tab
 }
 
@@ -1059,6 +1098,7 @@ func NewTabStop(
 			),
 		)
 	}
+
 	return tab
 }
 
@@ -1072,6 +1112,7 @@ func (ts *TabStop) Position() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1084,6 +1125,7 @@ func (ts *TabStop) Alignment() TabAlignment {
 	if !found {
 		return TabAlignLeft
 	}
+
 	return TabAlignment(attr.Value())
 }
 
@@ -1096,6 +1138,7 @@ func (ts *TabStop) Leader() TabLeader {
 	if !found {
 		return TabLeaderNone
 	}
+
 	return TabLeader(attr.Value())
 }
 
@@ -1118,6 +1161,7 @@ func NewParagraphBorders() *ParagraphBorders {
 		"pBdr",
 		PrefixW,
 	)
+
 	return &ParagraphBorders{
 		CompositeElementBase: elem,
 	}
@@ -1220,6 +1264,7 @@ func (pb *ParagraphBorders) getBorder(
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &Border{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 
@@ -1290,6 +1335,7 @@ func NewBorder(
 			),
 		)
 	}
+
 	return b
 }
 
@@ -1302,6 +1348,7 @@ func (b *Border) Value() BorderStyle {
 	if !found {
 		return BorderNone
 	}
+
 	return BorderStyle(attr.Value())
 }
 
@@ -1315,6 +1362,7 @@ func (b *Border) Size() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1327,6 +1375,7 @@ func (b *Border) Color() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1340,6 +1389,7 @@ func (b *Border) Space() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -1362,6 +1412,7 @@ func NewShading() *Shading {
 		"shd",
 		PrefixW,
 	)
+
 	return &Shading{CompositeElementBase: elem}
 }
 
@@ -1374,6 +1425,7 @@ func (s *Shading) Fill() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1398,6 +1450,7 @@ func (s *Shading) Color() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1422,6 +1475,7 @@ func (s *Shading) Val() ShadingPattern {
 	if !found {
 		return ShadingClear
 	}
+
 	return ShadingPattern(attr.Value())
 }
 

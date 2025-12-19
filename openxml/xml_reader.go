@@ -34,6 +34,7 @@ func ParseElement(
 	}
 
 	decoder := xml.NewDecoder(r)
+
 	return parseElement(decoder, factory)
 }
 
@@ -154,6 +155,7 @@ func parseChildren(
 					leaf.SetInnerText(strings.TrimSpace(textBuilder.String()))
 				}
 			}
+
 			return nil
 
 		case xml.CharData:
@@ -210,6 +212,7 @@ func skipElement(decoder *xml.Decoder) error {
 			depth--
 		}
 	}
+
 	return nil
 }
 

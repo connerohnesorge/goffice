@@ -107,6 +107,7 @@ func WebSettingsPartFactory(
 		packPart,
 		container,
 	)
+
 	return &WebSettingsPart{
 		OpenXmlPartData: partData,
 	}

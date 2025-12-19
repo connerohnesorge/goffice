@@ -43,6 +43,7 @@ func NewCoreProperties() *CoreProperties {
 func (cp *CoreProperties) Title() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.title
 }
 
@@ -57,6 +58,7 @@ func (cp *CoreProperties) SetTitle(title string) {
 func (cp *CoreProperties) Subject() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.subject
 }
 
@@ -73,6 +75,7 @@ func (cp *CoreProperties) SetSubject(
 func (cp *CoreProperties) Creator() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.creator
 }
 
@@ -89,6 +92,7 @@ func (cp *CoreProperties) SetCreator(
 func (cp *CoreProperties) Keywords() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.keywords
 }
 
@@ -105,6 +109,7 @@ func (cp *CoreProperties) SetKeywords(
 func (cp *CoreProperties) Description() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.description
 }
 
@@ -121,6 +126,7 @@ func (cp *CoreProperties) SetDescription(
 func (cp *CoreProperties) Language() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.language
 }
 
@@ -137,6 +143,7 @@ func (cp *CoreProperties) SetLanguage(
 func (cp *CoreProperties) LastModifiedBy() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.lastModifiedBy
 }
 
@@ -153,6 +160,7 @@ func (cp *CoreProperties) SetLastModifiedBy(
 func (cp *CoreProperties) Revision() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.revision
 }
 
@@ -169,6 +177,7 @@ func (cp *CoreProperties) SetRevision(
 func (cp *CoreProperties) Category() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.category
 }
 
@@ -185,6 +194,7 @@ func (cp *CoreProperties) SetCategory(
 func (cp *CoreProperties) ContentStatus() string {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.contentStatus
 }
 
@@ -201,6 +211,7 @@ func (cp *CoreProperties) SetContentStatus(
 func (cp *CoreProperties) Created() *time.Time {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.created
 }
 
@@ -217,6 +228,7 @@ func (cp *CoreProperties) SetCreated(
 func (cp *CoreProperties) Modified() *time.Time {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.modified
 }
 
@@ -233,6 +245,7 @@ func (cp *CoreProperties) SetModified(
 func (cp *CoreProperties) LastPrinted() *time.Time {
 	cp.mu.RLock()
 	defer cp.mu.RUnlock()
+
 	return cp.lastPrinted
 }
 

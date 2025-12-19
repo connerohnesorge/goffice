@@ -55,6 +55,7 @@ func (m *ElementMatcher) Matches(
 		m.NamespaceURI != info.NamespaceURI {
 		return false
 	}
+
 	return true
 }
 
@@ -63,6 +64,7 @@ func (m *ElementMatcher) QualifiedName() string {
 	if m.NamespaceURI == "" {
 		return m.LocalName
 	}
+
 	return m.NamespaceURI + ":" + m.LocalName
 }
 
@@ -104,6 +106,7 @@ func (p *ElementParticle) WithAvailability(
 	avail *VersionAvailability,
 ) *ElementParticle {
 	p.Matcher.Availability = avail
+
 	return p
 }
 
@@ -125,6 +128,7 @@ func (p *ElementParticle) Validate(
 		if p.minOccurs > 0 {
 			return errors, 0
 		}
+
 		return nil, 0
 	}
 
@@ -200,10 +204,7 @@ func (p *SequenceParticle) Validate(
 	occurrences := 0
 
 	// Try to match the sequence multiple times up to maxOccurs
-	for {
-		if ctx.ShouldStop() {
-			break
-		}
+	for !ctx.ShouldStop() {
 
 		// Check if we've reached max occurrences
 		if p.maxOccurs >= 0 &&
@@ -224,6 +225,7 @@ func (p *SequenceParticle) Validate(
 			if len(remaining) == 0 &&
 				particle.MinOccurs() > 0 {
 				matched = false
+
 				break
 			}
 			errs, consumed := particle.Validate(
@@ -245,6 +247,7 @@ func (p *SequenceParticle) Validate(
 					allErrors,
 					sequenceErrors...)
 			}
+
 			break
 		}
 
@@ -438,6 +441,7 @@ func (p *AllParticle) Validate(
 				totalConsumed++
 				remaining = remaining[1:]
 				errors = append(errors, errs...)
+
 				break
 			}
 		}
@@ -561,6 +565,7 @@ func (p *AnyParticle) Description() string {
 	if p.Namespace != "" {
 		return "any (" + p.Namespace + ")"
 	}
+
 	return "any"
 }
 
@@ -588,6 +593,7 @@ func (p *EmptyParticle) Validate(
 			),
 		}, 0
 	}
+
 	return nil, 0
 }
 
@@ -625,6 +631,7 @@ func (p *TextOnlyParticle) Validate(
 			),
 		}, 0
 	}
+
 	return nil, 0
 }
 

@@ -124,6 +124,7 @@ func (en *Endnotes) GetEndnote(id int) *Endnote {
 			return e
 		}
 	}
+
 	return nil
 }
 
@@ -134,6 +135,7 @@ func (en *Endnotes) AddEndnote(
 	e := NewEndnote(en.nextID, text)
 	en.nextID++
 	en.AppendChild(e)
+
 	return e
 }
 
@@ -177,6 +179,7 @@ func NewEndnote(id int, text string) *Endnote {
 		p := NewParagraph(text)
 		e.AppendChild(p)
 	}
+
 	return e
 }
 
@@ -210,6 +213,7 @@ func newEndnoteWithType(
 			),
 		)
 	}
+
 	return e
 }
 
@@ -223,6 +227,7 @@ func (e *Endnote) Id() int {
 		return 0
 	}
 	id, _ := strconv.Atoi(attr.Value())
+
 	return id
 }
 
@@ -247,6 +252,7 @@ func (e *Endnote) Type() EndnoteType {
 	if !found {
 		return EndnoteTypeNormal
 	}
+
 	return EndnoteType(attr.Value())
 }
 
@@ -286,6 +292,7 @@ func (e *Endnote) AppendParagraph(
 ) *Paragraph {
 	p := NewParagraph(text)
 	e.AppendChild(p)
+
 	return p
 }
 
@@ -331,6 +338,7 @@ func NewEndnoteReference(
 			strconv.Itoa(id),
 		),
 	)
+
 	return er
 }
 
@@ -344,6 +352,7 @@ func (er *EndnoteReference) Id() int {
 		return 0
 	}
 	id, _ := strconv.Atoi(attr.Value())
+
 	return id
 }
 

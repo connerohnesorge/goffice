@@ -185,5 +185,6 @@ func GetPrefixForNamespace(
 	if prefix, ok := NamespacePrefixes[namespaceURI]; ok {
 		return prefix
 	}
+
 	return ""
 }

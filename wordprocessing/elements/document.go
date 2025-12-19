@@ -18,6 +18,7 @@ func NewDocument() *Document {
 	)
 	d := &Document{CompositeElementBase: elem}
 	d.AppendChild(NewBody())
+
 	return d
 }
 
@@ -33,6 +34,7 @@ func (d *Document) Body() *Body {
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &Body{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 
@@ -44,6 +46,7 @@ func (d *Document) GetOrCreateBody() *Body {
 	}
 	body = NewBody()
 	d.AppendChild(body)
+
 	return body
 }
 

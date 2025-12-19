@@ -126,6 +126,7 @@ func (fn *Footnotes) GetFootnote(
 			return f
 		}
 	}
+
 	return nil
 }
 
@@ -136,6 +137,7 @@ func (fn *Footnotes) AddFootnote(
 	f := NewFootnote(fn.nextID, text)
 	fn.nextID++
 	fn.AppendChild(f)
+
 	return f
 }
 
@@ -182,6 +184,7 @@ func NewFootnote(id int, text string) *Footnote {
 		p := NewParagraph(text)
 		f.AppendChild(p)
 	}
+
 	return f
 }
 
@@ -215,6 +218,7 @@ func newFootnoteWithType(
 			),
 		)
 	}
+
 	return f
 }
 
@@ -228,6 +232,7 @@ func (f *Footnote) Id() int {
 		return 0
 	}
 	id, _ := strconv.Atoi(attr.Value())
+
 	return id
 }
 
@@ -252,6 +257,7 @@ func (f *Footnote) Type() FootnoteType {
 	if !found {
 		return FootnoteTypeNormal
 	}
+
 	return FootnoteType(attr.Value())
 }
 
@@ -291,6 +297,7 @@ func (f *Footnote) AppendParagraph(
 ) *Paragraph {
 	p := NewParagraph(text)
 	f.AppendChild(p)
+
 	return p
 }
 
@@ -336,6 +343,7 @@ func NewFootnoteReference(
 			strconv.Itoa(id),
 		),
 	)
+
 	return fr
 }
 
@@ -349,6 +357,7 @@ func (fr *FootnoteReference) Id() int {
 		return 0
 	}
 	id, _ := strconv.Atoi(attr.Value())
+
 	return id
 }
 

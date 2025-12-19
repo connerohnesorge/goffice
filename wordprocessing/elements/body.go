@@ -18,6 +18,7 @@ func NewBody() *Body {
 		"body",
 		PrefixW,
 	)
+
 	return &Body{CompositeElementBase: elem}
 }
 
@@ -75,6 +76,7 @@ func (b *Body) SectionProperties() *SectionProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -87,6 +89,7 @@ func (b *Body) GetOrCreateSectionProperties() *SectionProperties {
 	sp = NewSectionProperties()
 	// Section properties should be the last child
 	b.AppendChild(sp)
+
 	return sp
 }
 
@@ -102,6 +105,7 @@ func (b *Body) AppendParagraph(
 	} else {
 		b.AppendChild(p)
 	}
+
 	return p
 }
 
@@ -115,6 +119,7 @@ func (b *Body) PrependParagraph(
 	} else {
 		b.AppendChild(p)
 	}
+
 	return p
 }
 
@@ -125,6 +130,7 @@ func (b *Body) InsertParagraphBefore(
 ) *Paragraph {
 	p := NewParagraph(text)
 	b.InsertBefore(p, ref)
+
 	return p
 }
 
@@ -135,6 +141,7 @@ func (b *Body) InsertParagraphAfter(
 ) *Paragraph {
 	p := NewParagraph(text)
 	b.InsertAfter(p, ref)
+
 	return p
 }
 
@@ -150,6 +157,7 @@ func (b *Body) AppendTable(
 	} else {
 		b.AppendChild(t)
 	}
+
 	return t
 }
 
@@ -212,7 +220,7 @@ func NewTable(rows, cols int) *Table {
 		"tblGrid",
 		PrefixW,
 	)
-	for i := 0; i < cols; i++ {
+	for range cols {
 		gridCol := openxml.NewCompositeElement(
 			NamespaceWML,
 			"gridCol",
@@ -223,7 +231,7 @@ func NewTable(rows, cols int) *Table {
 	t.AppendChild(tblGrid)
 
 	// Add rows
-	for i := 0; i < rows; i++ {
+	for range rows {
 		tr := NewTableRow(cols)
 		t.AppendChild(tr)
 	}
@@ -252,7 +260,7 @@ func NewTableRow(cols int) *TableRow {
 	)
 	tr := &TableRow{CompositeElementBase: elem}
 
-	for i := 0; i < cols; i++ {
+	for range cols {
 		tc := NewTableCell()
 		tr.AppendChild(tc)
 	}

@@ -16,6 +16,7 @@ func First[T Element](
 			return typed
 		}
 	}
+
 	return result
 }
 
@@ -83,6 +84,7 @@ func descendantsRecursive(
 			}
 		}
 	}
+
 	return true
 }
 
@@ -118,6 +120,7 @@ func descendantsOfTypeRecursive[T Element](
 			}
 		}
 	}
+
 	return true
 }
 
@@ -162,6 +165,7 @@ func FindAncestor[T Element](
 	for ancestor := range AncestorsOfType[T](el) {
 		return ancestor, true
 	}
+
 	return result, false
 }
 
@@ -172,6 +176,7 @@ func FindDescendant[T Element](
 	for desc := range DescendantsOfType[T](el) {
 		return desc, true
 	}
+
 	return result, false
 }
 
@@ -248,6 +253,7 @@ func Count(elements iter.Seq[Element]) int {
 	for range elements {
 		count++
 	}
+
 	return count
 }
 
@@ -261,6 +267,7 @@ func CountOfType[T Element](
 			count++
 		}
 	}
+
 	return count
 }
 
@@ -272,6 +279,7 @@ func ToSlice(
 	for elem := range elements {
 		result = append(result, elem)
 	}
+
 	return result
 }
 
@@ -285,5 +293,6 @@ func ToSliceOfType[T Element](
 			result = append(result, typed)
 		}
 	}
+
 	return result
 }

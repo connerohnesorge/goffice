@@ -57,6 +57,7 @@ func (ct *ContentTypes) GetDefault(
 	ext := strings.ToLower(
 		strings.TrimPrefix(extension, "."),
 	)
+
 	return ct.defaults[ext]
 }
 
@@ -124,6 +125,7 @@ func (ct *ContentTypes) Defaults() map[string]string {
 	for k, v := range ct.defaults {
 		result[k] = v
 	}
+
 	return result
 }
 
@@ -139,6 +141,7 @@ func (ct *ContentTypes) Overrides() map[string]string {
 	for k, v := range ct.overrides {
 		result[k] = v
 	}
+
 	return result
 }
 

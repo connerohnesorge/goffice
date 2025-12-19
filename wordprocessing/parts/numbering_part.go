@@ -121,6 +121,7 @@ func NumberingPartFactory(
 		packPart,
 		container,
 	)
+
 	return &NumberingPart{
 		OpenXmlPartData: partData,
 	}

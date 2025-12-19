@@ -105,6 +105,7 @@ func GlossaryPartFactory(
 		packPart,
 		container,
 	)
+
 	return &GlossaryPart{
 		OpenXmlPartData: partData,
 	}

@@ -120,6 +120,7 @@ func NewStyle(
 	s := &Style{CompositeElementBase: elem}
 	s.SetStyleId(id)
 	s.SetType(styleType)
+
 	return s
 }
 
@@ -127,6 +128,7 @@ func NewStyle(
 func NewParagraphStyle(id, name string) *Style {
 	s := NewStyle(id, StyleTypeParagraph)
 	s.SetStyleName(name)
+
 	return s
 }
 
@@ -134,6 +136,7 @@ func NewParagraphStyle(id, name string) *Style {
 func NewCharacterStyle(id, name string) *Style {
 	s := NewStyle(id, StyleTypeCharacter)
 	s.SetStyleName(name)
+
 	return s
 }
 
@@ -141,6 +144,7 @@ func NewCharacterStyle(id, name string) *Style {
 func NewTableStyle(id, name string) *Style {
 	s := NewStyle(id, StyleTypeTable)
 	s.SetStyleName(name)
+
 	return s
 }
 
@@ -181,6 +185,7 @@ func (s *Style) StyleId() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -205,6 +210,7 @@ func (s *Style) Type() StyleType {
 	if !found {
 		return StyleTypeParagraph
 	}
+
 	return StyleType(attr.Value())
 }
 
@@ -233,6 +239,7 @@ func (s *Style) StyleName() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -240,6 +247,7 @@ func (s *Style) StyleName() string {
 func (s *Style) SetStyleName(name string) {
 	if name == "" {
 		s.removeElement("name")
+
 		return
 	}
 	elem := s.getOrCreateElement("name")
@@ -266,6 +274,7 @@ func (s *Style) BasedOn() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -273,6 +282,7 @@ func (s *Style) BasedOn() string {
 func (s *Style) SetBasedOn(id string) {
 	if id == "" {
 		s.removeElement("basedOn")
+
 		return
 	}
 	elem := s.getOrCreateElement("basedOn")
@@ -299,6 +309,7 @@ func (s *Style) NextParagraphStyle() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -306,6 +317,7 @@ func (s *Style) NextParagraphStyle() string {
 func (s *Style) SetNextParagraphStyle(id string) {
 	if id == "" {
 		s.removeElement("next")
+
 		return
 	}
 	elem := s.getOrCreateElement("next")
@@ -332,6 +344,7 @@ func (s *Style) LinkedStyle() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -339,6 +352,7 @@ func (s *Style) LinkedStyle() string {
 func (s *Style) SetLinkedStyle(id string) {
 	if id == "" {
 		s.removeElement("link")
+
 		return
 	}
 	elem := s.getOrCreateElement("link")
@@ -362,6 +376,7 @@ func (s *Style) Default() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -392,6 +407,7 @@ func (s *Style) CustomStyle() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -426,6 +442,7 @@ func (s *Style) StyleParagraphProperties() *StyleParagraphProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -437,6 +454,7 @@ func (s *Style) GetOrCreateStyleParagraphProperties() *StyleParagraphProperties 
 	}
 	pp = NewStyleParagraphProperties()
 	s.AppendChild(pp)
+
 	return pp
 }
 
@@ -454,6 +472,7 @@ func (s *Style) StyleRunProperties() *StyleRunProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -465,6 +484,7 @@ func (s *Style) GetOrCreateStyleRunProperties() *StyleRunProperties {
 	}
 	rp = NewStyleRunProperties()
 	s.AppendChild(rp)
+
 	return rp
 }
 
@@ -482,6 +502,7 @@ func (s *Style) StyleTableProperties() *StyleTableProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -493,6 +514,7 @@ func (s *Style) GetOrCreateStyleTableProperties() *StyleTableProperties {
 	}
 	tp = NewStyleTableProperties()
 	s.AppendChild(tp)
+
 	return tp
 }
 
@@ -516,6 +538,7 @@ func (s *Style) UIPriority() int {
 	if err != nil {
 		return 99
 	}
+
 	return val
 }
 
@@ -577,9 +600,11 @@ func (s *Style) hasOnOffElement(
 	)
 	if found {
 		val := attr.Value()
+
 		return val != "false" && val != "0" &&
 			val != "off"
 	}
+
 	return true
 }
 
@@ -607,6 +632,7 @@ func (s *Style) getOrCreateElement(
 		PrefixW,
 	)
 	s.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -645,6 +671,7 @@ func NewStyleParagraphProperties() *StyleParagraphProperties {
 		"pPr",
 		PrefixW,
 	)
+
 	return &StyleParagraphProperties{
 		CompositeElementBase: elem,
 	}
@@ -656,6 +683,7 @@ func (pp *StyleParagraphProperties) SetJustification(
 ) {
 	if j == "" || j == JustificationLeft {
 		pp.removeElement("jc")
+
 		return
 	}
 	elem := pp.getOrCreateElement("jc")
@@ -675,6 +703,7 @@ func (pp *StyleParagraphProperties) SetOutlineLevel(
 ) {
 	if level < 0 || level > 8 {
 		pp.removeElement("outlineLvl")
+
 		return
 	}
 	elem := pp.getOrCreateElement("outlineLvl")
@@ -782,9 +811,11 @@ func (pp *StyleParagraphProperties) hasOnOffElement(
 	)
 	if found {
 		val := attr.Value()
+
 		return val != "false" && val != "0" &&
 			val != "off"
 	}
+
 	return true
 }
 
@@ -812,6 +843,7 @@ func (pp *StyleParagraphProperties) getOrCreateElement(
 		PrefixW,
 	)
 	pp.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -843,6 +875,7 @@ func NewStyleRunProperties() *StyleRunProperties {
 		"rPr",
 		PrefixW,
 	)
+
 	return &StyleRunProperties{
 		CompositeElementBase: elem,
 	}
@@ -864,6 +897,7 @@ func (rp *StyleRunProperties) SetUnderline(
 ) {
 	if u == UnderlineNone {
 		rp.removeElement("u")
+
 		return
 	}
 	elem := rp.getOrCreateElement("u")
@@ -883,6 +917,7 @@ func (rp *StyleRunProperties) SetFontSize(
 ) {
 	if halfPoints <= 0 {
 		rp.removeElement("sz")
+
 		return
 	}
 	elem := rp.getOrCreateElement("sz")
@@ -902,6 +937,7 @@ func (rp *StyleRunProperties) SetFontSizeComplexScript(
 ) {
 	if halfPoints <= 0 {
 		rp.removeElement("szCs")
+
 		return
 	}
 	elem := rp.getOrCreateElement("szCs")
@@ -960,6 +996,7 @@ func (rp *StyleRunProperties) SetColor(
 ) {
 	if hex == "" {
 		rp.removeElement("color")
+
 		return
 	}
 	elem := rp.getOrCreateElement("color")
@@ -1014,6 +1051,7 @@ func (rp *StyleRunProperties) getOrCreateElement(
 		PrefixW,
 	)
 	rp.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -1045,6 +1083,7 @@ func NewStyleTableProperties() *StyleTableProperties {
 		"tblPr",
 		PrefixW,
 	)
+
 	return &StyleTableProperties{
 		CompositeElementBase: elem,
 	}

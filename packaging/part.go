@@ -36,6 +36,7 @@ func newPart(
 func (p *Part) URI() string {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.uri
 }
 
@@ -43,6 +44,7 @@ func (p *Part) URI() string {
 func (p *Part) ContentType() string {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.contentType
 }
 
@@ -51,6 +53,7 @@ func (p *Part) ContentType() string {
 func (p *Part) GetStream() io.Reader {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return bytes.NewReader(p.data)
 }
 
@@ -67,6 +70,7 @@ func (p *Part) SetStream(r io.Reader) error {
 
 	p.data = data
 	p.modified = true
+
 	return nil
 }
 
@@ -81,6 +85,7 @@ func (p *Part) GetData() []byte {
 
 	result := make([]byte, len(p.data))
 	copy(result, p.data)
+
 	return result
 }
 
@@ -98,6 +103,7 @@ func (p *Part) SetData(data []byte) {
 func (p *Part) Size() int64 {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return int64(len(p.data))
 }
 
@@ -105,6 +111,7 @@ func (p *Part) Size() int64 {
 func (p *Part) IsModified() bool {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
+
 	return p.modified
 }
 
@@ -133,6 +140,7 @@ func (p *Part) Relationships() *Relationships {
 	if p.pkg == nil {
 		return nil
 	}
+
 	return p.pkg.PartRelationships(p.uri)
 }
 
@@ -143,6 +151,7 @@ func (p *Part) CreateRelationship(
 	if p.pkg == nil {
 		return nil, ErrPackageClosed
 	}
+
 	return p.pkg.CreatePartRelationship(
 		p.uri,
 		target,
@@ -158,5 +167,6 @@ func (p *Part) DeleteRelationship(
 	if p.pkg == nil {
 		return ErrPackageClosed
 	}
+
 	return p.pkg.DeletePartRelationship(p.uri, id)
 }

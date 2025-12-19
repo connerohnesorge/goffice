@@ -17,6 +17,7 @@ func NewCarriageReturn() *CarriageReturn {
 		"cr",
 		PrefixW,
 	)
+
 	return &CarriageReturn{LeafElementBase: elem}
 }
 
@@ -49,6 +50,7 @@ func NewSoftHyphen() *SoftHyphen {
 		"softHyphen",
 		PrefixW,
 	)
+
 	return &SoftHyphen{LeafElementBase: elem}
 }
 
@@ -81,6 +83,7 @@ func NewNoBreakHyphen() *NoBreakHyphen {
 		"noBreakHyphen",
 		PrefixW,
 	)
+
 	return &NoBreakHyphen{LeafElementBase: elem}
 }
 
@@ -114,6 +117,7 @@ func NewLastRenderedPageBreak() *LastRenderedPageBreak {
 		"lastRenderedPageBreak",
 		PrefixW,
 	)
+
 	return &LastRenderedPageBreak{
 		LeafElementBase: elem,
 	}
@@ -171,6 +175,7 @@ func NewSymbol(font, char string) *Symbol {
 			),
 		)
 	}
+
 	return s
 }
 
@@ -183,6 +188,7 @@ func (s *Symbol) Font() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -204,6 +210,7 @@ func (s *Symbol) Char() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -270,6 +277,7 @@ func NewFieldChar(
 			),
 		)
 	}
+
 	return fc
 }
 
@@ -282,6 +290,7 @@ func (fc *FieldChar) Type() FieldCharType {
 	if !found {
 		return ""
 	}
+
 	return FieldCharType(attr.Value())
 }
 
@@ -308,6 +317,7 @@ func (fc *FieldChar) Dirty() bool {
 	if !found {
 		return false
 	}
+
 	return attr.Value() == "true" ||
 		attr.Value() == "1"
 }
@@ -363,6 +373,7 @@ func NewInstrText(text string) *InstrText {
 	if needsSpacePreserve(text) {
 		it.SetSpace("preserve")
 	}
+
 	return it
 }
 
@@ -390,6 +401,7 @@ func (it *InstrText) Space() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -471,6 +483,7 @@ func NewPositionalTab() *PositionalTab {
 		"ptab",
 		PrefixW,
 	)
+
 	return &PositionalTab{LeafElementBase: elem}
 }
 
@@ -490,6 +503,7 @@ func NewPositionalTabWithOptions(
 	if leader != "" {
 		pt.SetLeader(leader)
 	}
+
 	return pt
 }
 
@@ -502,6 +516,7 @@ func (pt *PositionalTab) Alignment() PositionalTabAlignment {
 	if !found {
 		return ""
 	}
+
 	return PositionalTabAlignment(attr.Value())
 }
 
@@ -528,6 +543,7 @@ func (pt *PositionalTab) RelativeTo() PositionalTabRelativeTo {
 	if !found {
 		return ""
 	}
+
 	return PositionalTabRelativeTo(attr.Value())
 }
 
@@ -554,6 +570,7 @@ func (pt *PositionalTab) Leader() PositionalTabLeader {
 	if !found {
 		return ""
 	}
+
 	return PositionalTabLeader(attr.Value())
 }
 
@@ -597,6 +614,7 @@ func NewSeparator() *Separator {
 		"separator",
 		PrefixW,
 	)
+
 	return &Separator{LeafElementBase: elem}
 }
 
@@ -630,6 +648,7 @@ func NewContinuationSeparator() *ContinuationSeparator {
 		"continuationSeparator",
 		PrefixW,
 	)
+
 	return &ContinuationSeparator{
 		LeafElementBase: elem,
 	}

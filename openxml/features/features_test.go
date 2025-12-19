@@ -414,7 +414,7 @@ func TestThreadSafety(t *testing.T) {
 		)
 
 		var wg sync.WaitGroup
-		for i := 0; i < 100; i++ {
+		for range 100 {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
@@ -436,7 +436,7 @@ func TestThreadSafety(t *testing.T) {
 			fc := NewFeatureCollection()
 
 			var wg sync.WaitGroup
-			for i := 0; i < 100; i++ {
+			for i := range 100 {
 				wg.Add(1)
 				go func(i int) {
 					defer wg.Done()
@@ -474,7 +474,7 @@ func TestThreadSafety(t *testing.T) {
 			var wg sync.WaitGroup
 
 			// Readers
-			for i := 0; i < 50; i++ {
+			for range 50 {
 				wg.Add(1)
 				go func() {
 					defer wg.Done()
@@ -483,7 +483,7 @@ func TestThreadSafety(t *testing.T) {
 			}
 
 			// Writers
-			for i := 0; i < 50; i++ {
+			for i := range 50 {
 				wg.Add(1)
 				go func(i int) {
 					defer wg.Done()

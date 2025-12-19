@@ -28,6 +28,7 @@ func NewBreak(breakType BreakType) *Break {
 			),
 		)
 	}
+
 	return br
 }
 
@@ -55,6 +56,7 @@ func (br *Break) Type() BreakType {
 	if !found {
 		return BreakLine // default
 	}
+
 	return BreakType(attr.Value())
 }
 
@@ -76,6 +78,7 @@ func (br *Break) Clear() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 

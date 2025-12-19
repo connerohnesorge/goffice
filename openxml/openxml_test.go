@@ -1591,7 +1591,7 @@ func TestIntegrationOpenXmlWithPackaging(
 			)
 			root.AppendChild(body)
 
-			for i := 0; i < 3; i++ {
+			for range 3 {
 				para := NewCompositeElement(
 					NamespaceWordprocessingML,
 					"p",
@@ -1904,7 +1904,7 @@ func TestIntegrationRelationshipManagement(
 			// Add multiple parts and verify unique IDs
 			ids := make(map[string]bool)
 
-			for i := 0; i < 10; i++ {
+			for i := range 10 {
 				uri := "/word/part" + string(
 					rune('0'+i),
 				) + ".xml"

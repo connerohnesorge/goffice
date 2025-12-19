@@ -18,6 +18,7 @@ func NewStyles() *Styles {
 		"styles",
 		PrefixW,
 	)
+
 	return &Styles{CompositeElementBase: elem}
 }
 
@@ -38,6 +39,7 @@ func (s *Styles) DocDefaults() *DocDefaults {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -54,6 +56,7 @@ func (s *Styles) GetOrCreateDocDefaults() *DocDefaults {
 	} else {
 		s.AppendChild(dd)
 	}
+
 	return dd
 }
 
@@ -74,6 +77,7 @@ func (s *Styles) LatentStyles() *LatentStyles {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -93,6 +97,7 @@ func (s *Styles) GetOrCreateLatentStyles() *LatentStyles {
 	} else {
 		s.AppendChild(ls)
 	}
+
 	return ls
 }
 
@@ -123,6 +128,7 @@ func (s *Styles) GetStyleById(id string) *Style {
 			return style
 		}
 	}
+
 	return nil
 }
 
@@ -135,6 +141,7 @@ func (s *Styles) GetStyleByName(
 			return style
 		}
 	}
+
 	return nil
 }
 

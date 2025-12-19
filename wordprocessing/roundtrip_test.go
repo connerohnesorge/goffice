@@ -698,7 +698,7 @@ func TestRoundtripMultipleSaves(t *testing.T) {
 	defer doc.Close()
 
 	// Save multiple times
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		if err := doc.SaveAs(testPath); err != nil {
 			t.Fatalf(
 				"SaveAs() attempt %d error = %v",

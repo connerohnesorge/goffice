@@ -59,6 +59,7 @@ func NewSettings() *Settings {
 		"settings",
 		PrefixW,
 	)
+
 	return &Settings{CompositeElementBase: elem}
 }
 
@@ -74,6 +75,7 @@ func (s *Settings) Zoom() *Zoom {
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &Zoom{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 
@@ -85,6 +87,7 @@ func (s *Settings) GetOrCreateZoom() *Zoom {
 	}
 	z = NewZoom()
 	s.AppendChild(z)
+
 	return z
 }
 
@@ -111,6 +114,7 @@ func (s *Settings) DefaultTabStop() *DefaultTabStop {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -122,6 +126,7 @@ func (s *Settings) GetOrCreateDefaultTabStop() *DefaultTabStop {
 	}
 	dt = NewDefaultTabStop()
 	s.AppendChild(dt)
+
 	return dt
 }
 
@@ -142,6 +147,7 @@ func (s *Settings) DocumentProtection() *DocumentProtection {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -153,6 +159,7 @@ func (s *Settings) GetOrCreateDocumentProtection() *DocumentProtection {
 	}
 	dp = NewDocumentProtection()
 	s.AppendChild(dp)
+
 	return dp
 }
 
@@ -238,6 +245,7 @@ func (s *Settings) Compatibility() *Compatibility {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -249,6 +257,7 @@ func (s *Settings) GetOrCreateCompatibility() *Compatibility {
 	}
 	c = NewCompatibility()
 	s.AppendChild(c)
+
 	return c
 }
 
@@ -269,6 +278,7 @@ func (s *Settings) MailMerge() *MailMerge {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -280,6 +290,7 @@ func (s *Settings) GetOrCreateMailMerge() *MailMerge {
 	}
 	mm = NewMailMerge()
 	s.AppendChild(mm)
+
 	return mm
 }
 
@@ -300,6 +311,7 @@ func (s *Settings) WriteProtection() *WriteProtection {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -311,6 +323,7 @@ func (s *Settings) GetOrCreateWriteProtection() *WriteProtection {
 	}
 	wp = NewWriteProtection()
 	s.AppendChild(wp)
+
 	return wp
 }
 
@@ -327,6 +340,7 @@ func (s *Settings) RsidRoot() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -334,6 +348,7 @@ func (s *Settings) RsidRoot() string {
 func (s *Settings) SetRsidRoot(rsid string) {
 	if rsid == "" {
 		s.removeElement("rsidRoot")
+
 		return
 	}
 	elem := s.getOrCreateElement("rsidRoot")
@@ -361,6 +376,7 @@ func (s *Settings) DocumentVariables() *DocumentVariables {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -372,6 +388,7 @@ func (s *Settings) GetOrCreateDocumentVariables() *DocumentVariables {
 	}
 	dv = NewDocumentVariables()
 	s.AppendChild(dv)
+
 	return dv
 }
 
@@ -392,6 +409,7 @@ func (s *Settings) ProofState() *ProofState {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -403,6 +421,7 @@ func (s *Settings) GetOrCreateProofState() *ProofState {
 	}
 	ps = NewProofState()
 	s.AppendChild(ps)
+
 	return ps
 }
 
@@ -423,6 +442,7 @@ func (s *Settings) RevisionView() *RevisionView {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -434,6 +454,7 @@ func (s *Settings) GetOrCreateRevisionView() *RevisionView {
 	}
 	rv = NewRevisionView()
 	s.AppendChild(rv)
+
 	return rv
 }
 
@@ -454,6 +475,7 @@ func (s *Settings) ThemeFontLang() *ThemeFontLang {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -465,6 +487,7 @@ func (s *Settings) GetOrCreateThemeFontLang() *ThemeFontLang {
 	}
 	tfl = NewThemeFontLang()
 	s.AppendChild(tfl)
+
 	return tfl
 }
 
@@ -483,9 +506,11 @@ func (s *Settings) hasOnOffElement(
 	)
 	if found {
 		val := attr.Value()
+
 		return val != "false" && val != "0" &&
 			val != "off"
 	}
+
 	return true
 }
 
@@ -513,6 +538,7 @@ func (s *Settings) getOrCreateElement(
 		PrefixW,
 	)
 	s.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -551,6 +577,7 @@ func NewZoom() *Zoom {
 		"zoom",
 		PrefixW,
 	)
+
 	return &Zoom{CompositeElementBase: elem}
 }
 
@@ -564,6 +591,7 @@ func (z *Zoom) Percent() int {
 		return 100 // Default zoom
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -588,6 +616,7 @@ func (z *Zoom) Val() ZoomViewType {
 	if !found {
 		return ZoomViewNone
 	}
+
 	return ZoomViewType(attr.Value())
 }
 
@@ -595,6 +624,7 @@ func (z *Zoom) Val() ZoomViewType {
 func (z *Zoom) SetVal(t ZoomViewType) {
 	if t == ZoomViewNone {
 		z.RemoveAttribute("val", NamespaceWML)
+
 		return
 	}
 	z.SetAttribute(
@@ -635,6 +665,7 @@ func NewDefaultTabStop() *DefaultTabStop {
 		"defaultTabStop",
 		PrefixW,
 	)
+
 	return &DefaultTabStop{
 		CompositeElementBase: elem,
 	}
@@ -650,6 +681,7 @@ func (dt *DefaultTabStop) Val() int {
 		return 720 // Default 0.5 inch
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -693,6 +725,7 @@ func NewDocumentProtection() *DocumentProtection {
 		"documentProtection",
 		PrefixW,
 	)
+
 	return &DocumentProtection{
 		CompositeElementBase: elem,
 	}
@@ -707,6 +740,7 @@ func (dp *DocumentProtection) Edit() DocumentProtectionType {
 	if !found {
 		return DocumentProtectionNone
 	}
+
 	return DocumentProtectionType(attr.Value())
 }
 
@@ -716,6 +750,7 @@ func (dp *DocumentProtection) SetEdit(
 ) {
 	if t == DocumentProtectionNone {
 		dp.RemoveAttribute("edit", NamespaceWML)
+
 		return
 	}
 	dp.SetAttribute(
@@ -738,6 +773,7 @@ func (dp *DocumentProtection) Enforcement() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -770,6 +806,7 @@ func (dp *DocumentProtection) Formatting() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -801,6 +838,7 @@ func (dp *DocumentProtection) Hash() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -813,6 +851,7 @@ func (dp *DocumentProtection) Salt() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -844,6 +883,7 @@ func NewCompatibility() *Compatibility {
 		"compat",
 		PrefixW,
 	)
+
 	return &Compatibility{
 		CompositeElementBase: elem,
 	}
@@ -915,6 +955,7 @@ func (c *Compatibility) AddCompatSetting(
 	cs.SetUri(uri)
 	cs.SetVal(val)
 	c.AppendChild(cs)
+
 	return cs
 }
 
@@ -933,9 +974,11 @@ func (c *Compatibility) hasOnOffElement(
 	)
 	if found {
 		val := attr.Value()
+
 		return val != "false" && val != "0" &&
 			val != "off"
 	}
+
 	return true
 }
 
@@ -963,6 +1006,7 @@ func (c *Compatibility) getOrCreateElement(
 		PrefixW,
 	)
 	c.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -1003,6 +1047,7 @@ func NewCompatSetting() *CompatSetting {
 		"compatSetting",
 		PrefixW,
 	)
+
 	return &CompatSetting{
 		CompositeElementBase: elem,
 	}
@@ -1017,6 +1062,7 @@ func (cs *CompatSetting) Name() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1041,6 +1087,7 @@ func (cs *CompatSetting) Uri() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1065,6 +1112,7 @@ func (cs *CompatSetting) Val() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1108,6 +1156,7 @@ func NewDocumentVariables() *DocumentVariables {
 		"docVars",
 		PrefixW,
 	)
+
 	return &DocumentVariables{
 		CompositeElementBase: elem,
 	}
@@ -1142,6 +1191,7 @@ func (dv *DocumentVariables) GetVariable(
 			return v.Val()
 		}
 	}
+
 	return ""
 }
 
@@ -1153,6 +1203,7 @@ func (dv *DocumentVariables) SetVariable(
 	for v := range dv.Variables() {
 		if v.Name() == name {
 			v.SetVal(value)
+
 			return
 		}
 	}
@@ -1176,6 +1227,7 @@ func (dv *DocumentVariables) RemoveVariable(
 			)
 			if found && attr.Value() == name {
 				dv.RemoveChild(child)
+
 				return
 			}
 		}
@@ -1210,6 +1262,7 @@ func NewDocumentVariable() *DocumentVariable {
 		"docVar",
 		PrefixW,
 	)
+
 	return &DocumentVariable{
 		CompositeElementBase: elem,
 	}
@@ -1224,6 +1277,7 @@ func (v *DocumentVariable) Name() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1248,6 +1302,7 @@ func (v *DocumentVariable) Val() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1291,6 +1346,7 @@ func NewWriteProtection() *WriteProtection {
 		"writeProtection",
 		PrefixW,
 	)
+
 	return &WriteProtection{
 		CompositeElementBase: elem,
 	}
@@ -1306,6 +1362,7 @@ func (wp *WriteProtection) Recommended() bool {
 		return false
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true" ||
 		val == "on"
 }
@@ -1356,6 +1413,7 @@ func NewProofState() *ProofState {
 		"proofState",
 		PrefixW,
 	)
+
 	return &ProofState{CompositeElementBase: elem}
 }
 
@@ -1368,6 +1426,7 @@ func (ps *ProofState) Spelling() ProofStateValue {
 	if !found {
 		return ProofStateDirty
 	}
+
 	return ProofStateValue(attr.Value())
 }
 
@@ -1394,6 +1453,7 @@ func (ps *ProofState) Grammar() ProofStateValue {
 	if !found {
 		return ProofStateDirty
 	}
+
 	return ProofStateValue(attr.Value())
 }
 
@@ -1439,6 +1499,7 @@ func NewRevisionView() *RevisionView {
 		"revisionView",
 		PrefixW,
 	)
+
 	return &RevisionView{
 		CompositeElementBase: elem,
 	}
@@ -1454,6 +1515,7 @@ func (rv *RevisionView) Markup() bool {
 		return true // Default is true
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0" &&
 		val != "off"
 }
@@ -1477,6 +1539,7 @@ func (rv *RevisionView) Comments() bool {
 		return true
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0" &&
 		val != "off"
 }
@@ -1503,6 +1566,7 @@ func (rv *RevisionView) InsertionsAndDeletions() bool {
 		return true
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0" &&
 		val != "off"
 }
@@ -1528,6 +1592,7 @@ func (rv *RevisionView) Formatting() bool {
 		return true
 	}
 	val := attr.Value()
+
 	return val != "false" && val != "0" &&
 		val != "off"
 }
@@ -1572,6 +1637,7 @@ func NewMailMerge() *MailMerge {
 		"mailMerge",
 		PrefixW,
 	)
+
 	return &MailMerge{CompositeElementBase: elem}
 }
 
@@ -1591,6 +1657,7 @@ func (mm *MailMerge) MainDocumentType() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1627,6 +1694,7 @@ func (mm *MailMerge) DataType() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1658,6 +1726,7 @@ func (mm *MailMerge) getOrCreateElement(
 		PrefixW,
 	)
 	mm.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -1689,6 +1758,7 @@ func NewThemeFontLang() *ThemeFontLang {
 		"themeFontLang",
 		PrefixW,
 	)
+
 	return &ThemeFontLang{
 		CompositeElementBase: elem,
 	}
@@ -1703,6 +1773,7 @@ func (tfl *ThemeFontLang) Val() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1710,6 +1781,7 @@ func (tfl *ThemeFontLang) Val() string {
 func (tfl *ThemeFontLang) SetVal(lang string) {
 	if lang == "" {
 		tfl.RemoveAttribute("val", NamespaceWML)
+
 		return
 	}
 	tfl.SetAttribute(
@@ -1731,6 +1803,7 @@ func (tfl *ThemeFontLang) EastAsia() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1743,6 +1816,7 @@ func (tfl *ThemeFontLang) SetEastAsia(
 			"eastAsia",
 			NamespaceWML,
 		)
+
 		return
 	}
 	tfl.SetAttribute(
@@ -1764,6 +1838,7 @@ func (tfl *ThemeFontLang) Bidi() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -1771,6 +1846,7 @@ func (tfl *ThemeFontLang) Bidi() string {
 func (tfl *ThemeFontLang) SetBidi(lang string) {
 	if lang == "" {
 		tfl.RemoveAttribute("bidi", NamespaceWML)
+
 		return
 	}
 	tfl.SetAttribute(

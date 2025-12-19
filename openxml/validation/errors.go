@@ -100,6 +100,7 @@ func (e *ValidationError) Error() string {
 		sb.WriteString(" at ")
 		sb.WriteString(e.Path)
 	}
+
 	return sb.String()
 }
 
@@ -138,6 +139,7 @@ func (e *ValidationError) WithRelatedInfo(
 	info string,
 ) *ValidationError {
 	e.RelatedInfo = info
+
 	return e
 }
 
@@ -171,6 +173,7 @@ func (errs ValidationErrors) Error() string {
 			),
 		)
 	}
+
 	return sb.String()
 }
 
@@ -181,6 +184,7 @@ func (errs ValidationErrors) HasErrors() bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -192,6 +196,7 @@ func (errs ValidationErrors) Errors() ValidationErrors {
 			result = append(result, e)
 		}
 	}
+
 	return result
 }
 
@@ -203,6 +208,7 @@ func (errs ValidationErrors) Warnings() ValidationErrors {
 			result = append(result, e)
 		}
 	}
+
 	return result
 }
 
@@ -216,5 +222,6 @@ func (errs ValidationErrors) ByCode(
 			result = append(result, e)
 		}
 	}
+
 	return result
 }

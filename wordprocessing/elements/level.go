@@ -62,6 +62,7 @@ func NewLevel(index int) *Level {
 	)
 	lvl := &Level{CompositeElementBase: elem}
 	lvl.SetLevelIndex(index)
+
 	return lvl
 }
 
@@ -78,6 +79,7 @@ func (l *Level) LevelIndex() int {
 	if err != nil {
 		return 0
 	}
+
 	return val
 }
 
@@ -110,6 +112,7 @@ func (l *Level) Start() int {
 	if err != nil {
 		return 1
 	}
+
 	return val
 }
 
@@ -139,6 +142,7 @@ func (l *Level) NumberFormat() NumberFormatValue {
 	if !found {
 		return NumberFormatDecimal
 	}
+
 	return NumberFormatValue(attr.Value())
 }
 
@@ -170,6 +174,7 @@ func (l *Level) LevelText() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -199,6 +204,7 @@ func (l *Level) LevelJustification() JustificationValue {
 	if !found {
 		return JustificationLeft
 	}
+
 	return JustificationValue(attr.Value())
 }
 
@@ -237,6 +243,7 @@ func (l *Level) LevelRestart() int {
 	if err != nil {
 		return -1
 	}
+
 	return val
 }
 
@@ -244,6 +251,7 @@ func (l *Level) LevelRestart() int {
 func (l *Level) SetLevelRestart(level int) {
 	if level < 0 {
 		l.removeElement("lvlRestart")
+
 		return
 	}
 	elem := l.getOrCreateElement("lvlRestart")
@@ -270,6 +278,7 @@ func (l *Level) LevelSuffix() LevelSuffixValue {
 	if !found {
 		return LevelSuffixTab
 	}
+
 	return LevelSuffixValue(attr.Value())
 }
 
@@ -279,6 +288,7 @@ func (l *Level) SetLevelSuffix(
 ) {
 	if suffix == LevelSuffixTab {
 		l.removeElement("suff")
+
 		return
 	}
 	elem := l.getOrCreateElement("suff")
@@ -304,9 +314,11 @@ func (l *Level) IsLegalNumbering() bool {
 	)
 	if found {
 		val := attr.Value()
+
 		return val != "false" && val != "0" &&
 			val != "off"
 	}
+
 	return true
 }
 
@@ -333,6 +345,7 @@ func (l *Level) ParagraphProperties() *LevelParagraphProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -344,6 +357,7 @@ func (l *Level) GetOrCreateParagraphProperties() *LevelParagraphProperties {
 	}
 	pp = NewLevelParagraphProperties()
 	l.AppendChild(pp)
+
 	return pp
 }
 
@@ -361,6 +375,7 @@ func (l *Level) RunProperties() *NumberingRunProperties {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -372,6 +387,7 @@ func (l *Level) GetOrCreateNumberingRunProperties() *NumberingRunProperties {
 	}
 	rp = NewNumberingRunProperties()
 	l.AppendChild(rp)
+
 	return rp
 }
 
@@ -396,6 +412,7 @@ func (l *Level) getOrCreateElement(
 		PrefixW,
 	)
 	l.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -434,6 +451,7 @@ func NewLevelParagraphProperties() *LevelParagraphProperties {
 		"pPr",
 		PrefixW,
 	)
+
 	return &LevelParagraphProperties{
 		CompositeElementBase: elem,
 	}
@@ -484,6 +502,7 @@ func (pp *LevelParagraphProperties) Left() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -501,6 +520,7 @@ func (pp *LevelParagraphProperties) Hanging() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -523,6 +543,7 @@ func NewNumberingRunProperties() *NumberingRunProperties {
 		"rPr",
 		PrefixW,
 	)
+
 	return &NumberingRunProperties{
 		CompositeElementBase: elem,
 	}
@@ -602,6 +623,7 @@ func (rp *NumberingRunProperties) SetColor(
 ) {
 	if hex == "" {
 		rp.removeElement("color")
+
 		return
 	}
 	elem := rp.getOrCreateElement("color")
@@ -628,6 +650,7 @@ func (rp *NumberingRunProperties) getOrCreateElement(
 		PrefixW,
 	)
 	rp.AppendChild(newElem)
+
 	return newElem
 }
 

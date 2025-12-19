@@ -18,6 +18,7 @@ func NewRunProperties() *RunProperties {
 		"rPr",
 		PrefixW,
 	)
+
 	return &RunProperties{
 		CompositeElementBase: elem,
 	}
@@ -56,6 +57,7 @@ func (rp *RunProperties) Underline() UnderlineValue {
 	if !found {
 		return UnderlineSingle // Default if element exists but no val
 	}
+
 	return UnderlineValue(attr.Value())
 }
 
@@ -65,6 +67,7 @@ func (rp *RunProperties) SetUnderline(
 ) {
 	if u == UnderlineNone {
 		rp.removeElement("u")
+
 		return
 	}
 	elem := rp.getOrCreateElement("u")
@@ -112,6 +115,7 @@ func (rp *RunProperties) FontSize() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -121,6 +125,7 @@ func (rp *RunProperties) SetFontSize(
 ) {
 	if halfPoints <= 0 {
 		rp.removeElement("sz")
+
 		return
 	}
 	elem := rp.getOrCreateElement("sz")
@@ -148,6 +153,7 @@ func (rp *RunProperties) FontSizeComplexScript() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -157,6 +163,7 @@ func (rp *RunProperties) SetFontSizeComplexScript(
 ) {
 	if halfPoints <= 0 {
 		rp.removeElement("szCs")
+
 		return
 	}
 	elem := rp.getOrCreateElement("szCs")
@@ -185,6 +192,7 @@ func (rp *RunProperties) RunFonts() *RunFonts {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -240,6 +248,7 @@ func (rp *RunProperties) Color() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -247,6 +256,7 @@ func (rp *RunProperties) Color() string {
 func (rp *RunProperties) SetColor(hex string) {
 	if hex == "" {
 		rp.removeElement("color")
+
 		return
 	}
 	elem := rp.getOrCreateElement("color")
@@ -276,6 +286,7 @@ func (rp *RunProperties) Highlight() HighlightColor {
 	if !found {
 		return HighlightNone
 	}
+
 	return HighlightColor(attr.Value())
 }
 
@@ -285,6 +296,7 @@ func (rp *RunProperties) SetHighlight(
 ) {
 	if color == HighlightNone {
 		rp.removeElement("highlight")
+
 		return
 	}
 	elem := rp.getOrCreateElement("highlight")
@@ -334,6 +346,7 @@ func (rp *RunProperties) VerticalTextAlignment() VerticalAlignValue {
 	if !found {
 		return VerticalAlignBaseline
 	}
+
 	return VerticalAlignValue(attr.Value())
 }
 
@@ -343,6 +356,7 @@ func (rp *RunProperties) SetVerticalTextAlignment(
 ) {
 	if v == VerticalAlignBaseline {
 		rp.removeElement("vertAlign")
+
 		return
 	}
 	elem := rp.getOrCreateElement("vertAlign")
@@ -379,6 +393,7 @@ func (rp *RunProperties) RunStyle() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -388,6 +403,7 @@ func (rp *RunProperties) SetRunStyle(
 ) {
 	if styleId == "" {
 		rp.removeElement("rStyle")
+
 		return
 	}
 	elem := rp.getOrCreateElement("rStyle")
@@ -479,6 +495,7 @@ func (rp *RunProperties) CharSpacing() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -488,6 +505,7 @@ func (rp *RunProperties) SetCharSpacing(
 ) {
 	if twips == 0 {
 		rp.removeElement("spacing")
+
 		return
 	}
 	elem := rp.getOrCreateElement("spacing")
@@ -518,6 +536,7 @@ func (rp *RunProperties) Position() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -527,6 +546,7 @@ func (rp *RunProperties) SetPosition(
 ) {
 	if halfPoints == 0 {
 		rp.removeElement("position")
+
 		return
 	}
 	elem := rp.getOrCreateElement("position")
@@ -554,6 +574,7 @@ func (rp *RunProperties) CharacterWidth() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -563,6 +584,7 @@ func (rp *RunProperties) SetCharacterWidth(
 ) {
 	if percent == 0 || percent == 100 {
 		rp.removeElement("w")
+
 		return
 	}
 	elem := rp.getOrCreateElement("w")
@@ -590,6 +612,7 @@ func (rp *RunProperties) Kerning() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -599,6 +622,7 @@ func (rp *RunProperties) SetKerning(
 ) {
 	if halfPoints <= 0 {
 		rp.removeElement("kern")
+
 		return
 	}
 	elem := rp.getOrCreateElement("kern")
@@ -661,6 +685,7 @@ func (rp *RunProperties) EmphasisMark() EmphasisMarkValue {
 	if !found {
 		return EmphasisNone
 	}
+
 	return EmphasisMarkValue(attr.Value())
 }
 
@@ -670,6 +695,7 @@ func (rp *RunProperties) SetEmphasisMark(
 ) {
 	if em == EmphasisNone {
 		rp.removeElement("em")
+
 		return
 	}
 	elem := rp.getOrCreateElement("em")
@@ -699,9 +725,11 @@ func (rp *RunProperties) hasOnOffElement(
 	)
 	if found {
 		val := attr.Value()
+
 		return val != "false" && val != "0" &&
 			val != "off"
 	}
+
 	return true
 }
 
@@ -729,6 +757,7 @@ func (rp *RunProperties) getOrCreateElement(
 		PrefixW,
 	)
 	rp.AppendChild(newElem)
+
 	return newElem
 }
 
@@ -746,6 +775,7 @@ func (rp *RunProperties) getOrCreateRunFonts() *RunFonts {
 	}
 	rf := NewRunFonts()
 	rp.AppendChild(rf)
+
 	return rf
 }
 
@@ -786,6 +816,7 @@ func NewRunFonts() *RunFonts {
 		"rFonts",
 		PrefixW,
 	)
+
 	return &RunFonts{CompositeElementBase: elem}
 }
 
@@ -798,6 +829,7 @@ func (rf *RunFonts) ASCII() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -822,6 +854,7 @@ func (rf *RunFonts) HAnsi() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -846,6 +879,7 @@ func (rf *RunFonts) EastAsia() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -870,6 +904,7 @@ func (rf *RunFonts) ComplexScript() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 

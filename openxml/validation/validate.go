@@ -219,6 +219,7 @@ func getSchemaValidator(
 	defer schemaValidatorRegistry.mu.RUnlock()
 
 	elementType := reflect.TypeOf(element)
+
 	return schemaValidatorRegistry.validators[elementType]
 }
 
@@ -264,6 +265,7 @@ func GetElementInfoFromInterface(
 			len(nsURIResult) > 0 {
 			localName, _ := localNameResult[0].Interface().(string)
 			nsURI, _ := nsURIResult[0].Interface().(string)
+
 			return &ElementInfo{
 				LocalName:    localName,
 				NamespaceURI: nsURI,
@@ -322,6 +324,7 @@ func getChildElements(
 					children[i] = result.Index(i).
 						Interface()
 				}
+
 				return children
 			case reflect.Func:
 				// Handle iterator pattern (iter.Seq[Element])
@@ -361,6 +364,7 @@ func extractFromIterator(
 					args[0].Interface(),
 				)
 			}
+
 			return []reflect.Value{
 				reflect.ValueOf(true),
 			}
@@ -470,6 +474,7 @@ func GetParentTypeName(
 		if parent == nil {
 			return ""
 		}
+
 		return reflect.TypeOf(parent).String()
 	}
 
@@ -517,6 +522,7 @@ func getPackageParts(
 					parts[i] = result.Index(i).
 						Interface()
 				}
+
 				return parts
 			case reflect.Func:
 				return extractFromIterator(result)
@@ -571,6 +577,7 @@ func buildElementPathSegment(
 			return prefix + ":" + info.LocalName
 		}
 	}
+
 	return info.LocalName
 }
 
@@ -604,6 +611,7 @@ func getNamespacePrefix(
 	if prefix, ok := namespacePrefixes[namespaceURI]; ok {
 		return prefix
 	}
+
 	return ""
 }
 
@@ -674,6 +682,7 @@ func getParent(element interface{}) interface{} {
 					return nil
 				}
 			}
+
 			return result.Interface()
 		}
 	}

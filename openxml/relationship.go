@@ -147,6 +147,7 @@ func NewHyperlinkRelationship(
 	if isExternal {
 		mode = TargetModeExternal
 	}
+
 	return &HyperlinkRelationship{
 		baseRelationship: baseRelationship{
 			id:         id,
@@ -302,6 +303,7 @@ func (g *RelationshipIDGenerator) Next() string {
 		g.nextID++
 		if !g.used[id] {
 			g.used[id] = true
+
 			return id
 		}
 	}
@@ -313,6 +315,7 @@ var globalIDCounter uint64
 // GenerateUniqueID generates a globally unique relationship ID.
 func GenerateUniqueID() string {
 	n := atomic.AddUint64(&globalIDCounter, 1)
+
 	return fmt.Sprintf("rId%d", n)
 }
 
@@ -413,6 +416,7 @@ func GetRelationshipTypeInfo(
 	relType string,
 ) (RelationshipTypeInfo, bool) {
 	info, ok := knownRelationshipTypes[relType]
+
 	return info, ok
 }
 

@@ -176,6 +176,7 @@ func ThemePartFactory(
 		packPart,
 		container,
 	)
+
 	return &ThemePart{
 		OpenXmlPartData: partData,
 	}

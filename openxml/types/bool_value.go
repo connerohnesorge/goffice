@@ -58,6 +58,7 @@ func (bv *BooleanValue) Value() bool {
 	if !bv.hasValue {
 		return false
 	}
+
 	return bv.value
 }
 
@@ -94,11 +95,13 @@ func (bv *BooleanValue) InnerText() string {
 		if bv.value {
 			return "1"
 		}
+
 		return "0"
 	default:
 		if bv.value {
 			return "true"
 		}
+
 		return "false"
 	}
 }
@@ -112,6 +115,7 @@ func (bv *BooleanValue) SetInnerText(
 	if text == "" {
 		bv.hasValue = false
 		bv.value = false
+
 		return nil
 	}
 	lower := strings.ToLower(
@@ -121,10 +125,12 @@ func (bv *BooleanValue) SetInnerText(
 	case "true", "1":
 		bv.value = true
 		bv.hasValue = true
+
 		return nil
 	case "false", "0":
 		bv.value = false
 		bv.hasValue = true
+
 		return nil
 	default:
 		return fmt.Errorf(
