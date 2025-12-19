@@ -15,13 +15,18 @@ DrawingML is the shared graphics layer in Office Open XML documents, providing c
 - Must work without external dependencies
 - Types must be usable by all three document SDKs
 
-**Decided Design Choices:**
-- Code generation from JSON schemas (same source as C# SDK) - pre-generated, committed to repo
-- Idiomatic Go naming conventions
-- Strict validation by default
-- sync.RWMutex for thread safety (concurrent reads, exclusive writes)
-- Functional options pattern for element construction
-- Generic methods only for child access: `First[T]()`, `All[T]()`, `OfType[T]()`
+**Confirmed Design Choices (ULTRATHINK Approved):**
+- Go Version: 1.25+ (range-over-func for iterators, modern generics)
+- Module Layout: Single unified go.mod (shared types, atomic versioning)
+- Code Generation: JSON Schema → Go (parse Open-XML-SDK's JSON schema files)
+- Validation Strategy: Code-generated Validate() methods (zero reflection, compile-time type safety)
+- Error Handling: Structured errors (ValidationError, ParseError with path/element/constraint info)
+- Feature Collection: Interface Registry pattern (hierarchy: Element→Part→Package→Global)
+- XML Prefixes: Fixed canonical (a: for DrawingML, c: for charts, wp: for Word, xdr: for Spreadsheet)
+- MC Handling: Parse-time processing (process AlternateContent/Choice/Fallback during XML parsing)
+- Thread Safety: Per-Document RWMutex (concurrent reads, exclusive writes)
+- Construction Pattern: Functional options (`NewShape(WithPresetGeom("rect"))`)
+- Child Access: Generic functions (`First[T]()`, `All[T]()`, `OfType[T]()`)
 
 ## Goals / Non-Goals
 

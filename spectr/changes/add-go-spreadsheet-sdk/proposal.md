@@ -250,31 +250,60 @@ goffice/
 - Support for Office 2016, 2019, 2021, and Microsoft 365 formats (ECMA-376 5th edition+)
 - Interoperability with existing Word and Presentation SDKs in goffice
 
-## Confirmed Design Decisions
+## Confirmed Design Decisions (ULTRATHINK Approved)
 
-These key decisions have been confirmed through analysis and discussion:
+These decisions apply consistently across all goffice SDKs (Word, Presentation, Spreadsheet, DrawingML):
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| **DrawingML** | Shared `drawingml/` package | Used by all three SDKs (Word, Presentation, Spreadsheet) for shapes, images, and charts |
-| **Code Generation** | Pre-generate and commit | Go types generated from JSON schemas, committed to repository; users do not need the generator |
-| **Phase 1 Scope** | Full feature parity with Open-XML-SDK | Including charts and pivot tables from the start |
-| **Validation** | Strict by default | Reject invalid content, return errors for malformed documents |
-
-## Unified Design Decisions
-
-These decisions apply consistently across all three SDKs (Word, Presentation, Spreadsheet):
+### Core Architecture
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| **Module Path** | `github.com/connerohnesorge/goffice` | Personal namespace, unified module |
-| **Code Generation** | Pre-generate from JSON schemas, commit to repo | Reuse C# SDK schema data, 1000+ types per domain; users get ready-to-use types |
-| **Office Version** | 2016+ only | Modern documents, reduced complexity (ECMA-376 5th edition+) |
-| **Package Structure** | Domain-based packages | See updated architecture below |
+| **Module Path** | `github.com/connerohnesorge/goffice` | Single unified module, simple imports, atomic versioning |
+| **Go Version** | 1.25+ | Range-over-func for iterators, modern generics features |
+| **Module Layout** | Single unified go.mod | Shared types, atomic versioning, simple dependency graph |
+| **Code Generation** | JSON Schema → Go | Parse Open-XML-SDK's JSON schema files, generate Go structs with XML tags |
+| **Office Version** | 2016+ only (ECMA-376 5th edition+) | Modern documents, reduced complexity, covers 95%+ of real-world files |
+| **Thread Safety** | Per-Document RWMutex | Single sync.RWMutex per OpenXmlPackage, simple and sufficient |
+| **Dependencies** | Pure stdlib only | archive/zip, encoding/xml, sync - no external dependencies |
+
+### Element System
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Element Metadata** | Embedded struct fields | XMLName, Namespace, LocalName as struct fields, self-contained, works with encoding/xml |
+| **Construction Pattern** | Functional options | `NewSheet(WithName("Data"), WithIndex(0))` - idiomatic Go, extensible, self-documenting |
+| **Child Access** | Generic functions | `First[T](el)`, `All[T](el)`, `OfType[T](el)` using Go 1.18+ generics with range-over-func iterators |
 | **API Naming** | Go-idiomatic short | `Workbook`, `Sheet`, `Cell` (not verbose C# names) |
-| **Element Metadata** | Embedded struct fields | Self-contained elements, no global registry |
-| **Construction Pattern** | Functional options | `NewSheet(WithName("Data"), WithIndex(0))` |
-| **Child Access** | Generic methods only | `First[T]()`, `All[T]()`, `OfType[T]()` |
+
+### Validation System
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Validation Strategy** | Code-generated Validate() methods | Generate type-specific Validate() during code gen, zero reflection, compile-time type safety |
+| **Error Handling** | Structured errors | Custom error types (ValidationError, ParseError) with path, element, constraint info, errors.Is/As compatible |
+| **Validation Mode** | Strict by default | Reject invalid content, return errors for malformed documents |
+
+### Extensibility
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Feature Collection** | Interface Registry pattern | Define Feature interface, register by interface type, supports hierarchy (Element→Part→Package→Global) with fallback chain |
+| **DrawingML** | Shared `drawingml/` package | Used by all three SDKs (Word, Presentation, Spreadsheet) for shapes, images, and charts |
+
+### XML Processing
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **XML Prefixes** | Fixed canonical | Always use canonical prefixes: x: for SpreadsheetML, a: for DrawingML, xdr: for SpreadsheetDrawing |
+| **MC Handling** | Parse-time processing | Process AlternateContent/Choice/Fallback during XML parsing based on target FileFormatVersion |
+| **Namespace Management** | Embedded in types | Each generated type knows its namespace URI and local name |
+
+### Implementation Scope
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Phase 1 Scope** | Full feature parity with Open-XML-SDK | Including charts and pivot tables from the start |
+| **Package Structure** | Domain-based packages | `drawingml/`, `packaging/`, `openxml/`, `spreadsheet/{elements,parts}/` |
 
 ## Key SpreadsheetML Specifics
 

@@ -188,20 +188,60 @@ goffice/
 - Compatible content types and relationship types
 - Support for Office 2016, 2019, 2021, and Microsoft 365 formats (ECMA-376 5th edition+)
 
-## Unified Design Decisions
+## Confirmed Design Decisions (ULTRATHINK Approved)
 
-These decisions apply to both Presentation and Word SDKs for consistency:
+These decisions apply consistently across all goffice SDKs (Word, Presentation, Spreadsheet, DrawingML):
+
+### Core Architecture
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| **Module Path** | `github.com/connerohnesorge/goffice` | Personal namespace, easy to start |
-| **Code Generation** | Generate from JSON schemas | Reuse C# SDK schema data, 1000+ types |
-| **Office Version** | 2016+ only | Modern documents, reduced complexity |
-| **Package Structure** | `pkg/` style | `pkg/{framework,types,package,relationships,validation,features,...}` |
-| **API Naming** | Go-idiomatic short | `Document`, `Para`, `Slide` (not verbose C# names) |
-| **Element Metadata** | Embedded struct fields | Self-contained elements, no global registry |
-| **Construction Pattern** | Functional options | `NewSlide(WithTitle("Hello"))` |
-| **Child Access** | Generic methods only | `First[T]()`, `All[T]()`, `OfType[T]()` |
+| **Module Path** | `github.com/connerohnesorge/goffice` | Single unified module, simple imports, atomic versioning |
+| **Go Version** | 1.25+ | Range-over-func for iterators, modern generics features |
+| **Module Layout** | Single unified go.mod | Shared types, atomic versioning, simple dependency graph |
+| **Code Generation** | JSON Schema → Go | Parse Open-XML-SDK's JSON schema files, generate Go structs with XML tags |
+| **Office Version** | 2016+ only (ECMA-376 5th edition+) | Modern documents, reduced complexity, covers 95%+ of real-world files |
+| **Thread Safety** | Per-Document RWMutex | Single sync.RWMutex per OpenXmlPackage, simple and sufficient |
+| **Dependencies** | Pure stdlib only | archive/zip, encoding/xml, sync - no external dependencies |
+
+### Element System
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Element Metadata** | Embedded struct fields | XMLName, Namespace, LocalName as struct fields, self-contained, works with encoding/xml |
+| **Construction Pattern** | Functional options | `NewSlide(WithTitle("Hello"), WithLayout(TitleAndContent))` - idiomatic Go, extensible, self-documenting |
+| **Child Access** | Generic functions | `First[T](el)`, `All[T](el)`, `OfType[T](el)` using Go 1.18+ generics with range-over-func iterators |
+| **API Naming** | Go-idiomatic short | `Slide`, `Shape`, `Para` (not verbose C# names) |
+
+### Validation System
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Validation Strategy** | Code-generated Validate() methods | Generate type-specific Validate() during code gen, zero reflection, compile-time type safety |
+| **Error Handling** | Structured errors | Custom error types (ValidationError, ParseError) with path, element, constraint info, errors.Is/As compatible |
+| **Validation Mode** | Strict by default | Reject invalid content, return errors for malformed documents |
+
+### Extensibility
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Feature Collection** | Interface Registry pattern | Define Feature interface, register by interface type, supports hierarchy (Element→Part→Package→Global) with fallback chain |
+| **DrawingML** | Shared `drawingml/` package | Used by all three SDKs (Word, Presentation, Spreadsheet) for shapes, images, and effects |
+
+### XML Processing
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **XML Prefixes** | Fixed canonical | Always use canonical prefixes: p: for PresentationML, a: for DrawingML, r: for relationships |
+| **MC Handling** | Parse-time processing | Process AlternateContent/Choice/Fallback during XML parsing based on target FileFormatVersion |
+| **Namespace Management** | Embedded in types | Each generated type knows its namespace URI and local name |
+
+### Implementation Scope
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Phase 1 Scope** | Full feature parity with Open-XML-SDK | Including animations and transitions from the start |
+| **Package Structure** | Domain-based packages | `drawingml/`, `packaging/`, `openxml/`, `presentation/{elements,parts}/` |
 
 ## Key Technical Findings from PresentationML Exploration
 

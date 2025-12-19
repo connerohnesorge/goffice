@@ -303,22 +303,60 @@ DrawingML uses English Metric Units (EMUs) for precise positioning:
 | 1 degree rotation | 60,000 | Rotation in rot attribute |
 | Full rotation | 21,600,000 | 360 degrees |
 
-## Unified Design Decisions
+## Confirmed Design Decisions (ULTRATHINK Approved)
 
-Consistent with Word, Presentation, and Spreadsheet SDKs:
+These decisions apply consistently across all goffice SDKs (Word, Presentation, Spreadsheet, DrawingML):
+
+### Core Architecture
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| **Module Path** | `github.com/connerohnesorge/goffice` | Single module for all SDKs |
-| **Code Generation** | Pre-generate from JSON schemas, commit to repo | Users don't need generator |
-| **Office Version** | 2016+ only | Modern documents (ECMA-376 5th edition+) |
-| **Package Structure** | Subpackages by namespace | `drawingml/{main,chart,spreadsheet,word,picture}` |
+| **Module Path** | `github.com/connerohnesorge/goffice` | Single unified module, simple imports, atomic versioning |
+| **Go Version** | 1.25+ | Range-over-func for iterators, modern generics features |
+| **Module Layout** | Single unified go.mod | Shared types, atomic versioning, simple dependency graph |
+| **Code Generation** | JSON Schema → Go | Parse Open-XML-SDK's JSON schema files, generate Go structs with XML tags |
+| **Office Version** | 2016+ only (ECMA-376 5th edition+) | Modern documents, reduced complexity, covers 95%+ of real-world files |
+| **Thread Safety** | Per-Document RWMutex | Single sync.RWMutex per OpenXmlPackage, simple and sufficient |
+| **Dependencies** | Pure stdlib only | archive/zip, encoding/xml, sync - no external dependencies |
+
+### Element System
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Element Metadata** | Embedded struct fields | XMLName, Namespace, LocalName as struct fields, self-contained, works with encoding/xml |
+| **Construction Pattern** | Functional options | `NewShape(WithPresetGeom("rect"), WithSolidFill("#FF0000"))` - idiomatic Go, extensible, self-documenting |
+| **Child Access** | Generic functions | `First[T](el)`, `All[T](el)`, `OfType[T](el)` using Go 1.18+ generics with range-over-func iterators |
 | **API Naming** | Go-idiomatic short names | `Xfrm` not `Transform2D`, `SolidFill` not `SolidFillProperties` |
-| **Element Metadata** | Embedded struct fields | Self-contained elements |
-| **Construction Pattern** | Functional options | `NewShape(WithPresetGeom("rect"))` |
-| **Child Access** | Generic methods only | `First[T]()`, `All[T]()`, `OfType[T]()` |
-| **Validation** | Strict by default | Reject invalid content |
-| **Thread Safety** | sync.RWMutex | Concurrent reads, exclusive writes |
+
+### Validation System
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Validation Strategy** | Code-generated Validate() methods | Generate type-specific Validate() during code gen, zero reflection, compile-time type safety |
+| **Error Handling** | Structured errors | Custom error types (ValidationError, ParseError) with path, element, constraint info, errors.Is/As compatible |
+| **Validation Mode** | Strict by default | Reject invalid content, return errors for malformed documents |
+
+### Extensibility
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Feature Collection** | Interface Registry pattern | Define Feature interface, register by interface type, supports hierarchy (Element→Part→Package→Global) with fallback chain |
+| **Shared Package** | `drawingml/` at top level | Used by all three SDKs (Word, Presentation, Spreadsheet) for shapes, images, effects, and charts |
+
+### XML Processing
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **XML Prefixes** | Fixed canonical | Always use canonical prefixes: a: for main DrawingML, c: for charts, wp: for Word, xdr: for Spreadsheet |
+| **MC Handling** | Parse-time processing | Process AlternateContent/Choice/Fallback during XML parsing based on target FileFormatVersion |
+| **Namespace Management** | Embedded in types | Each generated type knows its namespace URI and local name |
+
+### Package Structure
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Layout** | Subpackages by namespace | `drawingml/{main,chart,spreadsheet,word,picture}` |
+| **Phase 1 Scope** | Full DrawingML support | Complete implementation of all DrawingML types for Word, Presentation, and Spreadsheet SDKs |
 
 ## Estimated Scope
 

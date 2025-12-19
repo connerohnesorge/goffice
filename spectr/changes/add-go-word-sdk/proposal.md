@@ -62,14 +62,15 @@ The Office Open XML (OOXML) format is the standard for Microsoft Word documents 
 - `wordprocessing-settings` (NEW)
 
 ### Affected Code
-- New package: `github.com/connerohnesorge/goffice/pkg/package` - OPC implementation
-- New package: `github.com/connerohnesorge/goffice/pkg/framework` - Core element types
-- New package: `github.com/connerohnesorge/goffice/pkg/types` - Simple types
-- New package: `github.com/connerohnesorge/goffice/pkg/relationships` - Relationship management
-- New package: `github.com/connerohnesorge/goffice/pkg/validation` - Validation framework
-- New package: `github.com/connerohnesorge/goffice/pkg/features` - Feature collection
-- New package: `github.com/connerohnesorge/goffice/pkg/word` - Word document support
-- New package: `github.com/connerohnesorge/goffice/pkg/wml` - WordprocessingML schema types (generated)
+- New package: `github.com/connerohnesorge/goffice/packaging` - OPC implementation
+- New package: `github.com/connerohnesorge/goffice/openxml` - Core framework (element types, features, validation)
+- New package: `github.com/connerohnesorge/goffice/openxml/types` - Simple types
+- New package: `github.com/connerohnesorge/goffice/openxml/validation` - Validation framework
+- New package: `github.com/connerohnesorge/goffice/openxml/features` - Feature collection
+- New package: `github.com/connerohnesorge/goffice/wordprocessing` - Word document support
+- New package: `github.com/connerohnesorge/goffice/wordprocessing/elements` - WordprocessingML schema types (generated)
+- New package: `github.com/connerohnesorge/goffice/wordprocessing/parts` - Word document parts
+- New package: `github.com/connerohnesorge/goffice/drawingml` - Shared DrawingML types
 
 ### Dependencies
 - `archive/zip` - Standard library ZIP support
@@ -85,23 +86,60 @@ The Office Open XML (OOXML) format is the standard for Microsoft Word documents 
 ### Migration
 - N/A - This is a new capability with no existing implementation to migrate
 
-## Confirmed Design Decisions
+## Confirmed Design Decisions (ULTRATHINK Approved)
 
-These decisions apply to both Presentation and Word SDKs for consistency:
+These decisions apply consistently across all goffice SDKs (Word, Presentation, Spreadsheet, DrawingML):
+
+### Core Architecture
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| **Module Path** | `github.com/connerohnesorge/goffice` | Personal namespace, easy to start |
-| **Code Generation** | Pre-generate from JSON schemas, commit to repo | Reuse C# SDK schema data, users don't need generator |
-| **Office Version** | 2016+ only | Modern documents, reduced complexity (ECMA-376 5th edition+) |
-| **Package Structure** | Top-level packages | `drawingml/`, `packaging/`, `openxml/`, `wordprocessing/` |
-| **API Naming** | Go-idiomatic short | `Document`, `Para`, `ParaProps` (not verbose C# names) |
-| **Element Metadata** | Embedded struct fields | Self-contained elements, no global registry |
-| **Construction Pattern** | Functional options | `NewPara(WithText("Hello"), WithBold(true))` |
-| **Child Access** | Generic methods only | `First[T]()`, `All[T]()`, `OfType[T]()` |
+| **Module Path** | `github.com/connerohnesorge/goffice` | Single unified module, simple imports, atomic versioning |
+| **Go Version** | 1.25+ | Range-over-func for iterators, modern generics features |
+| **Module Layout** | Single unified go.mod | Shared types, atomic versioning, simple dependency graph |
+| **Code Generation** | JSON Schema → Go | Parse Open-XML-SDK's JSON schema files, generate Go structs with XML tags |
+| **Office Version** | 2016+ only (ECMA-376 5th edition+) | Modern documents, reduced complexity, covers 95%+ of real-world files |
+| **Thread Safety** | Per-Document RWMutex | Single sync.RWMutex per OpenXmlPackage, simple and sufficient |
+| **Dependencies** | Pure stdlib only | archive/zip, encoding/xml, sync - no external dependencies |
+
+### Element System
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Element Metadata** | Embedded struct fields | XMLName, Namespace, LocalName as struct fields, self-contained, works with encoding/xml |
+| **Construction Pattern** | Functional options | `NewPara(WithText("Hello"), WithBold(true))` - idiomatic Go, extensible, self-documenting |
+| **Child Access** | Generic functions | `First[T](el)`, `All[T](el)`, `OfType[T](el)` using Go 1.18+ generics with range-over-func iterators |
+| **API Naming** | Go-idiomatic short | `Para`, `ParaProps`, `Run` (not verbose `ParagraphProperties`) |
+
+### Validation System
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Validation Strategy** | Code-generated Validate() methods | Generate type-specific Validate() during code gen, zero reflection, compile-time type safety |
+| **Error Handling** | Structured errors | Custom error types (ValidationError, ParseError) with path, element, constraint info, errors.Is/As compatible |
+| **Validation Mode** | Strict by default | Reject invalid content, return errors for malformed documents |
+
+### Extensibility
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Feature Collection** | Interface Registry pattern | Define Feature interface, register by interface type, supports hierarchy (Element→Part→Package→Global) with fallback chain |
 | **DrawingML** | Shared `drawingml/` package | Used by all three SDKs (Word, Presentation, Spreadsheet) |
-| **Phase 1 Scope** | Full feature parity with Open-XML-SDK | Not an MVP, complete implementation |
-| **Validation** | Strict by default | Reject invalid content, return errors for malformed documents |
+
+### XML Processing
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **XML Prefixes** | Fixed canonical | Always use canonical prefixes: w: for WordML, p: for PresentationML, a: for DrawingML |
+| **MC Handling** | Parse-time processing | Process AlternateContent/Choice/Fallback during XML parsing based on target FileFormatVersion |
+| **Namespace Management** | Embedded in types | Each generated type knows its namespace URI and local name |
+
+### Implementation Scope
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Phase 1 Scope** | Full feature parity with Open-XML-SDK | Complete implementation, not an MVP |
+| **Package Structure** | Top-level packages | `drawingml/`, `packaging/`, `openxml/`, `wordprocessing/` |
 
 ## Package Structure
 
