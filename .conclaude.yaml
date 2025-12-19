@@ -13,6 +13,11 @@ stop:
       message: "Spec validation failed"
       maxOutputLines: 100
       timeout: 300
+    - run: "nix develop --command 'tests'"
+      showStdout: true
+      message: "Tests (nix develop --command 'tests') failed"
+      maxOutputLines: 100
+      timeout: 300
   # Example:
   # - run: "npm test"
   #   showStdout: true
@@ -48,6 +53,7 @@ preToolUse:
   uneditableFiles:
     - ".conclaude.yml"
     - ".conclaude.yaml"
+    - ".golangci.yaml"
     - pattern: "spectr/changes/**/tasks.jsonc"
       message: "Task files managed by orchestrator. Make sure to tell your manager to test/eval your changes and mark them as done and next tasks as in_progress."
       agent: "coder" # Only blocks coder subagent
@@ -84,7 +90,7 @@ preToolUse:
   # Example: ["dist", "build"]
 
   # Prevent editing generated files
-  preventGeneratedFileEdits: true
+  preventGeneratedFileEdits: false
   generatedFileMessage: null
 
 # System notifications
