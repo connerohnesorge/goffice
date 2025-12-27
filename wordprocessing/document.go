@@ -514,13 +514,8 @@ func (d *Document) CoreProperties() *packaging.CoreProperties {
 
 // ExtendedProperties returns the extended file properties part.
 // Returns nil if not present.
-// TODO: Implement ExtendedPropertiesPart type
-func (d *Document) ExtendedProperties() openxml.OpenXmlPart {
-	for part := range d.pkg.GetPartsOfType(openxml.ContentTypeExtendedProperties) {
-		return part
-	}
-
-	return nil
+func (d *Document) ExtendedProperties() *packaging.ExtendedProperties {
+	return d.pkg.Package().ExtendedProperties()
 }
 
 // Save saves the document to its original location.

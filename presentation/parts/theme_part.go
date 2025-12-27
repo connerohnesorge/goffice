@@ -6,6 +6,7 @@ import (
 	"io"
 	"sync/atomic"
 
+	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
@@ -286,9 +287,16 @@ func (*ThemePart) FixedContentType() string {
 }
 
 // Theme returns the root Theme element.
-// TODO: Return a proper Theme element type when elements are implemented.
-func (tp *ThemePart) Theme() openxml.PartRootElement {
-	return tp.RootElement()
+func (tp *ThemePart) Theme() *drawingml.Theme {
+	root := tp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if theme, ok := root.(*drawingml.Theme); ok {
+		return theme
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.

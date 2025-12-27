@@ -250,8 +250,40 @@ func (r *PresentationRenderer) getSlidesToRender() ([]*parts.SlidePart, error) {
 		return filtered, nil
 	}
 
-	// TODO: Filter hidden slides if IncludeHiddenSlides is false
-	// This requires checking slide properties for show/hide flag
+	// Filter hidden slides if IncludeHiddenSlides is false
+	if !r.options.IncludeHiddenSlides {
+		var filtered []*parts.SlidePart
+		for _, slidePart := range allSlides {
+			slide := slidePart.Slide()
+			if slide == nil {
+				continue
+			}
+			// Check for show attribute (default is true/1)
+			// If show="0" or show="false", the slide is hidden
+			attr, found := slide.GetAttribute(
+				"show",
+				"",
+			)
+			if !found {
+				// No show attribute means visible
+				filtered = append(
+					filtered,
+					slidePart,
+				)
+				continue
+			}
+			attrVal := attr.Value()
+			if attrVal != "0" &&
+				attrVal != "false" {
+				// show="1" or show="true" or any other value means visible
+				filtered = append(
+					filtered,
+					slidePart,
+				)
+			}
+		}
+		return filtered, nil
+	}
 
 	return allSlides, nil
 }

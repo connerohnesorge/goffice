@@ -3,6 +3,7 @@
 package spreadsheet
 
 import (
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 	"github.com/connerohnesorge/goffice/spreadsheet/parts"
 )
 
@@ -20,238 +21,296 @@ const (
 	emusPerCm = 360000
 )
 
-// Image represents a high-level wrapper around an image in a worksheet.
-type Image struct {
-	sheet        *Sheet
-	drawingsPart *parts.DrawingsPart
-	imagePart    *parts.ImagePart
-	fromCell     CellRef
-	toCell       *CellRef // nil for one-cell anchor
-	offsetX      int64    // in EMUs
-	offsetY      int64    // in EMUs
-	width        int64    // in EMUs
-	height       int64    // in EMUs
-}
-
-// newImage creates a new Image at the specified cell (one-cell anchor).
-//
-//nolint:revive // argument-limit: all parameters are needed for image creation
-func newImage(
-	sheet *Sheet,
-	drawingsPart *parts.DrawingsPart,
-	cell CellRef,
-	data []byte,
-	_ string, // contentType - detected from data instead
-) (*Image, error) {
-	// Detect image type from data
-	imageType := parts.DetectImageType(data, "")
-
-	// Add an image part
-	imagePart, err := drawingsPart.AddImagePart(
-		imageType,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	// Set the image data
-	imagePart.FeedDataBytes(data)
-
-	img := &Image{
-		sheet:        sheet,
-		drawingsPart: drawingsPart,
-		imagePart:    imagePart,
-		fromCell:     cell,
-	}
-
-	// TODO: Add the anchor to the drawings part
-	// This would create a OneCellAnchor element with the picture
-
-	return img, nil
-}
-
-// newImageBetween creates a new Image anchored between two cells
-// (two-cell anchor).
-//
-//nolint:revive // argument-limit: all parameters are needed for image creation
-func newImageBetween(
-	sheet *Sheet,
-	drawingsPart *parts.DrawingsPart,
-	from, to CellRef,
-	data []byte,
-	_ string, // contentType - detected from data instead
-) (*Image, error) {
-	// Detect image type from data
-	imageType := parts.DetectImageType(data, "")
-
-	// Add an image part
-	imagePart, err := drawingsPart.AddImagePart(
-		imageType,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	// Set the image data
-	imagePart.FeedDataBytes(data)
-
-	img := &Image{
-		sheet:        sheet,
-		drawingsPart: drawingsPart,
-		imagePart:    imagePart,
-		fromCell:     from,
-		toCell:       &to,
-	}
-
-	// TODO: Add the anchor to the drawings part
-	// This would create a TwoCellAnchor element with the picture
-
-	return img, nil
-}
-
-// FromCell returns the anchor cell (top-left corner).
-func (i *Image) FromCell() CellRef {
-	return i.fromCell
-}
-
-// ToCell returns the end anchor cell (bottom-right corner) for two-cell
-// anchors. Returns nil for one-cell anchors.
-func (i *Image) ToCell() *CellRef {
-	return i.toCell
-}
-
-// SetPosition sets the position using a one-cell anchor.
-func (i *Image) SetPosition(
-	cell CellRef,
-	offsetX, offsetY int64,
-) {
-	i.fromCell = cell
-	i.offsetX = offsetX
-	i.offsetY = offsetY
-	i.toCell = nil
-	// TODO: Update the underlying anchor element
-}
-
-// SetPositionBetween sets the position using a two-cell anchor.
-//
-//nolint:revive // argument-limit: all offsets are needed for two-cell anchor
-func (i *Image) SetPositionBetween(
-	from, to CellRef,
-	fromOffsetX, fromOffsetY, _ /* toOffsetX */, _ /* toOffsetY */ int64,
-) {
-	i.fromCell = from
-	i.toCell = &to
-	i.offsetX = fromOffsetX
-	i.offsetY = fromOffsetY
-	// TODO: Store to offsets and update the underlying anchor element
-}
-
-// SetSize sets the image size in EMUs (English Metric Units).
-// Note: 914400 EMUs = 1 inch
-func (i *Image) SetSize(width, height int64) {
-	i.width = width
-	i.height = height
-	// TODO: Update the underlying extent element
-}
-
-// SetSizeInPixels sets the image size in pixels.
-// Uses standard 96 DPI conversion.
-func (i *Image) SetSizeInPixels(
-	width, height int,
-) {
-	i.width = int64(width) * emusPerPixel
-	i.height = int64(height) * emusPerPixel
-	// TODO: Update the underlying extent element
-}
-
-// SetSizeInInches sets the image size in inches.
-func (i *Image) SetSizeInInches(
-	width, height float64,
-) {
-	i.width = int64(width * emusPerInch)
-	i.height = int64(height * emusPerInch)
-	// TODO: Update the underlying extent element
-}
-
-// SetSizeInCm sets the image size in centimeters.
-func (i *Image) SetSizeInCm(
-	width, height float64,
-) {
-	i.width = int64(width * emusPerCm)
-	i.height = int64(height * emusPerCm)
-	// TODO: Update the underlying extent element
-}
-
-// Width returns the image width in EMUs.
-func (i *Image) Width() int64 {
-	return i.width
-}
-
-// Height returns the image height in EMUs.
-func (i *Image) Height() int64 {
-	return i.height
-}
-
-// ContentType returns the image content type.
-func (i *Image) ContentType() string {
-	return i.imagePart.ContentType()
-}
-
-// Data returns the image data.
-func (i *Image) Data() []byte {
-	data, _ := i.imagePart.GetImageData()
-
-	return data
-}
-
 // Drawing represents a collection of drawing objects in a worksheet.
 type Drawing struct {
-	// NOTE: Future implementation will store drawing elements
-	// from the drawings part
+	sheet        *Sheet
+	drawingsPart *parts.DrawingsPart
+}
+
+// findImagePartByRelID finds an image part by its relationship ID.
+func (d *Drawing) findImagePartByRelID(
+	relID string,
+) *parts.ImagePart {
+	for _, ip := range d.drawingsPart.ImageParts() {
+		if ip.RelationshipID() == relID {
+			return ip
+		}
+	}
+
+	return nil
+}
+
+// parseOneCellAnchorImages extracts images from one-cell anchors.
+func (d *Drawing) parseOneCellAnchorImages(
+	oneCellAnchor *elements.OneCellAnchor,
+) *Image {
+	pic := oneCellAnchor.Picture()
+	if pic == nil {
+		return nil
+	}
+
+	// Find the image part by relationship ID
+	imagePart := d.findImagePartForPicture(pic)
+	if imagePart == nil {
+		return nil
+	}
+
+	// Extract position information from the from marker
+	from := oneCellAnchor.From()
+	var fromCell CellRef
+	var offsetX, offsetY int64
+	if from != nil {
+		// Convert from 0-based marker to 1-based CellRef
+		fromCell = NewCellRef(
+			from.Row()+1,
+			from.Col()+1,
+		)
+		offsetX = from.ColOff()
+		offsetY = from.RowOff()
+	}
+
+	// Extract size from extent
+	var width, height int64
+	if ext := oneCellAnchor.Ext(); ext != nil {
+		width = ext.Cx()
+		height = ext.Cy()
+	}
+
+	return &Image{
+		sheet:        d.sheet,
+		drawingsPart: d.drawingsPart,
+		imagePart:    imagePart,
+		fromCell:     fromCell,
+		offsetX:      offsetX,
+		offsetY:      offsetY,
+		width:        width,
+		height:       height,
+		anchor:       oneCellAnchor,
+	}
+}
+
+// parseTwoCellAnchorImages extracts images from two-cell anchors.
+func (d *Drawing) parseTwoCellAnchorImages(
+	twoCellAnchor *elements.TwoCellAnchor,
+) *Image {
+	pic := twoCellAnchor.Picture()
+	if pic == nil {
+		return nil
+	}
+
+	// Find the image part by relationship ID
+	imagePart := d.findImagePartForPicture(pic)
+	if imagePart == nil {
+		return nil
+	}
+
+	// Extract position information
+	from := twoCellAnchor.From()
+	to := twoCellAnchor.To()
+	var fromCell, toCell CellRef
+	var fromOffsetX, fromOffsetY, toOffsetX, toOffsetY int64
+
+	if from != nil {
+		// Convert from 0-based marker to 1-based CellRef
+		fromCell = NewCellRef(
+			from.Row()+1,
+			from.Col()+1,
+		)
+		fromOffsetX = from.ColOff()
+		fromOffsetY = from.RowOff()
+	}
+	if to != nil {
+		// Convert from 0-based marker to 1-based CellRef
+		toCell = NewCellRef(
+			to.Row()+1,
+			to.Col()+1,
+		)
+		toOffsetX = to.ColOff()
+		toOffsetY = to.RowOff()
+	}
+
+	return &Image{
+		sheet:        d.sheet,
+		drawingsPart: d.drawingsPart,
+		imagePart:    imagePart,
+		fromCell:     fromCell,
+		toCell:       &toCell,
+		offsetX:      fromOffsetX,
+		offsetY:      fromOffsetY,
+		toOffsetX:    toOffsetX,
+		toOffsetY:    toOffsetY,
+		anchor:       twoCellAnchor,
+	}
+}
+
+// findImagePartForPicture finds the image part for a picture element.
+func (d *Drawing) findImagePartForPicture(
+	pic *elements.DrawingPicture,
+) *parts.ImagePart {
+	blipFill := pic.BlipFill()
+	if blipFill == nil {
+		return nil
+	}
+
+	blip := blipFill.Blip()
+	if blip == nil {
+		return nil
+	}
+
+	relID := blip.Embed()
+
+	return d.findImagePartByRelID(relID)
 }
 
 // Images returns all images in the drawing.
-func (*Drawing) Images() []*Image {
-	// TODO: Parse the drawings part and return Image wrappers
-	return nil
+func (d *Drawing) Images() []*Image {
+	if d.drawingsPart == nil {
+		return nil
+	}
+
+	drawing := d.drawingsPart.Drawing()
+	if drawing == nil {
+		return nil
+	}
+
+	var images []*Image
+
+	// Parse one-cell anchors for pictures
+	for _, oneCellAnchor := range drawing.OneCellAnchors() {
+		if img := d.parseOneCellAnchorImages(oneCellAnchor); img != nil {
+			images = append(images, img)
+		}
+	}
+
+	// Parse two-cell anchors for pictures
+	for _, twoCellAnchor := range drawing.TwoCellAnchors() {
+		if img := d.parseTwoCellAnchorImages(twoCellAnchor); img != nil {
+			images = append(images, img)
+		}
+	}
+
+	return images
+}
+
+// parseOneCellAnchorShapes extracts shapes from one-cell anchors.
+func (*Drawing) parseOneCellAnchorShapes(
+	oneCellAnchor *elements.OneCellAnchor,
+) *Shape {
+	shapeElem := oneCellAnchor.Shape()
+	if shapeElem == nil {
+		return nil
+	}
+
+	// Extract position information
+	from := oneCellAnchor.From()
+	var fromCell CellRef
+	if from != nil {
+		// Convert from 0-based marker to 1-based CellRef
+		fromCell = NewCellRef(
+			from.Row()+1,
+			from.Col()+1,
+		)
+	}
+
+	shape := &Shape{
+		fromCell: fromCell,
+		anchor:   oneCellAnchor,
+	}
+
+	// Try to extract text from text body
+	if txBody := shapeElem.TxBody(); txBody != nil {
+		// Text extraction would require parsing paragraph/run structure
+		// For now, we just note that text body exists
+		shape.text = "" // Would need deeper parsing
+	}
+
+	return shape
+}
+
+// parseTwoCellAnchorShapes extracts shapes from two-cell anchors.
+func (*Drawing) parseTwoCellAnchorShapes(
+	twoCellAnchor *elements.TwoCellAnchor,
+) *Shape {
+	shapeElem := twoCellAnchor.Shape()
+	if shapeElem == nil {
+		return nil
+	}
+
+	// Extract position information
+	from := twoCellAnchor.From()
+	to := twoCellAnchor.To()
+	var fromCell, toCell CellRef
+
+	if from != nil {
+		// Convert from 0-based marker to 1-based CellRef
+		fromCell = NewCellRef(
+			from.Row()+1,
+			from.Col()+1,
+		)
+	}
+	if to != nil {
+		// Convert from 0-based marker to 1-based CellRef
+		toCell = NewCellRef(
+			to.Row()+1,
+			to.Col()+1,
+		)
+	}
+
+	shape := &Shape{
+		fromCell: fromCell,
+		toCell:   &toCell,
+		anchor:   twoCellAnchor,
+	}
+
+	// Try to extract text from text body
+	if txBody := shapeElem.TxBody(); txBody != nil {
+		// Text extraction would require parsing paragraph/run structure
+		shape.text = "" // Would need deeper parsing
+	}
+
+	return shape
 }
 
 // Shapes returns all shapes in the drawing.
-func (*Drawing) Shapes() []*Shape {
-	// TODO: Parse the drawings part and return Shape wrappers
-	return nil
-}
+func (d *Drawing) Shapes() []*Shape {
+	if d.drawingsPart == nil {
+		return nil
+	}
 
-// Shape represents a shape object in a worksheet.
-type Shape struct {
-	shapeType string
-	text      string
-	fromCell  CellRef
-	toCell    *CellRef
-}
+	drawing := d.drawingsPart.Drawing()
+	if drawing == nil {
+		return nil
+	}
 
-// Type returns the shape type.
-func (s *Shape) Type() string {
-	return s.shapeType
-}
+	oneCellAnchors := drawing.OneCellAnchors()
+	twoCellAnchors := drawing.TwoCellAnchors()
+	shapes := make(
+		[]*Shape,
+		0,
+		len(oneCellAnchors)+len(twoCellAnchors),
+	)
 
-// Text returns the shape text.
-func (s *Shape) Text() string {
-	return s.text
-}
+	// Parse one-cell anchors for shapes
+	for _, oneCellAnchor := range oneCellAnchors {
+		shape := d.parseOneCellAnchorShapes(
+			oneCellAnchor,
+		)
+		if shape == nil {
+			continue
+		}
+		shapes = append(shapes, shape)
+	}
 
-// SetText sets the shape text.
-func (s *Shape) SetText(text string) {
-	s.text = text
-	// TODO: Update the underlying shape element
-}
+	// Parse two-cell anchors for shapes
+	for _, twoCellAnchor := range twoCellAnchors {
+		shape := d.parseTwoCellAnchorShapes(
+			twoCellAnchor,
+		)
+		if shape == nil {
+			continue
+		}
+		shapes = append(shapes, shape)
+	}
 
-// FromCell returns the anchor cell (top-left corner).
-func (s *Shape) FromCell() CellRef {
-	return s.fromCell
-}
-
-// ToCell returns the end anchor cell (bottom-right corner).
-func (s *Shape) ToCell() *CellRef {
-	return s.toCell
+	return shapes
 }

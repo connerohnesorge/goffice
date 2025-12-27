@@ -40,25 +40,25 @@
       "id": "1.1",
       "section": "Phase 1: Project Foundation",
       "description": "1.1.1 Initialize Go module `github.com/connerohnesorge/goffice`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.2",
       "section": "Phase 1: Project Foundation",
       "description": "1.1.2 Create directory structure: `drawingml/`, `packaging/`, `openxml/`, `wordprocessing/`, `internal/`, `testdata/`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.3",
       "section": "Phase 1: Project Foundation",
       "description": "1.1.3 Set up testing infrastructure with `go test` and test fixtures directory",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.4",
       "section": "Phase 1: Project Foundation",
       "description": "1.1.4 Create sample .docx test files for roundtrip testing (Office 2016+)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.5",
@@ -70,109 +70,109 @@
       "id": "1.6",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.1 Implement `SimpleValue` interface with `HasValue()`, `InnerText()`, `SetInnerText()`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.7",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.2 Implement `StringValue` type",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.8",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.3 Implement `Int32Value` and `UInt32Value` types",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.9",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.4 Implement `Int64Value` and `UInt64Value` types",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.10",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.5 Implement `BooleanValue` type (true/false and 1/0)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.11",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.6 Implement `OnOffValue` type (on/off Word-style)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.12",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.7 Implement `EnumValue[T]` generic type for enumerations",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.13",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.8 Implement `HexBinaryValue` type",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.14",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.9 Implement `Base64BinaryValue` type",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.15",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.10 Implement `DateTimeValue` type (ISO 8601)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.16",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.11 Implement `DecimalValue` type",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.17",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.12 Implement unit types: `TwipsValue`, `HalfPointsValue`, `EmuValue`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.18",
       "section": "Phase 1: Project Foundation",
       "description": "1.2.13 Implement `PercentageValue` type",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.19",
       "section": "Phase 1: Project Foundation",
       "description": "1.3.1 Write unit tests for all simple types in openxml/types/",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.20",
       "section": "Phase 1: Project Foundation",
       "description": "1.3.2 Write unit tests for SimpleValue interface compliance",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.21",
       "section": "Phase 1: Project Foundation",
       "description": "1.3.3 Write unit tests for type conversion edge cases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.22",
       "section": "Phase 1: Project Foundation",
       "description": "1.3.4 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.23",
       "section": "Phase 1: Project Foundation",
       "description": "1.3.5 Integration test: verify project setup compiles and runs",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "2.1",
@@ -400,13 +400,13 @@
       "id": "2.38",
       "section": "Phase 2: OPC Packaging Layer (packaging/)",
       "description": "2.6.7 Integration test: create/open/save empty .docx (OPC compliance)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "2.39",
       "section": "Phase 2: OPC Packaging Layer (packaging/)",
       "description": "2.6.8 Integration test with Phase 1 simple types",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "3.1",
@@ -706,31 +706,31 @@
       "id": "3.50",
       "section": "Phase 3: OpenXML Framework (openxml/)",
       "description": "3.9.1 Write unit tests for FeatureCollection system",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "3.51",
       "section": "Phase 3: OpenXML Framework (openxml/)",
       "description": "3.9.2 Write unit tests for Element base types",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "3.52",
       "section": "Phase 3: OpenXML Framework (openxml/)",
       "description": "3.9.3 Write unit tests for Element tree operations",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "3.53",
       "section": "Phase 3: OpenXML Framework (openxml/)",
       "description": "3.9.4 Write unit tests for Element cloning",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "3.54",
       "section": "Phase 3: OpenXML Framework (openxml/)",
       "description": "3.9.5 Write unit tests for XML serialization with roundtrip validation",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "3.55",
@@ -1252,43 +1252,43 @@
       "id": "6.1",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.1 Implement `Doc` root element (w:document)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.2",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.2 Implement `Body` element (w:body)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.3",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.3 Implement `SectProps` element (w:sectPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.4",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.4 Implement `PageSz` element (w:pgSz)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.5",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.5 Implement `PageMar` element (w:pgMar)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.6",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.6 Implement `Cols` element (w:cols)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.7",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.7 Implement `Col` element (w:col)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.8",
@@ -1300,7 +1300,7 @@
       "id": "6.9",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.9 Implement `HeaderRef` and `FooterRef` elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.10",
@@ -1366,73 +1366,73 @@
       "id": "6.20",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.20 Implement `DocVar` elements (w:docVars, w:docVar)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.21",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.21 Implement `Background` element (w:background)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.22",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.22 Write unit tests for all document structure elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.23",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.23 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.24",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.1.24 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.25",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.1 Implement `Para` element (w:p) with convenience constructors",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.26",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.2 Implement `ParaProps` element (w:pPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.27",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.3 Implement `Run` element (w:r) with text convenience",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.28",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.4 Implement `RunProps` element (w:rPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.29",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.5 Implement `Text` element (w:t) with space preservation",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.30",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.6 Implement `Break` element (w:br) - line, page, column",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.31",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.7 Implement `Tab` element (w:tab)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.32",
@@ -1462,103 +1462,103 @@
       "id": "6.36",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.12 Implement `DayShort`, `MonthShort`, `YearShort` date elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.37",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.13 Implement `DayLong`, `MonthLong`, `YearLong` date elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.38",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.14 Implement `AnnotationRef` element",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.39",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.15 Write unit tests for all paragraph elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.40",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.16 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.41",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.2.17 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.42",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.1 Implement `Jc` (justification/alignment)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.43",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.2 Implement `Ind` (indentation - left, right, firstLine, hanging)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.44",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.3 Implement `Spacing` (before, after, line spacing)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.45",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.4 Implement `KeepNext`, `KeepLines`, `PageBreakBefore`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.46",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.5 Implement `WidowControl`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.47",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.6 Implement `NumPr` (numbering properties)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.48",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.7 Implement `NumId` and `Ilvl` elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.49",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.8 Implement `Tabs` and `TabStop` elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.50",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.9 Implement `PBdr` (paragraph borders) element",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.51",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.10 Implement border elements: `Top`, `Bottom`, `Left`, `Right`, `Between`, `Bar`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.52",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.11 Implement `Shd` (shading) element",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.53",
@@ -1570,7 +1570,7 @@
       "id": "6.54",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.13 Implement `PStyle` (paragraph style reference)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.55",
@@ -1582,7 +1582,7 @@
       "id": "6.56",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.15 Implement `Kinsoku`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.57",
@@ -1600,13 +1600,13 @@
       "id": "6.59",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.18 Implement `TopLinePunct`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.60",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.19 Implement `AutoSpaceDE`, `AutoSpaceDN`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.61",
@@ -1618,7 +1618,7 @@
       "id": "6.62",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.21 Implement `AdjustRightInd`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.63",
@@ -1642,7 +1642,7 @@
       "id": "6.66",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.25 Implement `SuppressOverlap`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.67",
@@ -1654,109 +1654,109 @@
       "id": "6.68",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.27 Implement `TextboxTightWrap`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.69",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.28 Implement `FramePr` (frame properties)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.70",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.29 Implement `DivId`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.71",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.30 Implement `CnfStyle` (conditional formatting)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.72",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.31 Implement `ParaPropsChange` (revision tracking)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.73",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.32 Write unit tests for all paragraph properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.74",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.33 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.75",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.3.34 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.76",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.1 Implement `Bold` (w:b), `BoldComplexScript` (w:bCs)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.77",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.2 Implement `Italic` (w:i), `ItalicComplexScript` (w:iCs)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.78",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.3 Implement `Underline` (w:u) with all underline styles",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.79",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.4 Implement `Strike` (w:strike), `DoubleStrike` (w:dstrike)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.80",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.5 Implement `Sz` (font size), `SzCs` (complex script size)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.81",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.6 Implement `RFonts` (run fonts) with all font families",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.82",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.7 Implement `Color` (w:color) with theme colors",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.83",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.8 Implement `Highlight` (w:highlight)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.84",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.9 Implement `Caps`, `SmallCaps`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.85",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.10 Implement `VertAlign` (sub/superscript)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.86",
@@ -1780,19 +1780,19 @@
       "id": "6.89",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.14 Implement `Emboss`, `Imprint`, `Shadow`, `Outline`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.90",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.15 Implement `Vanish` (hidden text)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.91",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.16 Implement `Lang` (languages)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.92",
@@ -1810,13 +1810,13 @@
       "id": "6.94",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.19 Implement `Effect` (text effects)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.95",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.20 Implement `Speculative` (speculative run)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.96",
@@ -1834,31 +1834,31 @@
       "id": "6.98",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.23 Implement `SnapToGrid`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.99",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.24 Implement `EastAsianLayout`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.100",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.25 Implement `FitText`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.101",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.26 Implement `RunPropsChange` (revision tracking)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.102",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.27 Implement `RunFontsChoice`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.103",
@@ -1882,289 +1882,289 @@
       "id": "6.106",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.31 Write unit tests for all run properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.107",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.32 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.108",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.4.33 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.109",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.1 Implement `Table` (w:tbl) with grid factory",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.110",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.2 Implement `TableProps` (w:tblPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.111",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.3 Implement `TableGrid` (w:tblGrid)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.112",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.4 Implement `GridCol` (w:gridCol)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.113",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.5 Implement `TableRow` (w:tr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.114",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.6 Implement `TableRowProps` (w:trPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.115",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.7 Implement `TableCell` (w:tc)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.116",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.8 Implement `CellProps` (w:tcPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.117",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.9 Implement `TableBorders` (w:tblBorders)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.118",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.10 Implement `CellBorders` (w:tcBorders) with diagonal",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.119",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.11 Implement `TableWidth` (w:tblW)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.120",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.12 Implement `CellWidth` (w:tcW)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.121",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.13 Implement `VMerge` (vertical merge)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.122",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.14 Implement `GridSpan` (w:gridSpan)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.123",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.15 Implement `CellVAlign` (w:vAlign)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.124",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.16 Implement `TableLook` (w:tblLook)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.125",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.17 Implement `TableLayout` (w:tblLayout)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.126",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.18 Implement `TableCellMargin` (w:tblCellMar)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.127",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.19 Implement `TableInd` (w:tblInd)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.128",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.20 Implement `TableJc` (w:jc table alignment)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.129",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.21 Implement `TableOverlap` (w:tblOverlap)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.130",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.22 Implement `TableStyle` (w:tblStyle)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.131",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.23 Implement `TableStyleColBandSize`, `TableStyleRowBandSize`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.132",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.24 Implement `CellMargins` (individual cell margins)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.133",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.25 Implement `Shd` for table/cell shading",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.134",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.26 Implement `RowHeight` (w:trHeight)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.135",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.27 Implement `TableHeader` (w:tblHeader)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.136",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.28 Implement `CantSplit` (w:cantSplit)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.137",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.29 Implement convenience `NewTable(rows, cols)` factory",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.138",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.30 Write unit tests for all table elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.139",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.31 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.140",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.5.32 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.141",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.1 Implement `BookmarkStart` (w:bookmarkStart)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.142",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.2 Implement `BookmarkEnd` (w:bookmarkEnd)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.143",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.3 Implement `Hyperlink` (w:hyperlink)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.144",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.4 Implement `AnchorId` attribute support",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.145",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.5 Implement `RangePermStart`, `RangePermEnd`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.146",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.6 Implement `ProofErr` (w:proofErr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.147",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.7 Implement `CustomXmlDelRange` elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.148",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.8 Implement `MoveFromRangeStart`, `MoveFromRangeEnd`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.149",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.9 Implement `MoveToRangeStart`, `MoveToRangeEnd`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.150",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.10 Write unit tests for all bookmark/hyperlink elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.151",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.11 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.152",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.6.12 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.153",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.1 Implement `SimpleField` (w:fldSimple)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.154",
@@ -2182,559 +2182,559 @@
       "id": "6.156",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.4 Implement `FieldCode` element",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.157",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.5 Implement `FFData` (form field data)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.158",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.6 Implement `TextInput` (w:textInput)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.159",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.7 Implement `CheckBox` (w:checkBox)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.160",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.8 Implement `DDList` (w:ddList - dropdown list)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.161",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.9 Implement `FFDefault`, `FFMaxLength`, `FFFormat`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.162",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.10 Implement `FFTextType`, `FFName`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.163",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.11 Implement `FFHelpText`, `FFStatusText`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.164",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.12 Implement `FFEnabled`, `FFCalcOnExit`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.165",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.13 Write unit tests for all field elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.166",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.14 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.167",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.7.15 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.168",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.1 Implement `Drawing` (w:drawing)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.169",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.2 Implement `Inline` positioning (wp:inline)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.170",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.3 Implement `Anchor` positioning (wp:anchor)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.171",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.4 Implement `DocPr` (wp:docPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.172",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.5 Implement `CNvGraphicFramePr`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.173",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.6 Implement `Extent` (wp:extent)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.174",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.7 Implement `EffectExtent` (wp:effectExtent)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.175",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.8 Implement `WrapNone`, `WrapSquare`, `WrapTight`, `WrapThrough`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.176",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.9 Implement `WrapTopAndBottom`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.177",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.10 Implement `SimplePos`, `PositionH`, `PositionV`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.178",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.11 Implement `Graphic` (a:graphic)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.179",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.12 Implement `GraphicData` (a:graphicData)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.180",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.13 Implement `Pic` (pic:pic) - picture",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.181",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.14 Implement `BlipFill` (pic:blipFill)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.182",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.15 Implement `Blip` (a:blip)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.183",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.16 Implement `SpPr` (pic:spPr) - shape properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.184",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.17 Implement `Xfrm` (a:xfrm) - transform",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.185",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.18 Implement `PrstGeom` (a:prstGeom) - preset geometry",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.186",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.19 Implement `NoFill`, `SolidFill`, `GradFill`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.187",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.20 Implement `Ln` (a:ln) - line/outline",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.188",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.21 Implement `NvPicPr`, `NvCxnSpPr`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.189",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.22 Write unit tests for all drawing elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.190",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.23 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.191",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.8.24 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.192",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.1 Implement `CommentRangeStart` (w:commentRangeStart)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.193",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.2 Implement `CommentRangeEnd` (w:commentRangeEnd)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.194",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.3 Implement `CommentRef` (w:commentReference)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.195",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.4 Implement `Comment` (w:comment)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.196",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.5 Implement `Comments` root element (w:comments)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.197",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.6 Implement `CommentEx` (w15:commentEx)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.198",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.7 Implement `CommentsEx` (w15:commentsEx)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.199",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.8 Implement `Annotation` base type",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.200",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.9 Implement `PermStart`, `PermEnd`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.201",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.10 Write unit tests for all comment elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.202",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.11 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.203",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.9.12 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.204",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.1 Implement `Ins` (w:ins) - inserted content",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.205",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.2 Implement `Del` (w:del) - deleted content",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.206",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.3 Implement `DelText` (w:delText)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.207",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.4 Implement `MoveFrom` (w:moveFrom)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.208",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.5 Implement `MoveTo` (w:moveTo)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.209",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.6 Implement `RunPropsChange` (w:rPrChange)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.210",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.7 Implement `ParaPropsChange` (w:pPrChange)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.211",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.8 Implement `SectPropsChange` (w:sectPrChange)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.212",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.9 Implement `TablePropsChange` (w:tblPrChange)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.213",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.10 Implement `TableRowPropsChange` (w:trPrChange)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.214",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.11 Implement `CellPropsChange` (w:tcPrChange)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.215",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.12 Implement `TableGridChange` (w:tblGridChange)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.216",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.13 Implement `CustomXmlIns`, `CustomXmlDel`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.217",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.14 Implement `CustomXmlMoveFrom`, `CustomXmlMoveTo`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.218",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.15 Implement `NumberingChange` (w:numPrChange)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.219",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.16 Write unit tests for all revision elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.220",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.17 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.221",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.10.18 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.222",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.1 Implement `SdtBlock` (w:sdt for block-level)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.223",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.2 Implement `SdtRun` (w:sdt for inline)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.224",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.3 Implement `SdtCell` (w:sdt for table cells)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.225",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.4 Implement `SdtRow` (w:sdt for table rows)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.226",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.5 Implement `SdtPr` (w:sdtPr) - SDT properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.227",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.6 Implement `SdtContent` (w:sdtContent)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.228",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.7 Implement `SdtEndPr`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.229",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.8 Implement `Alias` (w:alias)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.230",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.9 Implement `Tag` (w:tag)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.231",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.10 Implement `Id` (w:id)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.232",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.11 Implement `Lock` (w:lock)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.233",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.12 Implement `Placeholder`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.234",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.13 Implement `Temporary`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.235",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.14 Implement `ShowingPlcHdr`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.236",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.15 Implement `DataBinding`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.237",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.16 Implement `Date`, `ComboBox`, `DropDownList`, `Picture`, `RichText`, `Text`, `Citation`, `Group`, `Bibliography`, `Equation`, `DocPartObj`, `DocPartList`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.238",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.17 Write unit tests for all SDT elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.239",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.18 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.240",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.11.19 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.241",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.1 Implement `Sym` (w:sym) - symbol",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.242",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.2 Implement `Ruby` (w:ruby) - ruby text",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.243",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.3 Implement `RubyPr` (w:rubyPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.244",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.4 Implement `RubyBase`, `RubyContent`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.245",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.5 Implement `Object` (w:object)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.246",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.6 Implement `PTab` (w:ptab) - absolute position tab",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.247",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.7 Implement `FootnoteRef` (w:footnoteRef)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.248",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.8 Implement `EndnoteRef` (w:endnoteRef)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.249",
@@ -2746,991 +2746,991 @@
       "id": "6.250",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.10 Implement `PgNum` (w:pgNum)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.251",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.11 Write unit tests for all symbol elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.252",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.12 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.253",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.12.13 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.254",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.1.1 Implement `OMath` (m:oMath) - math zone",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.255",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.1.2 Implement `OMathPara` (m:oMathPara) - math paragraph",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.256",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.1.3 Implement `OMathParaPr` (m:oMathParaPr) - math paragraph properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.257",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.1.4 Implement `MathPr` (m:mathPr) - document math properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.258",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.2.1 Implement `R` (m:r) - math run",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.259",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.2.2 Implement `T` (m:t) - math text",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.260",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.2.3 Implement `RPr` (m:rPr) - math run properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.261",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.2.4 Implement `Lit` (m:lit) - literal",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.262",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.2.5 Implement `Nor` (m:nor) - normal text",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.263",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.2.6 Implement `Brk` (m:brk) - break",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.264",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.3.1 Implement `Acc` (m:acc) - accent",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.265",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.3.2 Implement `AccPr` (m:accPr) - accent properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.266",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.3.3 Implement `Bar` (m:bar) - bar/overline",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.267",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.3.4 Implement `BarPr` (m:barPr) - bar properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.268",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.3.5 Implement `Pos` (m:pos) - position",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.269",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.4.1 Implement `Box` (m:box) - box",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.270",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.4.2 Implement `BoxPr` (m:boxPr) - box properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.271",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.4.3 Implement `BorderBox` (m:borderBox) - bordered box",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.272",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.4.4 Implement `BorderBoxPr` (m:borderBoxPr) - border box properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.273",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.4.5 Implement `HideBot`, `HideTop`, `HideLeft`, `HideRight` (border visibility)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.274",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.4.6 Implement `StrikeBLTR`, `StrikeTLBR`, `StrikeH`, `StrikeV` (strikethrough)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.275",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.5.1 Implement `D` (m:d) - delimiter",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.276",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.5.2 Implement `DPr` (m:dPr) - delimiter properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.277",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.5.3 Implement `BegChr` (m:begChr) - beginning character",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.278",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.5.4 Implement `EndChr` (m:endChr) - ending character",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.279",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.5.5 Implement `SepChr` (m:sepChr) - separator character",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.280",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.5.6 Implement `Grow` (m:grow) - grow with content",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.281",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.5.7 Implement `Shp` (m:shp) - delimiter shape",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.282",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.6.1 Implement `F` (m:f) - fraction",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.283",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.6.2 Implement `FPr` (m:fPr) - fraction properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.284",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.6.3 Implement `Num` (m:num) - numerator",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.285",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.6.4 Implement `Den` (m:den) - denominator",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.286",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.6.5 Implement `FType` (m:type) - fraction type (bar, noBar, skewed, lin)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.287",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.7.1 Implement `Func` (m:func) - function application",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.288",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.7.2 Implement `FuncPr` (m:funcPr) - function properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.289",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.7.3 Implement `FName` (m:fName) - function name",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.290",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.8.1 Implement `GroupChr` (m:groupChr) - grouping character",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.291",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.8.2 Implement `GroupChrPr` (m:groupChrPr) - grouping properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.292",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.8.3 Implement `Chr` (m:chr) - character",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.293",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.8.4 Implement `VertJc` (m:vertJc) - vertical justification",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.294",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.9.1 Implement `LimLow` (m:limLow) - lower limit",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.295",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.9.2 Implement `LimLowPr` (m:limLowPr) - lower limit properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.296",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.9.3 Implement `LimUpp` (m:limUpp) - upper limit",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.297",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.9.4 Implement `LimUppPr` (m:limUppPr) - upper limit properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.298",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.9.5 Implement `Lim` (m:lim) - limit argument",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.299",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.1 Implement `M` (m:m) - matrix",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.300",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.2 Implement `MPr` (m:mPr) - matrix properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.301",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.3 Implement `Mr` (m:mr) - matrix row",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.302",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.4 Implement `Mc` (m:mc) - matrix column",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.303",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.5 Implement `McPr` (m:mcPr) - matrix column properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.304",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.6 Implement `Mcs` (m:mcs) - matrix columns",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.305",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.7 Implement `Count` (m:count) - column count",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.306",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.8 Implement `RowSpacing`, `CGpRule`, `CGp` (spacing rules)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.307",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.9 Implement `PlcHide` (m:plcHide) - placeholder hide",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.308",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.10.10 Implement `BaseJc` (m:baseJc) - matrix base justification",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.309",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.11.1 Implement `Nary` (m:nary) - n-ary operator",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.310",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.11.2 Implement `NaryPr` (m:naryPr) - n-ary properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.311",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.11.3 Implement `Sub` (m:sub) - subscript/lower limit",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.312",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.11.4 Implement `Sup` (m:sup) - superscript/upper limit",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.313",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.11.5 Implement `SubHide` (m:subHide) - hide subscript",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.314",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.11.6 Implement `SupHide` (m:supHide) - hide superscript",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.315",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.11.7 Implement `LimLoc` (m:limLoc) - limit location",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.316",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.12.1 Implement `Phant` (m:phant) - phantom",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.317",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.12.2 Implement `PhantPr` (m:phantPr) - phantom properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.318",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.12.3 Implement `Show` (m:show) - show phantom",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.319",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.12.4 Implement `ZeroWid` (m:zeroWid) - zero width",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.320",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.12.5 Implement `ZeroAsc`, `ZeroDesc` (m:zeroAsc/Desc) - zero ascent/descent",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.321",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.12.6 Implement `Transp` (m:transp) - transparent",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.322",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.13.1 Implement `Rad` (m:rad) - radical",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.323",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.13.2 Implement `RadPr` (m:radPr) - radical properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.324",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.13.3 Implement `Deg` (m:deg) - degree",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.325",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.13.4 Implement `DegHide` (m:degHide) - hide degree",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.326",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.14.1 Implement `SPre` (m:sPre) - pre-subscript/superscript",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.327",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.14.2 Implement `SPrePr` (m:sPrePr) - pre-script properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.328",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.14.3 Implement `SSub` (m:sSub) - subscript",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.329",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.14.4 Implement `SSubPr` (m:sSubPr) - subscript properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.330",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.14.5 Implement `SSup` (m:sSup) - superscript",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.331",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.14.6 Implement `SSupPr` (m:sSupPr) - superscript properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.332",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.14.7 Implement `SSubSup` (m:sSubSup) - sub-superscript",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.333",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.14.8 Implement `SSubSupPr` (m:sSubSupPr) - sub-superscript properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.334",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.14.9 Implement `AlnScr` (m:alnScr) - align scripts",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.335",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.15.1 Implement `EqArr` (m:eqArr) - equation array",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.336",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.15.2 Implement `EqArrPr` (m:eqArrPr) - equation array properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.337",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.15.3 Implement `MaxDist` (m:maxDist) - maximum distribution",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.338",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.15.4 Implement `ObjDist` (m:objDist) - object distribution",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.339",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.15.5 Implement `RSpRule` (m:rSpRule) - row spacing rule",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.340",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.15.6 Implement `RSp` (m:rSp) - row spacing",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.341",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.16.1 Implement `E` (m:e) - base element",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.342",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.16.2 Implement `ArgPr` (m:argPr) - argument properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.343",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.16.3 Implement `ArgSz` (m:argSz) - argument size",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.344",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.1 Implement `MathFont` (m:mathFont) - math font",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.345",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.2 Implement `BrkBin` (m:brkBin) - break binary operator",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.346",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.3 Implement `BrkBinSub` (m:brkBinSub) - break binary subtraction",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.347",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.4 Implement `SmallFrac` (m:smallFrac) - small fractions",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.348",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.5 Implement `DispDef` (m:dispDef) - display default",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.349",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.6 Implement `LMargin`, `RMargin` (m:lMargin/rMargin) - margins",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.350",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.7 Implement `DefJc` (m:defJc) - default justification",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.351",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.8 Implement `PreSp`, `PostSp` (m:preSp/postSp) - spacing",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.352",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.9 Implement `InterSp` (m:interSp) - inter-equation spacing",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.353",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.10 Implement `IntraSp` (m:intraSp) - intra-equation spacing",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.354",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.11 Implement `WrapIndent`, `WrapRight` (m:wrapIndent/Right) - wrapping",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.355",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.17.12 Implement `IntLim`, `NaryLim` (m:intLim/naryLim) - limit locations",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.356",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.18.1 Implement `CtrlPr` (m:ctrlPr) - control properties",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.357",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.18.2 Implement `Scr` (m:scr) - script",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.358",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.18.3 Implement `Sty` (m:sty) - style",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.359",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.18.4 Implement `Aln` (m:aln) - alignment",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.360",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.19.1 Write tests for simple math expressions (fractions, radicals)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.361",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.19.2 Write tests for complex nested expressions (matrices with limits)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.362",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.19.3 Write tests for n-ary operations (integrals, summations)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.363",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.19.4 Write roundtrip tests with real Word documents containing math",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.364",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.19.5 Write tests for math properties and formatting",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.365",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.19.6 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.366",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.13.19.7 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.367",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.1 Implement `Footnotes` root (w:footnotes)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.368",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.2 Implement `Footnote` (w:footnote)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.369",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.3 Implement `Endnotes` root (w:endnotes)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.370",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.4 Implement `Endnote` (w:endnote)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.371",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.5 Implement `FootnoteRef`, `EndnoteRef`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.372",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.6 Implement `FootnotePr`, `EndnotePr`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.373",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.7 Implement `NumFmt`, `NumStart`, `NumRestart`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.374",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.8 Implement `Pos` (w:pos) - position",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.375",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.9 Write unit tests for all footnote/endnote elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.376",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.10 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.377",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.14.11 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.378",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.15.1 Implement `Header` root (w:hdr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.379",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.15.2 Implement `Footer` root (w:ftr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.380",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.15.3 Implement `HeaderRef` (w:headerReference)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.381",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.15.4 Implement `FooterRef` (w:footerReference)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.382",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.15.5 Implement header/footer types: Default, First, Even",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.383",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.15.6 Implement `EvenAndOddHeaders` setting",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.384",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.15.7 Write unit tests for all header/footer elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.385",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.15.8 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.386",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.15.9 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.387",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.16.1 Implement `GlossaryDocument` root (w:glossaryDocument)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.388",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.16.2 Implement `DocParts` (w:docParts)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.389",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.16.3 Implement `DocPart` (w:docPart)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.390",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.16.4 Implement `DocPartPr` (w:docPartPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.391",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.16.5 Implement `DocPartBody` (w:docPartBody)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.392",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.16.6 Implement `Name`, `Style`, `Guid`, `Description`, `Category`, `Types`, `Behaviors`",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.393",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.16.7 Write unit tests for all glossary elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.394",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.16.8 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.395",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.16.9 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.396",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.1 Implement `AltChunk` (w:altChunk) - alternative content",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.397",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.2 Implement `AltChunkPr` (w:altChunkPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.398",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.3 Implement `CustomXml` (w:customXml)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.399",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.4 Implement `CustomXmlPr` (w:customXmlPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.400",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.5 Implement `SmartTag` (w:smartTag)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.401",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.6 Implement `SmartTagPr` (w:smartTagPr)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.402",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.7 Implement `SubDoc` (w:subDoc)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.403",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.8 Implement `Dir` (w:dir) - bidirectional",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.404",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.9 Implement `Bdo` (w:bdo) - bidirectional override",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.405",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.10 Implement `Control` (w:control) - ActiveX",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.406",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.11 Implement all remaining WordprocessingML elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.407",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.12 Write unit tests for all miscellaneous elements",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.408",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.13 Write comprehensive integration tests for element interactions",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.409",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.14 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.410",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.17.15 Integration test with previous phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.411",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.18.1 Run all Phase 6 tests together",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.412",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.18.2 Verify 100% pass rate across all element categories",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.413",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.18.3 Integration test: create documents with formatting",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "6.414",
       "section": "Phase 6: Word Elements - Generated (wordprocessing/elements/)",
       "description": "6.18.4 Full integration test with Phases 1-5",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "7.1",
@@ -3766,7 +3766,7 @@
       "id": "7.6",
       "section": "Phase 7: Styles and Numbering (wordprocessing/)",
       "description": "7.1.6 Implement style inheritance resolution",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "7.7",
@@ -3868,7 +3868,7 @@
       "id": "7.23",
       "section": "Phase 7: Styles and Numbering (wordprocessing/)",
       "description": "7.3.2 Write unit tests for style inheritance resolution",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "7.24",
@@ -3892,13 +3892,13 @@
       "id": "7.27",
       "section": "Phase 7: Styles and Numbering (wordprocessing/)",
       "description": "7.3.6 Integration test: create styled documents with lists",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "7.28",
       "section": "Phase 7: Styles and Numbering (wordprocessing/)",
       "description": "7.3.7 Integration test with Phases 1-6",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "8.1",
@@ -4120,181 +4120,181 @@
       "id": "9.12",
       "section": "Phase 9: Headers, Footers, and References (wordprocessing/parts/)",
       "description": "9.3.3 Implement comment threading/reply support",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "9.13",
       "section": "Phase 9: Headers, Footers, and References (wordprocessing/parts/)",
       "description": "9.3.4 Implement `CommentsExPart` for extended comments (Office 2016+)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "9.14",
       "section": "Phase 9: Headers, Footers, and References (wordprocessing/parts/)",
       "description": "9.4.1 Write unit tests for HeaderPart and FooterPart",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "9.15",
       "section": "Phase 9: Headers, Footers, and References (wordprocessing/parts/)",
       "description": "9.4.2 Write unit tests for header/footer management",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "9.16",
       "section": "Phase 9: Headers, Footers, and References (wordprocessing/parts/)",
       "description": "9.4.3 Write unit tests for FootnotesPart and EndnotesPart",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "9.17",
       "section": "Phase 9: Headers, Footers, and References (wordprocessing/parts/)",
       "description": "9.4.4 Write unit tests for CommentsPart",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "9.18",
       "section": "Phase 9: Headers, Footers, and References (wordprocessing/parts/)",
       "description": "9.4.5 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "9.19",
       "section": "Phase 9: Headers, Footers, and References (wordprocessing/parts/)",
       "description": "9.4.6 Integration test with Phases 1-8",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.1",
       "section": "Phase 10: Advanced Features",
       "description": "10.1.1 Implement `ImagePart` with content type detection (JPEG, PNG, GIF, etc.)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.2",
       "section": "Phase 10: Advanced Features",
       "description": "10.1.2 Implement `AddImage(reader, contentType)` on MainPart",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.3",
       "section": "Phase 10: Advanced Features",
       "description": "10.1.3 Implement inline image insertion convenience method",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.4",
       "section": "Phase 10: Advanced Features",
       "description": "10.1.4 Implement floating image insertion (anchor positioning)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.5",
       "section": "Phase 10: Advanced Features",
       "description": "10.1.5 Implement image sizing and aspect ratio handling",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.6",
       "section": "Phase 10: Advanced Features",
       "description": "10.1.6 Implement image cropping support",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.7",
       "section": "Phase 10: Advanced Features",
       "description": "10.2.1 Implement `DocumentBuilder` for fluent document creation",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.8",
       "section": "Phase 10: Advanced Features",
       "description": "10.2.2 Implement paragraph builder methods",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.9",
       "section": "Phase 10: Advanced Features",
       "description": "10.2.3 Implement table builder methods",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.10",
       "section": "Phase 10: Advanced Features",
       "description": "10.2.4 Implement `NewDefaultDocument()` factory",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.11",
       "section": "Phase 10: Advanced Features",
       "description": "10.3.1 Implement `VbaPart` handling",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.12",
       "section": "Phase 10: Advanced Features",
       "description": "10.3.2 Implement macro-enabled content types (.docm, .dotm)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.13",
       "section": "Phase 10: Advanced Features",
       "description": "10.3.3 Implement macro preservation during document manipulation",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.14",
       "section": "Phase 10: Advanced Features",
       "description": "10.4.1 Implement template document types (.dotx, .dotm)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.15",
       "section": "Phase 10: Advanced Features",
       "description": "10.4.2 Implement `NewFromTemplate()` with template attachment",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.16",
       "section": "Phase 10: Advanced Features",
       "description": "10.4.3 Implement template detachment",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.17",
       "section": "Phase 10: Advanced Features",
       "description": "10.5.1 Write unit tests for Images and Media",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.18",
       "section": "Phase 10: Advanced Features",
       "description": "10.5.2 Write unit tests for Document Builder Pattern",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.19",
       "section": "Phase 10: Advanced Features",
       "description": "10.5.3 Write unit tests for Macro-Enabled Documents",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.20",
       "section": "Phase 10: Advanced Features",
       "description": "10.5.4 Write unit tests for Template Support",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.21",
       "section": "Phase 10: Advanced Features",
       "description": "10.5.5 Run tests and verify 100% pass rate",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "10.22",
       "section": "Phase 10: Advanced Features",
       "description": "10.5.6 Integration test with Phases 1-9",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.1",
@@ -4312,31 +4312,31 @@
       "id": "11.3",
       "section": "Phase 11: Integration and Quality",
       "description": "11.1.3 Test compatibility with Microsoft Word (Office 2016+)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.4",
       "section": "Phase 11: Integration and Quality",
       "description": "11.1.4 Test compatibility with LibreOffice",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.5",
       "section": "Phase 11: Integration and Quality",
       "description": "11.1.5 Test with various Office 2016+ documents",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.6",
       "section": "Phase 11: Integration and Quality",
       "description": "11.1.6 Create fixture documents from multiple Office versions for testing",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.7",
       "section": "Phase 11: Integration and Quality",
       "description": "11.1.7 Test all validation constraints with invalid documents",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.8",
@@ -4354,145 +4354,145 @@
       "id": "11.10",
       "section": "Phase 11: Integration and Quality",
       "description": "11.2.3 Document relationship to Open-XML-SDK",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.11",
       "section": "Phase 11: Integration and Quality",
       "description": "11.2.4 Create migration guide from other Go libraries",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.12",
       "section": "Phase 11: Integration and Quality",
       "description": "11.2.5 Document idiomatic Go naming conventions vs C# SDK names",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.13",
       "section": "Phase 11: Integration and Quality",
       "description": "11.3.1 Benchmark document creation (target: 1MB in \u003c100ms)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.14",
       "section": "Phase 11: Integration and Quality",
       "description": "11.3.2 Benchmark large document handling (memory \u003c10x file size)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.15",
       "section": "Phase 11: Integration and Quality",
       "description": "11.3.3 Benchmark validation performance (target: \u003c1s for typical docs)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.16",
       "section": "Phase 11: Integration and Quality",
       "description": "11.3.4 Optimize hot paths based on benchmarks",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.17",
       "section": "Phase 11: Integration and Quality",
       "description": "11.3.5 Memory profiling and optimization",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.18",
       "section": "Phase 11: Integration and Quality",
       "description": "11.3.6 Ensure lazy loading works correctly for large documents",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.19",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.1 Implement all JustificationValues (Left, Center, Right, Both, etc.)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.20",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.2 Implement all UnderlineValues (Single, Double, Dotted, etc.)",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.21",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.3 Implement all HighlightColorValues",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.22",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.4 Implement all BorderValues",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.23",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.5 Implement all ShadingPatternValues",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.24",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.6 Implement all TabStopTypeValues",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.25",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.7 Implement all BreakValues",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.26",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.8 Implement all VerticalAlignRunValues",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.27",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.9 Implement all FontFamilyValues",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.28",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.10 Implement all remaining WordprocessingML enum types",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.29",
       "section": "Phase 11: Integration and Quality",
       "description": "11.4.11 Write enum validation functions",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.30",
       "section": "Phase 11: Integration and Quality",
       "description": "11.5.1 Run complete test suite across all phases",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.31",
       "section": "Phase 11: Integration and Quality",
       "description": "11.5.2 Verify 100% pass rate for all tests",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.32",
       "section": "Phase 11: Integration and Quality",
       "description": "11.5.3 Performance benchmarks meet targets",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "11.33",
       "section": "Phase 11: Integration and Quality",
       "description": "11.5.4 Full feature parity verification with Open-XML-SDK WordprocessingML",
-      "status": "pending"
+      "status": "completed"
     }
   ]
 }

@@ -60,11 +60,12 @@ type Package struct {
 	zipData   []byte // loaded ZIP data for in-memory operations
 
 	// Package contents
-	parts          map[string]*Part          // normalized URI -> Part
-	relationships  *Relationships            // package-level relationships
-	partRels       map[string]*Relationships // part URI -> part relationships
-	contentTypes   *ContentTypes
-	coreProperties *CoreProperties
+	parts              map[string]*Part          // normalized URI -> Part
+	relationships      *Relationships            // package-level relationships
+	partRels           map[string]*Relationships // part URI -> part relationships
+	contentTypes       *ContentTypes
+	coreProperties     *CoreProperties
+	extendedProperties *ExtendedProperties
 
 	// Writer for streaming output
 	writer io.Writer
@@ -74,16 +75,19 @@ type Package struct {
 // The package will have ReadWrite capability.
 func Create(path string) (*Package, error) {
 	pkg := &Package{
-		path:          path,
-		capability:    ReadWrite,
-		closed:        false,
-		parts:         make(map[string]*Part),
+		path:       path,
+		capability: ReadWrite,
+		closed:     false,
+		parts: make(
+			map[string]*Part,
+		),
 		relationships: NewRelationships("/"),
 		partRels: make(
 			map[string]*Relationships,
 		),
-		contentTypes:   NewContentTypes(),
-		coreProperties: NewCoreProperties(),
+		contentTypes:       NewContentTypes(),
+		coreProperties:     NewCoreProperties(),
+		extendedProperties: NewExtendedProperties(),
 	}
 
 	// Initialize with standard defaults for Office documents
@@ -103,17 +107,20 @@ func Create(path string) (*Package, error) {
 // The package will have Write capability only.
 func CreateWriter(w io.Writer) (*Package, error) {
 	pkg := &Package{
-		path:          "",
-		capability:    Write,
-		closed:        false,
-		writer:        w,
-		parts:         make(map[string]*Part),
+		path:       "",
+		capability: Write,
+		closed:     false,
+		writer:     w,
+		parts: make(
+			map[string]*Part,
+		),
 		relationships: NewRelationships("/"),
 		partRels: make(
 			map[string]*Relationships,
 		),
-		contentTypes:   NewContentTypes(),
-		coreProperties: NewCoreProperties(),
+		contentTypes:       NewContentTypes(),
+		coreProperties:     NewCoreProperties(),
+		extendedProperties: NewExtendedProperties(),
 	}
 
 	// Initialize with standard defaults
@@ -188,17 +195,20 @@ func openFromBytes(
 	}
 
 	pkg := &Package{
-		capability:    capability,
-		closed:        false,
-		zipReader:     zipReader,
-		zipData:       data,
-		parts:         make(map[string]*Part),
+		capability: capability,
+		closed:     false,
+		zipReader:  zipReader,
+		zipData:    data,
+		parts: make(
+			map[string]*Part,
+		),
 		relationships: NewRelationships("/"),
 		partRels: make(
 			map[string]*Relationships,
 		),
-		contentTypes:   NewContentTypes(),
-		coreProperties: NewCoreProperties(),
+		contentTypes:       NewContentTypes(),
+		coreProperties:     NewCoreProperties(),
+		extendedProperties: NewExtendedProperties(),
 	}
 
 	// Load content types first
@@ -218,6 +228,9 @@ func openFromBytes(
 
 	// Load core properties if present
 	pkg.loadCoreProperties()
+
+	// Load extended properties if present
+	pkg.loadExtendedProperties()
 
 	return pkg, nil
 }
@@ -356,6 +369,17 @@ func (p *Package) loadCoreProperties() {
 
 	r := part.GetStream()
 	_ = p.coreProperties.UnmarshalFromXML(r)
+}
+
+// loadExtendedProperties loads extended properties if present.
+func (p *Package) loadExtendedProperties() {
+	part, ok := p.parts[NormalizeURI(ExtendedPropertiesPartURI)]
+	if !ok {
+		return
+	}
+
+	r := part.GetStream()
+	_ = p.extendedProperties.UnmarshalFromXML(r)
 }
 
 // Save saves the package to its original location.
@@ -901,6 +925,14 @@ func (p *Package) CoreProperties() *CoreProperties {
 	return p.coreProperties
 }
 
+// ExtendedProperties returns the extended document properties.
+func (p *Package) ExtendedProperties() *ExtendedProperties {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+
+	return p.extendedProperties
+}
+
 // EnsureCorePropertiesPart ensures the core properties part exists
 // in the package.
 // This should be called before saving if core properties have been modified.
@@ -941,6 +973,55 @@ func (p *Package) EnsureCorePropertiesPart() error {
 
 	// Serialize core properties to part
 	data, err := p.coreProperties.MarshalToXML()
+	if err != nil {
+		return err
+	}
+
+	p.parts[uri].SetData(data)
+
+	return nil
+}
+
+// EnsureExtendedPropertiesPart ensures the extended properties part exists
+// in the package.
+// This should be called before saving if extended properties have been modified.
+func (p *Package) EnsureExtendedPropertiesPart() error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	if p.closed {
+		return ErrPackageClosed
+	}
+
+	if p.capability == Read {
+		return ErrReadOnly
+	}
+
+	uri := NormalizeURI(ExtendedPropertiesPartURI)
+
+	// Create part if it doesn't exist
+	if _, exists := p.parts[uri]; !exists {
+		part := newPart(
+			uri,
+			ExtendedPropertiesContentType,
+			p,
+		)
+		p.parts[uri] = part
+		p.contentTypes.SetOverride(
+			uri,
+			ExtendedPropertiesContentType,
+		)
+
+		// Create relationship to extended properties
+		_, _ = p.relationships.Create(
+			ExtendedPropertiesPartURI,
+			ExtendedPropertiesRelationshipType,
+			"",
+		)
+	}
+
+	// Serialize extended properties to part
+	data, err := p.extendedProperties.MarshalToXML()
 	if err != nil {
 		return err
 	}

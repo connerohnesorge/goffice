@@ -417,6 +417,39 @@ func (r *WordRenderer) layoutCellContent(
 	return totalHeight, allLines, nil
 }
 
+// findCellIndexForColumn maps a grid column index to a cell index within a row.
+// Returns -1 if the column index is not covered by any cell in the row.
+//
+// This function handles cells that span multiple columns (gridSpan).
+// For example, if row has cells: [cell0(span=3), cell1(span=1), cell2(span=2)]
+// - Grid columns 0, 1, 2 -> cell index 0
+// - Grid column 3 -> cell index 1
+// - Grid columns 4, 5 -> cell index 2
+func findCellIndexForColumn(
+	row *RowLayout,
+	gridColIdx int,
+) int {
+	currentGridCol := 0
+
+	for cellIdx, cell := range row.Cells {
+		// Calculate the range of grid columns this cell covers
+		cellStartCol := currentGridCol
+		cellEndCol := currentGridCol + cell.ColSpan - 1
+
+		// Check if gridColIdx falls within this cell's range
+		if gridColIdx >= cellStartCol &&
+			gridColIdx <= cellEndCol {
+			return cellIdx
+		}
+
+		// Advance to next cell's starting column
+		currentGridCol += cell.ColSpan
+	}
+
+	// Column index not found in this row
+	return -1
+}
+
 // resolveVerticalMerges adjusts cell heights for vertically merged cells.
 func (r *WordRenderer) resolveVerticalMerges(
 	tl *TableLayout,
@@ -456,15 +489,18 @@ func (r *WordRenderer) resolveVerticalMerges(
 
 	// Calculate total heights for merged cells
 	for colIdx, startRow := range mergeStarts {
-		startCell := &tl.Rows[startRow].Cells[0]
-		// Find the cell at this column
-		for i := range tl.Rows[startRow].Cells {
-			// TODO: properly map column index to cell index
-			if i == colIdx {
-				startCell = &tl.Rows[startRow].Cells[i]
-				break
-			}
+		// Map grid column index to cell index
+		// We need to find which cell in the row covers the grid column at colIdx
+		cellIdx := findCellIndexForColumn(
+			&tl.Rows[startRow],
+			colIdx,
+		)
+		if cellIdx < 0 {
+			// Column not found in row, skip
+			continue
 		}
+
+		startCell := &tl.Rows[startRow].Cells[cellIdx]
 
 		// Sum up heights of all spanned rows
 		totalHeight := 0.0

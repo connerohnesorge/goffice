@@ -316,16 +316,113 @@ func (e *TextLayoutEngine) reorderRuns(
 		return
 	}
 
-	// For a simple implementation, we check if there are RTL runs.
-	// If so, we may need to reorder them visually.
-	// The bidi package handles the complex logic.
-	_, err := bp.Reorder(startRune, endRune)
+	// Get the visual ordering from the bidi processor
+	reordered, err := bp.Reorder(
+		startRune,
+		endRune,
+	)
 	if err != nil {
 		return
 	}
 
-	// TODO: Fully implement run reordering based on bidi results.
-	// This requires mapping visual bidi runs back to logical text runs.
+	// If there's only one bidi run or no runs, no reordering needed
+	if len(reordered.Runs) <= 1 {
+		return
+	}
+
+	// Build a map of rune position to our PositionedRun
+	// This allows us to find which PositionedRun corresponds to each character
+	type runSegment struct {
+		posRun *PositionedRun
+		start  int // start rune position in the line (0-based within startRune-endRune range)
+		end    int // end rune position in the line
+	}
+
+	var segments []runSegment
+	currRunePos := 0
+
+	for _, pr := range line.Runs {
+		runRunes := []rune(pr.Run.Text)
+		runLen := len(runRunes)
+		segments = append(segments, runSegment{
+			posRun: pr,
+			start:  currRunePos,
+			end:    currRunePos + runLen,
+		})
+		currRunePos += runLen
+	}
+
+	// Now we need to reorder the PositionedRuns according to bidi visual order
+	// The bidi.Runs are already in visual order, so we build new runs based on them
+	var newRuns []*PositionedRun
+	currentX := 0.0
+
+	for _, bidiRun := range reordered.Runs {
+		bidiStart, bidiEnd := bidiRun.Pos()
+		// Note: bidiEnd is inclusive in bidi.Run.Pos(), but we need exclusive
+		bidiEnd++
+
+		// Find all our segments that overlap with this bidi run
+		for _, seg := range segments {
+			// Check if this segment overlaps with the bidi run
+			if seg.end > bidiStart &&
+				seg.start < bidiEnd {
+				// Calculate the overlap
+				overlapStart := max(
+					seg.start,
+					bidiStart,
+				)
+				overlapEnd := min(
+					seg.end,
+					bidiEnd,
+				)
+
+				if overlapStart < overlapEnd {
+					// Extract the text for this overlap
+					runRunes := []rune(
+						seg.posRun.Run.Text,
+					)
+					localStart := overlapStart - seg.start
+					localEnd := overlapEnd - seg.start
+
+					if localStart < 0 ||
+						localEnd > len(runRunes) {
+						continue
+					}
+
+					overlappingText := string(
+						runRunes[localStart:localEnd],
+					)
+
+					// Create a new positioned run with the overlapping text
+					newRun := *seg.posRun.Run
+					newRun.Text = overlappingText
+
+					// Measure the width of this new run
+					width := MeasureRun(&newRun)
+
+					newPosRun := &PositionedRun{
+						Run:   &newRun,
+						X:     currentX,
+						Width: width,
+					}
+
+					newRuns = append(
+						newRuns,
+						newPosRun,
+					)
+					currentX += width
+				}
+			}
+		}
+	}
+
+	// Replace the line's runs with the reordered runs
+	if len(newRuns) > 0 {
+		line.Runs = newRuns
+		// Recalculate line width
+		line.Width = currentX
+	}
 }
 
 // applyAlignment applies the paragraph alignment to a line.

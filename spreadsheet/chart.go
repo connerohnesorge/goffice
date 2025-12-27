@@ -3,6 +3,7 @@
 package spreadsheet
 
 import (
+	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/spreadsheet/parts"
 )
 
@@ -81,9 +82,126 @@ func newChart(
 	c.categoryAxis = newChartAxis(c, "category")
 	c.valueAxis = newChartAxis(c, "value")
 
-	// TODO: Create the chart elements based on chartType and dataRange
-	// This would involve creating the appropriate chart type element
-	// (BarChart, LineChart, etc.) and populating it with series data
+	// Create the chart elements based on chartType
+	chartSpace := chartPart.ChartSpace()
+	if chartSpace == nil {
+		return nil, nil
+	}
+
+	chart := chartSpace.Chart()
+	if chart == nil {
+		return nil, nil
+	}
+
+	plotArea := chart.PlotArea()
+	if plotArea == nil {
+		plotArea = drawingml.NewPlotArea()
+		chart.SetPlotArea(plotArea)
+	}
+
+	// Create the appropriate chart type element based on chartType
+	// Default axis IDs
+	const (
+		categoryAxisID uint32 = 100000000
+		valueAxisID    uint32 = 100000001
+	)
+
+	switch chartType {
+	case ChartTypeBar:
+		bc := plotArea.AddBarChart(
+			drawingml.BarDirectionCol,
+			drawingml.BarGroupingClustered,
+		)
+		bc.AddAxisID(categoryAxisID)
+		bc.AddAxisID(valueAxisID)
+	case ChartTypeBar3D:
+		bc := plotArea.AddBar3DChart(
+			drawingml.BarDirectionCol,
+			drawingml.BarGroupingClustered,
+		)
+		bc.AddAxisID(categoryAxisID)
+		bc.AddAxisID(valueAxisID)
+	case ChartTypeLine:
+		lc := plotArea.AddLineChart(
+			drawingml.GroupingStandard,
+		)
+		lc.AddAxisID(categoryAxisID)
+		lc.AddAxisID(valueAxisID)
+	case ChartTypeLine3D:
+		lc := plotArea.AddLine3DChart(
+			drawingml.GroupingStandard,
+		)
+		lc.AddAxisID(categoryAxisID)
+		lc.AddAxisID(valueAxisID)
+	case ChartTypePie:
+		plotArea.AddPieChart()
+	case ChartTypePie3D:
+		plotArea.AddPie3DChart()
+	case ChartTypeDoughnut:
+		plotArea.AddDoughnutChart()
+	case ChartTypeArea:
+		ac := plotArea.AddAreaChart(
+			drawingml.GroupingStandard,
+		)
+		ac.AddAxisID(categoryAxisID)
+		ac.AddAxisID(valueAxisID)
+	case ChartTypeArea3D:
+		ac := plotArea.AddArea3DChart(
+			drawingml.GroupingStandard,
+		)
+		ac.AddAxisID(categoryAxisID)
+		ac.AddAxisID(valueAxisID)
+	case ChartTypeScatter:
+		sc := plotArea.AddScatterChart(
+			drawingml.ScatterStyleMarker,
+		)
+		sc.AddAxisID(categoryAxisID)
+		sc.AddAxisID(valueAxisID)
+	case ChartTypeBubble:
+		bc := plotArea.AddBubbleChart()
+		bc.AddAxisID(categoryAxisID)
+		bc.AddAxisID(valueAxisID)
+	case ChartTypeStock:
+		sc := plotArea.AddStockChart()
+		sc.AddAxisID(categoryAxisID)
+		sc.AddAxisID(valueAxisID)
+	case ChartTypeSurface:
+		sc := plotArea.AddSurfaceChart()
+		sc.AddAxisID(categoryAxisID)
+		sc.AddAxisID(valueAxisID)
+	case ChartTypeSurface3D:
+		sc := plotArea.AddSurface3DChart()
+		sc.AddAxisID(categoryAxisID)
+		sc.AddAxisID(valueAxisID)
+	case ChartTypeRadar:
+		rc := plotArea.AddRadarChart(
+			drawingml.RadarStyleStandard,
+		)
+		rc.AddAxisID(categoryAxisID)
+		rc.AddAxisID(valueAxisID)
+	default:
+		// Default to bar chart
+		bc := plotArea.AddBarChart(
+			drawingml.BarDirectionCol,
+			drawingml.BarGroupingClustered,
+		)
+		bc.AddAxisID(categoryAxisID)
+		bc.AddAxisID(valueAxisID)
+	}
+
+	// Add axes for chart types that need them (not pie/doughnut)
+	if chartType != ChartTypePie &&
+		chartType != ChartTypePie3D &&
+		chartType != ChartTypeDoughnut {
+		plotArea.AddCategoryAxis(
+			categoryAxisID,
+			valueAxisID,
+		)
+		plotArea.AddValueAxis(
+			valueAxisID,
+			categoryAxisID,
+		)
+	}
 
 	return c, nil
 }
@@ -101,7 +219,27 @@ func (c *Chart) Title() string {
 // SetTitle sets the chart title.
 func (c *Chart) SetTitle(title string) {
 	c.title = title
-	// TODO: Update the underlying chart element title
+
+	chartSpace := c.chartPart.ChartSpace()
+	if chartSpace == nil {
+		return
+	}
+
+	chart := chartSpace.Chart()
+	if chart == nil {
+		return
+	}
+
+	if title == "" {
+		// Remove title and set autoTitleDeleted
+		chart.SetTitle(nil)
+		chart.SetAutoTitleDeleted(true)
+	} else {
+		// Create and set title
+		titleElem := drawingml.NewTitleWithText(title)
+		chart.SetTitle(titleElem)
+		chart.SetAutoTitleDeleted(false)
+	}
 }
 
 // Series returns the chart series at the given index.
@@ -124,7 +262,9 @@ func (c *Chart) AddSeries(
 ) *ChartSeries {
 	series := newChartSeries(c, name, valuesRange)
 	c.series = append(c.series, series)
-	// TODO: Update the underlying chart element
+
+	// Update the underlying chart element
+	series.updateUnderlyingElement()
 
 	return series
 }
@@ -137,160 +277,4 @@ func (c *Chart) CategoryAxis() *ChartAxis {
 // ValueAxis returns the value axis.
 func (c *Chart) ValueAxis() *ChartAxis {
 	return c.valueAxis
-}
-
-// SetLegendPosition sets the legend position.
-func (*Chart) SetLegendPosition(
-	position LegendPosition,
-) {
-	// TODO: Update the underlying chart element
-	_ = position
-}
-
-// SetShowLegend sets whether to show the legend.
-//
-//nolint:revive // flag-parameter: bool setter is the standard pattern
-func (*Chart) SetShowLegend(show bool) {
-	// TODO: Update the underlying chart element
-	_ = show
-}
-
-// LegendPosition represents the position of the chart legend.
-type LegendPosition string
-
-const (
-	// LegendPositionBottom places the legend at the bottom.
-	LegendPositionBottom LegendPosition = "b"
-	// LegendPositionTop places the legend at the top.
-	LegendPositionTop LegendPosition = "t"
-	// LegendPositionLeft places the legend at the left.
-	LegendPositionLeft LegendPosition = "l"
-	// LegendPositionRight places the legend at the right.
-	LegendPositionRight LegendPosition = "r"
-	// LegendPositionTopRight places the legend at the top right.
-	LegendPositionTopRight LegendPosition = "tr"
-)
-
-// ChartSeries represents a data series in a chart.
-type ChartSeries struct {
-	chart       *Chart
-	name        string
-	valuesRange string
-	catRange    string
-}
-
-// newChartSeries creates a new ChartSeries.
-func newChartSeries(
-	chart *Chart,
-	name, valuesRange string,
-) *ChartSeries {
-	return &ChartSeries{
-		chart:       chart,
-		name:        name,
-		valuesRange: valuesRange,
-	}
-}
-
-// Name returns the series name.
-func (s *ChartSeries) Name() string {
-	return s.name
-}
-
-// SetName sets the series name.
-func (s *ChartSeries) SetName(name string) {
-	s.name = name
-	// TODO: Update the underlying series element
-}
-
-// ValuesRange returns the values range reference.
-func (s *ChartSeries) ValuesRange() string {
-	return s.valuesRange
-}
-
-// SetValuesRange sets the values range reference.
-func (s *ChartSeries) SetValuesRange(
-	rangeRef string,
-) {
-	s.valuesRange = rangeRef
-	// TODO: Update the underlying series element
-}
-
-// CategoriesRange returns the categories range reference.
-func (s *ChartSeries) CategoriesRange() string {
-	return s.catRange
-}
-
-// SetCategoriesRange sets the categories range reference.
-func (s *ChartSeries) SetCategoriesRange(
-	rangeRef string,
-) {
-	s.catRange = rangeRef
-	// TODO: Update the underlying series element
-}
-
-// ChartAxis represents an axis in a chart.
-type ChartAxis struct {
-	chart    *Chart
-	axisType string
-	title    string
-	minVal   *float64
-	maxVal   *float64
-}
-
-// newChartAxis creates a new ChartAxis.
-func newChartAxis(
-	chart *Chart,
-	axisType string,
-) *ChartAxis {
-	return &ChartAxis{
-		chart:    chart,
-		axisType: axisType,
-	}
-}
-
-// Title returns the axis title.
-func (a *ChartAxis) Title() string {
-	return a.title
-}
-
-// SetTitle sets the axis title.
-func (a *ChartAxis) SetTitle(title string) {
-	a.title = title
-	// TODO: Update the underlying axis element
-}
-
-// SetMinimum sets the minimum value for the axis.
-func (a *ChartAxis) SetMinimum(val float64) {
-	a.minVal = &val
-	// TODO: Update the underlying axis element
-}
-
-// SetMaximum sets the maximum value for the axis.
-func (a *ChartAxis) SetMaximum(val float64) {
-	a.maxVal = &val
-	// TODO: Update the underlying axis element
-}
-
-// SetMajorGridlines sets whether to show major gridlines.
-//
-//nolint:revive // flag-parameter: bool setter is the standard pattern
-func (a *ChartAxis) SetMajorGridlines(show bool) {
-	// TODO: Update the underlying axis element
-	_ = show
-}
-
-// SetMinorGridlines sets whether to show minor gridlines.
-//
-//nolint:revive // flag-parameter: bool setter is the standard pattern
-func (a *ChartAxis) SetMinorGridlines(show bool) {
-	// TODO: Update the underlying axis element
-	_ = show
-}
-
-// SetNumberFormat sets the number format for axis labels.
-func (*ChartAxis) SetNumberFormat(
-	format string,
-) {
-	// TODO: Update the underlying axis element
-	_ = format
 }

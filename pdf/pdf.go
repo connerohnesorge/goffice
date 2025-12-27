@@ -4,9 +4,15 @@ package pdf
 import (
 	"errors"
 	"io"
+	"os"
 
-	"github.com/connerohnesorge/goffice/presentation"
-	"github.com/connerohnesorge/goffice/spreadsheet"
+	"github.com/connerohnesorge/goffice-pdf/font"
+	"github.com/connerohnesorge/goffice-pdf/layout"
+	"github.com/connerohnesorge/goffice-pdf/presentation"
+	"github.com/connerohnesorge/goffice-pdf/spreadsheet"
+	"github.com/connerohnesorge/goffice-pdf/word"
+	prespackage "github.com/connerohnesorge/goffice/presentation"
+	spreadpackage "github.com/connerohnesorge/goffice/spreadsheet"
 	"github.com/connerohnesorge/goffice/wordprocessing"
 )
 
@@ -309,11 +315,54 @@ func RenderWord(
 	if opts == nil {
 		opts = DefaultRenderOptions()
 	}
-	_ = opts
 
-	// TODO: Implement Word document rendering
-	// This will be implemented in task 2.x (word/renderer.go)
-	return ErrNotImplemented
+	// Create a font cache for the text layout engine
+	fontCache := font.NewFontCache(50)
+
+	// Load default fonts into the cache
+	if err := loadDefaultFonts(fontCache); err != nil {
+		return err
+	}
+
+	// Create a text layout engine
+	engine := layout.NewTextLayoutEngine(
+		fontCache,
+	)
+
+	// Create the Word renderer
+	renderer, err := word.NewWordRenderer(
+		doc,
+		engine,
+	)
+	if err != nil {
+		return err
+	}
+
+	// Create a temporary file for rendering
+	tmpFile, err := os.CreateTemp(
+		"",
+		"goffice-word-*.pdf",
+	)
+	if err != nil {
+		return err
+	}
+	tmpPath := tmpFile.Name()
+	tmpFile.Close()
+	defer os.Remove(tmpPath)
+
+	// Render to temporary file
+	if err := renderer.Render(tmpPath); err != nil {
+		return err
+	}
+
+	// Read the temporary file and write to output
+	data, err := os.ReadFile(tmpPath)
+	if err != nil {
+		return err
+	}
+
+	_, err = output.Write(data)
+	return err
 }
 
 // RenderSpreadsheet renders an Excel spreadsheet to PDF format.
@@ -345,7 +394,7 @@ func RenderWord(
 //	    log.Fatal(err)
 //	}
 func RenderSpreadsheet(
-	doc *spreadsheet.Document,
+	doc *spreadpackage.Document,
 	output io.Writer,
 	options *RenderOptions,
 ) error {
@@ -359,11 +408,40 @@ func RenderSpreadsheet(
 	if opts == nil {
 		opts = DefaultRenderOptions()
 	}
-	_ = opts
 
-	// TODO: Implement spreadsheet rendering
-	// This will be implemented in task 4.x (spreadsheet/renderer.go)
-	return ErrNotImplemented
+	// Create the spreadsheet renderer
+	renderer, err := spreadsheet.NewSpreadsheetRenderer(
+		doc,
+	)
+	if err != nil {
+		return err
+	}
+
+	// Create a temporary file for rendering
+	tmpFile, err := os.CreateTemp(
+		"",
+		"goffice-spreadsheet-*.pdf",
+	)
+	if err != nil {
+		return err
+	}
+	tmpPath := tmpFile.Name()
+	tmpFile.Close()
+	defer os.Remove(tmpPath)
+
+	// Render to temporary file
+	if err := renderer.Render(tmpPath); err != nil {
+		return err
+	}
+
+	// Read the temporary file and write to output
+	data, err := os.ReadFile(tmpPath)
+	if err != nil {
+		return err
+	}
+
+	_, err = output.Write(data)
+	return err
 }
 
 // RenderPresentation renders a PowerPoint presentation to PDF format.
@@ -395,7 +473,7 @@ func RenderSpreadsheet(
 //	    log.Fatal(err)
 //	}
 func RenderPresentation(
-	doc *presentation.Document,
+	doc *prespackage.Document,
 	output io.Writer,
 	options *RenderOptions,
 ) error {
@@ -409,11 +487,18 @@ func RenderPresentation(
 	if opts == nil {
 		opts = DefaultRenderOptions()
 	}
-	_ = opts
 
-	// TODO: Implement presentation rendering
-	// This will be implemented in task 5.x (presentation/renderer.go)
-	return ErrNotImplemented
+	// Create the presentation renderer
+	renderer := presentation.NewPresentationRenderer(
+		doc,
+	)
+
+	// Render to writer
+	if err := renderer.RenderToWriter(output); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // RenderWordToFile is a convenience function that renders a Word document
@@ -433,10 +518,16 @@ func RenderWordToFile(
 			"pdf: output path is empty",
 		)
 	}
-	_ = options
 
-	// TODO: Implement file creation and rendering
-	return ErrNotImplemented
+	// Create the output file
+	f, err := os.Create(outputPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	// Render to the file
+	return RenderWord(doc, f, options)
 }
 
 // RenderSpreadsheetToFile is a convenience function that renders a
@@ -444,7 +535,7 @@ func RenderWordToFile(
 //
 // This is equivalent to creating a file and calling RenderSpreadsheet.
 func RenderSpreadsheetToFile(
-	doc *spreadsheet.Document,
+	doc *spreadpackage.Document,
 	outputPath string,
 	options *RenderOptions,
 ) error {
@@ -456,10 +547,16 @@ func RenderSpreadsheetToFile(
 			"pdf: output path is empty",
 		)
 	}
-	_ = options
 
-	// TODO: Implement file creation and rendering
-	return ErrNotImplemented
+	// Create the output file
+	f, err := os.Create(outputPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	// Render to the file
+	return RenderSpreadsheet(doc, f, options)
 }
 
 // RenderPresentationToFile is a convenience function that renders a
@@ -467,7 +564,7 @@ func RenderSpreadsheetToFile(
 //
 // This is equivalent to creating a file and calling RenderPresentation.
 func RenderPresentationToFile(
-	doc *presentation.Document,
+	doc *prespackage.Document,
 	outputPath string,
 	options *RenderOptions,
 ) error {
@@ -479,8 +576,25 @@ func RenderPresentationToFile(
 			"pdf: output path is empty",
 		)
 	}
-	_ = options
 
-	// TODO: Implement file creation and rendering
-	return ErrNotImplemented
+	// Create the output file
+	f, err := os.Create(outputPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	// Render to the file
+	return RenderPresentation(doc, f, options)
+}
+
+// loadDefaultFonts loads default fonts into the font cache.
+func loadDefaultFonts(
+	cache *font.FontCache,
+) error {
+	// Try to load common fonts
+	// The font cache will handle font loading based on the system font directories
+	// For now, we just ensure the cache is ready to use
+	// The actual font loading happens when the layout engine requests fonts
+	return nil
 }

@@ -204,49 +204,68 @@ func (b *SubsetBuilder) createTrueTypeSubset(
 		}
 	}
 
-	// For a proper subset, we would need to:
-	// 1. Rewrite glyf and loca tables with only used glyphs
-	// 2. Update hmtx with only used glyph metrics
-	// 3. Rewrite cmap to map characters to new glyph IDs
-	// 4. Update maxp with new glyph count
-	// 5. Recalculate head checksum
+	// Determine the old glyph IDs we need to include
+	// Start by collecting the glyphs for our runes
+	oldGlyphIDs := make(map[uint16]bool)
+	oldGlyphIDs[0] = true // Always include .notdef
 
-	// This is a complex task. For the initial implementation,
-	// we create a subset that includes the mapping but uses the full font data.
-	// A future TODO would implement proper table rewriting.
+	// Map runes to old glyph IDs using the original font's cmap
+	runeToOldGlyphID := make(map[rune]uint16)
+	for _, r := range runes {
+		if glyphData, ok := b.font.GlyphData[r]; ok {
+			// We need to find the original glyph ID
+			// Since we have the metrics, we search hmtx
+			oldGID := b.findGlyphIDForRune(
+				r,
+				tables,
+			)
+			if oldGID != 0 || r == 0 {
+				oldGlyphIDs[oldGID] = true
+				runeToOldGlyphID[r] = oldGID
+			}
+			_ = glyphData
+		}
+	}
 
-	// For now, check if this is a simple enough font to subset
+	// For glyf/loca subsetting, we need to handle composite glyphs
+	// which reference other glyphs
+	if tables["glyf"] != nil &&
+		tables["loca"] != nil {
+		// Expand glyph set to include composite dependencies
+		if err := b.expandCompositeGlyphs(
+			tables,
+			oldGlyphIDs,
+		); err != nil {
+			return nil, fmt.Errorf(
+				"%w: failed to expand composite glyphs: %v",
+				ErrSubsetFailed,
+				err,
+			)
+		}
+	}
+
+	// Check if subsetting is worthwhile
 	numGlyphs := getNumGlyphsFromMaxp(
 		tables["maxp"],
 	)
-	if numGlyphs > 1000 {
-		// Large fonts benefit most from subsetting, but are also more complex
-		// For now, fall back to full embedding for large fonts
-		// TODO: Implement proper glyf/loca rewriting for large font subsetting
-		return nil, fmt.Errorf(
-			"%w: font too large for simple subsetting (%d glyphs)",
-			ErrSubsetFailed,
-			numGlyphs,
-		)
-	}
-
-	// For small fonts, the overhead of subsetting may not be worth it
-	// Return nil to trigger fallback to full embedding
-	if len(glyphMapping) > numGlyphs/2 {
-		// If using more than half the glyphs, just embed the whole font
+	if len(oldGlyphIDs) > numGlyphs/2 {
+		// If using more than half the glyphs, embedding the whole font
+		// is more efficient than subsetting
 		return nil, fmt.Errorf(
 			"%w: using %d of %d glyphs, full embedding is more efficient",
 			ErrSubsetFailed,
-			len(glyphMapping),
+			len(oldGlyphIDs),
 			numGlyphs,
 		)
 	}
 
-	// Attempt basic subsetting for small fonts
+	// Build the subset font with proper table rewriting
 	return b.buildSubsetFont(
 		tables,
 		runes,
 		glyphMapping,
+		oldGlyphIDs,
+		runeToOldGlyphID,
 	)
 }
 
@@ -338,35 +357,51 @@ func getNumGlyphsFromMaxp(data []byte) int {
 }
 
 // buildSubsetFont builds a new TrueType font with only the subset glyphs.
-// This is a simplified implementation that creates a valid font structure.
+// This implementation properly rewrites glyf, loca, hmtx, and other tables.
 func (b *SubsetBuilder) buildSubsetFont(
 	tables map[string][]byte,
 	runes []rune,
 	glyphMapping map[rune]uint16,
+	oldGlyphIDs map[uint16]bool,
+	runeToOldGlyphID map[rune]uint16,
 ) ([]byte, error) {
-	// For proper subsetting, we need to rewrite multiple tables
-	// This implementation creates a subset with:
-	// - head: copy original
-	// - hhea: copy original (numberOfHMetrics may be too high, but that's ok)
-	// - maxp: update numGlyphs
-	// - hmtx: copy original (includes unused metrics, but valid)
-	// - cmap: rewrite to map only subset characters
-	// - glyf/loca: these are the complex ones - we skip proper subsetting for now
-
 	// Check if glyf table exists (TrueType outlines)
 	hasGlyf := tables["glyf"] != nil &&
 		tables["loca"] != nil
 
-	// Calculate new glyph count: .notdef + subset glyphs
-	newGlyphCount := uint16(len(glyphMapping) + 1)
+	// Create old-to-new glyph ID mapping
+	oldToNewGlyphID := make(map[uint16]uint16)
+	newGlyphID := uint16(0)
+
+	// Sort old glyph IDs for consistent output
+	sortedOldGIDs := make(
+		[]uint16,
+		0,
+		len(oldGlyphIDs),
+	)
+	for gid := range oldGlyphIDs {
+		sortedOldGIDs = append(sortedOldGIDs, gid)
+	}
+	sort.Slice(
+		sortedOldGIDs,
+		func(i, j int) bool {
+			return sortedOldGIDs[i] < sortedOldGIDs[j]
+		},
+	)
+
+	// Build mapping
+	for _, oldGID := range sortedOldGIDs {
+		oldToNewGlyphID[oldGID] = newGlyphID
+		newGlyphID++
+	}
+
+	newGlyphCount := newGlyphID
 
 	// Build modified tables
 	newTables := make(map[string][]byte)
 
 	// Copy tables that don't need modification
 	copyTables := []string{
-		"head",
-		"hhea",
 		"OS/2",
 		"name",
 		"post",
@@ -381,31 +416,70 @@ func (b *SubsetBuilder) buildSubsetFont(
 		}
 	}
 
-	// Create modified maxp with new glyph count
+	// Get loca format from head table
+	locaFormat := b.getLocaFormat(tables["head"])
+
+	// Rewrite glyf and loca tables with only used glyphs
+	if hasGlyf {
+		newGlyf, newLoca, err := b.rewriteGlyfLoca(
+			tables["glyf"],
+			tables["loca"],
+			locaFormat,
+			oldToNewGlyphID,
+			sortedOldGIDs,
+		)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"%w: failed to rewrite glyf/loca: %v",
+				ErrSubsetFailed,
+				err,
+			)
+		}
+		newTables["glyf"] = newGlyf
+		newTables["loca"] = newLoca
+	}
+
+	// Rewrite hmtx with only used glyph metrics
+	newHmtx, numHMetrics, err := b.rewriteHmtx(
+		tables["hmtx"],
+		tables["hhea"],
+		oldToNewGlyphID,
+		sortedOldGIDs,
+	)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"%w: failed to rewrite hmtx: %v",
+			ErrSubsetFailed,
+			err,
+		)
+	}
+	newTables["hmtx"] = newHmtx
+
+	// Update hhea with new numberOfHMetrics
+	newTables["hhea"] = b.updateHhea(
+		tables["hhea"],
+		numHMetrics,
+	)
+
+	// Update maxp with new glyph count
 	newTables["maxp"] = b.createMaxpSubset(
 		tables["maxp"],
 		newGlyphCount,
 	)
 
-	// Copy hmtx - it's safe to include extra metrics
-	if hmtx, ok := tables["hmtx"]; ok {
-		newTables["hmtx"] = hmtx
+	// Copy head table (we'll update checksum later if needed)
+	if head, ok := tables["head"]; ok {
+		newTables["head"] = head
 	}
 
-	// Create a simplified cmap that maps our subset
-	newTables["cmap"] = b.createCmapSubset(
+	// Create a new cmap that maps our subset runes to new glyph IDs
+	newCmap := b.createCmapSubsetWithMapping(
 		runes,
 		glyphMapping,
+		runeToOldGlyphID,
+		oldToNewGlyphID,
 	)
-
-	// For glyf/loca, we have two options:
-	// 1. Include all glyphs (wastes space but simple)
-	// 2. Properly subset (complex)
-	// We choose option 1 for simplicity
-	if hasGlyf {
-		newTables["glyf"] = tables["glyf"]
-		newTables["loca"] = tables["loca"]
-	}
+	newTables["cmap"] = newCmap
 
 	// Include CFF table if present (OpenType CFF font)
 	if cff, ok := tables["CFF "]; ok {
@@ -414,6 +488,895 @@ func (b *SubsetBuilder) buildSubsetFont(
 
 	// Build the final font file
 	return b.assembleTrueTypeFont(newTables)
+}
+
+// findGlyphIDForRune finds the original glyph ID for a rune by parsing the cmap.
+func (b *SubsetBuilder) findGlyphIDForRune(
+	r rune,
+	tables map[string][]byte,
+) uint16 {
+	cmapData, ok := tables["cmap"]
+	if !ok {
+		return 0
+	}
+
+	if len(cmapData) < 4 {
+		return 0
+	}
+
+	reader := bytes.NewReader(cmapData)
+	var version, numTables uint16
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&version,
+	)
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&numTables,
+	)
+
+	// Find best cmap subtable
+	var bestOffset uint32
+	for range numTables {
+		var platformID, encodingID uint16
+		var offset uint32
+		_ = binary.Read(
+			reader,
+			binary.BigEndian,
+			&platformID,
+		)
+		_ = binary.Read(
+			reader,
+			binary.BigEndian,
+			&encodingID,
+		)
+		_ = binary.Read(
+			reader,
+			binary.BigEndian,
+			&offset,
+		)
+
+		// Prefer Windows Unicode
+		if platformID == 3 &&
+			(encodingID == 1 || encodingID == 10) {
+			bestOffset = offset
+			break
+		}
+	}
+
+	if bestOffset == 0 ||
+		int(bestOffset) >= len(cmapData) {
+		return 0
+	}
+
+	subtable := cmapData[bestOffset:]
+	if len(subtable) < 2 {
+		return 0
+	}
+
+	format := binary.BigEndian.Uint16(
+		subtable[0:2],
+	)
+	switch format {
+	case 4:
+		return b.findGlyphInFormat4(subtable, r)
+	case 12:
+		return b.findGlyphInFormat12(subtable, r)
+	default:
+		return 0
+	}
+}
+
+// findGlyphInFormat4 finds a glyph ID in a format 4 cmap subtable.
+func (b *SubsetBuilder) findGlyphInFormat4(
+	data []byte,
+	r rune,
+) uint16 {
+	if len(data) < 14 || r > 0xFFFF {
+		return 0
+	}
+
+	c := uint16(r)
+	reader := bytes.NewReader(data)
+
+	var format, length, language, segCountX2 uint16
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&format,
+	)
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&length,
+	)
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&language,
+	)
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&segCountX2,
+	)
+
+	segCount := int(segCountX2 / 2)
+	if segCount == 0 {
+		return 0
+	}
+
+	// Skip searchRange, entrySelector, rangeShift
+	reader.Seek(14, 0)
+
+	// Read endCodes
+	endCodes := make([]uint16, segCount)
+	for i := range segCount {
+		_ = binary.Read(
+			reader,
+			binary.BigEndian,
+			&endCodes[i],
+		)
+	}
+
+	// Skip reservedPad
+	var pad uint16
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&pad,
+	)
+
+	// Read startCodes
+	startCodes := make([]uint16, segCount)
+	for i := range segCount {
+		_ = binary.Read(
+			reader,
+			binary.BigEndian,
+			&startCodes[i],
+		)
+	}
+
+	// Read idDeltas
+	idDeltas := make([]int16, segCount)
+	for i := range segCount {
+		_ = binary.Read(
+			reader,
+			binary.BigEndian,
+			&idDeltas[i],
+		)
+	}
+
+	// Find the segment containing our character
+	for seg := range segCount {
+		if c >= startCodes[seg] &&
+			c <= endCodes[seg] {
+			return uint16(
+				int16(c) + idDeltas[seg],
+			)
+		}
+	}
+
+	return 0
+}
+
+// findGlyphInFormat12 finds a glyph ID in a format 12 cmap subtable.
+func (b *SubsetBuilder) findGlyphInFormat12(
+	data []byte,
+	r rune,
+) uint16 {
+	if len(data) < 16 {
+		return 0
+	}
+
+	c := uint32(r)
+	reader := bytes.NewReader(data)
+
+	var format uint16
+	var reserved uint16
+	var length, language, numGroups uint32
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&format,
+	)
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&reserved,
+	)
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&length,
+	)
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&language,
+	)
+	_ = binary.Read(
+		reader,
+		binary.BigEndian,
+		&numGroups,
+	)
+
+	for range numGroups {
+		var startCharCode, endCharCode, startGlyphID uint32
+		_ = binary.Read(
+			reader,
+			binary.BigEndian,
+			&startCharCode,
+		)
+		_ = binary.Read(
+			reader,
+			binary.BigEndian,
+			&endCharCode,
+		)
+		_ = binary.Read(
+			reader,
+			binary.BigEndian,
+			&startGlyphID,
+		)
+
+		if c >= startCharCode &&
+			c <= endCharCode {
+			return uint16(
+				startGlyphID + (c - startCharCode),
+			)
+		}
+	}
+
+	return 0
+}
+
+// expandCompositeGlyphs expands the glyph set to include all composite dependencies.
+func (b *SubsetBuilder) expandCompositeGlyphs(
+	tables map[string][]byte,
+	glyphIDs map[uint16]bool,
+) error {
+	glyfData := tables["glyf"]
+	locaData := tables["loca"]
+	headData := tables["head"]
+
+	if glyfData == nil || locaData == nil ||
+		headData == nil {
+		return nil
+	}
+
+	locaFormat := b.getLocaFormat(headData)
+	numGlyphs := getNumGlyphsFromMaxp(
+		tables["maxp"],
+	)
+
+	// Parse loca table to get glyph offsets
+	glyphOffsets, err := b.parseLocaTable(
+		locaData,
+		locaFormat,
+		numGlyphs,
+	)
+	if err != nil {
+		return err
+	}
+
+	// Iteratively expand composite glyphs
+	// We need to repeat until no new glyphs are added
+	changed := true
+	for changed {
+		changed = false
+		currentGlyphs := make(
+			[]uint16,
+			0,
+			len(glyphIDs),
+		)
+		for gid := range glyphIDs {
+			currentGlyphs = append(
+				currentGlyphs,
+				gid,
+			)
+		}
+
+		for _, gid := range currentGlyphs {
+			if int(gid) >= len(glyphOffsets)-1 {
+				continue
+			}
+
+			offset := glyphOffsets[gid]
+			nextOffset := glyphOffsets[gid+1]
+
+			if offset >= nextOffset ||
+				int(offset) >= len(glyfData) {
+				continue
+			}
+
+			glyphData := glyfData[offset:nextOffset]
+			if len(glyphData) < 10 {
+				continue // Empty or invalid glyph
+			}
+
+			// Check if this is a composite glyph
+			numberOfContours := int16(
+				binary.BigEndian.Uint16(
+					glyphData[0:2],
+				),
+			)
+			if numberOfContours >= 0 {
+				continue // Simple glyph
+			}
+
+			// Parse composite glyph components
+			componentGIDs := b.parseCompositeGlyph(
+				glyphData,
+			)
+			for _, componentGID := range componentGIDs {
+				if !glyphIDs[componentGID] {
+					glyphIDs[componentGID] = true
+					changed = true
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+// getLocaFormat extracts the indexToLocFormat from the head table.
+func (b *SubsetBuilder) getLocaFormat(
+	headData []byte,
+) int16 {
+	if len(headData) < 54 {
+		return 0
+	}
+	return int16(
+		binary.BigEndian.Uint16(headData[50:52]),
+	)
+}
+
+// parseLocaTable parses the loca table and returns glyph offsets.
+func (b *SubsetBuilder) parseLocaTable(
+	locaData []byte,
+	locaFormat int16,
+	numGlyphs int,
+) ([]uint32, error) {
+	offsets := make([]uint32, numGlyphs+1)
+
+	if locaFormat == 0 {
+		// Short format: offsets are uint16 * 2
+		expectedSize := (numGlyphs + 1) * 2
+		if len(locaData) < expectedSize {
+			return nil, fmt.Errorf(
+				"loca table too short for short format",
+			)
+		}
+
+		for i := 0; i <= numGlyphs; i++ {
+			offset := binary.BigEndian.Uint16(
+				locaData[i*2 : i*2+2],
+			)
+			offsets[i] = uint32(offset) * 2
+		}
+	} else {
+		// Long format: offsets are uint32
+		expectedSize := (numGlyphs + 1) * 4
+		if len(locaData) < expectedSize {
+			return nil, fmt.Errorf("loca table too short for long format")
+		}
+
+		for i := 0; i <= numGlyphs; i++ {
+			offsets[i] = binary.BigEndian.Uint32(locaData[i*4 : i*4+4])
+		}
+	}
+
+	return offsets, nil
+}
+
+// parseCompositeGlyph extracts component glyph IDs from a composite glyph.
+func (b *SubsetBuilder) parseCompositeGlyph(
+	glyphData []byte,
+) []uint16 {
+	if len(glyphData) < 10 {
+		return nil
+	}
+
+	var components []uint16
+	offset := 10 // Skip header
+
+	const (
+		flagArg1And2AreWords   = 0x0001
+		flagWeHaveAScale       = 0x0008
+		flagMoreComponents     = 0x0020
+		flagWeHaveAnXAndYScale = 0x0040
+		flagWeHaveATwoByTwo    = 0x0080
+		flagWeHaveInstructions = 0x0100
+	)
+
+	for offset+4 <= len(glyphData) {
+		flags := binary.BigEndian.Uint16(
+			glyphData[offset : offset+2],
+		)
+		glyphIndex := binary.BigEndian.Uint16(
+			glyphData[offset+2 : offset+4],
+		)
+		components = append(
+			components,
+			glyphIndex,
+		)
+		offset += 4
+
+		// Skip arguments
+		if flags&flagArg1And2AreWords != 0 {
+			offset += 4 // Two int16 arguments
+		} else {
+			offset += 2 // Two int8 arguments
+		}
+
+		// Skip transformation matrix
+		if flags&flagWeHaveAScale != 0 {
+			offset += 2 // One F2DOT14
+		} else if flags&flagWeHaveAnXAndYScale != 0 {
+			offset += 4 // Two F2DOT14
+		} else if flags&flagWeHaveATwoByTwo != 0 {
+			offset += 8 // Four F2DOT14
+		}
+
+		if flags&flagMoreComponents == 0 {
+			break
+		}
+	}
+
+	return components
+}
+
+// rewriteGlyfLoca creates new glyf and loca tables with only the subset glyphs.
+func (b *SubsetBuilder) rewriteGlyfLoca(
+	glyfData, locaData []byte,
+	locaFormat int16,
+	oldToNewGlyphID map[uint16]uint16,
+	sortedOldGIDs []uint16,
+) ([]byte, []byte, error) {
+	numGlyphs := len(sortedOldGIDs)
+
+	// Calculate number of glyphs from loca table size
+	var numOriginalGlyphs int
+	if locaFormat == 0 {
+		numOriginalGlyphs = (len(locaData) / 2) - 1
+	} else {
+		numOriginalGlyphs = (len(locaData) / 4) - 1
+	}
+
+	if numOriginalGlyphs < 0 {
+		numOriginalGlyphs = 0
+	}
+
+	// Parse original loca table
+	originalOffsets, err := b.parseLocaTable(
+		locaData,
+		locaFormat,
+		numOriginalGlyphs,
+	)
+	if err != nil {
+		return nil, nil, fmt.Errorf(
+			"failed to parse loca table: %w",
+			err,
+		)
+	}
+
+	// Build new glyf data
+	newGlyfBuf := &bytes.Buffer{}
+	newOffsets := make([]uint32, numGlyphs+1)
+
+	for i, oldGID := range sortedOldGIDs {
+		newOffsets[i] = uint32(newGlyfBuf.Len())
+
+		if int(oldGID) >= len(originalOffsets)-1 {
+			continue
+		}
+
+		offset := originalOffsets[oldGID]
+		nextOffset := originalOffsets[oldGID+1]
+
+		if offset >= nextOffset ||
+			int(offset) >= len(glyfData) {
+			continue // Empty glyph
+		}
+
+		glyphBytes := glyfData[offset:nextOffset]
+
+		// For composite glyphs, we need to update component references
+		if len(glyphBytes) >= 10 {
+			numberOfContours := int16(
+				binary.BigEndian.Uint16(
+					glyphBytes[0:2],
+				),
+			)
+			if numberOfContours < 0 {
+				// Composite glyph - rewrite component references
+				glyphBytes = b.rewriteCompositeGlyph(
+					glyphBytes,
+					oldToNewGlyphID,
+				)
+			}
+		}
+
+		newGlyfBuf.Write(glyphBytes)
+	}
+
+	// Final offset
+	newOffsets[numGlyphs] = uint32(
+		newGlyfBuf.Len(),
+	)
+
+	// Build new loca table
+	newLocaBuf := &bytes.Buffer{}
+	if locaFormat == 0 {
+		// Short format: check if all offsets fit in uint16
+		maxOffset := newOffsets[numGlyphs]
+		if maxOffset > 0x1FFFE {
+			// Need to use long format instead
+			locaFormat = 1
+		}
+	}
+
+	if locaFormat == 0 {
+		// Short format
+		for _, offset := range newOffsets {
+			_ = binary.Write(
+				newLocaBuf,
+				binary.BigEndian,
+				uint16(offset/2),
+			)
+		}
+	} else {
+		// Long format
+		for _, offset := range newOffsets {
+			_ = binary.Write(
+				newLocaBuf,
+				binary.BigEndian,
+				offset,
+			)
+		}
+	}
+
+	return newGlyfBuf.Bytes(), newLocaBuf.Bytes(), nil
+}
+
+// rewriteCompositeGlyph updates component glyph IDs in a composite glyph.
+func (b *SubsetBuilder) rewriteCompositeGlyph(
+	glyphData []byte,
+	oldToNewGlyphID map[uint16]uint16,
+) []byte {
+	if len(glyphData) < 10 {
+		return glyphData
+	}
+
+	result := make([]byte, len(glyphData))
+	copy(result, glyphData)
+
+	offset := 10 // Skip header
+
+	const (
+		flagArg1And2AreWords   = 0x0001
+		flagWeHaveAScale       = 0x0008
+		flagMoreComponents     = 0x0020
+		flagWeHaveAnXAndYScale = 0x0040
+		flagWeHaveATwoByTwo    = 0x0080
+	)
+
+	for offset+4 <= len(result) {
+		flags := binary.BigEndian.Uint16(
+			result[offset : offset+2],
+		)
+		oldGlyphIndex := binary.BigEndian.Uint16(
+			result[offset+2 : offset+4],
+		)
+
+		// Remap glyph index
+		if newGlyphIndex, ok := oldToNewGlyphID[oldGlyphIndex]; ok {
+			binary.BigEndian.PutUint16(
+				result[offset+2:offset+4],
+				newGlyphIndex,
+			)
+		}
+
+		offset += 4
+
+		// Skip arguments
+		if flags&flagArg1And2AreWords != 0 {
+			offset += 4
+		} else {
+			offset += 2
+		}
+
+		// Skip transformation
+		if flags&flagWeHaveAScale != 0 {
+			offset += 2
+		} else if flags&flagWeHaveAnXAndYScale != 0 {
+			offset += 4
+		} else if flags&flagWeHaveATwoByTwo != 0 {
+			offset += 8
+		}
+
+		if flags&flagMoreComponents == 0 {
+			break
+		}
+	}
+
+	return result
+}
+
+// rewriteHmtx creates a new hmtx table with only the subset glyph metrics.
+func (b *SubsetBuilder) rewriteHmtx(
+	hmtxData, hheaData []byte,
+	oldToNewGlyphID map[uint16]uint16,
+	sortedOldGIDs []uint16,
+) ([]byte, uint16, error) {
+	if len(hheaData) < 36 {
+		return nil, 0, fmt.Errorf(
+			"hhea table too short",
+		)
+	}
+
+	numHMetrics := binary.BigEndian.Uint16(
+		hheaData[34:36],
+	)
+
+	buf := &bytes.Buffer{}
+
+	for _, oldGID := range sortedOldGIDs {
+		var advanceWidth uint16
+		var lsb int16
+
+		if oldGID < numHMetrics {
+			// Read full metric
+			offset := int(oldGID) * 4
+			if offset+4 <= len(hmtxData) {
+				advanceWidth = binary.BigEndian.Uint16(
+					hmtxData[offset : offset+2],
+				)
+				lsb = int16(
+					binary.BigEndian.Uint16(
+						hmtxData[offset+2 : offset+4],
+					),
+				)
+			}
+		} else {
+			// Use last advance width
+			if numHMetrics > 0 {
+				offset := int(numHMetrics-1) * 4
+				if offset+2 <= len(hmtxData) {
+					advanceWidth = binary.BigEndian.Uint16(
+						hmtxData[offset : offset+2],
+					)
+				}
+			}
+
+			// Read LSB from remaining entries
+			lsbOffset := int(numHMetrics)*4 + int(oldGID-numHMetrics)*2
+			if lsbOffset+2 <= len(hmtxData) {
+				lsb = int16(
+					binary.BigEndian.Uint16(hmtxData[lsbOffset : lsbOffset+2]),
+				)
+			}
+		}
+
+		_ = binary.Write(
+			buf,
+			binary.BigEndian,
+			advanceWidth,
+		)
+		_ = binary.Write(
+			buf,
+			binary.BigEndian,
+			lsb,
+		)
+	}
+
+	// New numberOfHMetrics is the number of glyphs with full metrics
+	newNumHMetrics := uint16(len(sortedOldGIDs))
+
+	return buf.Bytes(), newNumHMetrics, nil
+}
+
+// updateHhea updates the hhea table with new numberOfHMetrics.
+func (b *SubsetBuilder) updateHhea(
+	hheaData []byte,
+	numHMetrics uint16,
+) []byte {
+	if len(hheaData) < 36 {
+		return hheaData
+	}
+
+	result := make([]byte, len(hheaData))
+	copy(result, hheaData)
+	binary.BigEndian.PutUint16(
+		result[34:36],
+		numHMetrics,
+	)
+
+	return result
+}
+
+// createCmapSubsetWithMapping creates a cmap table mapping subset runes to new glyph IDs.
+func (b *SubsetBuilder) createCmapSubsetWithMapping(
+	runes []rune,
+	glyphMapping map[rune]uint16,
+	runeToOldGlyphID map[rune]uint16,
+	oldToNewGlyphID map[uint16]uint16,
+) []byte {
+	buf := &bytes.Buffer{}
+
+	// cmap header
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	) // version
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1),
+	) // numTables
+
+	// Encoding record (Windows Unicode BMP)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(3),
+	) // platformID
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1),
+	) // encodingID
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint32(12),
+	) // offset
+
+	// Build Format 4 subtable with new glyph IDs
+	bmpRunes := make([]rune, 0, len(runes))
+	for _, r := range runes {
+		if r <= 0xFFFF {
+			bmpRunes = append(bmpRunes, r)
+		}
+	}
+
+	sort.Slice(bmpRunes, func(i, j int) bool {
+		return bmpRunes[i] < bmpRunes[j]
+	})
+
+	type segment struct {
+		startCode uint16
+		endCode   uint16
+		idDelta   int16
+	}
+
+	segments := make([]segment, 0)
+
+	for _, r := range bmpRunes {
+		oldGID, ok := runeToOldGlyphID[r]
+		if !ok {
+			continue
+		}
+
+		newGID, ok := oldToNewGlyphID[oldGID]
+		if !ok {
+			continue
+		}
+
+		delta := int16(newGID) - int16(r)
+		segments = append(segments, segment{
+			startCode: uint16(r),
+			endCode:   uint16(r),
+			idDelta:   delta,
+		})
+	}
+
+	// Add terminating segment
+	segments = append(segments, segment{
+		startCode: 0xFFFF,
+		endCode:   0xFFFF,
+		idDelta:   1,
+	})
+
+	segCount := uint16(len(segments))
+	segCountX2 := segCount * 2
+
+	searchRange := uint16(1)
+	entrySelector := uint16(0)
+	for searchRange*2 <= segCount {
+		searchRange *= 2
+		entrySelector++
+	}
+	searchRange *= 2
+	rangeShift := segCountX2 - searchRange
+
+	format4Length := 14 + 4*int(segCount)*2
+
+	// Write Format 4 subtable
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(4),
+	) // format
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(format4Length),
+	) // length
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	) // language
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		segCountX2,
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		searchRange,
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		entrySelector,
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		rangeShift,
+	)
+
+	// endCode array
+	for _, seg := range segments {
+		_ = binary.Write(
+			buf,
+			binary.BigEndian,
+			seg.endCode,
+		)
+	}
+
+	// reservedPad
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+
+	// startCode array
+	for _, seg := range segments {
+		_ = binary.Write(
+			buf,
+			binary.BigEndian,
+			seg.startCode,
+		)
+	}
+
+	// idDelta array
+	for _, seg := range segments {
+		_ = binary.Write(
+			buf,
+			binary.BigEndian,
+			seg.idDelta,
+		)
+	}
+
+	// idRangeOffset array (all zeros)
+	for range segments {
+		_ = binary.Write(
+			buf,
+			binary.BigEndian,
+			uint16(0),
+		)
+	}
+
+	return buf.Bytes()
 }
 
 // createMaxpSubset creates a modified maxp table with the new glyph count.

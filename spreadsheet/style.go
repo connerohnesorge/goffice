@@ -4,7 +4,9 @@
 //nolint:revive // file-length-limit: style builder API is cohesive
 package spreadsheet
 
-// Note: imports are minimal since style registration is pending implementation
+import (
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
+)
 
 // Style represents a cell style with font, fill, border, alignment, etc.
 type Style struct {
@@ -519,15 +521,714 @@ func (sb *StyleBuilder) Hidden(
 	return sb
 }
 
-// Build creates the style and returns it.
-// Note: Full style registration to the workbook's styles part is not yet
-// implemented. The returned Style contains the specified formatting options
-// but is not yet persisted to the document's styles.xml.
-// TODO: Implement full style registration when element tree manipulation
-// is complete.
+// Build creates the style and registers it in the workbook's stylesheet.
+// This method:
+// 1. Gets or creates the workbook's styles part
+// 2. Registers font, fill, border, and number format in the stylesheet
+// 3. Creates a cellXf entry that references these elements
+// 4. Returns the Style with its assigned index
+//
+// The returned Style can be applied to cells using its index.
 func (sb *StyleBuilder) Build() *Style {
-	// For now, just return the style with a placeholder index
-	// Full implementation requires proper element tree manipulation
-	// which is pending completion of the elements package integration
+	// Get the workbook part
+	wp := sb.doc.WorkbookPart()
+	if wp == nil {
+		// Cannot register style without workbook part
+		return sb.style
+	}
+
+	// Get or create the styles part
+	stylesPart := wp.StylesPart()
+	if stylesPart == nil {
+		var err error
+		stylesPart, err = wp.AddStylesPart()
+		if err != nil {
+			// Failed to create styles part
+			return sb.style
+		}
+	}
+
+	// Get the stylesheet root element
+	stylesheet := stylesPart.Stylesheet()
+	if stylesheet == nil {
+		// No stylesheet element available
+		return sb.style
+	}
+
+	// Register the style components and get their IDs
+	fontID := sb.registerFont(stylesheet)
+	fillID := sb.registerFill(stylesheet)
+	borderID := sb.registerBorder(stylesheet)
+	numFmtID := sb.registerNumberFormat(
+		stylesheet,
+	)
+
+	// Create the cellXf entry
+	cellXfs := stylesheet.GetOrCreateCellXfs()
+	xf := cellXfs.AddXf()
+
+	// Set the component references
+	xf.SetFontId(fontID)
+	xf.SetFillId(fillID)
+	xf.SetBorderId(borderID)
+	xf.SetNumFmtId(numFmtID)
+	xf.SetXfId(
+		0,
+	) // Reference to default cellStyleXf
+
+	// Set apply flags for components that differ from defaults
+	if fontID > 0 || sb.hasFontFormatting() {
+		xf.SetApplyFont(true)
+	}
+	if fillID > 0 || sb.hasFillFormatting() {
+		xf.SetApplyFill(true)
+	}
+	if borderID > 0 || sb.hasBorderFormatting() {
+		xf.SetApplyBorder(true)
+	}
+	if numFmtID > 0 {
+		xf.SetApplyNumberFormat(true)
+	}
+
+	// Register alignment if specified
+	if sb.hasAlignmentFormatting() {
+		sb.registerAlignment(xf)
+		xf.SetApplyAlignment(true)
+	}
+
+	// Register protection if specified
+	if sb.hasProtectionFormatting() {
+		sb.registerProtection(xf)
+		xf.SetApplyProtection(true)
+	}
+
+	// The index of this style is the count before we added it (zero-based)
+	sb.style.index = cellXfs.Count() - 1
+
 	return sb.style
+}
+
+// registerFont registers the font in the stylesheet and returns its index.
+func (sb *StyleBuilder) registerFont(
+	stylesheet *elements.Stylesheet,
+) uint32 {
+	fonts := stylesheet.GetOrCreateFonts()
+
+	// Check if a matching font already exists
+	var i uint32
+	for font := range fonts.Fonts() {
+		if sb.fontMatches(font) {
+			return i
+		}
+		i++
+	}
+
+	// Create new font
+	font := fonts.AddFont()
+
+	if sb.style.fontName != "" {
+		font.SetFontName(sb.style.fontName)
+	}
+	if sb.style.fontSize > 0 {
+		font.SetFontSize(sb.style.fontSize)
+	}
+	if sb.style.fontBold {
+		font.SetBold(true)
+	}
+	if sb.style.fontItalic {
+		font.SetItalic(true)
+	}
+	if sb.style.fontUnderline {
+		font.SetUnderline(
+			elements.UnderlineStyleSingle,
+		)
+	}
+	if sb.style.fontStrike {
+		font.SetStrikethrough(true)
+	}
+	if sb.style.fontColor != "" {
+		color := font.GetOrCreateColor()
+		color.SetRGB(sb.style.fontColor)
+	}
+
+	return fonts.Count() - 1
+}
+
+// registerFill registers the fill in the stylesheet and returns its index.
+func (sb *StyleBuilder) registerFill(
+	stylesheet *elements.Stylesheet,
+) uint32 {
+	fills := stylesheet.GetOrCreateFills()
+
+	// Check if a matching fill already exists
+	var i uint32
+	for fill := range fills.Fills() {
+		if sb.fillMatches(fill) {
+			return i
+		}
+		i++
+	}
+
+	// Create new fill
+	fill := fills.AddFill()
+
+	if sb.style.fillGradient {
+		gf := fill.GetOrCreateGradientFill()
+		if sb.style.gradientType == GradientLinear {
+			gf.SetType(
+				elements.GradientTypeLinear,
+			)
+		} else {
+			gf.SetType(elements.GradientTypePath)
+		}
+		gf.SetDegree(sb.style.gradientDegree)
+
+		// Add gradient stops
+		for _, stop := range sb.style.gradientStops {
+			gs := gf.AddStop(stop.Position)
+			color := gs.GetOrCreateColor()
+			color.SetRGB(stop.Color)
+		}
+	} else {
+		pf := fill.GetOrCreatePatternFill()
+
+		// Map style pattern type to element pattern type
+		var patternType elements.PatternType
+		switch sb.style.fillPattern {
+		case PatternNone:
+			patternType = elements.PatternTypeNone
+		case PatternSolid:
+			patternType = elements.PatternTypeSolid
+		case PatternGray125:
+			patternType = elements.PatternTypeGray125
+		case PatternGray0625:
+			patternType = elements.PatternTypeGray0625
+		case PatternDarkGray:
+			patternType = elements.PatternTypeDarkGray
+		case PatternMediumGray:
+			patternType = elements.PatternTypeMediumGray
+		case PatternLightGray:
+			patternType = elements.PatternTypeLightGray
+		default:
+			patternType = elements.PatternTypeNone
+		}
+		pf.SetPatternType(patternType)
+
+		if sb.style.fillFgColor != "" {
+			fg := pf.GetOrCreateFgColor()
+			fg.SetRGB(sb.style.fillFgColor)
+		}
+		if sb.style.fillBgColor != "" {
+			bg := pf.GetOrCreateBgColor()
+			bg.SetRGB(sb.style.fillBgColor)
+		}
+	}
+
+	return fills.Count() - 1
+}
+
+// registerBorder registers the border in the stylesheet and returns its index.
+func (sb *StyleBuilder) registerBorder(
+	stylesheet *elements.Stylesheet,
+) uint32 {
+	borders := stylesheet.GetOrCreateBorders()
+
+	// Check if a matching border already exists
+	var i uint32
+	for border := range borders.Borders() {
+		if sb.borderMatches(border) {
+			return i
+		}
+		i++
+	}
+
+	// Create new border
+	border := borders.AddBorder()
+
+	// Map style border types to element border types
+	mapBorderStyle := func(style BorderStyleType) elements.BorderStyle {
+		switch style {
+		case BorderNone:
+			return elements.BorderStyleNone
+		case BorderThin:
+			return elements.BorderStyleThin
+		case BorderMedium:
+			return elements.BorderStyleMedium
+		case BorderDashed:
+			return elements.BorderStyleDashed
+		case BorderDotted:
+			return elements.BorderStyleDotted
+		case BorderThick:
+			return elements.BorderStyleThick
+		case BorderDouble:
+			return elements.BorderStyleDouble
+		case BorderHair:
+			return elements.BorderStyleHair
+		case BorderMediumDashed:
+			return elements.BorderStyleMediumDashed
+		case BorderDashDot:
+			return elements.BorderStyleDashDot
+		case BorderMediumDashDot:
+			return elements.BorderStyleMediumDashDot
+		case BorderDashDotDot:
+			return elements.BorderStyleDashDotDot
+		case BorderMediumDashDotDot:
+			return elements.BorderStyleMediumDashDotDot
+		case BorderSlantDashDot:
+			return elements.BorderStyleSlantDashDot
+		default:
+			return elements.BorderStyleNone
+		}
+	}
+
+	if sb.style.borderLeft != BorderNone {
+		left := border.GetOrCreateLeft()
+		left.SetStyle(
+			mapBorderStyle(sb.style.borderLeft),
+		)
+		if sb.style.borderLeftColor != "" {
+			color := left.GetOrCreateColor()
+			color.SetRGB(sb.style.borderLeftColor)
+		}
+	}
+	if sb.style.borderRight != BorderNone {
+		right := border.GetOrCreateRight()
+		right.SetStyle(
+			mapBorderStyle(sb.style.borderRight),
+		)
+		if sb.style.borderRightColor != "" {
+			color := right.GetOrCreateColor()
+			color.SetRGB(
+				sb.style.borderRightColor,
+			)
+		}
+	}
+	if sb.style.borderTop != BorderNone {
+		top := border.GetOrCreateTop()
+		top.SetStyle(
+			mapBorderStyle(sb.style.borderTop),
+		)
+		if sb.style.borderTopColor != "" {
+			color := top.GetOrCreateColor()
+			color.SetRGB(sb.style.borderTopColor)
+		}
+	}
+	if sb.style.borderBottom != BorderNone {
+		bottom := border.GetOrCreateBottom()
+		bottom.SetStyle(
+			mapBorderStyle(sb.style.borderBottom),
+		)
+		if sb.style.borderBottomColor != "" {
+			color := bottom.GetOrCreateColor()
+			color.SetRGB(
+				sb.style.borderBottomColor,
+			)
+		}
+	}
+	if sb.style.borderDiag != BorderNone {
+		diag := border.GetOrCreateDiagonal()
+		diag.SetStyle(
+			mapBorderStyle(sb.style.borderDiag),
+		)
+		if sb.style.borderDiagColor != "" {
+			color := diag.GetOrCreateColor()
+			color.SetRGB(sb.style.borderDiagColor)
+		}
+		border.SetDiagonalUp(
+			sb.style.borderDiagUp,
+		)
+		border.SetDiagonalDown(
+			sb.style.borderDiagDown,
+		)
+	}
+
+	return borders.Count() - 1
+}
+
+// registerNumberFormat registers the number format and returns its ID.
+func (sb *StyleBuilder) registerNumberFormat(
+	stylesheet *elements.Stylesheet,
+) uint32 {
+	// If a format ID was explicitly set, use it
+	if sb.style.numberFormatID > 0 {
+		return sb.style.numberFormatID
+	}
+
+	// If no custom format string, return 0 (General)
+	if sb.style.numberFormat == "" {
+		return 0
+	}
+
+	// Check if it's a built-in format
+	for id, code := range elements.BuiltInNumFmtCodes {
+		if code == sb.style.numberFormat {
+			return id
+		}
+	}
+
+	// Need to create a custom number format
+	numFmts := stylesheet.GetOrCreateNumFmts()
+
+	// Check if this format code already exists
+	for numFmt := range numFmts.NumFmts() {
+		if numFmt.FormatCode() == sb.style.numberFormat {
+			return numFmt.NumFmtId()
+		}
+	}
+
+	// Find next available custom format ID (starting from 164)
+	nextID := uint32(164)
+	for numFmt := range numFmts.NumFmts() {
+		if numFmt.NumFmtId() >= nextID {
+			nextID = numFmt.NumFmtId() + 1
+		}
+	}
+
+	// Add the custom format
+	numFmts.AddNumFmt(
+		nextID,
+		sb.style.numberFormat,
+	)
+
+	return nextID
+}
+
+// registerAlignment registers alignment settings in the cellXf.
+func (sb *StyleBuilder) registerAlignment(
+	xf *elements.Xf,
+) {
+	alignment := xf.GetOrCreateAlignment()
+
+	// Map style alignment types to element alignment types
+	if sb.style.horizontal != "" {
+		var h elements.HorizontalAlignment
+		switch sb.style.horizontal {
+		case HorizontalGeneral:
+			h = elements.HorizontalAlignmentGeneral
+		case HorizontalLeft:
+			h = elements.HorizontalAlignmentLeft
+		case HorizontalCenter:
+			h = elements.HorizontalAlignmentCenter
+		case HorizontalRight:
+			h = elements.HorizontalAlignmentRight
+		case HorizontalFill:
+			h = elements.HorizontalAlignmentFill
+		case HorizontalJustify:
+			h = elements.HorizontalAlignmentJustify
+		case HorizontalCenterContinuous:
+			h = elements.HorizontalAlignmentCenterContinuous
+		case HorizontalDistributed:
+			h = elements.HorizontalAlignmentDistributed
+		default:
+			h = elements.HorizontalAlignmentGeneral
+		}
+		alignment.SetHorizontal(h)
+	}
+
+	if sb.style.vertical != "" {
+		var v elements.VerticalAlignment
+		switch sb.style.vertical {
+		case VerticalTop:
+			v = elements.VerticalAlignmentTop
+		case VerticalCenter:
+			v = elements.VerticalAlignmentCenter
+		case VerticalBottom:
+			v = elements.VerticalAlignmentBottom
+		case VerticalJustify:
+			v = elements.VerticalAlignmentJustify
+		case VerticalDistributed:
+			v = elements.VerticalAlignmentDistributed
+		}
+		alignment.SetVertical(v)
+	}
+
+	if sb.style.wrapText {
+		alignment.SetWrapText(true)
+	}
+	if sb.style.shrinkToFit {
+		alignment.SetShrinkToFit(true)
+	}
+	if sb.style.textRotation != 0 {
+		alignment.SetTextRotation(
+			uint32(sb.style.textRotation),
+		)
+	}
+	if sb.style.indent > 0 {
+		alignment.SetIndent(sb.style.indent)
+	}
+}
+
+// registerProtection registers protection settings in the cellXf.
+func (sb *StyleBuilder) registerProtection(
+	xf *elements.Xf,
+) {
+	protection := xf.GetOrCreateProtection()
+	protection.SetLocked(sb.style.locked)
+	protection.SetHidden(sb.style.hidden)
+}
+
+// Helper methods to check if formatting is specified
+
+func (sb *StyleBuilder) hasFontFormatting() bool {
+	return sb.style.fontName != "" ||
+		sb.style.fontSize > 0 ||
+		sb.style.fontBold ||
+		sb.style.fontItalic ||
+		sb.style.fontUnderline ||
+		sb.style.fontStrike ||
+		sb.style.fontColor != ""
+}
+
+func (sb *StyleBuilder) hasFillFormatting() bool {
+	return sb.style.fillPattern != PatternNone ||
+		sb.style.fillGradient
+}
+
+func (sb *StyleBuilder) hasBorderFormatting() bool {
+	return sb.style.borderLeft != BorderNone ||
+		sb.style.borderRight != BorderNone ||
+		sb.style.borderTop != BorderNone ||
+		sb.style.borderBottom != BorderNone ||
+		sb.style.borderDiag != BorderNone
+}
+
+func (sb *StyleBuilder) hasAlignmentFormatting() bool {
+	return sb.style.horizontal != "" ||
+		sb.style.vertical != "" ||
+		sb.style.wrapText ||
+		sb.style.shrinkToFit ||
+		sb.style.textRotation != 0 ||
+		sb.style.indent > 0
+}
+
+func (sb *StyleBuilder) hasProtectionFormatting() bool {
+	// Protection has defaults (locked=true, hidden=false),
+	// so we register it if either differs from defaults
+	return !sb.style.locked || sb.style.hidden
+}
+
+// Helper methods to check if elements match existing ones
+
+func (sb *StyleBuilder) fontMatches(
+	font *elements.Font,
+) bool {
+	if sb.style.fontName != "" &&
+		font.FontNameValue() != sb.style.fontName {
+		return false
+	}
+	if sb.style.fontSize > 0 &&
+		font.FontSizeValue() != sb.style.fontSize {
+		return false
+	}
+	if sb.style.fontBold != font.IsBold() {
+		return false
+	}
+	if sb.style.fontItalic != font.IsItalic() {
+		return false
+	}
+	if sb.style.fontUnderline != (font.UnderlineStyle() == elements.UnderlineStyleSingle) {
+		return false
+	}
+	if sb.style.fontStrike != font.IsStrikethrough() {
+		return false
+	}
+	if sb.style.fontColor != "" {
+		color := font.Color()
+		if color == nil ||
+			color.RGB() != sb.style.fontColor {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (sb *StyleBuilder) fillMatches(
+	fill *elements.Fill,
+) bool {
+	if sb.style.fillGradient {
+		gf := fill.GradientFill()
+		if gf == nil {
+			return false
+		}
+		// Compare gradient properties
+		if sb.style.gradientType == GradientLinear &&
+			gf.Type() != elements.GradientTypeLinear {
+			return false
+		}
+		if sb.style.gradientType == GradientPath &&
+			gf.Type() != elements.GradientTypePath {
+			return false
+		}
+		if gf.Degree() != sb.style.gradientDegree {
+			return false
+		}
+		// For simplicity, if we have gradient stops, consider it non-matching
+		// (full stop comparison would be complex)
+		if len(sb.style.gradientStops) > 0 {
+			return false
+		}
+
+		return true
+	}
+
+	pf := fill.PatternFill()
+	if pf == nil {
+		return false
+	}
+
+	// Map and compare pattern types
+	var patternType elements.PatternType
+	switch sb.style.fillPattern {
+	case PatternNone:
+		patternType = elements.PatternTypeNone
+	case PatternSolid:
+		patternType = elements.PatternTypeSolid
+	case PatternGray125:
+		patternType = elements.PatternTypeGray125
+	case PatternGray0625:
+		patternType = elements.PatternTypeGray0625
+	case PatternDarkGray:
+		patternType = elements.PatternTypeDarkGray
+	case PatternMediumGray:
+		patternType = elements.PatternTypeMediumGray
+	case PatternLightGray:
+		patternType = elements.PatternTypeLightGray
+	default:
+		patternType = elements.PatternTypeNone
+	}
+
+	if pf.PatternType() != patternType {
+		return false
+	}
+
+	if sb.style.fillFgColor != "" {
+		fg := pf.FgColor()
+		if fg == nil ||
+			fg.RGB() != sb.style.fillFgColor {
+			return false
+		}
+	}
+	if sb.style.fillBgColor != "" {
+		bg := pf.BgColor()
+		if bg == nil ||
+			bg.RGB() != sb.style.fillBgColor {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (sb *StyleBuilder) borderMatches(
+	border *elements.Border,
+) bool {
+	// Helper to compare border side
+	compareSide := func(
+		styleType BorderStyleType,
+		styleColor string,
+		borderPr *elements.BorderPr,
+	) bool {
+		if styleType == BorderNone {
+			return borderPr == nil ||
+				borderPr.Style() == elements.BorderStyleNone
+		}
+		if borderPr == nil {
+			return false
+		}
+
+		// Map style type to element type
+		var elemStyle elements.BorderStyle
+		switch styleType {
+		case BorderNone:
+			elemStyle = elements.BorderStyleNone
+		case BorderThin:
+			elemStyle = elements.BorderStyleThin
+		case BorderMedium:
+			elemStyle = elements.BorderStyleMedium
+		case BorderDashed:
+			elemStyle = elements.BorderStyleDashed
+		case BorderDotted:
+			elemStyle = elements.BorderStyleDotted
+		case BorderThick:
+			elemStyle = elements.BorderStyleThick
+		case BorderDouble:
+			elemStyle = elements.BorderStyleDouble
+		case BorderHair:
+			elemStyle = elements.BorderStyleHair
+		case BorderMediumDashed:
+			elemStyle = elements.BorderStyleMediumDashed
+		case BorderDashDot:
+			elemStyle = elements.BorderStyleDashDot
+		case BorderMediumDashDot:
+			elemStyle = elements.BorderStyleMediumDashDot
+		case BorderDashDotDot:
+			elemStyle = elements.BorderStyleDashDotDot
+		case BorderMediumDashDotDot:
+			elemStyle = elements.BorderStyleMediumDashDotDot
+		case BorderSlantDashDot:
+			elemStyle = elements.BorderStyleSlantDashDot
+		default:
+			elemStyle = elements.BorderStyleNone
+		}
+
+		if borderPr.Style() != elemStyle {
+			return false
+		}
+
+		if styleColor != "" {
+			color := borderPr.Color()
+			if color == nil ||
+				color.RGB() != styleColor {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	if !compareSide(
+		sb.style.borderLeft,
+		sb.style.borderLeftColor,
+		border.Left(),
+	) {
+		return false
+	}
+	if !compareSide(
+		sb.style.borderRight,
+		sb.style.borderRightColor,
+		border.Right(),
+	) {
+		return false
+	}
+	if !compareSide(
+		sb.style.borderTop,
+		sb.style.borderTopColor,
+		border.Top(),
+	) {
+		return false
+	}
+	if !compareSide(
+		sb.style.borderBottom,
+		sb.style.borderBottomColor,
+		border.Bottom(),
+	) {
+		return false
+	}
+	if !compareSide(
+		sb.style.borderDiag,
+		sb.style.borderDiagColor,
+		border.Diagonal(),
+	) {
+		return false
+	}
+
+	if sb.style.borderDiag != BorderNone {
+		if border.DiagonalUp() != sb.style.borderDiagUp ||
+			border.DiagonalDown() != sb.style.borderDiagDown {
+			return false
+		}
+	}
+
+	return true
 }

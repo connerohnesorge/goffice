@@ -323,16 +323,33 @@ func (r *SpreadsheetRenderer) renderPage(
 	// Note: PDF coordinate system transformations would go here
 	// For now, we'll apply margins and scaling directly to coordinates
 
-	// Render print titles if this isn't the first page
-	if pageInfo.Number > 1 {
-		if pageInfo.RepeatRows != nil {
-			// Render repeat rows at top
-			// TODO: Implement repeat rows
-		}
-		if pageInfo.RepeatCols != nil {
-			// Render repeat columns at left
-			// TODO: Implement repeat columns
-		}
+	// Render print titles (repeat rows/columns on every page)
+	repeatRowsHeight := 0.0
+	repeatColsWidth := 0.0
+
+	if pageInfo.RepeatRows != nil {
+		// Render repeat rows at top of the page
+		repeatRowsHeight = r.renderRepeatRows(
+			page,
+			worksheet,
+			layout,
+			pageInfo,
+			margins,
+			stylesheet,
+		)
+	}
+
+	if pageInfo.RepeatCols != nil {
+		// Render repeat columns at left of the page
+		repeatColsWidth = r.renderRepeatColumns(
+			page,
+			worksheet,
+			layout,
+			pageInfo,
+			margins,
+			repeatRowsHeight,
+			stylesheet,
+		)
 	}
 
 	// Render cells
@@ -343,6 +360,13 @@ func (r *SpreadsheetRenderer) renderPage(
 			// Check if row is in this page's range
 			if rowIdx < pageInfo.RowStart ||
 				rowIdx > pageInfo.RowEnd {
+				continue
+			}
+
+			// Skip rows that are in the repeat rows range (already rendered)
+			if pageInfo.RepeatRows != nil &&
+				rowIdx >= pageInfo.RepeatRows.StartRow &&
+				rowIdx <= pageInfo.RepeatRows.EndRow {
 				continue
 			}
 
@@ -365,6 +389,13 @@ func (r *SpreadsheetRenderer) renderPage(
 					continue
 				}
 
+				// Skip columns that are in the repeat columns range (already rendered)
+				if pageInfo.RepeatCols != nil &&
+					cellRef.Col >= pageInfo.RepeatCols.StartCol &&
+					cellRef.Col <= pageInfo.RepeatCols.EndCol {
+					continue
+				}
+
 				// Check if column is hidden
 				if layout.HiddenColumns[cellRef.Col] {
 					continue
@@ -382,9 +413,11 @@ func (r *SpreadsheetRenderer) renderPage(
 					cellRef.Col,
 				)
 
-				// Adjust for page offset
+				// Adjust for page offset and repeat rows/columns
 				x -= pageInfo.OffsetX
 				y -= pageInfo.OffsetY
+				x += margins.Left + repeatColsWidth
+				y += margins.Top + repeatRowsHeight
 
 				// Render the cell
 				if err := r.renderCell(page, cell, layout, x, y, width, height, stylesheet); err != nil {
@@ -681,9 +714,211 @@ func (r *SpreadsheetRenderer) getStylesheet() *elements.Stylesheet {
 		return nil
 	}
 
-	// TODO: Fix stylesheet access from WorkbookStylesPart
-	// The Stylesheet() method returns an interface that can't be type asserted
-	// Need to find the proper way to access the concrete Stylesheet element
+	// Get the stylesheet from the styles part
+	return stylesPart.Stylesheet()
+}
 
-	return nil
+// renderRepeatRows renders the repeat rows at the top of the page.
+// Returns the total height of the repeated rows.
+func (r *SpreadsheetRenderer) renderRepeatRows(
+	page *core.Page,
+	worksheet *elements.Worksheet,
+	layout *CellLayout,
+	pageInfo *PageInfo,
+	margins core.Margins,
+	stylesheet *elements.Stylesheet,
+) float64 {
+	if pageInfo.RepeatRows == nil {
+		return 0.0
+	}
+
+	totalHeight := 0.0
+	currentY := margins.Top
+
+	// Get sheet data
+	sheetData := worksheet.SheetData()
+	if sheetData == nil {
+		return 0.0
+	}
+
+	// Iterate through rows in the repeat range
+	for row := range sheetData.Rows() {
+		rowIdx := int(row.RowIndex())
+
+		// Check if row is in the repeat range
+		if rowIdx < pageInfo.RepeatRows.StartRow ||
+			rowIdx > pageInfo.RepeatRows.EndRow {
+			continue
+		}
+
+		// Check if row is hidden
+		if layout.HiddenRows[rowIdx] {
+			continue
+		}
+
+		// Get row height
+		rowHeight, found := layout.RowHeights[rowIdx]
+		if !found {
+			rowHeight = layout.DefaultRowHeight
+		}
+
+		// Render cells in this row
+		for cell := range row.Cells() {
+			ref := cell.Reference()
+			cellRef := parseCellRef(ref)
+			if cellRef == nil {
+				continue
+			}
+
+			// Check if column is in the page's range (or repeat cols range)
+			if cellRef.Col < pageInfo.ColStart ||
+				cellRef.Col > pageInfo.ColEnd {
+				// Skip columns outside the current page range
+				continue
+			}
+
+			// Check if column is hidden
+			if layout.HiddenColumns[cellRef.Col] {
+				continue
+			}
+
+			// Calculate cell position
+			x := margins.Left
+			for c := pageInfo.ColStart; c < cellRef.Col; c++ {
+				if layout.HiddenColumns[c] {
+					continue
+				}
+				colWidth, found := layout.ColumnWidths[c]
+				if !found {
+					colWidth = layout.DefaultColumnWidth
+				}
+				x += colWidth
+			}
+
+			width, height := r.getCellSize(
+				layout,
+				cellRef.Row,
+				cellRef.Col,
+			)
+
+			// Render the cell
+			if err := r.renderCell(page, cell, layout, x, currentY, width, height, stylesheet); err != nil {
+				// Log error but continue rendering
+				continue
+			}
+		}
+
+		totalHeight += rowHeight
+		currentY += rowHeight
+	}
+
+	return totalHeight
+}
+
+// renderRepeatColumns renders the repeat columns at the left of the page.
+// Returns the total width of the repeated columns.
+func (r *SpreadsheetRenderer) renderRepeatColumns(
+	page *core.Page,
+	worksheet *elements.Worksheet,
+	layout *CellLayout,
+	pageInfo *PageInfo,
+	margins core.Margins,
+	repeatRowsHeight float64,
+	stylesheet *elements.Stylesheet,
+) float64 {
+	if pageInfo.RepeatCols == nil {
+		return 0.0
+	}
+
+	totalWidth := 0.0
+
+	// Get sheet data
+	sheetData := worksheet.SheetData()
+	if sheetData == nil {
+		return 0.0
+	}
+
+	// Calculate total width of repeat columns
+	for col := pageInfo.RepeatCols.StartCol; col <= pageInfo.RepeatCols.EndCol; col++ {
+		if layout.HiddenColumns[col] {
+			continue
+		}
+		colWidth, found := layout.ColumnWidths[col]
+		if !found {
+			colWidth = layout.DefaultColumnWidth
+		}
+		totalWidth += colWidth
+	}
+
+	// Iterate through rows in the page's range
+	for row := range sheetData.Rows() {
+		rowIdx := int(row.RowIndex())
+
+		// Check if row is in this page's range
+		if rowIdx < pageInfo.RowStart ||
+			rowIdx > pageInfo.RowEnd {
+			continue
+		}
+
+		// Check if row is hidden
+		if layout.HiddenRows[rowIdx] {
+			continue
+		}
+
+		// Calculate Y position for this row
+		currentY := margins.Top + repeatRowsHeight
+		for r := pageInfo.RowStart; r < rowIdx; r++ {
+			if layout.HiddenRows[r] {
+				continue
+			}
+			rh, found := layout.RowHeights[r]
+			if !found {
+				rh = layout.DefaultRowHeight
+			}
+			currentY += rh
+		}
+
+		// Render cells in the repeat columns for this row
+		currentX := margins.Left
+		for col := pageInfo.RepeatCols.StartCol; col <= pageInfo.RepeatCols.EndCol; col++ {
+			if layout.HiddenColumns[col] {
+				continue
+			}
+
+			// Find the cell at this position
+			for cell := range row.Cells() {
+				ref := cell.Reference()
+				cellRef := parseCellRef(ref)
+				if cellRef == nil {
+					continue
+				}
+
+				if cellRef.Col != col {
+					continue
+				}
+
+				width, height := r.getCellSize(
+					layout,
+					cellRef.Row,
+					cellRef.Col,
+				)
+
+				// Render the cell
+				if err := r.renderCell(page, cell, layout, currentX, currentY, width, height, stylesheet); err != nil {
+					// Log error but continue rendering
+					continue
+				}
+				break
+			}
+
+			// Move to next column position
+			colWidth, found := layout.ColumnWidths[col]
+			if !found {
+				colWidth = layout.DefaultColumnWidth
+			}
+			currentX += colWidth
+		}
+	}
+
+	return totalWidth
 }

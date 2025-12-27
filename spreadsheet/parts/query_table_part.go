@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // QueryTablePart represents a query table part (xl/queryTables/queryTable1.xml, etc.).
@@ -69,9 +70,25 @@ func (*QueryTablePart) FixedContentType() string {
 }
 
 // QueryTable returns the root QueryTable element.
-// TODO: Return a proper QueryTable element type when elements are implemented.
-func (qp *QueryTablePart) QueryTable() openxml.PartRootElement {
-	return qp.RootElement()
+// If the root element exists but is a generic PartRootElementBase (from parsing),
+// it wraps it as a QueryTableRoot element for convenient access.
+func (qp *QueryTablePart) QueryTable() *elements.QueryTableRoot {
+	root := qp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if qt, ok := root.(*elements.QueryTableRoot); ok {
+		return qt
+	}
+	// If the root is a PartRootElementBase that was loaded from XML,
+	// wrap it in our QueryTableRoot type
+	if base, ok := root.(*openxml.PartRootElementBase); ok {
+		return &elements.QueryTableRoot{
+			PartRootElementBase: base,
+		}
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.

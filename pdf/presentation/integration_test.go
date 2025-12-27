@@ -1,6 +1,7 @@
 package presentation
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -98,8 +99,47 @@ func TestIntegration_SlideRendering(
 			)
 		}
 
-		// TODO: Add content to slides (shapes, text, images)
-		_ = slide
+		// Add content to slides
+		slideElem := slide.Slide()
+		if slideElem != nil {
+			// Add a title shape
+			titleShape := slideElem.AddShape()
+			titleShape.SetText(
+				fmt.Sprintf(
+					"Slide %d Title",
+					i+1,
+				),
+			)
+			titleShape.SetPosition(
+				914400,
+				457200,
+			) // 1 inch from left, 0.5 inches from top
+			titleShape.SetSize(
+				7315200,
+				914400,
+			) // 8 inches wide, 1 inch tall
+			titleShape.SetShapeType("rect")
+			titleShape.SetSolidFill(
+				"4472C4",
+			) // Blue background
+
+			// Add a body text shape
+			bodyShape := slideElem.AddShape()
+			bodyShape.SetText(
+				fmt.Sprintf(
+					"This is the body text for slide %d.\nIt can have multiple lines.",
+					i+1,
+				),
+			)
+			bodyShape.SetPosition(
+				914400,
+				1828800,
+			) // 1 inch from left, 2 inches from top
+			bodyShape.SetSize(
+				7315200,
+				2743200,
+			) // 8 inches wide, 3 inches tall
+		}
 	}
 
 	// Test all output modes
