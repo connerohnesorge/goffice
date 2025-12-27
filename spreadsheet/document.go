@@ -598,6 +598,9 @@ func (d *Document) SheetByName(
 
 	wb := wp.Workbook().(*elements.Workbook)
 	sheets := wb.Sheets()
+	if sheets == nil {
+		return nil, false
+	}
 
 	for s := range sheets.Sheets() {
 		if s.Name() == name {
@@ -815,19 +818,23 @@ func (d *Document) SaveAs(path string) error {
 }
 
 // SaveTo writes the document to the given io.Writer.
+// The document is written as a ZIP (Office Open XML format) containing
+// all parts, relationships, and content types.
 func (d *Document) SaveTo(
-	_ io.Writer,
+	w io.Writer,
 ) error {
-	// TODO: Implement proper SaveTo for writers
+	if d.pkg == nil {
+		return ErrPackageNil
+	}
+
 	pkg := d.pkg.Package()
 	if pkg == nil {
 		return ErrPackageNil
 	}
 
-	// Use saveToWriter via the packaging layer
-	return pkg.SaveAs(
-		d.path,
-	) // TODO: Implement proper SaveTo for writers
+	// Use the packaging layer's saveToWriter method to write the entire
+	// document package (all parts, relationships, content types) to the writer
+	return pkg.SaveToWriter(w)
 }
 
 // Close closes the document and releases all resources.

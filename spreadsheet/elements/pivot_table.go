@@ -14,19 +14,19 @@ import (
 // This element is the root of a pivot table definition part and contains
 // the structure and configuration of a pivot table.
 type PivotTableDefinition struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewPivotTableDefinition creates a new PivotTableDefinition element.
 func NewPivotTableDefinition() *PivotTableDefinition {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceSML,
 		"pivotTableDefinition",
 		PrefixDefault,
 	)
 
 	return &PivotTableDefinition{
-		CompositeElementBase: elem,
+		PartRootElementBase: elem,
 	}
 }
 
@@ -2739,10 +2739,10 @@ func (pt *PivotTableDefinition) GetOrCreatePivotTableStyleInfo() *PivotTableStyl
 
 // Clone creates a deep copy of this PivotTableDefinition element.
 func (pt *PivotTableDefinition) Clone() openxml.Element {
-	cloned := pt.CompositeElementBase.Clone()
+	cloned := pt.PartRootElementBase.Clone()
 
 	return &PivotTableDefinition{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -2750,12 +2750,12 @@ func (pt *PivotTableDefinition) Clone() openxml.Element {
 func (pt *PivotTableDefinition) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := pt.CompositeElementBase.CloneNode(
+	cloned := pt.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &PivotTableDefinition{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 

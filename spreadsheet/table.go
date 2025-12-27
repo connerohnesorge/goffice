@@ -44,11 +44,6 @@ func newTable(
 		ref,
 	)
 
-	// Set the namespace
-	t.table.SetAttribute(
-		elements.NewNamespaceAttribute(),
-	)
-
 	// Auto-generate columns based on the range
 	rangeRef, err := ParseRangeRef(ref)
 	if err != nil {

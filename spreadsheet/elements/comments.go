@@ -12,19 +12,19 @@ import (
 // Comments represents the comments root element (x:comments).
 // This element is the root of a worksheet comments part.
 type Comments struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewComments creates a new Comments element.
 func NewComments() *Comments {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceSML,
 		"comments",
 		PrefixDefault,
 	)
 
 	return &Comments{
-		CompositeElementBase: elem,
+		PartRootElementBase: elem,
 	}
 }
 
@@ -100,10 +100,10 @@ func (c *Comments) GetOrCreateCommentList() *CommentList {
 
 // Clone creates a deep copy of this Comments element.
 func (c *Comments) Clone() openxml.Element {
-	cloned := c.CompositeElementBase.Clone()
+	cloned := c.PartRootElementBase.Clone()
 
 	return &Comments{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -111,12 +111,12 @@ func (c *Comments) Clone() openxml.Element {
 func (c *Comments) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := c.CompositeElementBase.CloneNode(
+	cloned := c.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &Comments{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 

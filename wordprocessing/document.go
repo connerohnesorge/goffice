@@ -253,7 +253,7 @@ func OpenWithSettings(
 // If attachTemplate is true, the template remains linked to the document.
 func NewFromTemplate(
 	templatePath string,
-	_ bool, // attachTemplate - TODO: implement template attachment
+	attachTemplate bool,
 ) (*Document, error) {
 	// Open the template as read-only
 	templateDoc, err := Open(templatePath, false)
@@ -286,9 +286,91 @@ func NewFromTemplate(
 		return nil, err
 	}
 
-	// TODO: Implement template attachment if attachTemplate is true
+	// Implement template attachment if attachTemplate is true
+	if attachTemplate {
+		if err := doc.attachTemplateLink(templatePath); err != nil {
+			_ = doc.pkg.Close()
+
+			return nil, err
+		}
+	}
 
 	return doc, nil
+}
+
+// attachTemplateLink attaches the template to the document by creating
+// an external relationship and adding the attachedTemplate element to settings.
+func (d *Document) attachTemplateLink(
+	templatePath string,
+) error {
+	// Get or create the settings part
+	mainPart := d.MainPart()
+	if mainPart == nil {
+		return ErrNoMainPart
+	}
+
+	settingsPart := mainPart.SettingsPart()
+	if settingsPart == nil {
+		var err error
+		settingsPart, err = mainPart.AddSettingsPart()
+		if err != nil {
+			return err
+		}
+	}
+
+	// Create an external relationship to the template
+	pkg := d.pkg.Package()
+	if pkg == nil {
+		return ErrPackageNil
+	}
+
+	rel, err := pkg.CreatePartRelationshipWithMode(
+		settingsPart.URI(),
+		templatePath,
+		openxml.RelationshipTypeAttachedTemplate,
+		"",
+		packaging.TargetModeExternal,
+	)
+	if err != nil {
+		return err
+	}
+
+	// Get the settings element
+	// We need to force it to load from the data if it was initialized with initializeContent
+	settings := settingsPart.Settings()
+	if settings == nil {
+		settings = elements.NewSettings()
+		settingsPart.SetRootElement(settings)
+	} else {
+		// Force reload from XML to get the actual parsed structure
+		if err := settings.Reload(); err != nil {
+			// If reload fails, create a new settings element
+			settings = elements.NewSettings()
+			settingsPart.SetRootElement(settings)
+		}
+	}
+
+	// Create and add the attachedTemplate element with the relationship ID
+	attachedTemplate := elements.NewAttachedTemplate()
+	attachedTemplate.SetAttribute(
+		openxml.NewAttribute(
+			openxml.NamespaceRelationships,
+			"id",
+			"r",
+			rel.ID(),
+		),
+	)
+	settings.AppendChild(attachedTemplate)
+
+	// Mark the settings part as dirty and save it immediately
+	// We need to save it now because child parts are not automatically saved
+	// when the package is saved - only package-level parts are
+	settingsPart.MarkDirty()
+	if err := settings.Save(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // initializeDocument sets up the basic document structure for a new document.
@@ -461,19 +543,23 @@ func (d *Document) SaveAs(path string) error {
 }
 
 // SaveTo writes the document to the given io.Writer.
+// The document is written as a ZIP (Office Open XML format) containing
+// all parts, relationships, and content types.
 func (d *Document) SaveTo(
-	_ io.Writer,
-) error { // TODO: Implement proper SaveTo for writers
-	// Create a temporary package and write to the writer
+	w io.Writer,
+) error {
+	if d.pkg == nil {
+		return ErrPackageNil
+	}
+
 	pkg := d.pkg.Package()
 	if pkg == nil {
 		return ErrPackageNil
 	}
 
-	// Use saveToWriter via the packaging layer
-	return pkg.SaveAs(
-		d.path,
-	) // TODO: Implement proper SaveTo for writers
+	// Use the packaging layer's saveToWriter method to write the entire
+	// document package (all parts, relationships, content types) to the writer
+	return pkg.SaveToWriter(w)
 }
 
 // Close closes the document and releases all resources.
@@ -566,7 +652,7 @@ var _ io.Closer = (*Document)(nil)
 // the Header element.
 // The header is also linked to the document's section properties.
 func (d *Document) AddHeader(
-	_ elements.HeaderFooterType, // hfType - TODO: use for section properties linkage
+	hfType elements.HeaderFooterValues,
 ) (*elements.Header, error) {
 	mainPart := d.MainPart()
 	if mainPart == nil {
@@ -584,14 +670,34 @@ func (d *Document) AddHeader(
 	// Note: This assumes a single section in the document
 	// For multi-section documents, users should manually manage
 	// section properties
+	doc := mainPart.Document()
+	if doc != nil {
+		body := doc.GetOrCreateBody()
+		sectPr := body.GetOrCreateSectionProperties()
+
+		// Get the relationship ID for the header part
+		relID := headerPart.RelationshipID()
+
+		// Add or replace the header reference in section properties
+		sectPr.SetHeaderReference(relID, hfType)
+
+		// If this is a first page header, ensure titlePg is set
+		if hfType == elements.HeaderFooterValuesFirst {
+			sectPr.SetTitlePage(true)
+		}
+
+		// Mark the main part as dirty so it gets saved
+		mainPart.MarkDirty()
+	}
 
 	return header, nil
 }
 
 // AddFooter adds a new footer part of the specified type and returns
 // the Footer element.
+// The footer is also linked to the document's section properties.
 func (d *Document) AddFooter(
-	_ elements.HeaderFooterType, // hfType - TODO: use for section properties linkage
+	hfType elements.HeaderFooterValues,
 ) (*elements.Footer, error) {
 	mainPart := d.MainPart()
 	if mainPart == nil {
@@ -604,6 +710,30 @@ func (d *Document) AddFooter(
 	}
 
 	footer := footerPart.GetOrCreateFooter()
+
+	// Link the footer to section properties
+	// Note: This assumes a single section in the document
+	// For multi-section documents, users should manually manage
+	// section properties
+	doc := mainPart.Document()
+	if doc != nil {
+		body := doc.GetOrCreateBody()
+		sectPr := body.GetOrCreateSectionProperties()
+
+		// Get the relationship ID for the footer part
+		relID := footerPart.RelationshipID()
+
+		// Add or replace the footer reference in section properties
+		sectPr.SetFooterReference(relID, hfType)
+
+		// If this is a first page footer, ensure titlePg is set
+		if hfType == elements.HeaderFooterValuesFirst {
+			sectPr.SetTitlePage(true)
+		}
+
+		// Mark the main part as dirty so it gets saved
+		mainPart.MarkDirty()
+	}
 
 	return footer, nil
 }

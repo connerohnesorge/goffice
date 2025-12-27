@@ -10,23 +10,23 @@ import (
 
 // Numbering represents the root element of the numbering part (w:numbering).
 type Numbering struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 	nextAbstractNumId int
 	nextNumId         int
 }
 
 // NewNumbering creates a new Numbering element.
 func NewNumbering() *Numbering {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceWML,
 		"numbering",
 		PrefixW,
 	)
 
 	return &Numbering{
-		CompositeElementBase: elem,
-		nextAbstractNumId:    0,
-		nextNumId:            1,
+		PartRootElementBase: elem,
+		nextAbstractNumId:   0,
+		nextNumId:           1,
 	}
 }
 
@@ -173,9 +173,9 @@ func (n *Numbering) CreateNumberingInstance(
 // Clone creates a deep copy of this Numbering element.
 func (n *Numbering) Clone() openxml.Element {
 	return &Numbering{
-		CompositeElementBase: n.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
-		nextAbstractNumId:    n.nextAbstractNumId,
-		nextNumId:            n.nextNumId,
+		PartRootElementBase: n.PartRootElementBase.Clone().(*openxml.PartRootElementBase),
+		nextAbstractNumId:   n.nextAbstractNumId,
+		nextNumId:           n.nextNumId,
 	}
 }
 
@@ -184,9 +184,9 @@ func (n *Numbering) CloneNode(
 	deep bool,
 ) openxml.Element {
 	return &Numbering{
-		CompositeElementBase: n.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
-		nextAbstractNumId:    n.nextAbstractNumId,
-		nextNumId:            n.nextNumId,
+		PartRootElementBase: n.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
+		nextAbstractNumId:   n.nextAbstractNumId,
+		nextNumId:           n.nextNumId,
 	}
 }
 

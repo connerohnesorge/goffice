@@ -185,6 +185,67 @@ func TestPackageSaveAs(t *testing.T) {
 	}
 }
 
+func TestPackageSaveToWriter(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "test.docx")
+
+	pkg, err := Create(path)
+	if err != nil {
+		t.Fatalf("Create() error = %v", err)
+	}
+	defer func() { _ = pkg.Close() }()
+
+	// Add a part with some content
+	part, err := pkg.CreatePart(
+		"/word/document.xml",
+		"application/xml",
+	)
+	if err != nil {
+		t.Fatalf("CreatePart() error = %v", err)
+	}
+	testContent := []byte(
+		"<document>Test Content</document>",
+	)
+	part.SetData(testContent)
+
+	// Save to a buffer
+	var buf bytes.Buffer
+	if err := pkg.SaveToWriter(&buf); err != nil {
+		t.Fatalf("SaveToWriter() error = %v", err)
+	}
+
+	// Verify the buffer contains data
+	if buf.Len() == 0 {
+		t.Error("SaveToWriter() wrote no data")
+	}
+
+	// Verify the data can be read back as a package
+	data := buf.Bytes()
+	pkg2, err := openFromBytes(data, Read)
+	if err != nil {
+		t.Fatalf(
+			"openFromBytes() error = %v (data not valid package)",
+			err,
+		)
+	}
+	defer func() { _ = pkg2.Close() }()
+
+	// Verify the part exists with the correct content
+	part2, err := pkg2.Part("/word/document.xml")
+	if err != nil {
+		t.Fatalf("Part() error = %v", err)
+	}
+
+	data2 := part2.GetData()
+	if !bytes.Equal(data2, testContent) {
+		t.Errorf(
+			"Part data mismatch: got %q, want %q",
+			data2,
+			testContent,
+		)
+	}
+}
+
 func TestPackageClose(t *testing.T) {
 	pkg, err := Create(
 		filepath.Join(t.TempDir(), "test.docx"),

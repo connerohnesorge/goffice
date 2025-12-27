@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/presentation/elements"
 )
 
 // Counter for generating unique slide layout filenames.
@@ -102,23 +103,8 @@ func NewSlideLayoutPart(
 
 // initializeContent sets up minimal slide layout content.
 func (slp *SlideLayoutPart) initializeContent() {
-	content := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" type="blank" preserve="1">
-  <p:cSld name="Blank">
-    <p:spTree>
-      <p:nvGrpSpPr>
-        <p:cNvPr id="1" name=""/>
-        <p:cNvGrpSpPr/>
-        <p:nvPr/>
-      </p:nvGrpSpPr>
-      <p:grpSpPr/>
-    </p:spTree>
-  </p:cSld>
-  <p:clrMapOvr>
-    <a:masterClrMapping/>
-  </p:clrMapOvr>
-</p:sldLayout>`
-	slp.SetData([]byte(content))
+	sl := elements.NewSlideLayout()
+	slp.SetRootElement(sl)
 }
 
 // FixedContentType returns the content type for this part.
@@ -129,9 +115,16 @@ func (*SlideLayoutPart) FixedContentType() string {
 }
 
 // SlideLayout returns the root SlideLayout element.
-// TODO: Return a proper SlideLayout element type when elements are implemented.
-func (slp *SlideLayoutPart) SlideLayout() openxml.PartRootElement {
-	return slp.RootElement()
+func (slp *SlideLayoutPart) SlideLayout() *elements.SlideLayout {
+	root := slp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if sl, ok := root.(*elements.SlideLayout); ok {
+		return sl
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -159,6 +152,11 @@ func SlideLayoutPartFactory(
 		ContentTypeSlideLayout,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewSlideLayout()
+		},
 	)
 
 	return &SlideLayoutPart{

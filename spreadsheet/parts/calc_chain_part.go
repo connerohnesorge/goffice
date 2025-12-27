@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // CalculationChainPart represents the calculation chain part (xl/calcChain.xml).
@@ -67,9 +68,14 @@ func (*CalculationChainPart) FixedContentType() string {
 }
 
 // CalculationChain returns the root CalculationChain element.
-// TODO: Return a proper CalculationChain element type when elements are implemented.
-func (ccp *CalculationChainPart) CalculationChain() openxml.PartRootElement {
-	return ccp.RootElement()
+func (ccp *CalculationChainPart) CalculationChain() *elements.CalculationChain {
+	if root := ccp.RootElement(); root != nil {
+		if cc, ok := root.(*elements.CalculationChain); ok {
+			return cc
+		}
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -97,6 +103,11 @@ func CalculationChainPartFactory(
 		ContentTypeCalcChain,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewCalculationChain()
+		},
 	)
 
 	return &CalculationChainPart{

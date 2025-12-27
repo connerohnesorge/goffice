@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/presentation/elements"
 )
 
 // Counter for generating unique comment filenames.
@@ -57,10 +58,8 @@ func newCommentAuthorsPart(
 
 // initializeContent sets up minimal comment authors content.
 func (cap *CommentAuthorsPart) initializeContent() {
-	content := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<p:cmAuthorLst xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
-</p:cmAuthorLst>`
-	cap.SetData([]byte(content))
+	cal := elements.NewCommentAuthorList()
+	cap.SetRootElement(cal)
 }
 
 // FixedContentType returns the content type for this part.
@@ -71,9 +70,16 @@ func (*CommentAuthorsPart) FixedContentType() string {
 }
 
 // CommentAuthors returns the root CommentAuthorList element.
-// TODO: Return a proper CommentAuthorList element type when elements are implemented.
-func (cap *CommentAuthorsPart) CommentAuthors() openxml.PartRootElement {
-	return cap.RootElement()
+func (cap *CommentAuthorsPart) CommentAuthors() *elements.CommentAuthorList {
+	root := cap.RootElement()
+	if root == nil {
+		return nil
+	}
+	if cal, ok := root.(*elements.CommentAuthorList); ok {
+		return cal
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -101,6 +107,11 @@ func CommentAuthorsPartFactory(
 		ContentTypeCommentAuthors,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewCommentAuthorList()
+		},
 	)
 
 	return &CommentAuthorsPart{
@@ -160,10 +171,8 @@ func newSlideCommentsPart(
 
 // initializeContent sets up minimal slide comments content.
 func (scp *SlideCommentsPart) initializeContent() {
-	content := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<p:cmLst xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
-</p:cmLst>`
-	scp.SetData([]byte(content))
+	pcl := elements.NewPresentationCommentList()
+	scp.SetRootElement(pcl)
 }
 
 // FixedContentType returns the content type for this part.
@@ -174,9 +183,16 @@ func (*SlideCommentsPart) FixedContentType() string {
 }
 
 // Comments returns the root CommentList element.
-// TODO: Return a proper CommentList element type when elements are implemented.
-func (scp *SlideCommentsPart) Comments() openxml.PartRootElement {
-	return scp.RootElement()
+func (scp *SlideCommentsPart) Comments() *elements.PresentationCommentList {
+	root := scp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if pcl, ok := root.(*elements.PresentationCommentList); ok {
+		return pcl
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -204,6 +220,11 @@ func SlideCommentsPartFactory(
 		ContentTypeComments,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewPresentationCommentList()
+		},
 	)
 
 	return &SlideCommentsPart{

@@ -100,10 +100,6 @@ preToolUse:
   preventAdditions: []
   # Example: ["dist", "build"]
 
-  # Prevent editing generated files
-  preventGeneratedFileEdits: false
-  generatedFileMessage: null
-
 # System notifications
 notifications:
   enabled: false

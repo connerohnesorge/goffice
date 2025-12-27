@@ -7,7 +7,6 @@ package spreadsheet
 import (
 	"iter"
 
-	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 	"github.com/connerohnesorge/goffice/spreadsheet/parts"
 )
@@ -69,16 +68,10 @@ func (s *Sheet) Worksheet() *elements.Worksheet {
 	// Try to get the worksheet from the part's root element
 	root := s.worksheetPart.Worksheet()
 	if root != nil {
-		// PartRootElement is a CompositeElement, wrap it as a Worksheet
-		if elem, ok := root.(openxml.CompositeElement); ok {
-			if comp, ok := elem.(*openxml.CompositeElementBase); ok {
-				s.worksheet = &elements.Worksheet{
-					CompositeElementBase: comp,
-				}
+		// Cache and return the worksheet
+		s.worksheet = root
 
-				return s.worksheet
-			}
-		}
+		return s.worksheet
 	}
 
 	// Create a new worksheet element if needed

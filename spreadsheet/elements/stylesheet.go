@@ -8,18 +8,18 @@ import (
 // Stylesheet represents the stylesheet root element (x:styleSheet).
 // This is the root element for styles.xml in an Excel package.
 type Stylesheet struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewStylesheet creates a new Stylesheet element.
 func NewStylesheet() *Stylesheet {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceSML,
 		"styleSheet",
 		PrefixDefault,
 	)
 
-	return &Stylesheet{CompositeElementBase: elem}
+	return &Stylesheet{PartRootElementBase: elem}
 }
 
 // NumFmts returns the number formats element, or nil if not present.
@@ -328,10 +328,10 @@ func (s *Stylesheet) GetOrCreateColors() *Colors {
 
 // Clone creates a deep copy of this Stylesheet element.
 func (s *Stylesheet) Clone() openxml.Element {
-	cloned := s.CompositeElementBase.Clone()
+	cloned := s.PartRootElementBase.Clone()
 
 	return &Stylesheet{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -339,11 +339,11 @@ func (s *Stylesheet) Clone() openxml.Element {
 func (s *Stylesheet) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := s.CompositeElementBase.CloneNode(
+	cloned := s.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &Stylesheet{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }

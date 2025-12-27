@@ -14,6 +14,16 @@ const (
 	parseIntBitSize8 = 8
 )
 
+// Namespace and prefix constants for alignment.
+const (
+	NamespaceSML   = openxml.NamespaceSpreadsheetML
+	PrefixDefault  = "x"
+	attrValueTrue  = "true"
+	attrValueFalse = "false"
+	attrValueOne   = "1"
+	attrValueZero  = "0"
+)
+
 // HorizontalAlignment represents the horizontal alignment type.
 type HorizontalAlignment string
 

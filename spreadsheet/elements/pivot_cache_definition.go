@@ -15,19 +15,19 @@ import (
 // This element is the root of a pivot cache definition part and contains
 // the cache field definitions and source information.
 type PivotCacheDefinition struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewPivotCacheDefinition creates a new PivotCacheDefinition element.
 func NewPivotCacheDefinition() *PivotCacheDefinition {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceSML,
 		"pivotCacheDefinition",
 		PrefixDefault,
 	)
 
 	return &PivotCacheDefinition{
-		CompositeElementBase: elem,
+		PartRootElementBase: elem,
 	}
 }
 
@@ -682,10 +682,10 @@ func (p *PivotCacheDefinition) GetOrCreateCacheFields() *CacheFields {
 
 // Clone creates a deep copy of this PivotCacheDefinition element.
 func (p *PivotCacheDefinition) Clone() openxml.Element {
-	cloned := p.CompositeElementBase.Clone()
+	cloned := p.PartRootElementBase.Clone()
 
 	return &PivotCacheDefinition{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -693,12 +693,12 @@ func (p *PivotCacheDefinition) Clone() openxml.Element {
 func (p *PivotCacheDefinition) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := p.CompositeElementBase.CloneNode(
+	cloned := p.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &PivotCacheDefinition{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 

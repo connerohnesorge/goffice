@@ -462,7 +462,7 @@ func (r *Row) GetOrCreateCell(ref string) *Cell {
 // AddCell adds a new cell at the given reference (e.g., "A1"). The cell is
 // inserted in the correct position to maintain sorted order by column.
 func (r *Row) AddCell(ref string) *Cell {
-	cell := NewCell()
+	cell := CreateCell()
 	cell.SetReference(ref)
 
 	// Find the correct position to insert the cell (sorted by column)

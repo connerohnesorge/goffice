@@ -6,6 +6,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // ChartsheetPart represents a chartsheet part (xl/chartsheets/sheet1.xml, etc.).
@@ -70,9 +71,14 @@ func (*ChartsheetPart) FixedContentType() string {
 }
 
 // Chartsheet returns the root Chartsheet element.
-// TODO: Return a proper Chartsheet element type when elements are implemented.
-func (csp *ChartsheetPart) Chartsheet() openxml.PartRootElement {
-	return csp.RootElement()
+func (csp *ChartsheetPart) Chartsheet() *elements.Chartsheet {
+	if root := csp.RootElement(); root != nil {
+		if cs, ok := root.(*elements.Chartsheet); ok {
+			return cs
+		}
+	}
+
+	return nil
 }
 
 // AddDrawingsPart adds a drawings part to this chartsheet.
@@ -129,6 +135,11 @@ func ChartsheetPartFactory(
 		ContentTypeChartsheet,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewChartsheet()
+		},
 	)
 
 	return &ChartsheetPart{

@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // ConnectionsPart represents the connections part (xl/connections.xml).
@@ -67,9 +68,14 @@ func (*ConnectionsPart) FixedContentType() string {
 }
 
 // Connections returns the root Connections element.
-// TODO: Return a proper Connections element type when elements are implemented.
-func (cp *ConnectionsPart) Connections() openxml.PartRootElement {
-	return cp.RootElement()
+func (cp *ConnectionsPart) Connections() *elements.Connections {
+	if root := cp.RootElement(); root != nil {
+		if c, ok := root.(*elements.Connections); ok {
+			return c
+		}
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -102,6 +108,11 @@ func ConnectionsPartFactory(
 		ContentTypeConnections,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewConnections()
+		},
 	)
 
 	return &ConnectionsPart{

@@ -7,18 +7,18 @@ import (
 
 // Worksheet represents the worksheet root element (x:worksheet).
 type Worksheet struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewWorksheet creates a new Worksheet element.
 func NewWorksheet() *Worksheet {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceSML,
 		"worksheet",
 		PrefixDefault,
 	)
 
-	return &Worksheet{CompositeElementBase: elem}
+	return &Worksheet{PartRootElementBase: elem}
 }
 
 // SheetPr returns the sheet properties element, or nil if not present.
@@ -676,10 +676,10 @@ func (ws *Worksheet) GetOrCreatePicture() *Picture {
 
 // Clone creates a deep copy of this Worksheet element.
 func (ws *Worksheet) Clone() openxml.Element {
-	cloned := ws.CompositeElementBase.Clone()
+	cloned := ws.PartRootElementBase.Clone()
 
 	return &Worksheet{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -687,11 +687,11 @@ func (ws *Worksheet) Clone() openxml.Element {
 func (ws *Worksheet) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := ws.CompositeElementBase.CloneNode(
+	cloned := ws.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &Worksheet{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }

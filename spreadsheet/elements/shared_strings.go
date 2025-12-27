@@ -11,7 +11,7 @@ import (
 // This element stores all unique strings used across the workbook for
 // optimization. Cells reference strings by their index in this table.
 type SharedStringTable struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 
 	// stringIndex maps string content to its index for O(1) lookups
 	stringIndex map[string]int
@@ -19,14 +19,14 @@ type SharedStringTable struct {
 
 // NewSharedStringTable creates a new SharedStringTable element.
 func NewSharedStringTable() *SharedStringTable {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceSML,
 		"sst",
 		PrefixDefault,
 	)
 
 	return &SharedStringTable{
-		CompositeElementBase: elem,
+		PartRootElementBase: elem,
 		stringIndex: make(
 			map[string]int,
 		),
@@ -240,9 +240,9 @@ func (ss *SharedStringTable) Clear() {
 
 // Clone creates a deep copy of this SharedStringTable element.
 func (ss *SharedStringTable) Clone() openxml.Element {
-	cloned := ss.CompositeElementBase.Clone()
+	cloned := ss.PartRootElementBase.Clone()
 	newSST := &SharedStringTable{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 		stringIndex: make(
 			map[string]int,
 		),
@@ -261,11 +261,11 @@ func (ss *SharedStringTable) Clone() openxml.Element {
 func (ss *SharedStringTable) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := ss.CompositeElementBase.CloneNode(
+	cloned := ss.PartRootElementBase.CloneNode(
 		deep,
 	)
 	newSST := &SharedStringTable{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 		stringIndex: make(
 			map[string]int,
 		),

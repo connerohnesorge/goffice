@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // WorkbookStylesPart represents the workbook styles part (xl/styles.xml).
@@ -104,9 +105,14 @@ func (*WorkbookStylesPart) FixedContentType() string {
 }
 
 // Stylesheet returns the root Stylesheet element.
-// TODO: Return a proper Stylesheet element type when elements are implemented.
-func (sp *WorkbookStylesPart) Stylesheet() openxml.PartRootElement {
-	return sp.RootElement()
+func (sp *WorkbookStylesPart) Stylesheet() *elements.Stylesheet {
+	if root := sp.RootElement(); root != nil {
+		if ss, ok := root.(*elements.Stylesheet); ok {
+			return ss
+		}
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -134,6 +140,11 @@ func WorkbookStylesPartFactory(
 		ContentTypeStyles,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewStylesheet()
+		},
 	)
 
 	return &WorkbookStylesPart{

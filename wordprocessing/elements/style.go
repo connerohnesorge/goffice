@@ -149,8 +149,12 @@ func NewCharacterStyle(id, name string) *Style {
 	return s
 }
 
-// NewTableStyle creates a new table style with the given ID and name.
-func NewTableStyle(id, name string) *Style {
+// NewTableStyleDefinition creates a new table style definition with the given ID and name.
+// This creates a Style object configured for table styles.
+// Note: This is different from NewTableStyle() which creates a TableStyle XML element.
+func NewTableStyleDefinition(
+	id, name string,
+) *Style {
 	s := NewStyle(id, StyleTypeTable)
 	s.SetStyleName(name)
 

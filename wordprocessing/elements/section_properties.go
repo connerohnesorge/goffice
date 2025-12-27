@@ -172,7 +172,7 @@ func (sp *SectionProperties) FooterReferences() []*FooterReference {
 // AddHeaderReference adds a header reference.
 func (sp *SectionProperties) AddHeaderReference(
 	relId string,
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) *HeaderReference {
 	hr := NewHeaderReference(relId, hfType)
 	sp.AppendChild(hr)
@@ -183,7 +183,7 @@ func (sp *SectionProperties) AddHeaderReference(
 // AddFooterReference adds a footer reference.
 func (sp *SectionProperties) AddFooterReference(
 	relId string,
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) *FooterReference {
 	fr := NewFooterReference(relId, hfType)
 	sp.AppendChild(fr)
@@ -193,7 +193,7 @@ func (sp *SectionProperties) AddFooterReference(
 
 // GetHeaderReference returns the header reference of the specified type, or nil if not found.
 func (sp *SectionProperties) GetHeaderReference(
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) *HeaderReference {
 	for _, hr := range sp.HeaderReferences() {
 		if hr.Type() == hfType {
@@ -206,7 +206,7 @@ func (sp *SectionProperties) GetHeaderReference(
 
 // GetFooterReference returns the footer reference of the specified type, or nil if not found.
 func (sp *SectionProperties) GetFooterReference(
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) *FooterReference {
 	for _, fr := range sp.FooterReferences() {
 		if fr.Type() == hfType {
@@ -220,7 +220,7 @@ func (sp *SectionProperties) GetFooterReference(
 // RemoveHeaderReference removes the header reference of the specified type.
 // Returns true if a reference was removed.
 func (sp *SectionProperties) RemoveHeaderReference(
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) bool {
 	for _, hr := range sp.HeaderReferences() {
 		if hr.Type() == hfType {
@@ -236,7 +236,7 @@ func (sp *SectionProperties) RemoveHeaderReference(
 // RemoveFooterReference removes the footer reference of the specified type.
 // Returns true if a reference was removed.
 func (sp *SectionProperties) RemoveFooterReference(
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) bool {
 	for _, fr := range sp.FooterReferences() {
 		if fr.Type() == hfType {
@@ -252,7 +252,7 @@ func (sp *SectionProperties) RemoveFooterReference(
 // SetHeaderReference sets or replaces the header reference of the specified type.
 func (sp *SectionProperties) SetHeaderReference(
 	relId string,
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) *HeaderReference {
 	sp.RemoveHeaderReference(hfType)
 
@@ -262,7 +262,7 @@ func (sp *SectionProperties) SetHeaderReference(
 // SetFooterReference sets or replaces the footer reference of the specified type.
 func (sp *SectionProperties) SetFooterReference(
 	relId string,
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) *FooterReference {
 	sp.RemoveFooterReference(hfType)
 
@@ -1104,7 +1104,7 @@ type HeaderReference struct {
 // NewHeaderReference creates a new HeaderReference element.
 func NewHeaderReference(
 	relId string,
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) *HeaderReference {
 	elem := openxml.NewCompositeElement(
 		NamespaceWML,
@@ -1148,7 +1148,7 @@ func (hr *HeaderReference) RelationshipId() string {
 }
 
 // Type returns the header type.
-func (hr *HeaderReference) Type() HeaderFooterType {
+func (hr *HeaderReference) Type() HeaderFooterValues {
 	attr, found := hr.GetAttribute(
 		attrNameType,
 		NamespaceWML,
@@ -1157,7 +1157,7 @@ func (hr *HeaderReference) Type() HeaderFooterType {
 		return HeaderFooterDefault
 	}
 
-	return HeaderFooterType(attr.Value())
+	return HeaderFooterValues(attr.Value())
 }
 
 // Clone creates a deep copy of this HeaderReference element.
@@ -1184,7 +1184,7 @@ type FooterReference struct {
 // NewFooterReference creates a new FooterReference element.
 func NewFooterReference(
 	relId string,
-	hfType HeaderFooterType,
+	hfType HeaderFooterValues,
 ) *FooterReference {
 	elem := openxml.NewCompositeElement(
 		NamespaceWML,
@@ -1228,7 +1228,7 @@ func (fr *FooterReference) RelationshipId() string {
 }
 
 // Type returns the footer type.
-func (fr *FooterReference) Type() HeaderFooterType {
+func (fr *FooterReference) Type() HeaderFooterValues {
 	attr, found := fr.GetAttribute(
 		attrNameType,
 		NamespaceWML,
@@ -1237,7 +1237,7 @@ func (fr *FooterReference) Type() HeaderFooterType {
 		return HeaderFooterDefault
 	}
 
-	return HeaderFooterType(attr.Value())
+	return HeaderFooterValues(attr.Value())
 }
 
 // Clone creates a deep copy of this FooterReference element.

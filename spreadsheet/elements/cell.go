@@ -31,8 +31,9 @@ type Cell struct {
 	*openxml.CompositeElementBase
 }
 
-// NewCell creates a new Cell element.
-func NewCell() *Cell {
+// CreateCell creates a new Cell element.
+// Renamed from NewCell to avoid conflict with the NewCell type from the schema.
+func CreateCell() *Cell {
 	elem := openxml.NewCompositeElement(
 		NamespaceSML,
 		"c",

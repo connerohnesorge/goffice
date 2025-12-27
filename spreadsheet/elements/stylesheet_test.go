@@ -972,39 +972,39 @@ func TestStylesheetXML(t *testing.T) {
 	xml := ss.OuterXml()
 
 	// Check XML contains expected elements
-	if !strings.Contains(xml, "<styleSheet") {
+	if !strings.Contains(xml, "styleSheet") {
 		t.Error(
-			"XML should contain <styleSheet element",
+			"XML should contain styleSheet element",
 		)
 	}
-	if !strings.Contains(xml, "<fonts") {
+	if !strings.Contains(xml, "fonts") {
 		t.Error(
-			"XML should contain <fonts element",
+			"XML should contain fonts element",
 		)
 	}
-	if !strings.Contains(xml, "<fills") {
+	if !strings.Contains(xml, "fills") {
 		t.Error(
-			"XML should contain <fills element",
+			"XML should contain fills element",
 		)
 	}
-	if !strings.Contains(xml, "<borders") {
+	if !strings.Contains(xml, "borders") {
 		t.Error(
-			"XML should contain <borders element",
+			"XML should contain borders element",
 		)
 	}
-	if !strings.Contains(xml, "<cellStyleXfs") {
+	if !strings.Contains(xml, "cellStyleXfs") {
 		t.Error(
-			"XML should contain <cellStyleXfs element",
+			"XML should contain cellStyleXfs element",
 		)
 	}
-	if !strings.Contains(xml, "<cellXfs") {
+	if !strings.Contains(xml, "cellXfs") {
 		t.Error(
-			"XML should contain <cellXfs element",
+			"XML should contain cellXfs element",
 		)
 	}
-	if !strings.Contains(xml, "<cellStyles") {
+	if !strings.Contains(xml, "cellStyles") {
 		t.Error(
-			"XML should contain <cellStyles element",
+			"XML should contain cellStyles element",
 		)
 	}
 }

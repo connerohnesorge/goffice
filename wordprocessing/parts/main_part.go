@@ -99,9 +99,16 @@ func (mp *MainPart) InitializeContent() {
 }
 
 // Document returns the root Document element.
-// TODO: Return a proper Document element type when elements are implemented.
-func (mp *MainPart) Document() openxml.PartRootElement {
-	return mp.RootElement()
+func (mp *MainPart) Document() *elements.Document {
+	root := mp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if d, ok := root.(*elements.Document); ok {
+		return d
+	}
+
+	return nil
 }
 
 // AddStylesPart adds a styles definitions part to this main part.

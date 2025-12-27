@@ -102,8 +102,14 @@ func parseStartElement(
 		base.prefix = prefix
 	}
 
-	// Set attributes
+	// Set attributes (skip xmlns namespace declarations)
 	for _, attr := range start.Attr {
+		// Skip namespace declarations (xmlns and xmlns:prefix)
+		if attr.Name.Space == "http://www.w3.org/2000/xmlns/" ||
+			attr.Name.Local == "xmlns" {
+			continue
+		}
+
 		attrPrefix := extractPrefix(attr.Name)
 		openxmlAttr := NewAttribute(
 			attr.Name.Space,

@@ -8,18 +8,18 @@ import (
 
 // Styles represents the root element of the styles part (w:styles).
 type Styles struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewStyles creates a new Styles element.
 func NewStyles() *Styles {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceWML,
 		"styles",
 		PrefixW,
 	)
 
-	return &Styles{CompositeElementBase: elem}
+	return &Styles{PartRootElementBase: elem}
 }
 
 // DocDefaults returns the document defaults element, or nil if not present.
@@ -180,10 +180,10 @@ func (s *Styles) RemoveStyle(style *Style) bool {
 
 // Clone creates a deep copy of this Styles element.
 func (s *Styles) Clone() openxml.Element {
-	cloned := s.CompositeElementBase.Clone()
+	cloned := s.PartRootElementBase.Clone()
 
 	return &Styles{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -191,11 +191,11 @@ func (s *Styles) Clone() openxml.Element {
 func (s *Styles) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := s.CompositeElementBase.CloneNode(
+	cloned := s.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &Styles{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }

@@ -9,6 +9,13 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+// Constants for cell format parsing and attributes.
+const (
+	parseBase10   = 10
+	bitSize32     = 32
+	attrNameCount = "count"
+)
+
 // CellStyleXfs represents the cell style formats container (x:cellStyleXfs).
 // This contains base styles that cell formats (cellXfs) can reference.
 type CellStyleXfs struct {

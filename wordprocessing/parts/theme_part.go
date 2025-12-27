@@ -143,7 +143,8 @@ func (tp *ThemePart) FixedContentType() string {
 }
 
 // Theme returns the root Theme element.
-// TODO: Return a proper Theme element type when elements are implemented.
+// Note: This returns openxml.PartRootElement until DrawingML theme element is implemented.
+// When implemented, this should return *drawingml.Theme.
 func (tp *ThemePart) Theme() openxml.PartRootElement {
 	return tp.RootElement()
 }

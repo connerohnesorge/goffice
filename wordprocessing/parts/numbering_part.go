@@ -2,9 +2,11 @@
 package parts
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 )
 
 // NumberingPart represents the numbering definitions part (word/numbering.xml).
@@ -72,30 +74,89 @@ func (*NumberingPart) FixedContentType() string {
 }
 
 // Numbering returns the root Numbering element.
-// TODO: Return a proper Numbering element type when elements are implemented.
 func (np *NumberingPart) Numbering() openxml.PartRootElement {
 	return np.RootElement()
 }
 
 // GetAbstractNum returns an abstract numbering definition by ID.
-// TODO: Implement proper AbstractNum element type.
-//
-//nolint:revive // unused-receiver: TODO stub implementation
-func (*NumberingPart) GetAbstractNum(
-	_ int,
-) any {
-	// TODO: Parse numbering and find abstract num by ID
+func (np *NumberingPart) GetAbstractNum(
+	id int,
+) *elements.AbstractNum {
+	root := np.RootElement()
+	if root == nil {
+		return nil
+	}
+
+	// Iterate through child elements to find the abstractNum with the matching abstractNumId
+	for child := range root.Children() {
+		if child.LocalName() == "abstractNum" &&
+			child.NamespaceURI() == elements.NamespaceWML {
+			// Check if this abstractNum has the ID we're looking for
+			attr, found := child.GetAttribute(
+				"abstractNumId",
+				elements.NamespaceWML,
+			)
+			if found {
+				// Parse the ID and compare
+				var childID int
+				if _, err := fmt.Sscanf(attr.Value(), "%d", &childID); err == nil &&
+					childID == id {
+					// Convert to *elements.AbstractNum
+					if absNum, ok := child.(*elements.AbstractNum); ok {
+						return absNum
+					}
+					// Try to wrap if it's a CompositeElementBase
+					if comp, ok := child.(*openxml.CompositeElementBase); ok {
+						return &elements.AbstractNum{
+							CompositeElementBase: comp,
+						}
+					}
+				}
+			}
+		}
+	}
+
 	return nil
 }
 
 // GetNumInstance returns a numbering instance by ID.
-// TODO: Implement proper NumInstance element type.
-//
-//nolint:revive // unused-receiver: TODO stub implementation
-func (*NumberingPart) GetNumInstance(
-	_ int,
-) any {
-	// TODO: Parse numbering and find num instance by ID
+func (np *NumberingPart) GetNumInstance(
+	id int,
+) *elements.NumberingInstance {
+	root := np.RootElement()
+	if root == nil {
+		return nil
+	}
+
+	// Iterate through child elements to find the num with the matching numId
+	for child := range root.Children() {
+		if child.LocalName() == "num" &&
+			child.NamespaceURI() == elements.NamespaceWML {
+			// Check if this num has the ID we're looking for
+			attr, found := child.GetAttribute(
+				"numId",
+				elements.NamespaceWML,
+			)
+			if found {
+				// Parse the ID and compare
+				var childID int
+				if _, err := fmt.Sscanf(attr.Value(), "%d", &childID); err == nil &&
+					childID == id {
+					// Convert to *elements.NumberingInstance
+					if numInst, ok := child.(*elements.NumberingInstance); ok {
+						return numInst
+					}
+					// Try to wrap if it's a CompositeElementBase
+					if comp, ok := child.(*openxml.CompositeElementBase); ok {
+						return &elements.NumberingInstance{
+							CompositeElementBase: comp,
+						}
+					}
+				}
+			}
+		}
+	}
+
 	return nil
 }
 

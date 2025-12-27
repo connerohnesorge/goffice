@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/presentation/elements"
 )
 
 // Counter for generating unique notes slide filenames.
@@ -64,54 +65,8 @@ func newNotesSlidePart(
 
 // initializeContent sets up minimal notes slide content.
 func (nsp *NotesSlidePart) initializeContent() {
-	content := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
-  <p:cSld>
-    <p:spTree>
-      <p:nvGrpSpPr>
-        <p:cNvPr id="1" name=""/>
-        <p:cNvGrpSpPr/>
-        <p:nvPr/>
-      </p:nvGrpSpPr>
-      <p:grpSpPr/>
-      <p:sp>
-        <p:nvSpPr>
-          <p:cNvPr id="2" name="Slide Image Placeholder 1"/>
-          <p:cNvSpPr>
-            <a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/>
-          </p:cNvSpPr>
-          <p:nvPr>
-            <p:ph type="sldImg"/>
-          </p:nvPr>
-        </p:nvSpPr>
-        <p:spPr/>
-      </p:sp>
-      <p:sp>
-        <p:nvSpPr>
-          <p:cNvPr id="3" name="Notes Placeholder 2"/>
-          <p:cNvSpPr>
-            <a:spLocks noGrp="1"/>
-          </p:cNvSpPr>
-          <p:nvPr>
-            <p:ph type="body" idx="1"/>
-          </p:nvPr>
-        </p:nvSpPr>
-        <p:spPr/>
-        <p:txBody>
-          <a:bodyPr/>
-          <a:lstStyle/>
-          <a:p>
-            <a:endParaRPr lang="en-US"/>
-          </a:p>
-        </p:txBody>
-      </p:sp>
-    </p:spTree>
-  </p:cSld>
-  <p:clrMapOvr>
-    <a:masterClrMapping/>
-  </p:clrMapOvr>
-</p:notes>`
-	nsp.SetData([]byte(content))
+	ns := elements.NewNotesSlide()
+	nsp.SetRootElement(ns)
 }
 
 // FixedContentType returns the content type for this part.
@@ -122,9 +77,16 @@ func (*NotesSlidePart) FixedContentType() string {
 }
 
 // NotesSlide returns the root NotesSlide element.
-// TODO: Return a proper NotesSlide element type when elements are implemented.
-func (nsp *NotesSlidePart) NotesSlide() openxml.PartRootElement {
-	return nsp.RootElement()
+func (nsp *NotesSlidePart) NotesSlide() *elements.NotesSlide {
+	root := nsp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if ns, ok := root.(*elements.NotesSlide); ok {
+		return ns
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -150,6 +112,11 @@ func NotesSlidePartFactory(
 		ContentTypeNotesSlide,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewNotesSlide()
+		},
 	)
 
 	return &NotesSlidePart{

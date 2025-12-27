@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 )
 
 // StylesPart represents the styles definitions part (word/styles.xml).
@@ -87,30 +88,89 @@ func (*StylesPart) FixedContentType() string {
 }
 
 // Styles returns the root Styles element.
-// TODO: Return a proper Styles element type when elements are implemented.
 func (sp *StylesPart) Styles() openxml.PartRootElement {
 	return sp.RootElement()
 }
 
 // GetStyleById returns a style by its ID.
-// TODO: Implement proper Style element type.
-//
-//nolint:revive // unused-receiver: TODO stub implementation
-func (*StylesPart) GetStyleById(
-	_ string,
-) any {
-	// TODO: Parse styles and find by ID
+func (sp *StylesPart) GetStyleById(
+	id string,
+) *elements.Style {
+	root := sp.RootElement()
+	if root == nil {
+		return nil
+	}
+
+	// Iterate through child elements to find the style with the matching styleId
+	for child := range root.Children() {
+		if child.LocalName() == "style" &&
+			child.NamespaceURI() == elements.NamespaceWML {
+			// Check if this style has the ID we're looking for
+			attr, found := child.GetAttribute(
+				"styleId",
+				elements.NamespaceWML,
+			)
+			if found && attr.Value() == id {
+				// Convert to *elements.Style
+				if style, ok := child.(*elements.Style); ok {
+					return style
+				}
+				// Try to wrap if it's a CompositeElementBase
+				if comp, ok := child.(*openxml.CompositeElementBase); ok {
+					return &elements.Style{
+						CompositeElementBase: comp,
+					}
+				}
+			}
+		}
+	}
+
 	return nil
 }
 
 // GetStyleByName returns a style by its name.
-// TODO: Implement proper Style element type.
-//
-//nolint:revive // unused-receiver: TODO stub implementation
-func (*StylesPart) GetStyleByName(
-	_ string,
-) any {
-	// TODO: Parse styles and find by name
+func (sp *StylesPart) GetStyleByName(
+	name string,
+) *elements.Style {
+	root := sp.RootElement()
+	if root == nil {
+		return nil
+	}
+
+	// Iterate through child elements to find the style with the matching name
+	for child := range root.Children() {
+		if child.LocalName() == "style" &&
+			child.NamespaceURI() == elements.NamespaceWML {
+			// Check if child is a CompositeElement to access GetElement
+			if compChild, ok := child.(openxml.CompositeElement); ok {
+				// Check for the name child element
+				nameElem := compChild.GetElement(
+					"name",
+					elements.NamespaceWML,
+				)
+				if nameElem != nil {
+					attr, found := nameElem.GetAttribute(
+						"val",
+						elements.NamespaceWML,
+					)
+					if found &&
+						attr.Value() == name {
+						// Convert to *elements.Style
+						if style, ok := child.(*elements.Style); ok {
+							return style
+						}
+						// Try to wrap if it's a CompositeElementBase
+						if comp, ok := child.(*openxml.CompositeElementBase); ok {
+							return &elements.Style{
+								CompositeElementBase: comp,
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	return nil
 }
 

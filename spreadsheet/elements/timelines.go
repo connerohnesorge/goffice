@@ -19,18 +19,18 @@ const (
 // Timelines represents the timelines collection root element (x15:timelines).
 // This element is the root of a timelines part.
 type Timelines struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewTimelines creates a new Timelines element.
 func NewTimelines() *Timelines {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceTimelineX15,
 		"timelines",
 		"x15",
 	)
 
-	return &Timelines{CompositeElementBase: elem}
+	return &Timelines{PartRootElementBase: elem}
 }
 
 // Timelines returns an iterator over all Timeline elements.
@@ -98,10 +98,10 @@ func (t *Timelines) RemoveTimeline(
 
 // Clone creates a deep copy of this Timelines element.
 func (t *Timelines) Clone() openxml.Element {
-	cloned := t.CompositeElementBase.Clone()
+	cloned := t.PartRootElementBase.Clone()
 
 	return &Timelines{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -109,12 +109,12 @@ func (t *Timelines) Clone() openxml.Element {
 func (t *Timelines) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := t.CompositeElementBase.CloneNode(
+	cloned := t.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &Timelines{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -512,19 +512,19 @@ func (t *Timeline) CloneNode(
 // TimelineCacheDefinition represents the timeline cache definition root element
 // (x15:timelineCacheDefinition).
 type TimelineCacheDefinition struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewTimelineCacheDefinition creates a new TimelineCacheDefinition element.
 func NewTimelineCacheDefinition() *TimelineCacheDefinition {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceTimelineX15,
 		"timelineCacheDefinition",
 		"x15",
 	)
 
 	return &TimelineCacheDefinition{
-		CompositeElementBase: elem,
+		PartRootElementBase: elem,
 	}
 }
 
@@ -661,10 +661,10 @@ func (t *TimelineCacheDefinition) GetOrCreateState() *TimelineState {
 
 // Clone creates a deep copy of this TimelineCacheDefinition element.
 func (t *TimelineCacheDefinition) Clone() openxml.Element {
-	cloned := t.CompositeElementBase.Clone()
+	cloned := t.PartRootElementBase.Clone()
 
 	return &TimelineCacheDefinition{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -672,12 +672,12 @@ func (t *TimelineCacheDefinition) Clone() openxml.Element {
 func (t *TimelineCacheDefinition) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := t.CompositeElementBase.CloneNode(
+	cloned := t.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &TimelineCacheDefinition{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 

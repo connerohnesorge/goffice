@@ -8,6 +8,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // DrawingsPart represents a drawings part (xl/drawings/drawing1.xml, etc.).
@@ -111,9 +112,14 @@ func (*DrawingsPart) FixedContentType() string {
 }
 
 // Drawing returns the root WorksheetDrawing element.
-// TODO: Return a proper WorksheetDrawing element type when elements are implemented.
-func (dp *DrawingsPart) Drawing() openxml.PartRootElement {
-	return dp.RootElement()
+func (dp *DrawingsPart) Drawing() *elements.WorksheetDrawing {
+	if root := dp.RootElement(); root != nil {
+		if wd, ok := root.(*elements.WorksheetDrawing); ok {
+			return wd
+		}
+	}
+
+	return nil
 }
 
 // Counter for generating unique chart filenames.
@@ -211,6 +217,11 @@ func DrawingsPartFactory(
 		ContentTypeDrawing,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewWorksheetDrawing()
+		},
 	)
 
 	return &DrawingsPart{

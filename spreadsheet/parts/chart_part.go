@@ -4,6 +4,7 @@ package parts
 import (
 	"io"
 
+	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
@@ -52,27 +53,8 @@ func newChartPart(
 
 // initializeContent sets up minimal chart content.
 func (cp *ChartPart) initializeContent() {
-	content := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-  <c:date1904 val="0"/>
-  <c:lang val="en-US"/>
-  <c:roundedCorners val="0"/>
-  <c:chart>
-    <c:autoTitleDeleted val="0"/>
-    <c:plotArea>
-      <c:layout/>
-    </c:plotArea>
-    <c:plotVisOnly val="1"/>
-    <c:dispBlanksAs val="gap"/>
-    <c:showDLblsOverMax val="0"/>
-  </c:chart>
-  <c:printSettings>
-    <c:headerFooter/>
-    <c:pageMargins b="0.75" l="0.7" r="0.7" t="0.75" header="0.3" footer="0.3"/>
-    <c:pageSetup/>
-  </c:printSettings>
-</c:chartSpace>`
-	cp.SetData([]byte(content))
+	chartSpace := drawingml.NewChartSpace()
+	cp.SetRootElement(chartSpace)
 }
 
 // FixedContentType returns the content type for this part.
@@ -83,9 +65,16 @@ func (*ChartPart) FixedContentType() string {
 }
 
 // ChartSpace returns the root ChartSpace element.
-// TODO: Return a proper ChartSpace element type when elements are implemented.
-func (cp *ChartPart) ChartSpace() openxml.PartRootElement {
-	return cp.RootElement()
+func (cp *ChartPart) ChartSpace() *drawingml.ChartSpace {
+	root := cp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if chartSpace, ok := root.(*drawingml.ChartSpace); ok {
+		return chartSpace
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.

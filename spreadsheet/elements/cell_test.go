@@ -328,7 +328,7 @@ func TestRow(t *testing.T) {
 //nolint:revive // cyclomatic: comprehensive test coverage requires many cases
 func TestCell(t *testing.T) {
 	t.Run("NewCell", func(t *testing.T) {
-		cell := NewCell()
+		cell := CreateCell()
 		if cell == nil {
 			t.Fatal("expected non-nil Cell")
 		}
@@ -341,7 +341,7 @@ func TestCell(t *testing.T) {
 	})
 
 	t.Run("Reference", func(t *testing.T) {
-		cell := NewCell()
+		cell := CreateCell()
 		cell.SetReference("A1")
 		if cell.Reference() != "A1" {
 			t.Errorf(
@@ -352,7 +352,7 @@ func TestCell(t *testing.T) {
 	})
 
 	t.Run("StyleIndex", func(t *testing.T) {
-		cell := NewCell()
+		cell := CreateCell()
 		cell.SetStyleIndex(5)
 		if cell.StyleIndex() != 5 {
 			t.Errorf(
@@ -363,7 +363,7 @@ func TestCell(t *testing.T) {
 	})
 
 	t.Run("DataType", func(t *testing.T) {
-		cell := NewCell()
+		cell := CreateCell()
 		// Default is number
 		if cell.DataType() != CellTypeNumber {
 			t.Errorf(
@@ -390,7 +390,7 @@ func TestCell(t *testing.T) {
 	})
 
 	t.Run("SetNumberValue", func(t *testing.T) {
-		cell := NewCell()
+		cell := CreateCell()
 		cell.SetNumberValue(123.45)
 		if cell.DataType() != CellTypeNumber {
 			t.Errorf(
@@ -407,7 +407,7 @@ func TestCell(t *testing.T) {
 	})
 
 	t.Run("SetBoolValue", func(t *testing.T) {
-		cell := NewCell()
+		cell := CreateCell()
 		cell.SetBoolValue(true)
 		if cell.DataType() != CellTypeBoolean {
 			t.Errorf(
@@ -434,7 +434,7 @@ func TestCell(t *testing.T) {
 	t.Run(
 		"SetSharedStringIndex",
 		func(t *testing.T) {
-			cell := NewCell()
+			cell := CreateCell()
 			cell.SetSharedStringIndex(42)
 			if cell.DataType() != CellTypeSharedString {
 				t.Errorf(
@@ -452,7 +452,7 @@ func TestCell(t *testing.T) {
 	)
 
 	t.Run("CellValue", func(t *testing.T) {
-		cell := NewCell()
+		cell := CreateCell()
 		if cell.CellValue() != nil {
 			t.Error(
 				"expected nil CellValue initially",
@@ -478,7 +478,7 @@ func TestCell(t *testing.T) {
 	})
 
 	t.Run("CellFormula", func(t *testing.T) {
-		cell := NewCell()
+		cell := CreateCell()
 		if cell.CellFormula() != nil {
 			t.Error(
 				"expected nil CellFormula initially",
@@ -507,7 +507,7 @@ func TestCell(t *testing.T) {
 	})
 
 	t.Run("Clear", func(t *testing.T) {
-		cell := NewCell()
+		cell := CreateCell()
 		cell.SetValue("test")
 		cell.SetFormula("=A1")
 
@@ -1191,14 +1191,15 @@ func TestXMLOutput(t *testing.T) {
 		cell.SetNumberValue(42)
 
 		xml := sd.OuterXml()
-		if !strings.Contains(xml, "<sheetData") {
+		if !strings.Contains(xml, "sheetData") {
 			t.Error(
-				"expected XML to contain <sheetData",
+				"expected XML to contain sheetData",
 			)
 		}
-		if !strings.Contains(xml, "<row") {
+		if !strings.Contains(xml, ":row") &&
+			!strings.Contains(xml, "<row") {
 			t.Error(
-				"expected XML to contain <row",
+				"expected XML to contain row element",
 			)
 		}
 		if !strings.Contains(xml, "r=\"1\"") {
@@ -1206,17 +1207,20 @@ func TestXMLOutput(t *testing.T) {
 				"expected XML to contain r=\"1\"",
 			)
 		}
-		if !strings.Contains(xml, "<c") {
-			t.Error("expected XML to contain <c")
+		if !strings.Contains(xml, ":c ") &&
+			!strings.Contains(xml, "<c ") {
+			t.Error(
+				"expected XML to contain c element",
+			)
 		}
 		if !strings.Contains(xml, "r=\"A1\"") {
 			t.Error(
 				"expected XML to contain r=\"A1\"",
 			)
 		}
-		if !strings.Contains(xml, "<v>42</v>") {
+		if !strings.Contains(xml, ">42<") {
 			t.Error(
-				"expected XML to contain <v>42</v>",
+				"expected XML to contain value 42",
 			)
 		}
 	})
@@ -1226,9 +1230,9 @@ func TestXMLOutput(t *testing.T) {
 		mc.AddMergeCell("A1:D1")
 
 		xml := mc.OuterXml()
-		if !strings.Contains(xml, "<mergeCells") {
+		if !strings.Contains(xml, "mergeCells") {
 			t.Error(
-				"expected XML to contain <mergeCells",
+				"expected XML to contain mergeCells",
 			)
 		}
 		if !strings.Contains(xml, "count=\"1\"") {

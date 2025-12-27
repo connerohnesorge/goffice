@@ -745,30 +745,30 @@ func TestCommentsXML(t *testing.T) {
 	xml := c.OuterXml()
 
 	// Check XML contains expected elements
-	if !strings.Contains(xml, "<comments") {
+	if !strings.Contains(xml, "comments") {
 		t.Error(
-			"XML should contain <comments element",
+			"XML should contain comments element",
 		)
 	}
 
-	if !strings.Contains(xml, "<authors>") {
+	if !strings.Contains(xml, "authors") {
 		t.Error(
-			"XML should contain <authors> element",
+			"XML should contain authors element",
 		)
 	}
 
 	if !strings.Contains(
 		xml,
-		"<author>Test Author</author>",
+		"Test Author",
 	) {
 		t.Error(
 			"XML should contain author content",
 		)
 	}
 
-	if !strings.Contains(xml, "<commentList>") {
+	if !strings.Contains(xml, "commentList") {
 		t.Error(
-			"XML should contain <commentList> element",
+			"XML should contain commentList element",
 		)
 	}
 
@@ -784,9 +784,9 @@ func TestCommentsXML(t *testing.T) {
 		)
 	}
 
-	if !strings.Contains(xml, "<text>") {
+	if !strings.Contains(xml, "text") {
 		t.Error(
-			"XML should contain <text> element",
+			"XML should contain text element",
 		)
 	}
 

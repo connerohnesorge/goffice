@@ -8,6 +8,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
+	"github.com/connerohnesorge/goffice/presentation/elements"
 )
 
 // Counter for generating unique slide layout filenames per master.
@@ -57,27 +58,8 @@ func newSlideMasterPart(
 
 // initializeContent sets up minimal slide master content.
 func (smp *SlideMasterPart) initializeContent() {
-	content := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<p:sldMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
-  <p:cSld>
-    <p:bg>
-      <p:bgRef idx="1001">
-        <a:schemeClr val="bg1"/>
-      </p:bgRef>
-    </p:bg>
-    <p:spTree>
-      <p:nvGrpSpPr>
-        <p:cNvPr id="1" name=""/>
-        <p:cNvGrpSpPr/>
-        <p:nvPr/>
-      </p:nvGrpSpPr>
-      <p:grpSpPr/>
-    </p:spTree>
-  </p:cSld>
-  <p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>
-  <p:sldLayoutIdLst/>
-</p:sldMaster>`
-	smp.SetData([]byte(content))
+	sm := elements.NewSlideMaster()
+	smp.SetRootElement(sm)
 }
 
 // FixedContentType returns the content type for this part.
@@ -88,9 +70,16 @@ func (*SlideMasterPart) FixedContentType() string {
 }
 
 // SlideMaster returns the root SlideMaster element.
-// TODO: Return a proper SlideMaster element type when elements are implemented.
-func (smp *SlideMasterPart) SlideMaster() openxml.PartRootElement {
-	return smp.RootElement()
+func (smp *SlideMasterPart) SlideMaster() *elements.SlideMaster {
+	root := smp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if sm, ok := root.(*elements.SlideMaster); ok {
+		return sm
+	}
+
+	return nil
 }
 
 // AddSlideLayoutPart adds a new slide layout part to this slide master.
@@ -172,6 +161,11 @@ func SlideMasterPartFactory(
 		ContentTypeSlideMaster,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewSlideMaster()
+		},
 	)
 
 	return &SlideMasterPart{

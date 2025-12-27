@@ -5315,7 +5315,7 @@ func (m *CommentPropertiesExtension) Validate() error {
 
 // List of Comment Authors.
 type CommentAuthorList struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 	XMLName       xml.Name       `xml:"http://schemas.openxmlformats.org/presentationml/2006/main cmAuthorLst"`
 	CommentAuthor *CommentAuthor `xml:"cmAuthor,omitempty"`
 }
@@ -5323,7 +5323,7 @@ type CommentAuthorList struct {
 func NewCommentAuthorList() *CommentAuthorList {
 	ret := &CommentAuthorList{}
 	ns := openxml.NamespacePresentationML
-	ret.CompositeElementBase = openxml.NewCompositeElement(
+	ret.PartRootElementBase = openxml.NewPartRootElement(
 		ns,
 		"cmAuthorLst",
 		"p",
@@ -5345,6 +5345,32 @@ func (m *CommentAuthorList) Validate() error {
 			return err
 		}
 	}
+	return nil
+}
+
+// Comment List (PresentationML standard namespace).
+type PresentationCommentList struct {
+	*openxml.PartRootElementBase
+	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/presentationml/2006/main cmLst"`
+}
+
+func NewPresentationCommentList() *PresentationCommentList {
+	ret := &PresentationCommentList{}
+	ns := openxml.NamespacePresentationML
+	ret.PartRootElementBase = openxml.NewPartRootElement(
+		ns,
+		"cmLst",
+		"p",
+	)
+	return ret
+}
+
+func (m *PresentationCommentList) Clone() openxml.Element {
+	ret := NewPresentationCommentList()
+	return ret
+}
+
+func (m *PresentationCommentList) Validate() error {
 	return nil
 }
 

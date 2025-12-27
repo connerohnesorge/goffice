@@ -23,18 +23,18 @@ const (
 // Slicers represents the slicers collection root element (x14:slicers).
 // This element is the root of a slicers part.
 type Slicers struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewSlicers creates a new Slicers element.
 func NewSlicers() *Slicers {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceSlicerX14,
 		"slicers",
 		"x14",
 	)
 
-	return &Slicers{CompositeElementBase: elem}
+	return &Slicers{PartRootElementBase: elem}
 }
 
 // Slicers returns an iterator over all Slicer elements.
@@ -98,10 +98,10 @@ func (s *Slicers) RemoveSlicer(
 
 // Clone creates a deep copy of this Slicers element.
 func (s *Slicers) Clone() openxml.Element {
-	cloned := s.CompositeElementBase.Clone()
+	cloned := s.PartRootElementBase.Clone()
 
 	return &Slicers{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -109,12 +109,12 @@ func (s *Slicers) Clone() openxml.Element {
 func (s *Slicers) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := s.CompositeElementBase.CloneNode(
+	cloned := s.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &Slicers{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -470,19 +470,19 @@ func (s *Slicer) CloneNode(
 // SlicerCacheDefinition represents the slicer cache definition root element
 // (x14:slicerCacheDefinition).
 type SlicerCacheDefinition struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewSlicerCacheDefinition creates a new SlicerCacheDefinition element.
 func NewSlicerCacheDefinition() *SlicerCacheDefinition {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceSlicerX14,
 		"slicerCacheDefinition",
 		"x14",
 	)
 
 	return &SlicerCacheDefinition{
-		CompositeElementBase: elem,
+		PartRootElementBase: elem,
 	}
 }
 
@@ -619,10 +619,10 @@ func (s *SlicerCacheDefinition) GetOrCreateData() *SlicerCacheData {
 
 // Clone creates a deep copy of this SlicerCacheDefinition element.
 func (s *SlicerCacheDefinition) Clone() openxml.Element {
-	cloned := s.CompositeElementBase.Clone()
+	cloned := s.PartRootElementBase.Clone()
 
 	return &SlicerCacheDefinition{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -630,12 +630,12 @@ func (s *SlicerCacheDefinition) Clone() openxml.Element {
 func (s *SlicerCacheDefinition) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := s.CompositeElementBase.CloneNode(
+	cloned := s.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &SlicerCacheDefinition{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // TimeLinePart represents a timeline part (xl/timelines/timeline1.xml, etc.).
@@ -69,9 +70,14 @@ func (*TimeLinePart) FixedContentType() string {
 }
 
 // Timelines returns the root Timelines element.
-// TODO: Return a proper Timelines element type when elements are implemented.
-func (tp *TimeLinePart) Timelines() openxml.PartRootElement {
-	return tp.RootElement()
+func (tp *TimeLinePart) Timelines() *elements.Timelines {
+	if root := tp.RootElement(); root != nil {
+		if t, ok := root.(*elements.Timelines); ok {
+			return t
+		}
+	}
+
+	return nil
 }
 
 // Counter for generating unique timeline cache filenames.
@@ -181,9 +187,14 @@ func (*TimeLineCachePart) FixedContentType() string {
 }
 
 // TimelineCacheDefinition returns the root TimelineCacheDefinition element.
-// TODO: Return a proper TimelineCacheDefinition element type when elements are implemented.
-func (tcp *TimeLineCachePart) TimelineCacheDefinition() openxml.PartRootElement {
-	return tcp.RootElement()
+func (tcp *TimeLineCachePart) TimelineCacheDefinition() *elements.TimelineCacheDefinition {
+	if root := tcp.RootElement(); root != nil {
+		if tcd, ok := root.(*elements.TimelineCacheDefinition); ok {
+			return tcd
+		}
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -217,6 +228,11 @@ func TimeLinePartFactory(
 		packPart,
 		container,
 	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewTimelines()
+		},
+	)
 
 	return &TimeLinePart{
 		OpenXmlPartData: partData,
@@ -243,6 +259,11 @@ func TimeLineCachePartFactory(
 		ContentTypeTimelineCache,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewTimelineCacheDefinition()
+		},
 	)
 
 	return &TimeLineCachePart{

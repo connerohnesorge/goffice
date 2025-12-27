@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 )
 
 // GlossaryPart represents the glossary document part (word/glossary/document.xml).
@@ -41,6 +42,11 @@ func newGlossaryPart(
 		mainPart,
 	)
 	partData.SetRelationshipID(relID)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewGlossaryDocument()
+		},
+	)
 
 	gp := &GlossaryPart{
 		OpenXmlPartData: partData,
@@ -72,9 +78,16 @@ func (*GlossaryPart) FixedContentType() string {
 }
 
 // GlossaryDocument returns the root GlossaryDocument element.
-// TODO: Return a proper GlossaryDocument element type when elements are implemented.
-func (gp *GlossaryPart) GlossaryDocument() openxml.PartRootElement {
-	return gp.RootElement()
+func (gp *GlossaryPart) GlossaryDocument() *elements.GlossaryDocument {
+	root := gp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if g, ok := root.(*elements.GlossaryDocument); ok {
+		return g
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -102,6 +115,11 @@ func GlossaryPartFactory(
 		ContentTypeGlossary,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewGlossaryDocument()
+		},
 	)
 
 	return &GlossaryPart{

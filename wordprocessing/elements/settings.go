@@ -62,18 +62,18 @@ const (
 // Settings represents the root element for the document settings part
 // (w:settings).
 type Settings struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewSettings creates a new Settings element.
 func NewSettings() *Settings {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceWML,
 		"settings",
 		PrefixW,
 	)
 
-	return &Settings{CompositeElementBase: elem}
+	return &Settings{PartRootElementBase: elem}
 }
 
 // Zoom returns the zoom settings element, or nil if not present.
@@ -572,10 +572,10 @@ func (s *Settings) removeElement(name string) {
 
 // Clone creates a deep copy of this Settings element.
 func (s *Settings) Clone() openxml.Element {
-	cloned := s.CompositeElementBase.Clone()
+	cloned := s.PartRootElementBase.Clone()
 
 	return &Settings{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -583,12 +583,12 @@ func (s *Settings) Clone() openxml.Element {
 func (s *Settings) CloneNode(
 	deep bool,
 ) openxml.Element {
-	cloned := s.CompositeElementBase.CloneNode(
+	cloned := s.PartRootElementBase.CloneNode(
 		deep,
 	)
 
 	return &Settings{
-		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 

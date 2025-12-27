@@ -8,6 +8,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // PivotTablePart represents a pivot table part (xl/pivotTables/pivotTable1.xml, etc.).
@@ -70,9 +71,14 @@ func (*PivotTablePart) FixedContentType() string {
 }
 
 // PivotTableDefinition returns the root PivotTableDefinition element.
-// TODO: Return a proper PivotTableDefinition element type when elements are implemented.
-func (pp *PivotTablePart) PivotTableDefinition() openxml.PartRootElement {
-	return pp.RootElement()
+func (pp *PivotTablePart) PivotTableDefinition() *elements.PivotTableDefinition {
+	if root := pp.RootElement(); root != nil {
+		if ptd, ok := root.(*elements.PivotTableDefinition); ok {
+			return ptd
+		}
+	}
+
+	return nil
 }
 
 // Counter for generating unique pivot cache filenames.
@@ -185,9 +191,14 @@ func (*PivotTableCacheDefinitionPart) FixedContentType() string {
 }
 
 // PivotCacheDefinition returns the root PivotCacheDefinition element.
-// TODO: Return a proper PivotCacheDefinition element type when elements are implemented.
-func (pcp *PivotTableCacheDefinitionPart) PivotCacheDefinition() openxml.PartRootElement {
-	return pcp.RootElement()
+func (pcp *PivotTableCacheDefinitionPart) PivotCacheDefinition() *elements.PivotCacheDefinition {
+	if root := pcp.RootElement(); root != nil {
+		if pcd, ok := root.(*elements.PivotCacheDefinition); ok {
+			return pcd
+		}
+	}
+
+	return nil
 }
 
 // Counter for generating unique pivot cache records filenames.
@@ -298,9 +309,14 @@ func (*PivotTableCacheRecordsPart) FixedContentType() string {
 }
 
 // PivotCacheRecords returns the root PivotCacheRecords element.
-// TODO: Return a proper PivotCacheRecords element type when elements are implemented.
-func (prp *PivotTableCacheRecordsPart) PivotCacheRecords() openxml.PartRootElement {
-	return prp.RootElement()
+func (prp *PivotTableCacheRecordsPart) PivotCacheRecords() *elements.PivotCacheRecords {
+	if root := prp.RootElement(); root != nil {
+		if pcr, ok := root.(*elements.PivotCacheRecords); ok {
+			return pcr
+		}
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -334,6 +350,11 @@ func PivotTablePartFactory(
 		packPart,
 		container,
 	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewPivotTableDefinition()
+		},
+	)
 
 	return &PivotTablePart{
 		OpenXmlPartData: partData,
@@ -361,6 +382,11 @@ func PivotTableCacheDefinitionPartFactory(
 		packPart,
 		container,
 	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewPivotCacheDefinition()
+		},
+	)
 
 	return &PivotTableCacheDefinitionPart{
 		OpenXmlPartData: partData,
@@ -387,6 +413,11 @@ func PivotTableCacheRecordsPartFactory(
 		ContentTypePivotCacheRecords,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewPivotCacheRecords()
+		},
 	)
 
 	return &PivotTableCacheRecordsPart{

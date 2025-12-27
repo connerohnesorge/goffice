@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 )
 
 // WebSettingsPart represents the web settings part (word/webSettings.xml).
@@ -40,6 +41,11 @@ func newWebSettingsPart(
 		mainPart,
 	)
 	partData.SetRelationshipID(relID)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewWebSettings()
+		},
+	)
 
 	ws := &WebSettingsPart{
 		OpenXmlPartData: partData,
@@ -72,9 +78,16 @@ func (ws *WebSettingsPart) FixedContentType() string {
 }
 
 // WebSettings returns the root WebSettings element.
-// TODO: Return a proper WebSettings element type when elements are implemented.
-func (ws *WebSettingsPart) WebSettings() openxml.PartRootElement {
-	return ws.RootElement()
+func (ws *WebSettingsPart) WebSettings() *elements.WebSettings {
+	root := ws.RootElement()
+	if root == nil {
+		return nil
+	}
+	if s, ok := root.(*elements.WebSettings); ok {
+		return s
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -104,6 +117,11 @@ func WebSettingsPartFactory(
 		ContentTypeWebSettings,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewWebSettings()
+		},
 	)
 
 	return &WebSettingsPart{

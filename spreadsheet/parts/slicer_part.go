@@ -8,6 +8,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // SlicerPart represents a slicer part (xl/slicers/slicer1.xml, etc.).
@@ -69,9 +70,14 @@ func (*SlicerPart) FixedContentType() string {
 }
 
 // Slicers returns the root Slicers element.
-// TODO: Return a proper Slicers element type when elements are implemented.
-func (sp *SlicerPart) Slicers() openxml.PartRootElement {
-	return sp.RootElement()
+func (sp *SlicerPart) Slicers() *elements.Slicers {
+	if root := sp.RootElement(); root != nil {
+		if s, ok := root.(*elements.Slicers); ok {
+			return s
+		}
+	}
+
+	return nil
 }
 
 // Counter for generating unique slicer cache filenames.
@@ -181,9 +187,14 @@ func (*SlicerCachePart) FixedContentType() string {
 }
 
 // SlicerCacheDefinition returns the root SlicerCacheDefinition element.
-// TODO: Return a proper SlicerCacheDefinition element type when elements are implemented.
-func (scp *SlicerCachePart) SlicerCacheDefinition() openxml.PartRootElement {
-	return scp.RootElement()
+func (scp *SlicerCachePart) SlicerCacheDefinition() *elements.SlicerCacheDefinition {
+	if root := scp.RootElement(); root != nil {
+		if scd, ok := root.(*elements.SlicerCacheDefinition); ok {
+			return scd
+		}
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -217,6 +228,11 @@ func SlicerPartFactory(
 		packPart,
 		container,
 	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewSlicers()
+		},
+	)
 
 	return &SlicerPart{
 		OpenXmlPartData: partData,
@@ -243,6 +259,11 @@ func SlicerCachePartFactory(
 		ContentTypeSlicerCache,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewSlicerCacheDefinition()
+		},
 	)
 
 	return &SlicerCachePart{

@@ -6,6 +6,11 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+const (
+	// defaultDPI is the default DPI for web publishing graphics.
+	defaultDPI = 96
+)
+
 // TargetScreenSize represents the target screen size for web publishing.
 type TargetScreenSize string
 

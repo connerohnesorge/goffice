@@ -396,6 +396,22 @@ func (p *Package) SaveAs(path string) error {
 	return p.saveToFile(path)
 }
 
+// SaveToWriter writes the package to the given io.Writer.
+// The package is written as a ZIP containing all parts, relationships,
+// and content types.
+func (p *Package) SaveToWriter(
+	w io.Writer,
+) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	if p.closed {
+		return ErrPackageClosed
+	}
+
+	return p.saveToWriter(w)
+}
+
 // saveToFile writes the package to a file.
 func (p *Package) saveToFile(path string) error {
 	f, err := os.Create(path)
@@ -818,6 +834,39 @@ func (p *Package) CreatePartRelationship(
 	}
 
 	return rels.Create(target, relType, id)
+}
+
+// CreatePartRelationshipWithMode creates a relationship from a part to a target with specified mode.
+func (p *Package) CreatePartRelationshipWithMode(
+	sourceURI, target, relType, id string,
+	mode TargetMode,
+) (*Relationship, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	if p.closed {
+		return nil, ErrPackageClosed
+	}
+
+	if p.capability == Read {
+		return nil, ErrReadOnly
+	}
+
+	normalizedURI := NormalizeURI(sourceURI)
+
+	// Ensure relationships collection exists
+	rels, ok := p.partRels[normalizedURI]
+	if !ok {
+		rels = NewRelationships(normalizedURI)
+		p.partRels[normalizedURI] = rels
+	}
+
+	return rels.CreateWithMode(
+		target,
+		relType,
+		id,
+		mode,
+	)
 }
 
 // DeletePartRelationship deletes a relationship from a part.

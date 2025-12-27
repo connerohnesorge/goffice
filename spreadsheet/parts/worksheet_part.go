@@ -8,6 +8,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // WorksheetPart represents a worksheet part (xl/worksheets/sheet1.xml, etc.).
@@ -69,9 +70,14 @@ func (*WorksheetPart) FixedContentType() string {
 }
 
 // Worksheet returns the root Worksheet element.
-// TODO: Return a proper Worksheet element type when elements are implemented.
-func (wsp *WorksheetPart) Worksheet() openxml.PartRootElement {
-	return wsp.RootElement()
+func (wsp *WorksheetPart) Worksheet() *elements.Worksheet {
+	if root := wsp.RootElement(); root != nil {
+		if ws, ok := root.(*elements.Worksheet); ok {
+			return ws
+		}
+	}
+
+	return nil
 }
 
 // Counters for generating unique filenames
@@ -300,6 +306,11 @@ func WorksheetPartFactory(
 		ContentTypeWorksheet,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewWorksheet()
+		},
 	)
 
 	return &WorksheetPart{

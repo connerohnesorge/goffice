@@ -39,18 +39,18 @@ const (
 
 // Fonts represents the root element for the font table part (w:fonts).
 type Fonts struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewFonts creates a new Fonts element.
 func NewFonts() *Fonts {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceWML,
 		"fonts",
 		PrefixW,
 	)
 
-	return &Fonts{CompositeElementBase: elem}
+	return &Fonts{PartRootElementBase: elem}
 }
 
 // Fonts returns an iterator over all Font elements.
@@ -106,7 +106,7 @@ func (f *Fonts) RemoveFont(font *Font) bool {
 // Clone creates a deep copy of this Fonts element.
 func (f *Fonts) Clone() openxml.Element {
 	return &Fonts{
-		CompositeElementBase: f.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		PartRootElementBase: f.PartRootElementBase.Clone().(*openxml.PartRootElementBase),
 	}
 }
 
@@ -115,7 +115,7 @@ func (f *Fonts) CloneNode(
 	deep bool,
 ) openxml.Element {
 	return &Fonts{
-		CompositeElementBase: f.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		PartRootElementBase: f.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
 	}
 }
 

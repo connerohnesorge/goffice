@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 )
 
 // SettingsPart represents the document settings part (word/settings.xml).
@@ -40,6 +41,11 @@ func newSettingsPart(
 		mainPart,
 	)
 	partData.SetRelationshipID(relID)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewSettings()
+		},
+	)
 
 	sp := &SettingsPart{
 		OpenXmlPartData: partData,
@@ -77,9 +83,16 @@ func (*SettingsPart) FixedContentType() string {
 }
 
 // Settings returns the root Settings element.
-// TODO: Return a proper Settings element type when elements are implemented.
-func (sp *SettingsPart) Settings() openxml.PartRootElement {
-	return sp.RootElement()
+func (sp *SettingsPart) Settings() *elements.Settings {
+	root := sp.RootElement()
+	if root == nil {
+		return nil
+	}
+	if s, ok := root.(*elements.Settings); ok {
+		return s
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -107,6 +120,11 @@ func SettingsPartFactory(
 		ContentTypeSettings,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewSettings()
+		},
 	)
 
 	return &SettingsPart{

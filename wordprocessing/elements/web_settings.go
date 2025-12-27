@@ -35,19 +35,19 @@ const (
 
 // WebSettings represents the root element for web settings part (w:webSettings).
 type WebSettings struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewWebSettings creates a new WebSettings element.
 func NewWebSettings() *WebSettings {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceWML,
 		"webSettings",
 		PrefixW,
 	)
 
 	return &WebSettings{
-		CompositeElementBase: elem,
+		PartRootElementBase: elem,
 	}
 }
 
@@ -374,7 +374,7 @@ func (ws *WebSettings) removeElement(
 // Clone creates a deep copy of this WebSettings element.
 func (ws *WebSettings) Clone() openxml.Element {
 	return &WebSettings{
-		CompositeElementBase: ws.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		PartRootElementBase: ws.PartRootElementBase.Clone().(*openxml.PartRootElementBase),
 	}
 }
 
@@ -383,7 +383,7 @@ func (ws *WebSettings) CloneNode(
 	deep bool,
 ) openxml.Element {
 	return &WebSettings{
-		CompositeElementBase: ws.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		PartRootElementBase: ws.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
 	}
 }
 

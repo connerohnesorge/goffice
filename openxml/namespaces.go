@@ -107,6 +107,9 @@ const (
 
 	// RelationshipTypeComments is the comments relationship type.
 	RelationshipTypeComments = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"
+
+	// RelationshipTypeAttachedTemplate is the attached template relationship type.
+	RelationshipTypeAttachedTemplate = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate"
 )
 
 // Content types for common parts.

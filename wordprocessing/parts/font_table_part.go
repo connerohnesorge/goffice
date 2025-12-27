@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 )
 
 // FontsPart represents the font table part (word/fontTable.xml).
@@ -84,19 +85,43 @@ func (*FontsPart) FixedContentType() string {
 }
 
 // Fonts returns the root Fonts element.
-// TODO: Return a proper Fonts element type when elements are implemented.
 func (fp *FontsPart) Fonts() openxml.PartRootElement {
 	return fp.RootElement()
 }
 
 // GetFont returns a font definition by name.
-// TODO: Implement proper Font element type.
-//
-//nolint:revive // unused-receiver: TODO stub implementation
-func (*FontsPart) GetFont(
-	_ string,
-) any {
-	// TODO: Parse fonts and find by name
+func (fp *FontsPart) GetFont(
+	name string,
+) *elements.Font {
+	root := fp.RootElement()
+	if root == nil {
+		return nil
+	}
+
+	// Iterate through child elements to find the font with the matching name
+	for child := range root.Children() {
+		if child.LocalName() == "font" &&
+			child.NamespaceURI() == elements.NamespaceWML {
+			// Check if this font has the name we're looking for
+			attr, found := child.GetAttribute(
+				"name",
+				elements.NamespaceWML,
+			)
+			if found && attr.Value() == name {
+				// Convert to *elements.Font
+				if font, ok := child.(*elements.Font); ok {
+					return font
+				}
+				// Try to wrap if it's a CompositeElementBase
+				if comp, ok := child.(*openxml.CompositeElementBase); ok {
+					return &elements.Font{
+						CompositeElementBase: comp,
+					}
+				}
+			}
+		}
+	}
+
 	return nil
 }
 

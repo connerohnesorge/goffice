@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // ExternalWorkbookPart represents an external workbook reference part.
@@ -84,9 +85,14 @@ func (*ExternalWorkbookPart) FixedContentType() string {
 }
 
 // ExternalLink returns the root ExternalLink element.
-// TODO: Return a proper ExternalLink element type when elements are implemented.
-func (ep *ExternalWorkbookPart) ExternalLink() openxml.PartRootElement {
-	return ep.RootElement()
+func (ep *ExternalWorkbookPart) ExternalLink() *elements.ExternalLink {
+	if root := ep.RootElement(); root != nil {
+		if el, ok := root.(*elements.ExternalLink); ok {
+			return el
+		}
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -119,6 +125,11 @@ func ExternalWorkbookPartFactory(
 		ContentTypeExternalLink,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewExternalLink()
+		},
 	)
 
 	return &ExternalWorkbookPart{

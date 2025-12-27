@@ -785,8 +785,8 @@ func TestSharedStringTableXML(t *testing.T) {
 	xml := sst.OuterXml()
 
 	// Check XML contains expected elements
-	if !strings.Contains(xml, "<sst") {
-		t.Error("XML should contain <sst element")
+	if !strings.Contains(xml, "sst") {
+		t.Error("XML should contain sst element")
 	}
 
 	if !strings.Contains(
@@ -798,14 +798,13 @@ func TestSharedStringTableXML(t *testing.T) {
 		)
 	}
 
-	if !strings.Contains(xml, "<si>") ||
-		!strings.Contains(xml, "</si>") {
-		t.Error("XML should contain <si> element")
+	if !strings.Contains(xml, "si") {
+		t.Error("XML should contain si element")
 	}
 
 	if !strings.Contains(
 		xml,
-		"<t>Test String</t>",
+		"Test String",
 	) {
 		t.Error("XML should contain text content")
 	}

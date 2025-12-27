@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
 // WorksheetCommentsPart represents a worksheet comments part (xl/comments1.xml, etc.).
@@ -71,9 +72,14 @@ func (*WorksheetCommentsPart) FixedContentType() string {
 }
 
 // Comments returns the root Comments element.
-// TODO: Return a proper Comments element type when elements are implemented.
-func (cp *WorksheetCommentsPart) Comments() openxml.PartRootElement {
-	return cp.RootElement()
+func (cp *WorksheetCommentsPart) Comments() *elements.Comments {
+	if root := cp.RootElement(); root != nil {
+		if c, ok := root.(*elements.Comments); ok {
+			return c
+		}
+	}
+
+	return nil
 }
 
 // GetStream returns a reader for the part content.
@@ -106,6 +112,11 @@ func WorksheetCommentsPartFactory(
 		ContentTypeComments,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewComments()
+		},
 	)
 
 	return &WorksheetCommentsPart{
