@@ -1,3 +1,5 @@
+// nolint:revive // file-length-limit: validator types are cohesive
+// and splitting isn't practical
 package validation
 
 import (
@@ -144,7 +146,7 @@ func (v *SchemaValidator) validateAttributes(
 			errors = append(
 				errors,
 				NewValidationError(
-					Schema_MissingRequiredAttribute,
+					SchemaMissingRequiredAttribute,
 					"Required attribute '"+required+"' is missing",
 					ctx.CurrentPath(),
 					element,
@@ -168,7 +170,7 @@ func (v *SchemaValidator) validateAttributes(
 			errors = append(
 				errors,
 				NewValidationError(
-					Schema_AttributeNotAvailable,
+					SchemaAttributeNotAvailable,
 					"Attribute '"+schema.LocalName+"' is not available in "+ctx.Version.String(),
 					ctx.CurrentPath(),
 					element,
@@ -192,7 +194,7 @@ func (v *SchemaValidator) validateAttributes(
 				errors = append(
 					errors,
 					NewValidationError(
-						Schema_ValueNotInEnumeration,
+						SchemaValueNotInEnumeration,
 						"Attribute '"+schema.LocalName+"' value '"+value+"' is not in allowed values",
 						ctx.CurrentPath(),
 						element,
@@ -232,7 +234,7 @@ func (v *AttributeValidator) Validate(
 			errors = append(
 				errors,
 				NewValidationError(
-					Schema_MissingRequiredAttribute,
+					SchemaMissingRequiredAttribute,
 					"Required attribute '"+v.Schema.LocalName+"' is missing",
 					ctx.CurrentPath(),
 					element,
@@ -257,7 +259,7 @@ func (v *AttributeValidator) Validate(
 			errors = append(
 				errors,
 				NewValidationError(
-					Schema_ValueNotInEnumeration,
+					SchemaValueNotInEnumeration,
 					"Attribute '"+v.Schema.LocalName+"' value '"+value+"' is not in allowed values",
 					ctx.CurrentPath(),
 					element,
@@ -378,7 +380,7 @@ func (c *UniqueIDConstraint) Check(
 	if existing := ctx.TrackID(id, element); existing != nil {
 		return []*ValidationError{
 			NewValidationError(
-				Semantic_DuplicateID,
+				SemanticDuplicateID,
 				"Duplicate ID '"+id+"' found",
 				ctx.CurrentPath(),
 				element,
@@ -421,7 +423,7 @@ func (c *RelationshipReferenceConstraint) Check(
 	if !c.CheckExists(ctx, relID) {
 		return []*ValidationError{
 			NewValidationError(
-				Semantic_RelationshipNotFound,
+				SemanticRelationshipNotFound,
 				"Referenced relationship '"+relID+"' not found",
 				ctx.CurrentPath(),
 				element,
@@ -464,7 +466,7 @@ func (c *MutuallyExclusiveConstraint) Check(
 	if len(present) > 1 {
 		return []*ValidationError{
 			NewValidationError(
-				Semantic_MutuallyExclusiveAttributes,
+				SemanticMutuallyExclusive,
 				"Mutually exclusive attributes are present: "+joinStrings(
 					present,
 					", ",
@@ -510,7 +512,7 @@ func (c *ParentTypeConstraint) Check(
 	}
 
 	return []*ValidationError{NewValidationError(
-		Semantic_InvalidParentType,
+		SemanticInvalidParentType,
 		"Element cannot have parent of type '"+parentName+"', expected one of: "+joinStrings(
 			c.AllowedParents,
 			", ",

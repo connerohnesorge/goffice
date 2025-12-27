@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: this file contains related unit types
 package types
 
 import (
@@ -40,6 +41,9 @@ const (
 
 	// HalfPointsPerPoint is the number of half-points in one point.
 	HalfPointsPerPoint = 2
+
+	// unitParseBase is the base used for parsing integer strings.
+	unitParseBase = 10
 )
 
 // TwipsValue wraps an integer value representing twentieths of a point.
@@ -138,7 +142,10 @@ func (tv *TwipsValue) InnerText() string {
 		return ""
 	}
 
-	return strconv.FormatInt(tv.value, 10)
+	return strconv.FormatInt(
+		tv.value,
+		unitParseBase,
+	)
 }
 
 // SetInnerText parses the value from a string.
@@ -151,7 +158,11 @@ func (tv *TwipsValue) SetInnerText(
 
 		return nil
 	}
-	v, err := strconv.ParseInt(text, 10, 64)
+	v, err := strconv.ParseInt(
+		text,
+		unitParseBase,
+		64,
+	)
 	if err != nil {
 		return fmt.Errorf(
 			"invalid twips value: %w",
@@ -188,7 +199,8 @@ func NewHalfPointsValue(
 	}
 }
 
-// NewHalfPointsValueFromPoints creates a new HalfPointsValue from a point value.
+// NewHalfPointsValueFromPoints creates a new HalfPointsValue from a
+// point value.
 func NewHalfPointsValueFromPoints(
 	points float64,
 ) *HalfPointsValue {
@@ -255,7 +267,10 @@ func (hv *HalfPointsValue) InnerText() string {
 		return ""
 	}
 
-	return strconv.FormatInt(hv.value, 10)
+	return strconv.FormatInt(
+		hv.value,
+		unitParseBase,
+	)
 }
 
 // SetInnerText parses the value from a string.
@@ -268,7 +283,11 @@ func (hv *HalfPointsValue) SetInnerText(
 
 		return nil
 	}
-	v, err := strconv.ParseInt(text, 10, 64)
+	v, err := strconv.ParseInt(
+		text,
+		unitParseBase,
+		64,
+	)
 	if err != nil {
 		return fmt.Errorf(
 			"invalid half-points value: %w",
@@ -402,7 +421,10 @@ func (ev *EmuValue) InnerText() string {
 		return ""
 	}
 
-	return strconv.FormatInt(ev.value, 10)
+	return strconv.FormatInt(
+		ev.value,
+		unitParseBase,
+	)
 }
 
 // SetInnerText parses the value from a string.
@@ -415,7 +437,11 @@ func (ev *EmuValue) SetInnerText(
 
 		return nil
 	}
-	v, err := strconv.ParseInt(text, 10, 64)
+	v, err := strconv.ParseInt(
+		text,
+		unitParseBase,
+		64,
+	)
 	if err != nil {
 		return fmt.Errorf(
 			"invalid EMU value: %w",
@@ -435,6 +461,8 @@ func (ev *EmuValue) SetNil() {
 }
 
 // Ensure unit types implement SimpleValue and Resettable interfaces.
+//
+//nolint:gochecknoglobals
 var (
 	_ SimpleValue = (*TwipsValue)(nil)
 	_ Resettable  = (*TwipsValue)(nil)

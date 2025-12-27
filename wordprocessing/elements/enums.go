@@ -1,4 +1,6 @@
 // Package elements provides Word document element types.
+//
+//nolint:revive // This file intentionally contains many public types for OOXML enums.
 package elements
 
 // JustificationValue represents paragraph alignment values.
@@ -187,13 +189,15 @@ const (
 	BorderThickThinSmallGap BorderStyle = "thickThinSmallGap"
 	// BorderThinThickSmallGap applies thin-thick border with small gap.
 	BorderThinThickSmallGap BorderStyle = "thinThickSmallGap"
-	// BorderThinThickThinSmallGap applies thin-thick-thin border with small gap.
+	// BorderThinThickThinSmallGap applies thin-thick-thin border
+	// with small gap.
 	BorderThinThickThinSmallGap BorderStyle = "thinThickThinSmallGap"
 	// BorderThickThinMediumGap applies thick-thin border with medium gap.
 	BorderThickThinMediumGap BorderStyle = "thickThinMediumGap"
 	// BorderThinThickMediumGap applies thin-thick border with medium gap.
 	BorderThinThickMediumGap BorderStyle = "thinThickMediumGap"
-	// BorderThinThickThinMediumGap applies thin-thick-thin border with medium gap.
+	// BorderThinThickThinMediumGap applies thin-thick-thin border
+	// with medium gap.
 	BorderThinThickThinMediumGap BorderStyle = "thinThickThinMediumGap"
 	// BorderThickThinLargeGap applies thick-thin border with large gap.
 	BorderThickThinLargeGap BorderStyle = "thickThinLargeGap"
@@ -335,7 +339,8 @@ const (
 	PageOrientationLandscape PageOrientation = "landscape"
 )
 
-// TextAlignmentValue represents vertical text alignment within a line (w:textAlignment).
+// TextAlignmentValue represents vertical text alignment within a line
+// (w:textAlignment).
 type TextAlignmentValue string
 
 const (

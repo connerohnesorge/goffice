@@ -205,7 +205,13 @@ func TestWebSettingsClone(t *testing.T) {
 	ws.SetOptimizeForBrowser(true)
 	ws.SetEncoding("utf-8")
 
-	clone := ws.Clone().(*WebSettings)
+	cloned := ws.Clone()
+	clone, ok := cloned.(*WebSettings)
+	if !ok {
+		t.Fatal(
+			"Expected Clone to return *WebSettings",
+		)
+	}
 	if !clone.OptimizeForBrowser() {
 		t.Error(
 			"Expected cloned OptimizeForBrowser to be true",

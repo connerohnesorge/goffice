@@ -1,0 +1,221 @@
+// Package drawing provides DrawingML stroke/line rendering for PDF.
+package drawing
+
+import (
+	"github.com/connerohnesorge/goffice-pdf/core"
+	"github.com/connerohnesorge/goffice/drawingml"
+)
+
+// StrokeRenderer is an interface for rendering strokes/outlines.
+type StrokeRenderer interface {
+	Apply(
+		ctx *core.RenderingContext,
+		path *PathBuilder,
+	) error
+}
+
+// LineStrokeRenderer renders line strokes with various styles.
+type LineStrokeRenderer struct {
+	line *drawingml.LineProperties
+}
+
+// NewLineStrokeRenderer creates a new line stroke renderer.
+func NewLineStrokeRenderer(
+	line *drawingml.LineProperties,
+) *LineStrokeRenderer {
+	return &LineStrokeRenderer{line: line}
+}
+
+// Apply applies the stroke.
+func (r *LineStrokeRenderer) Apply(
+	ctx *core.RenderingContext,
+	path *PathBuilder,
+) error {
+	if r.line == nil {
+		return nil
+	}
+
+	// Set line width
+	width := r.line.WidthPoints()
+	if width <= 0 {
+		width = 1.0 // Default width
+	}
+	ctx.Page.SetLineWidth(width)
+
+	// Set line color
+	if solidFill := r.line.SolidFill(); solidFill != nil {
+		if rgb := solidFill.RgbColor(); rgb != nil {
+			hexAttr, found := rgb.GetAttribute(
+				"val",
+				"",
+			)
+			if found {
+				color, err := ParseColor(
+					hexAttr.Value(),
+				)
+				if err == nil {
+					ctx.Page.SetStrokeColor(
+						color.R,
+						color.G,
+						color.B,
+					)
+				}
+			}
+		}
+	}
+
+	// Set dash pattern
+	dashPattern := r.getDashPattern()
+	if len(dashPattern) > 0 {
+		ctx.Page.SetLineDashPattern(
+			dashPattern,
+			0,
+		)
+	}
+
+	// Set line cap
+	cap := r.getLineCap()
+	ctx.Page.SetLineCap(cap)
+
+	// Set line join
+	join := r.getLineJoin()
+	ctx.Page.SetLineJoin(join)
+
+	// Stroke the path
+	ctx.Page.WriteContent(path.Stroke())
+
+	// Handle compound lines (double, triple, etc.)
+	compoundType := r.line.CompoundLineType()
+	if compoundType != drawingml.CompoundLineSingle &&
+		compoundType != "" {
+		// For compound lines, stroke multiple times with different widths/offsets
+		// This is a simplified implementation
+		switch compoundType {
+		case drawingml.CompoundLineDouble:
+			// Stroke again with smaller width
+			ctx.Page.SetLineWidth(width * 0.5)
+			ctx.Page.WriteContent(path.Stroke())
+		case drawingml.CompoundLineThickThin:
+			// Stroke a thin line
+			ctx.Page.SetLineWidth(width * 0.3)
+			ctx.Page.WriteContent(path.Stroke())
+		case drawingml.CompoundLineThinThick:
+			// Stroke a thick line
+			ctx.Page.SetLineWidth(width * 1.5)
+			ctx.Page.WriteContent(path.Stroke())
+		case drawingml.CompoundLineTriple:
+			// Stroke two more times
+			ctx.Page.SetLineWidth(width * 0.5)
+			ctx.Page.WriteContent(path.Stroke())
+			ctx.Page.SetLineWidth(width * 0.3)
+			ctx.Page.WriteContent(path.Stroke())
+		}
+	}
+
+	return nil
+}
+
+// getDashPattern returns the PDF dash pattern for the line.
+func (r *LineStrokeRenderer) getDashPattern() []float64 {
+	dashStyle := r.line.PresetDash()
+
+	switch dashStyle {
+	case drawingml.LineDashSolid:
+		return nil // Solid line
+	case drawingml.LineDashDot:
+		return []float64{1, 2}
+	case drawingml.LineDashDash:
+		return []float64{4, 2}
+	case drawingml.LineDashLongDash:
+		return []float64{8, 3}
+	case drawingml.LineDashDashDot:
+		return []float64{4, 2, 1, 2}
+	case drawingml.LineDashLongDashDot:
+		return []float64{8, 3, 1, 3}
+	case drawingml.LineDashLongDashDotDot:
+		return []float64{8, 3, 1, 3, 1, 3}
+	case drawingml.LineDashSystemDash:
+		return []float64{3, 1}
+	case drawingml.LineDashSystemDot:
+		return []float64{1, 1}
+	case drawingml.LineDashSystemDashDot:
+		return []float64{3, 1, 1, 1}
+	case drawingml.LineDashSystemDashDotDot:
+		return []float64{3, 1, 1, 1, 1, 1}
+	default:
+		return nil
+	}
+}
+
+// getLineCap returns the PDF line cap style.
+func (r *LineStrokeRenderer) getLineCap() int {
+	capType := r.line.CapType()
+
+	switch capType {
+	case drawingml.LineCapFlat:
+		return 0 // Butt cap
+	case drawingml.LineCapRound:
+		return 1 // Round cap
+	case drawingml.LineCapSquare:
+		return 2 // Projecting square cap
+	default:
+		return 0 // Default to butt
+	}
+}
+
+// getLineJoin returns the PDF line join style.
+func (r *LineStrokeRenderer) getLineJoin() int {
+	joinType := r.line.LineJoin()
+
+	switch joinType {
+	case drawingml.LineJoinMiter:
+		return 0 // Miter join
+	case drawingml.LineJoinRound:
+		return 1 // Round join
+	case drawingml.LineJoinBevel:
+		return 2 // Bevel join
+	default:
+		return 0 // Default to miter
+	}
+}
+
+// NoStrokeRenderer represents no stroke.
+type NoStrokeRenderer struct{}
+
+// NewNoStrokeRenderer creates a new no-stroke renderer.
+func NewNoStrokeRenderer() *NoStrokeRenderer {
+	return &NoStrokeRenderer{}
+}
+
+// Apply applies no stroke (does nothing).
+func (r *NoStrokeRenderer) Apply(
+	ctx *core.RenderingContext,
+	path *PathBuilder,
+) error {
+	// No stroke - just return
+	return nil
+}
+
+// CreateStrokeRenderer creates appropriate stroke renderer from shape properties.
+func CreateStrokeRenderer(
+	sp *drawingml.ShapeProperties,
+) StrokeRenderer {
+	if sp == nil {
+		return nil
+	}
+
+	outline := sp.Outline()
+	if outline == nil {
+		return NewNoStrokeRenderer()
+	}
+
+	// Check for no fill in line (no stroke)
+	if outline.GetElement(
+		"noFill",
+		drawingml.NamespaceMain,
+	) != nil {
+		return NewNoStrokeRenderer()
+	}
+
+	return NewLineStrokeRenderer(outline)
+}

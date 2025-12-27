@@ -8,20 +8,22 @@ type EnumStringer interface {
 	~string
 }
 
-// EnumParser is an interface for types that can parse enum values from strings.
-// This allows enum types to define their own parsing logic.
+// EnumParser is an interface for types that can parse enum values from
+// strings. This allows enum types to define their own parsing logic.
 type EnumParser[T any] interface {
 	// ParseEnum parses a string value into the enum type.
-	// Returns the parsed value and true if successful, or zero value and false if not.
+	// Returns the parsed value and true if successful, or zero value
+	// and false if not.
 	ParseEnum(s string) (T, bool)
 }
 
 // EnumValue is a generic type for enumeration attributes.
 // T must be a string-based type (typically a defined enum type).
 type EnumValue[T EnumStringer] struct {
-	value       T
-	hasValue    bool
-	validValues map[string]T // Optional mapping of valid string values to enum values
+	value    T
+	hasValue bool
+	// validValues is an optional mapping of valid string values to enum values
+	validValues map[string]T
 }
 
 // NewEnumValue creates a new EnumValue with the given enum value.
@@ -35,7 +37,8 @@ func NewEnumValue[T EnumStringer](
 }
 
 // NewEnumValueWithValidation creates a new EnumValue with validation support.
-// The validValues map defines the set of valid string representations and their enum values.
+// The validValues map defines the set of valid string representations
+// and their enum values.
 func NewEnumValueWithValidation[T EnumStringer](
 	v T,
 	validValues map[string]T,
@@ -54,7 +57,8 @@ func NewNilEnumValue[T EnumStringer]() *EnumValue[T] {
 	}
 }
 
-// NewNilEnumValueWithValidation creates a new EnumValue in the unset/nil state with validation support.
+// NewNilEnumValueWithValidation creates a new EnumValue in the unset/nil
+// state with validation support.
 func NewNilEnumValueWithValidation[T EnumStringer](
 	validValues map[string]T,
 ) *EnumValue[T] {

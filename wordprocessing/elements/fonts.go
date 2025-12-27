@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: fonts.go contains all font-related types
 package elements
 
 import (

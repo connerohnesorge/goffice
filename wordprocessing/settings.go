@@ -1,6 +1,7 @@
+//nolint:revive // line-length-limit: documentation comments
 package wordprocessing
 
-// OpenSettings contains configuration options for opening or creating documents.
+// OpenSettings contains options for opening or creating documents.
 type OpenSettings struct {
 	// AutoSave determines if the document should be automatically saved
 	// when Close() is called and there are unsaved changes.
@@ -80,28 +81,28 @@ func DefaultOpenSettings() *OpenSettings {
 func (s *OpenSettings) WithAutoSave(
 	autoSave bool,
 ) *OpenSettings {
-	copy := *s
-	copy.AutoSave = autoSave
+	settings := *s
+	settings.AutoSave = autoSave
 
-	return &copy
+	return &settings
 }
 
-// WithMaxCharacters returns a copy of the settings with the specified max characters.
+// WithMaxCharacters returns a copy of the settings with the specified max.
 func (s *OpenSettings) WithMaxCharacters(
-	max int64,
+	maxChars int64,
 ) *OpenSettings {
-	copy := *s
-	copy.MaxCharactersInPart = max
+	settings := *s
+	settings.MaxCharactersInPart = maxChars
 
-	return &copy
+	return &settings
 }
 
-// WithTargetVersion returns a copy of the settings with the specified target version.
+// WithTargetVersion returns a copy of the settings with the target version.
 func (s *OpenSettings) WithTargetVersion(
 	version FileFormatVersion,
 ) *OpenSettings {
-	copy := *s
-	copy.MarkupCompatibilityProcessSettings.TargetFileFormatVersions = version
+	settings := *s
+	settings.MarkupCompatibilityProcessSettings.TargetFileFormatVersions = version
 
-	return &copy
+	return &settings
 }

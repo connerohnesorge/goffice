@@ -1,5 +1,5 @@
-// Package packaging provides the OPC (Open Packaging Conventions) layer for
-// Office Open XML document handling.
+// Package packaging provides the OPC (Open Packaging Conventions) layer
+// for Office Open XML document handling.
 //
 // OPC defines how Office Open XML documents (such as .docx, .xlsx, .pptx) are
 // stored as ZIP-based packages containing XML parts, relationships, and content
@@ -117,4 +117,6 @@
 // Package operations are protected by sync.RWMutex for safe concurrent access.
 // Read operations can proceed concurrently, while write operations require
 // exclusive access.
+//
+//nolint:revive // max-public-structs: OPC requires multiple public types
 package packaging

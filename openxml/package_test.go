@@ -19,7 +19,7 @@ func TestNewOpenXmlPackage(t *testing.T) {
 			err,
 		)
 	}
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 
@@ -82,7 +82,7 @@ func TestNewOpenXmlPackage(t *testing.T) {
 func TestOpenXmlPackageAddPart(t *testing.T) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 
@@ -176,7 +176,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 		func(t *testing.T) {
 			tmpPath2 := t.TempDir() + "/test2.docx"
 			pkg2, _ := packaging.Create(tmpPath2)
-			defer pkg2.Close()
+			defer func() { _ = pkg2.Close() }()
 			oxPkg2 := NewOpenXmlPackage(pkg2)
 
 			part := NewOpenXmlPartData(
@@ -185,7 +185,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 				nil,
 				oxPkg2,
 			)
-			oxPkg2.AddPart(part, "rId1")
+			_ = oxPkg2.AddPart(part, "rId1")
 
 			if !oxPkg2.IsDirty() {
 				t.Error(
@@ -201,7 +201,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 func TestOpenXmlPackageAddNewPart(t *testing.T) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 
@@ -234,12 +234,16 @@ func TestOpenXmlPackageAddNewPart(t *testing.T) {
 			}
 
 			// Part should have relationship ID
-			if partData, ok := part.(*OpenXmlPartData); ok {
-				if partData.RelationshipID() == "" {
-					t.Error(
-						"Part should have relationship ID",
-					)
-				}
+			partData, ok := part.(*OpenXmlPartData)
+			if !ok {
+				t.Fatal(
+					"part is not *OpenXmlPartData",
+				)
+			}
+			if partData.RelationshipID() == "" {
+				t.Error(
+					"Part should have relationship ID",
+				)
 			}
 		},
 	)
@@ -267,7 +271,7 @@ func TestOpenXmlPackageAddNewPart(t *testing.T) {
 func TestOpenXmlPackagePartLookup(t *testing.T) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 
@@ -290,9 +294,9 @@ func TestOpenXmlPackagePartLookup(t *testing.T) {
 		oxPkg,
 	)
 
-	oxPkg.AddPart(part1, "rId1")
-	oxPkg.AddPart(part2, "rId2")
-	oxPkg.AddPart(part3, "rId3")
+	_ = oxPkg.AddPart(part1, "rId1")
+	_ = oxPkg.AddPart(part2, "rId2")
+	_ = oxPkg.AddPart(part3, "rId3")
 
 	t.Run("GetPartById", func(t *testing.T) {
 		retrieved, err := oxPkg.GetPartById(
@@ -390,7 +394,7 @@ func TestOpenXmlPackagePartLookup(t *testing.T) {
 func TestOpenXmlPackageDeletePart(t *testing.T) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 
@@ -403,7 +407,12 @@ func TestOpenXmlPackageDeletePart(t *testing.T) {
 	t.Run(
 		"DeletePart removes part",
 		func(t *testing.T) {
-			partData := part.(*OpenXmlPartData)
+			partData, ok := part.(*OpenXmlPartData)
+			if !ok {
+				t.Fatal(
+					"part is not *OpenXmlPartData",
+				)
+			}
 			id := partData.RelationshipID()
 
 			err := oxPkg.DeletePart(id)
@@ -453,7 +462,7 @@ func TestOpenXmlPackageDeletePart(t *testing.T) {
 func TestOpenXmlPackageIsDirty(t *testing.T) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 
@@ -477,7 +486,7 @@ func TestOpenXmlPackageIsDirty(t *testing.T) {
 				nil,
 				oxPkg,
 			)
-			oxPkg.AddPart(part, "rId1")
+			_ = oxPkg.AddPart(part, "rId1")
 
 			if !oxPkg.IsDirty() {
 				t.Error(
@@ -492,7 +501,7 @@ func TestOpenXmlPackageIsDirty(t *testing.T) {
 		func(t *testing.T) {
 			tmpPath2 := t.TempDir() + "/test2.docx"
 			pkg2, _ := packaging.Create(tmpPath2)
-			defer pkg2.Close()
+			defer func() { _ = pkg2.Close() }()
 			oxPkg2 := NewOpenXmlPackage(pkg2)
 
 			part := NewOpenXmlPartData(
@@ -501,7 +510,7 @@ func TestOpenXmlPackageIsDirty(t *testing.T) {
 				nil,
 				oxPkg2,
 			)
-			oxPkg2.AddPart(part, "rId1")
+			_ = oxPkg2.AddPart(part, "rId1")
 
 			// Clear package dirty flag but mark part dirty
 			// This tests that IsDirty checks child parts
@@ -521,7 +530,7 @@ func TestOpenXmlPackageIsDirty(t *testing.T) {
 func TestOpenXmlPackageMainPart(t *testing.T) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 
@@ -532,7 +541,7 @@ func TestOpenXmlPackageMainPart(t *testing.T) {
 			nil,
 			oxPkg,
 		)
-		oxPkg.AddPart(part, "rId1")
+		_ = oxPkg.AddPart(part, "rId1")
 		oxPkg.SetMainPart(part)
 
 		if oxPkg.MainPart() != part {
@@ -550,7 +559,7 @@ func TestOpenXmlPackageSetMainPartInfo(
 ) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 	oxPkg.SetMainPartInfo(
@@ -610,7 +619,7 @@ func TestOpenXmlPackageSaveClose(t *testing.T) {
 
 		// Note: The parts added via AddNewPart are not tracked in parts map
 		// so the dirty flag behavior is complex. We just verify Save succeeds.
-		pkg.Close()
+		_ = pkg.Close()
 	})
 
 	t.Run("SaveAs", func(t *testing.T) {
@@ -641,7 +650,7 @@ func TestOpenXmlPackageSaveClose(t *testing.T) {
 			t.Fatalf("SaveAs() error = %v", err)
 		}
 
-		pkg.Close()
+		_ = pkg.Close()
 
 		// Verify we can open the saved file
 		savedPkg, err := packaging.Open(
@@ -654,7 +663,7 @@ func TestOpenXmlPackageSaveClose(t *testing.T) {
 				err,
 			)
 		}
-		savedPkg.Close()
+		_ = savedPkg.Close()
 	})
 
 	t.Run("Close", func(t *testing.T) {
@@ -681,7 +690,7 @@ func TestOpenXmlPackageSaveClose(t *testing.T) {
 func TestOpenXmlPackageFeatures(t *testing.T) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 
@@ -723,7 +732,7 @@ func TestOpenXmlPackageFeatures(t *testing.T) {
 			}
 
 			// Add a part with content type
-			pkg.CreatePart(
+			_, _ = pkg.CreatePart(
 				"/word/document.xml",
 				"application/xml",
 			)
@@ -780,7 +789,7 @@ func TestOpenXmlPackageHelpers(t *testing.T) {
 				err,
 			)
 		}
-		defer oxPkg.Close()
+		defer func() { _ = oxPkg.Close() }()
 
 		if oxPkg.Package() == nil {
 			t.Error("Package() should not be nil")
@@ -795,17 +804,17 @@ func TestOpenXmlPackageHelpers(t *testing.T) {
 
 		// First create a package
 		pkg, _ := packaging.Create(tmpPath)
-		pkg.CreatePart(
+		_, _ = pkg.CreatePart(
 			"/word/document.xml",
 			"application/xml",
 		)
-		pkg.CreateRelationship(
+		_, _ = pkg.CreateRelationship(
 			"/word/document.xml",
 			RelationshipTypeOfficeDocument,
 			"rId1",
 		)
-		pkg.Save()
-		pkg.Close()
+		_ = pkg.Save()
+		_ = pkg.Close()
 
 		// Now open it
 		oxPkg, err := OpenPackage(tmpPath, true)
@@ -815,7 +824,7 @@ func TestOpenXmlPackageHelpers(t *testing.T) {
 				err,
 			)
 		}
-		defer oxPkg.Close()
+		defer func() { _ = oxPkg.Close() }()
 
 		if oxPkg.Package() == nil {
 			t.Error("Package() should not be nil")
@@ -843,24 +852,24 @@ func TestOpenXmlPackageHelpers(t *testing.T) {
 
 			// Create a package
 			pkg, _ := packaging.Create(tmpPath)
-			pkg.CreatePart(
+			_, _ = pkg.CreatePart(
 				"/word/document.xml",
 				"application/xml",
 			)
-			pkg.Save()
-			pkg.Close()
+			_ = pkg.Save()
+			_ = pkg.Close()
 
 			// Read into buffer and open
 			pkg, _ = packaging.Open(tmpPath, true)
-			pkg.SaveAs(tmpPath + ".copy")
-			pkg.Close()
+			_ = pkg.SaveAs(tmpPath + ".copy")
+			_ = pkg.Close()
 
 			// Open the copy to get a proper reader
 			data, _ := packaging.Open(
 				tmpPath+".copy",
 				true,
 			)
-			defer data.Close()
+			defer func() { _ = data.Close() }()
 
 			// Create a bytes.Reader to satisfy io.ReaderAt
 			// This test is more about verifying the API exists
@@ -876,7 +885,7 @@ func TestOpenXmlPackageGetPackagingPart(
 ) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	packPart, _ := pkg.CreatePart(
 		"/word/document.xml",
@@ -924,33 +933,33 @@ func TestOpenXmlPackageLoadParts(t *testing.T) {
 
 	// Create a package with relationships
 	pkg, _ := packaging.Create(tmpPath)
-	pkg.CreatePart(
+	_, _ = pkg.CreatePart(
 		"/word/document.xml",
 		ContentTypeWordprocessingMLDocument,
 	)
-	pkg.CreatePart(
+	_, _ = pkg.CreatePart(
 		"/word/styles.xml",
 		ContentTypeStyles,
 	)
-	pkg.CreateRelationship(
+	_, _ = pkg.CreateRelationship(
 		"/word/document.xml",
 		RelationshipTypeOfficeDocument,
 		"rId1",
 	)
-	pkg.CreateRelationship(
+	_, _ = pkg.CreateRelationship(
 		"/word/styles.xml",
 		RelationshipTypeStyles,
 		"rId2",
 	)
-	pkg.Save()
-	pkg.Close()
+	_ = pkg.Save()
+	_ = pkg.Close()
 
 	// Reopen and verify parts are loaded
 	oxPkg, err := OpenPackage(tmpPath, true)
 	if err != nil {
 		t.Fatalf("OpenPackage() error = %v", err)
 	}
-	defer oxPkg.Close()
+	defer func() { _ = oxPkg.Close() }()
 
 	t.Run(
 		"parts loaded from relationships",
@@ -996,7 +1005,7 @@ func TestOpenXmlPackageLoadParts(t *testing.T) {
 // Test OpenXmlPartContainer interface compliance
 
 func TestOpenXmlPackageContainerInterface(
-	t *testing.T,
+	_ *testing.T,
 ) {
 	var _ OpenXmlPartContainer = (*OpenXmlPackage)(nil)
 }

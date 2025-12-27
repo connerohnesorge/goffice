@@ -21,9 +21,9 @@ func TestHeadersFootersIntegration(t *testing.T) {
 			err,
 		)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 	tmpName := tmpFile.Name()
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	doc, err := New(tmpName, DocTypeDocument)
 	if err != nil {
@@ -32,7 +32,7 @@ func TestHeadersFootersIntegration(t *testing.T) {
 			err,
 		)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Test creating a header
 	headerPart, err := doc.MainPart().
@@ -80,9 +80,9 @@ func TestFootnotesIntegration(t *testing.T) {
 			err,
 		)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 	tmpName := tmpFile.Name()
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	doc, err := New(tmpName, DocTypeDocument)
 	if err != nil {
@@ -91,7 +91,7 @@ func TestFootnotesIntegration(t *testing.T) {
 			err,
 		)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Add footnotes part
 	footnotesPart, err := doc.MainPart().
@@ -145,9 +145,9 @@ func TestEndnotesIntegration(t *testing.T) {
 			err,
 		)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 	tmpName := tmpFile.Name()
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	doc, err := New(tmpName, DocTypeDocument)
 	if err != nil {
@@ -156,7 +156,7 @@ func TestEndnotesIntegration(t *testing.T) {
 			err,
 		)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Add endnotes part
 	endnotesPart, err := doc.MainPart().
@@ -199,9 +199,9 @@ func TestCommentsIntegration(t *testing.T) {
 			err,
 		)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 	tmpName := tmpFile.Name()
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	doc, err := New(tmpName, DocTypeDocument)
 	if err != nil {
@@ -210,7 +210,7 @@ func TestCommentsIntegration(t *testing.T) {
 			err,
 		)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Add comments part
 	commentsPart, err := doc.MainPart().
@@ -360,7 +360,7 @@ func TestIntegrationCreateCompleteDocument(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -372,7 +372,7 @@ func TestIntegrationCreateCompleteDocument(
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Verify the document was created properly
 	if doc.Type() != DocTypeDocument {
@@ -586,6 +586,8 @@ func TestIntegrationTableOperations(
 }
 
 // TestIntegrationParagraphFormatting tests paragraph-level formatting.
+//
+//nolint:revive // cyclomatic: test validation requires switch with multiple cases
 func TestIntegrationParagraphFormatting(
 	t *testing.T,
 ) {
@@ -885,7 +887,7 @@ func TestIntegrationDocumentSaveAndOpen(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -901,14 +903,14 @@ func TestIntegrationDocumentSaveAndOpen(
 	if err := doc1.SaveAs(testPath); err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	doc1.Close()
+	_ = doc1.Close()
 
 	// Reopen the document
 	doc2, err := Open(testPath, true)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
-	defer doc2.Close()
+	defer func() { _ = doc2.Close() }()
 
 	// Verify it was opened correctly
 	if doc2.Type() != DocTypeDocument {
@@ -962,7 +964,7 @@ func TestIntegrationDocumentStream(t *testing.T) {
 	}
 
 	// Close should write to the buffer
-	doc.Close()
+	_ = doc.Close()
 }
 
 // TestIntegrationMultipleDocumentTypes tests creating different document types.
@@ -979,7 +981,7 @@ func TestIntegrationMultipleDocumentTypes(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testCases := []struct {
 		docType   DocType
@@ -1046,7 +1048,7 @@ func TestIntegrationMultipleDocumentTypes(
 					)
 				}
 
-				doc.Close()
+				_ = doc.Close()
 			},
 		)
 	}
@@ -1066,7 +1068,7 @@ func TestIntegrationDocumentChangeType(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -1077,7 +1079,7 @@ func TestIntegrationDocumentChangeType(
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Change from document to template
 	err = doc.ChangeType(DocTypeTemplate)
@@ -1200,7 +1202,7 @@ func TestIntegrationRealDocxFile(t *testing.T) {
 			err,
 		)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Verify document properties
 	if doc.Type() != DocTypeDocument {
@@ -1237,7 +1239,7 @@ func TestIntegrationRealDocxRoundtrip(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	// Path to the test fixture
 	fixturePath := "../testdata/fixtures/minimal.docx"
@@ -1258,13 +1260,13 @@ func TestIntegrationRealDocxRoundtrip(
 	// Save to a new location
 	err = doc.SaveAs(outputPath)
 	if err != nil {
-		doc.Close()
+		_ = doc.Close()
 		t.Fatalf(
 			"Failed to save document: %v",
 			err,
 		)
 	}
-	doc.Close()
+	_ = doc.Close()
 
 	// Reopen the saved document
 	doc2, err := Open(outputPath, false)
@@ -1274,7 +1276,7 @@ func TestIntegrationRealDocxRoundtrip(
 			err,
 		)
 	}
-	defer doc2.Close()
+	defer func() { _ = doc2.Close() }()
 
 	// Verify the reopened document is valid
 	if doc2.Type() != DocTypeDocument {
@@ -1306,7 +1308,7 @@ func TestIntegrationCreateDocumentWithText(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -1374,10 +1376,10 @@ func TestIntegrationCreateDocumentWithText(
 
 	err = doc.SaveAs(testPath)
 	if err != nil {
-		doc.Close()
+		_ = doc.Close()
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	doc.Close()
+	_ = doc.Close()
 
 	// Verify file was created and can be reopened
 	reopened, err := Open(testPath, false)
@@ -1387,11 +1389,13 @@ func TestIntegrationCreateDocumentWithText(
 			err,
 		)
 	}
-	reopened.Close()
+	_ = reopened.Close()
 }
 
 // TestIntegrationWithPhase1to4Components tests integration with Phase 1-4 components.
 // This tests Task 5.34: Integration test with Phase 1-4 components.
+//
+//nolint:revive // cyclomatic: test requires many component verifications
 func TestIntegrationWithPhase1to4Components(
 	t *testing.T,
 ) {
@@ -1405,7 +1409,7 @@ func TestIntegrationWithPhase1to4Components(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -1417,7 +1421,7 @@ func TestIntegrationWithPhase1to4Components(
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Test Phase 2: Packaging layer
 	pkg := doc.Package()
@@ -1583,7 +1587,7 @@ func TestIntegrationWithPhase1to4Components(
 			err,
 		)
 	}
-	defer doc2.Close()
+	defer func() { _ = doc2.Close() }()
 
 	if doc2.MainPart() == nil {
 		t.Error(
@@ -1604,7 +1608,7 @@ func TestIntegrationGlossaryPart(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -1616,7 +1620,7 @@ func TestIntegrationGlossaryPart(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	mainPart := doc.MainPart()
 	if mainPart == nil {

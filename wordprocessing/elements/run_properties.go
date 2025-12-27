@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: this file contains all run properties
 package elements
 
 import (

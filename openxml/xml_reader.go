@@ -6,11 +6,12 @@ import (
 	"strings"
 )
 
-// ElementFactory is a function that creates an element for a given qualified name.
-// If the factory returns nil, a default element is created.
+// ElementFactory is a function that creates an element for a given
+// qualified name. If the factory returns nil, a default element is created.
 type ElementFactory func(namespaceURI, localName string) Element
 
-// DefaultElementFactory creates default elements (CompositeElementBase or LeafElementBase).
+// DefaultElementFactory creates default elements
+// (CompositeElementBase or LeafElementBase).
 func DefaultElementFactory(
 	namespaceURI, localName string,
 ) Element {
@@ -23,23 +24,26 @@ func DefaultElementFactory(
 }
 
 // ParseElement parses XML from a reader and constructs an element tree.
-// The factory function is called to create elements for each XML element encountered.
-// If factory is nil, DefaultElementFactory is used.
+// The factory function is called to create elements for each XML element
+// encountered. If factory is nil, DefaultElementFactory is used.
 func ParseElement(
 	r io.Reader,
 	factory ElementFactory,
 ) (Element, error) {
 	if factory == nil {
-		factory = DefaultElementFactory
+		factory = DefaultElementFactory //nolint:revive // modifies-parameter is intentional here
 	}
 
 	decoder := xml.NewDecoder(r)
 
-	return parseElement(decoder, factory)
+	return parseElementFromDecoder(
+		decoder,
+		factory,
+	)
 }
 
-// parseElement recursively parses elements from the decoder.
-func parseElement(
+// parseElementFromDecoder recursively parses elements from the decoder.
+func parseElementFromDecoder(
 	decoder *xml.Decoder,
 	factory ElementFactory,
 ) (Element, error) {
@@ -85,10 +89,16 @@ func parseStartElement(
 	}
 
 	// Extract prefix from the name if present in the token
-	prefix := extractPrefix(start.Name)
+	prefix := ""
+	if start.Name.Space != "" {
+		prefix = guessPrefixForNamespace(
+			start.Name.Space,
+		)
+	}
 
-	// Set prefix if element supports it
-	if base, ok := getBaseElement(elem); ok {
+	// Set prefix if element supports it and it's not the default namespace
+	if base, ok := getBaseElement(elem); ok &&
+		prefix != "" {
 		base.prefix = prefix
 	}
 
@@ -149,12 +159,8 @@ func parseChildren(
 			}
 
 		case xml.EndElement:
-			// Check if parent has a SetInnerText method (for mixed content)
-			if textBuilder.Len() > 0 {
-				if leaf, ok := parent.(LeafElement); ok {
-					leaf.SetInnerText(strings.TrimSpace(textBuilder.String()))
-				}
-			}
+			// Set inner text for leaf elements with mixed content
+			setLeafInnerText(parent, &textBuilder)
 
 			return nil
 
@@ -165,6 +171,23 @@ func parseChildren(
 			// Skip these
 		}
 	}
+}
+
+// setLeafInnerText sets the inner text on a leaf element if applicable.
+func setLeafInnerText(
+	parent CompositeElement,
+	textBuilder *strings.Builder,
+) {
+	if textBuilder.Len() == 0 {
+		return
+	}
+	leaf, ok := parent.(LeafElement)
+	if !ok {
+		return
+	}
+	leaf.SetInnerText(
+		strings.TrimSpace(textBuilder.String()),
+	)
 }
 
 // readTextContent reads text content until the end element is reached.

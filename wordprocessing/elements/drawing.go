@@ -1,8 +1,12 @@
+// Package elements provides WordprocessingML element types.
+//
+//nolint:revive // file-length-limit: Drawing elements are cohesive and belong together in a single file.
 package elements
 
 import (
 	"strconv"
 
+	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
@@ -11,33 +15,40 @@ const (
 	// NamespaceDrawingMLWordprocessing is the DrawingML WordprocessingDrawing namespace.
 	NamespaceDrawingMLWordprocessing = openxml.NamespaceDrawingMLWordprocessing
 	// PrefixWP is the prefix for WordprocessingDrawing elements.
-	PrefixWP = "wp"
+	PrefixWP = drawingml.PrefixWordprocessingDrawing
 	// NamespaceDrawingML is the main DrawingML namespace.
-	NamespaceDrawingML = openxml.NamespaceDrawingML
+	NamespaceDrawingML = drawingml.NamespaceMain
 	// PrefixA is the prefix for DrawingML elements.
-	PrefixA = "a"
+	PrefixA = drawingml.PrefixMain
 	// NamespaceDrawingMLPicture is the DrawingML Picture namespace.
-	NamespaceDrawingMLPicture = openxml.NamespaceDrawingMLPicture
+	NamespaceDrawingMLPicture = drawingml.NamespacePicture
 	// PrefixPic is the prefix for Picture elements.
-	PrefixPic = "pic"
+	PrefixPic = drawingml.PrefixPicture
 	// NamespaceRelationships is the relationships namespace.
 	NamespaceRelationships = openxml.NamespaceRelationships
 	// PrefixR is the prefix for relationship elements.
 	PrefixR = "r"
 )
 
-// EMU (English Metric Units) constants
+// EMU (English Metric Units) constants - re-exported from drawingml for backward compatibility.
+// These constants define the relationship between EMUs and other common units.
 const (
 	// EMUsPerInch is the number of EMUs per inch.
-	EMUsPerInch int64 = 914400
+	EMUsPerInch int64 = int64(
+		drawingml.EMUsPerInch,
+	)
 	// EMUsPerPoint is the number of EMUs per point.
-	EMUsPerPoint int64 = 12700
+	EMUsPerPoint int64 = int64(
+		drawingml.EMUsPerPoint,
+	)
 	// EMUsPerCm is the number of EMUs per centimeter.
-	EMUsPerCm int64 = 360000
+	EMUsPerCm int64 = int64(drawingml.EMUsPerCm)
 	// EMUsPerMm is the number of EMUs per millimeter.
-	EMUsPerMm int64 = 36000
+	EMUsPerMm int64 = int64(drawingml.EMUsPerMm)
 	// EMUsPerPixel is the number of EMUs per pixel at 96 DPI.
-	EMUsPerPixel int64 = 9525
+	EMUsPerPixel int64 = int64(
+		drawingml.EMUsPerPixel,
+	)
 )
 
 // Drawing represents the w:drawing element that contains inline or anchor drawings.

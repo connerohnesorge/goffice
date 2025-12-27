@@ -14,7 +14,8 @@ type PartRootElementBase struct {
 	part OpenXmlPart
 }
 
-// NewPartRootElement creates a new part root element with the given namespace URI and local name.
+// NewPartRootElement creates a new part root element with
+// the given namespace URI and local name.
 func NewPartRootElement(
 	namespaceURI, localName, prefix string,
 ) *PartRootElementBase {
@@ -30,7 +31,8 @@ func NewPartRootElement(
 	return elem
 }
 
-// NewPartRootElementWithFeatures creates a new part root element with parent features.
+// NewPartRootElementWithFeatures creates a new part root element
+// with parent features.
 func NewPartRootElementWithFeatures(
 	namespaceURI, localName, prefix string,
 	parentFeatures *features.FeatureCollection,
@@ -83,19 +85,43 @@ func (p *PartRootElementBase) Save() error {
 }
 
 // Reload re-parses the element from the part's stream.
-// Note: This is a placeholder - actual implementation requires XML parsing.
 func (p *PartRootElementBase) Reload() error {
 	if p.part == nil {
 		return nil
 	}
 
-	// Clear existing children
-	p.RemoveAllChildren()
-	p.ClearAttributes()
+	stream := p.part.GetStream()
+	if stream == nil {
+		return nil
+	}
 
-	// Reload would need to parse from p.part.GetStream()
-	// This requires the XML reader implementation
-	return nil
+	// Create a factory that handles the root element properly
+	isRoot := true
+	factory := func(ns, local string) Element {
+		if isRoot {
+			isRoot = false
+			// Reuse this element if it matches
+			if p.LocalName() == local &&
+				p.NamespaceURI() == ns {
+				p.RemoveAllChildren()
+				p.ClearAttributes()
+
+				return p
+			}
+			// Otherwise create new PartRootElement
+			return NewPartRootElement(
+				ns,
+				local,
+				"",
+			)
+		}
+		// Create normal elements for children
+		return NewCompositeElement(ns, local, "")
+	}
+
+	_, err := ParseElement(stream, factory)
+
+	return err
 }
 
 // Clone creates a deep copy of this element.
@@ -106,6 +132,8 @@ func (p *PartRootElementBase) Clone() Element {
 // CloneNode creates a copy of this element.
 // If deep is true, children are also cloned.
 // The clone is not associated with any part.
+//
+//nolint:revive // deep is a standard clone parameter
 func (p *PartRootElementBase) CloneNode(
 	deep bool,
 ) Element {

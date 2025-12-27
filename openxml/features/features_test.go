@@ -63,7 +63,7 @@ func TestFeatureCollection(t *testing.T) {
 
 		got := Get[*testFeature](fc)
 		if got == nil {
-			t.Error("expected to get feature")
+			t.Fatal("expected to get feature")
 		}
 		if got.value != "test" {
 			t.Errorf(
@@ -166,7 +166,7 @@ func TestFeatureInheritance(t *testing.T) {
 
 			got := Get[*testFeature](child)
 			if got == nil {
-				t.Error(
+				t.Fatal(
 					"expected to inherit from parent",
 				)
 			}
@@ -393,7 +393,7 @@ func TestFeatureCollectionMethods(t *testing.T) {
 		}
 	})
 
-	t.Run("Set nil feature", func(t *testing.T) {
+	t.Run("Set nil feature", func(_ *testing.T) {
 		fc := NewFeatureCollection()
 		fc.Set(nil) // Should not panic
 
@@ -438,7 +438,7 @@ func TestThreadSafety(t *testing.T) {
 			var wg sync.WaitGroup
 			for i := range 100 {
 				wg.Add(1)
-				go func(i int) {
+				go func(_ int) {
 					defer wg.Done()
 					f := &testFeature{
 						value: "test",
@@ -463,7 +463,7 @@ func TestThreadSafety(t *testing.T) {
 
 	t.Run(
 		"Concurrent read-write",
-		func(t *testing.T) {
+		func(_ *testing.T) {
 			fc := NewFeatureCollection()
 			f := &testFeature{value: "initial"}
 			fc.SetByType(
@@ -485,7 +485,7 @@ func TestThreadSafety(t *testing.T) {
 			// Writers
 			for i := range 50 {
 				wg.Add(1)
-				go func(i int) {
+				go func(_ int) {
 					defer wg.Done()
 					f := &testFeature{
 						value: "updated",

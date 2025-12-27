@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: This file contains related Level types and is acceptable as a single unit
 package elements
 
 import (
@@ -323,6 +324,8 @@ func (l *Level) IsLegalNumbering() bool {
 }
 
 // SetLegalNumbering sets whether legal numbering format is used.
+//
+//nolint:revive // flag-parameter: Boolean parameter is idiomatic for setter methods
 func (l *Level) SetLegalNumbering(b bool) {
 	if b {
 		l.getOrCreateElement("isLgl")
@@ -596,6 +599,8 @@ func (rp *NumberingRunProperties) SetFontSize(
 }
 
 // SetBold sets bold formatting.
+//
+//nolint:revive // flag-parameter: Boolean parameter is idiomatic for setter methods
 func (rp *NumberingRunProperties) SetBold(
 	b bool,
 ) {
@@ -607,6 +612,8 @@ func (rp *NumberingRunProperties) SetBold(
 }
 
 // SetItalic sets italic formatting.
+//
+//nolint:revive // flag-parameter: Boolean parameter is idiomatic for setter methods
 func (rp *NumberingRunProperties) SetItalic(
 	b bool,
 ) {

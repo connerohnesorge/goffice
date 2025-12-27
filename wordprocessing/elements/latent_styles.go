@@ -1,3 +1,4 @@
+//nolint:revive // receiver names and flag-parameters are acceptable here
 package elements
 
 import (
@@ -258,8 +259,10 @@ func (ls *LatentStyles) AddException(
 
 // Clone creates a deep copy of this LatentStyles element.
 func (ls *LatentStyles) Clone() openxml.Element {
+	cloned := ls.CompositeElementBase.Clone()
+
 	return &LatentStyles{
-		CompositeElementBase: ls.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -267,8 +270,12 @@ func (ls *LatentStyles) Clone() openxml.Element {
 func (ls *LatentStyles) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := ls.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &LatentStyles{
-		CompositeElementBase: ls.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -295,8 +302,8 @@ func NewLatentStyleException(
 }
 
 // Name returns the style name for this exception.
-func (lse *LatentStyleException) Name() string {
-	attr, found := lse.GetAttribute(
+func (ls *LatentStyleException) Name() string {
+	attr, found := ls.GetAttribute(
 		"name",
 		NamespaceWML,
 	)
@@ -308,10 +315,10 @@ func (lse *LatentStyleException) Name() string {
 }
 
 // SetName sets the style name for this exception.
-func (lse *LatentStyleException) SetName(
+func (ls *LatentStyleException) SetName(
 	name string,
 ) {
-	lse.SetAttribute(
+	ls.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
 			"name",
@@ -322,8 +329,8 @@ func (lse *LatentStyleException) SetName(
 }
 
 // Locked returns whether this style is locked.
-func (lse *LatentStyleException) Locked() bool {
-	attr, found := lse.GetAttribute(
+func (ls *LatentStyleException) Locked() bool {
+	attr, found := ls.GetAttribute(
 		"locked",
 		NamespaceWML,
 	)
@@ -337,11 +344,11 @@ func (lse *LatentStyleException) Locked() bool {
 }
 
 // SetLocked sets whether this style is locked.
-func (lse *LatentStyleException) SetLocked(
+func (ls *LatentStyleException) SetLocked(
 	b bool,
 ) {
 	if b {
-		lse.SetAttribute(
+		ls.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
 				"locked",
@@ -350,13 +357,13 @@ func (lse *LatentStyleException) SetLocked(
 			),
 		)
 	} else {
-		lse.RemoveAttribute("locked", NamespaceWML)
+		ls.RemoveAttribute("locked", NamespaceWML)
 	}
 }
 
 // SemiHidden returns whether this style is semi-hidden.
-func (lse *LatentStyleException) SemiHidden() bool {
-	attr, found := lse.GetAttribute(
+func (ls *LatentStyleException) SemiHidden() bool {
+	attr, found := ls.GetAttribute(
 		"semiHidden",
 		NamespaceWML,
 	)
@@ -370,11 +377,11 @@ func (lse *LatentStyleException) SemiHidden() bool {
 }
 
 // SetSemiHidden sets whether this style is semi-hidden.
-func (lse *LatentStyleException) SetSemiHidden(
+func (ls *LatentStyleException) SetSemiHidden(
 	b bool,
 ) {
 	if b {
-		lse.SetAttribute(
+		ls.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
 				"semiHidden",
@@ -383,13 +390,13 @@ func (lse *LatentStyleException) SetSemiHidden(
 			),
 		)
 	} else {
-		lse.RemoveAttribute("semiHidden", NamespaceWML)
+		ls.RemoveAttribute("semiHidden", NamespaceWML)
 	}
 }
 
 // UnhideWhenUsed returns whether this style becomes visible when used.
-func (lse *LatentStyleException) UnhideWhenUsed() bool {
-	attr, found := lse.GetAttribute(
+func (ls *LatentStyleException) UnhideWhenUsed() bool {
+	attr, found := ls.GetAttribute(
 		"unhideWhenUsed",
 		NamespaceWML,
 	)
@@ -403,11 +410,11 @@ func (lse *LatentStyleException) UnhideWhenUsed() bool {
 }
 
 // SetUnhideWhenUsed sets whether this style becomes visible when used.
-func (lse *LatentStyleException) SetUnhideWhenUsed(
+func (ls *LatentStyleException) SetUnhideWhenUsed(
 	b bool,
 ) {
 	if b {
-		lse.SetAttribute(
+		ls.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
 				"unhideWhenUsed",
@@ -416,13 +423,13 @@ func (lse *LatentStyleException) SetUnhideWhenUsed(
 			),
 		)
 	} else {
-		lse.RemoveAttribute("unhideWhenUsed", NamespaceWML)
+		ls.RemoveAttribute("unhideWhenUsed", NamespaceWML)
 	}
 }
 
 // QFormat returns whether this style appears in quick styles.
-func (lse *LatentStyleException) QFormat() bool {
-	attr, found := lse.GetAttribute(
+func (ls *LatentStyleException) QFormat() bool {
+	attr, found := ls.GetAttribute(
 		"qFormat",
 		NamespaceWML,
 	)
@@ -436,11 +443,11 @@ func (lse *LatentStyleException) QFormat() bool {
 }
 
 // SetQFormat sets whether this style appears in quick styles.
-func (lse *LatentStyleException) SetQFormat(
+func (ls *LatentStyleException) SetQFormat(
 	b bool,
 ) {
 	if b {
-		lse.SetAttribute(
+		ls.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
 				"qFormat",
@@ -449,13 +456,13 @@ func (lse *LatentStyleException) SetQFormat(
 			),
 		)
 	} else {
-		lse.RemoveAttribute("qFormat", NamespaceWML)
+		ls.RemoveAttribute("qFormat", NamespaceWML)
 	}
 }
 
 // UIPriority returns the UI priority for this style.
-func (lse *LatentStyleException) UIPriority() int {
-	attr, found := lse.GetAttribute(
+func (ls *LatentStyleException) UIPriority() int {
+	attr, found := ls.GetAttribute(
 		"uiPriority",
 		NamespaceWML,
 	)
@@ -471,18 +478,18 @@ func (lse *LatentStyleException) UIPriority() int {
 }
 
 // SetUIPriority sets the UI priority for this style.
-func (lse *LatentStyleException) SetUIPriority(
+func (ls *LatentStyleException) SetUIPriority(
 	priority int,
 ) {
 	if priority < 0 {
-		lse.RemoveAttribute(
+		ls.RemoveAttribute(
 			"uiPriority",
 			NamespaceWML,
 		)
 
 		return
 	}
-	lse.SetAttribute(
+	ls.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
 			"uiPriority",
@@ -493,8 +500,10 @@ func (lse *LatentStyleException) SetUIPriority(
 }
 
 // Clone creates a deep copy of this LatentStyleException element.
-func (lse *LatentStyleException) Clone() openxml.Element {
+func (ls *LatentStyleException) Clone() openxml.Element {
+	cloned := ls.CompositeElementBase.Clone()
+
 	return &LatentStyleException{
-		CompositeElementBase: lse.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }

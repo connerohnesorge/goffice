@@ -1,0 +1,233 @@
+// Package drawing provides transformation rendering for PDF.
+package drawing
+
+import (
+	"math"
+
+	"github.com/connerohnesorge/goffice-pdf/core"
+	"github.com/connerohnesorge/goffice/drawingml"
+)
+
+// TransformRenderer handles rendering transformations (rotation, flip, scale).
+type TransformRenderer struct {
+	ctx *core.RenderingContext
+}
+
+// NewTransformRenderer creates a new transform renderer.
+func NewTransformRenderer(
+	ctx *core.RenderingContext,
+) *TransformRenderer {
+	return &TransformRenderer{ctx: ctx}
+}
+
+// ApplyTransform applies all transformations for a shape.
+func (r *TransformRenderer) ApplyTransform(
+	transform *drawingml.Transform2D,
+) error {
+	if transform == nil {
+		return nil
+	}
+
+	offset := transform.Offset()
+	extent := transform.Extent()
+
+	x := drawingml.EmuToPoints(offset.X)
+	y := drawingml.EmuToPoints(offset.Y)
+	width := drawingml.EmuToPoints(extent.Cx)
+	height := drawingml.EmuToPoints(extent.Cy)
+
+	// Calculate center point for transformations
+	cx := x + width/2
+	cy := y + height/2
+
+	// Apply rotation if present
+	// Note: DrawingML rotation is in 60000ths of a degree
+	// This would need to be extracted from the transform element attributes
+
+	// Apply flip if present
+	// This would also come from transform element attributes
+
+	// For basic implementation, just translate to position
+	// Full transformation matrix support would be needed for complete implementation
+
+	_ = cx
+	_ = cy
+
+	return nil
+}
+
+// ApplyRotation applies rotation around a center point.
+func (r *TransformRenderer) ApplyRotation(
+	centerX, centerY float64,
+	angleDegrees float64,
+) {
+	// Save state before transformation
+	r.ctx.Page.SaveGraphicsState()
+
+	// Convert angle to radians
+	angleRad := angleDegrees * math.Pi / 180.0
+
+	// Translate to center
+	// Rotate
+	// Translate back
+	// This requires transformation matrix operations in PDF
+
+	// PDF transformation matrix: [a b c d e f]
+	// For rotation: [cos(θ) sin(θ) -sin(θ) cos(θ) 0 0]
+	cos := math.Cos(angleRad)
+	sin := math.Sin(angleRad)
+
+	// Apply transformation (placeholder - would use PDF transformation matrix)
+	_ = cos
+	_ = sin
+}
+
+// ApplyFlipHorizontal flips content horizontally.
+func (r *TransformRenderer) ApplyFlipHorizontal(
+	centerX, width float64,
+) {
+	r.ctx.Page.SaveGraphicsState()
+
+	// Horizontal flip: scale X by -1
+	// Matrix: [-1 0 0 1 2*centerX 0]
+
+	// Placeholder for flip transformation
+	_ = centerX
+	_ = width
+}
+
+// ApplyFlipVertical flips content vertically.
+func (r *TransformRenderer) ApplyFlipVertical(
+	centerY, height float64,
+) {
+	r.ctx.Page.SaveGraphicsState()
+
+	// Vertical flip: scale Y by -1
+	// Matrix: [1 0 0 -1 0 2*centerY]
+
+	// Placeholder for flip transformation
+	_ = centerY
+	_ = height
+}
+
+// ApplyScale applies scaling transformation.
+func (r *TransformRenderer) ApplyScale(
+	scaleX, scaleY float64,
+) {
+	r.ctx.Page.SaveGraphicsState()
+
+	// Scale transformation matrix: [scaleX 0 0 scaleY 0 0]
+
+	// Placeholder
+	_ = scaleX
+	_ = scaleY
+}
+
+// ApplyGroupTransform applies transformations for grouped shapes.
+func (r *TransformRenderer) ApplyGroupTransform(
+	groupTransform *drawingml.Transform2D,
+	childTransform *drawingml.Transform2D,
+) error {
+	// Group transformations are relative to the group's coordinate system
+	// Child positions are relative to the group
+
+	if groupTransform == nil ||
+		childTransform == nil {
+		return nil
+	}
+
+	// Get group bounds
+	groupOffset := groupTransform.Offset()
+	groupExtent := groupTransform.Extent()
+
+	// Get child bounds (relative to group)
+	childOffset := childTransform.Offset()
+	childExtent := childTransform.Extent()
+
+	// Convert to absolute coordinates
+	absX := drawingml.EmuToPoints(
+		groupOffset.X + childOffset.X,
+	)
+	absY := drawingml.EmuToPoints(
+		groupOffset.Y + childOffset.Y,
+	)
+	absWidth := drawingml.EmuToPoints(
+		childExtent.Cx,
+	)
+	absHeight := drawingml.EmuToPoints(
+		childExtent.Cy,
+	)
+
+	// Use absolute coordinates for rendering
+	_ = absX
+	_ = absY
+	_ = absWidth
+	_ = absHeight
+
+	return nil
+}
+
+// RestoreTransform restores the graphics state after transformations.
+func (r *TransformRenderer) RestoreTransform() {
+	r.ctx.Page.RestoreGraphicsState()
+}
+
+// CalculateRotatedBounds calculates the bounding box after rotation.
+func CalculateRotatedBounds(
+	x, y, width, height float64,
+	angleDegrees float64,
+) (minX, minY, maxX, maxY float64) {
+	// Calculate the four corners of the rectangle
+	corners := [][2]float64{
+		{x, y},
+		{x + width, y},
+		{x + width, y + height},
+		{x, y + height},
+	}
+
+	// Center point
+	cx := x + width/2
+	cy := y + height/2
+
+	// Convert angle to radians
+	angleRad := angleDegrees * math.Pi / 180.0
+	cos := math.Cos(angleRad)
+	sin := math.Sin(angleRad)
+
+	// Initialize bounds
+	minX = math.MaxFloat64
+	minY = math.MaxFloat64
+	maxX = -math.MaxFloat64
+	maxY = -math.MaxFloat64
+
+	// Rotate each corner and find bounding box
+	for _, corner := range corners {
+		// Translate to origin
+		dx := corner[0] - cx
+		dy := corner[1] - cy
+
+		// Rotate
+		rotX := dx*cos - dy*sin
+		rotY := dx*sin + dy*cos
+
+		// Translate back
+		newX := rotX + cx
+		newY := rotY + cy
+
+		// Update bounds
+		if newX < minX {
+			minX = newX
+		}
+		if newX > maxX {
+			maxX = newX
+		}
+		if newY < minY {
+			minY = newY
+		}
+		if newY > maxY {
+			maxY = newY
+		}
+	}
+
+	return minX, minY, maxX, maxY
+}

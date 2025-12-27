@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: composite element requires comprehensive implementation
 package openxml
 
 import (
@@ -24,7 +25,8 @@ type CompositeElementBase struct {
 	childCount int
 }
 
-// NewCompositeElement creates a new composite element with the given namespace URI and local name.
+// NewCompositeElement creates a new composite element with the given
+// namespace URI and local name.
 func NewCompositeElement(
 	namespaceURI, localName, prefix string,
 ) *CompositeElementBase {
@@ -40,7 +42,8 @@ func NewCompositeElement(
 	return elem
 }
 
-// NewCompositeElementWithFeatures creates a new composite element with parent features.
+// NewCompositeElementWithFeatures creates a new composite element
+// with parent features.
 func NewCompositeElementWithFeatures(
 	namespaceURI, localName, prefix string,
 	parentFeatures *features.FeatureCollection,
@@ -86,7 +89,8 @@ func (c *CompositeElementBase) LastChild() Element {
 	return c.lastChild.element
 }
 
-// GetElement returns the first child element with the given local name and namespace URI.
+// GetElement returns the first child element with the given local name
+// and namespace URI.
 func (c *CompositeElementBase) GetElement(
 	localName, namespaceURI string,
 ) Element {
@@ -340,7 +344,8 @@ func (c *CompositeElementBase) ChildCount() int {
 	return c.childCount
 }
 
-// NextSibling returns the next sibling element, or nil if this is the last child.
+// NextSibling returns the next sibling element, or nil if this is the
+// last child.
 func (c *CompositeElementBase) NextSibling() Element {
 	if c.parent == nil {
 		return nil
@@ -348,8 +353,8 @@ func (c *CompositeElementBase) NextSibling() Element {
 
 	if parentComp, ok := c.parent.(*CompositeElementBase); ok {
 		for node := parentComp.firstChild; node != nil; node = node.next {
-			if node.element == Element(c) &&
-				node.next != nil {
+			if node.next != nil &&
+				node.element == Element(c) {
 				return node.next.element
 			}
 		}
@@ -358,7 +363,8 @@ func (c *CompositeElementBase) NextSibling() Element {
 	return nil
 }
 
-// PreviousSibling returns the previous sibling element, or nil if this is the first child.
+// PreviousSibling returns the previous sibling element, or nil if this is
+// the first child.
 func (c *CompositeElementBase) PreviousSibling() Element {
 	if c.parent == nil {
 		return nil
@@ -366,8 +372,8 @@ func (c *CompositeElementBase) PreviousSibling() Element {
 
 	if parentComp, ok := c.parent.(*CompositeElementBase); ok {
 		for node := parentComp.firstChild; node != nil; node = node.next {
-			if node.element == Element(c) &&
-				node.prev != nil {
+			if node.prev != nil &&
+				node.element == Element(c) {
 				return node.prev.element
 			}
 		}
@@ -398,6 +404,39 @@ func (c *CompositeElementBase) InnerXml() string {
 func (c *CompositeElementBase) WriteXML(
 	w io.Writer,
 ) error {
+	// If it's a root element (no parent), ensure it has the xmlns attribute
+	// if it doesn't already have one and has a namespace URI.
+	if c.parent == nil && c.NamespaceURI() != "" {
+		found := false
+		xmlnsLocal := "xmlns"
+		if c.prefix != "" {
+			xmlnsLocal = c.prefix
+		}
+
+		for _, attr := range c.attributes {
+			if attr.LocalName() == xmlnsLocal &&
+				(attr.Prefix() == "xmlns" || (c.prefix == "" && attr.Prefix() == "")) {
+				found = true
+
+				break
+			}
+		}
+		if !found {
+			if c.prefix == "" {
+				c.SetAttribute(
+					NewAttribute(
+						"http://www.w3.org/2000/xmlns/",
+						"xmlns",
+						"",
+						c.NamespaceURI(),
+					),
+				)
+			} else {
+				c.SetAttribute(NewAttribute("http://www.w3.org/2000/xmlns/", c.prefix, "xmlns", c.NamespaceURI()))
+			}
+		}
+	}
+
 	if c.childCount == 0 {
 		return c.writeStartElement(w, true)
 	}
@@ -422,6 +461,8 @@ func (c *CompositeElementBase) Clone() Element {
 
 // CloneNode creates a copy of this element.
 // If deep is true, children are also cloned.
+//
+//nolint:revive // flag-parameter: deep is standard clone API parameter
 func (c *CompositeElementBase) CloneNode(
 	deep bool,
 ) Element {
@@ -445,10 +486,12 @@ func Elements[T Element](
 ) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for child := range parent.Children() {
-			if typed, ok := child.(T); ok {
-				if !yield(typed) {
-					return
-				}
+			typed, ok := child.(T)
+			if !ok {
+				continue
+			}
+			if !yield(typed) {
+				return
 			}
 		}
 	}

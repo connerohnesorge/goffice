@@ -119,7 +119,7 @@ func TestNewDocument(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(tmpDir, "test.docx")
 
@@ -128,7 +128,7 @@ func TestNewDocument(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Verify document properties
 	if doc.Type() != DocTypeDocument {
@@ -180,7 +180,7 @@ func TestNewDocumentWithDifferentTypes(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	docTypes := []DocType{
 		DocTypeDocument,
@@ -199,7 +199,7 @@ func TestNewDocumentWithDifferentTypes(
 			if err != nil {
 				t.Fatalf("New() error = %v", err)
 			}
-			defer doc.Close()
+			defer func() { _ = doc.Close() }()
 
 			if doc.Type() != dt {
 				t.Errorf(
@@ -223,7 +223,7 @@ func TestDocumentSaveAs(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(tmpDir, "test.docx")
 	savePath := filepath.Join(
@@ -242,7 +242,7 @@ func TestDocumentSaveAs(t *testing.T) {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
 
-	doc.Close()
+	_ = doc.Close()
 
 	// Verify file was created
 	if _, err := os.Stat(savePath); os.IsNotExist(
@@ -263,7 +263,7 @@ func TestDocumentChangeType(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(tmpDir, "test.docx")
 
@@ -271,7 +271,7 @@ func TestDocumentChangeType(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Change to template
 	err = doc.ChangeType(DocTypeTemplate)
@@ -325,13 +325,13 @@ func TestNewWriter(t *testing.T) {
 		t.Error("IsEditable() = false, want true")
 	}
 
-	doc.Close()
+	_ = doc.Close()
 }
 
 func TestOpenSettings(t *testing.T) {
 	settings := DefaultOpenSettings()
 
-	if settings.AutoSave != false {
+	if settings.AutoSave {
 		t.Error(
 			"Default AutoSave should be false",
 		)
@@ -389,7 +389,7 @@ func TestDocumentCloseReleasesResources(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(tmpDir, "test.docx")
 
@@ -429,7 +429,7 @@ func TestAddMainPartError(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(tmpDir, "test.docx")
 
@@ -437,7 +437,7 @@ func TestAddMainPartError(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Trying to add main part again should fail
 	_, err = doc.AddMainPart()
@@ -461,7 +461,7 @@ func TestDocumentOpenAndSave(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(tmpDir, "test.docx")
 
@@ -475,14 +475,14 @@ func TestDocumentOpenAndSave(t *testing.T) {
 	if err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	doc1.Close()
+	_ = doc1.Close()
 
 	// Open the saved document
 	doc2, err := Open(testPath, true)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
-	defer doc2.Close()
+	defer func() { _ = doc2.Close() }()
 
 	// Verify it loaded correctly
 	if doc2.Type() != DocTypeDocument {
@@ -511,7 +511,7 @@ func TestDocumentOpenReadOnly(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(tmpDir, "test.docx")
 
@@ -524,14 +524,14 @@ func TestDocumentOpenReadOnly(t *testing.T) {
 	if err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	doc1.Close()
+	_ = doc1.Close()
 
 	// Open read-only
 	doc2, err := Open(testPath, false)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
-	defer doc2.Close()
+	defer func() { _ = doc2.Close() }()
 
 	if doc2.IsEditable() {
 		t.Error(

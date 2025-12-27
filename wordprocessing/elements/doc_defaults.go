@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: tightly coupled doc defaults types
 package elements
 
 import (
@@ -97,8 +98,11 @@ func (dd *DocDefaults) GetOrCreateParagraphPropertiesDefault() *ParagraphPropert
 
 // Clone creates a deep copy of this DocDefaults element.
 func (dd *DocDefaults) Clone() openxml.Element {
+	cloned := dd.CompositeElementBase.Clone()
+	base := cloned.(*openxml.CompositeElementBase)
+
 	return &DocDefaults{
-		CompositeElementBase: dd.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: base,
 	}
 }
 
@@ -106,8 +110,13 @@ func (dd *DocDefaults) Clone() openxml.Element {
 func (dd *DocDefaults) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := dd.CompositeElementBase.CloneNode(
+		deep,
+	)
+	base := cloned.(*openxml.CompositeElementBase)
+
 	return &DocDefaults{
-		CompositeElementBase: dd.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: base,
 	}
 }
 
@@ -130,13 +139,13 @@ func NewRunPropertiesDefault() *RunPropertiesDefault {
 }
 
 // RunProperties returns the default run properties.
-func (rpd *RunPropertiesDefault) RunProperties() *DefaultRunProperties {
-	elem := rpd.GetElement("rPr", NamespaceWML)
+func (rp *RunPropertiesDefault) RunProperties() *DefaultRunProperties {
+	elem := rp.GetElement("rPr", NamespaceWML)
 	if elem == nil {
 		return nil
 	}
-	if rp, ok := elem.(*DefaultRunProperties); ok {
-		return rp
+	if drp, ok := elem.(*DefaultRunProperties); ok {
+		return drp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &DefaultRunProperties{
@@ -148,21 +157,24 @@ func (rpd *RunPropertiesDefault) RunProperties() *DefaultRunProperties {
 }
 
 // GetOrCreateRunProperties returns the default run properties, creating if needed.
-func (rpd *RunPropertiesDefault) GetOrCreateRunProperties() *DefaultRunProperties {
-	rp := rpd.RunProperties()
-	if rp != nil {
-		return rp
+func (rp *RunPropertiesDefault) GetOrCreateRunProperties() *DefaultRunProperties {
+	drp := rp.RunProperties()
+	if drp != nil {
+		return drp
 	}
-	rp = NewDefaultRunProperties()
-	rpd.AppendChild(rp)
+	drp = NewDefaultRunProperties()
+	rp.AppendChild(drp)
 
-	return rp
+	return drp
 }
 
 // Clone creates a deep copy of this RunPropertiesDefault element.
-func (rpd *RunPropertiesDefault) Clone() openxml.Element {
+func (rp *RunPropertiesDefault) Clone() openxml.Element {
+	cloned := rp.CompositeElementBase.Clone()
+	base := cloned.(*openxml.CompositeElementBase)
+
 	return &RunPropertiesDefault{
-		CompositeElementBase: rpd.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: base,
 	}
 }
 
@@ -185,13 +197,13 @@ func NewParagraphPropertiesDefault() *ParagraphPropertiesDefault {
 }
 
 // ParagraphProperties returns the default paragraph properties.
-func (ppd *ParagraphPropertiesDefault) ParagraphProperties() *DefaultParagraphProperties {
-	elem := ppd.GetElement("pPr", NamespaceWML)
+func (pp *ParagraphPropertiesDefault) ParagraphProperties() *DefaultParagraphProperties {
+	elem := pp.GetElement("pPr", NamespaceWML)
 	if elem == nil {
 		return nil
 	}
-	if pp, ok := elem.(*DefaultParagraphProperties); ok {
-		return pp
+	if dpp, ok := elem.(*DefaultParagraphProperties); ok {
+		return dpp
 	}
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return &DefaultParagraphProperties{
@@ -203,21 +215,24 @@ func (ppd *ParagraphPropertiesDefault) ParagraphProperties() *DefaultParagraphPr
 }
 
 // GetOrCreateParagraphProperties returns the default paragraph properties, creating if needed.
-func (ppd *ParagraphPropertiesDefault) GetOrCreateParagraphProperties() *DefaultParagraphProperties {
-	pp := ppd.ParagraphProperties()
-	if pp != nil {
-		return pp
+func (pp *ParagraphPropertiesDefault) GetOrCreateParagraphProperties() *DefaultParagraphProperties {
+	dpp := pp.ParagraphProperties()
+	if dpp != nil {
+		return dpp
 	}
-	pp = NewDefaultParagraphProperties()
-	ppd.AppendChild(pp)
+	dpp = NewDefaultParagraphProperties()
+	pp.AppendChild(dpp)
 
-	return pp
+	return dpp
 }
 
 // Clone creates a deep copy of this ParagraphPropertiesDefault element.
-func (ppd *ParagraphPropertiesDefault) Clone() openxml.Element {
+func (pp *ParagraphPropertiesDefault) Clone() openxml.Element {
+	cloned := pp.CompositeElementBase.Clone()
+	base := cloned.(*openxml.CompositeElementBase)
+
 	return &ParagraphPropertiesDefault{
-		CompositeElementBase: ppd.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: base,
 	}
 }
 
@@ -379,8 +394,11 @@ func (rp *DefaultRunProperties) removeElement(
 
 // Clone creates a deep copy of this DefaultRunProperties element.
 func (rp *DefaultRunProperties) Clone() openxml.Element {
+	cloned := rp.CompositeElementBase.Clone()
+	base := cloned.(*openxml.CompositeElementBase)
+
 	return &DefaultRunProperties{
-		CompositeElementBase: rp.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: base,
 	}
 }
 
@@ -477,7 +495,10 @@ func (pp *DefaultParagraphProperties) getOrCreateElement(
 
 // Clone creates a deep copy of this DefaultParagraphProperties element.
 func (pp *DefaultParagraphProperties) Clone() openxml.Element {
+	cloned := pp.CompositeElementBase.Clone()
+	base := cloned.(*openxml.CompositeElementBase)
+
 	return &DefaultParagraphProperties{
-		CompositeElementBase: pp.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: base,
 	}
 }

@@ -5,6 +5,12 @@ import (
 	"strconv"
 )
 
+// intParseBase is the base used for parsing integer strings.
+const intParseBase = 10
+
+// int32BitSize is the bit size for parsing int32 values.
+const int32BitSize = 32
+
 // Int32Value wraps a 32-bit signed integer value with optional nil/unset state.
 // It implements the SimpleValue interface.
 type Int32Value struct {
@@ -54,7 +60,10 @@ func (iv *Int32Value) InnerText() string {
 		return ""
 	}
 
-	return strconv.FormatInt(int64(iv.value), 10)
+	return strconv.FormatInt(
+		int64(iv.value),
+		intParseBase,
+	)
 }
 
 // SetInnerText parses the value from a string.
@@ -68,7 +77,11 @@ func (iv *Int32Value) SetInnerText(
 
 		return nil
 	}
-	v, err := strconv.ParseInt(text, 10, 32)
+	v, err := strconv.ParseInt(
+		text,
+		intParseBase,
+		int32BitSize,
+	)
 	if err != nil {
 		return fmt.Errorf(
 			"invalid int32 value: %w",
@@ -87,8 +100,8 @@ func (iv *Int32Value) SetNil() {
 	iv.hasValue = false
 }
 
-// UInt32Value wraps a 32-bit unsigned integer value with optional nil/unset state.
-// It implements the SimpleValue interface.
+// UInt32Value wraps a 32-bit unsigned integer value with optional nil/unset
+// state. It implements the SimpleValue interface.
 type UInt32Value struct {
 	value    uint32
 	hasValue bool
@@ -138,7 +151,7 @@ func (uv *UInt32Value) InnerText() string {
 
 	return strconv.FormatUint(
 		uint64(uv.value),
-		10,
+		intParseBase,
 	)
 }
 
@@ -160,7 +173,11 @@ func (uv *UInt32Value) SetInnerText(
 			text,
 		)
 	}
-	v, err := strconv.ParseUint(text, 10, 32)
+	v, err := strconv.ParseUint(
+		text,
+		intParseBase,
+		int32BitSize,
+	)
 	if err != nil {
 		return fmt.Errorf(
 			"invalid uint32 value: %w",
@@ -179,7 +196,8 @@ func (uv *UInt32Value) SetNil() {
 	uv.hasValue = false
 }
 
-// Ensure Int32Value and UInt32Value implement SimpleValue and Resettable interfaces.
+// Ensure Int32Value and UInt32Value implement SimpleValue and Resettable
+// interfaces.
 var (
 	_ SimpleValue = (*Int32Value)(nil)
 	_ Resettable  = (*Int32Value)(nil)

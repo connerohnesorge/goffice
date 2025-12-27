@@ -1,7 +1,15 @@
+//nolint:revive // file-length-limit: many specialized character types
 package elements
 
 import (
 	"github.com/connerohnesorge/goffice/openxml"
+)
+
+// Attribute name constants for special character elements.
+const (
+	attrNameFont        = "font"
+	attrNameChar        = "char"
+	attrNameFldCharType = "fldCharType"
 )
 
 // CarriageReturn represents a carriage return element (w:cr).
@@ -32,13 +40,16 @@ func (cr *CarriageReturn) Clone() openxml.Element {
 func (cr *CarriageReturn) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := cr.LeafElementBase.CloneNode(deep)
+
 	return &CarriageReturn{
-		LeafElementBase: cr.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }
 
 // SoftHyphen represents a soft hyphen element (w:softHyphen).
-// It marks an optional line break point where a hyphen should appear if the line breaks at that point.
+// It marks an optional line break point where a hyphen should appear
+// if the line breaks at that point.
 type SoftHyphen struct {
 	*openxml.LeafElementBase
 }
@@ -65,8 +76,10 @@ func (sh *SoftHyphen) Clone() openxml.Element {
 func (sh *SoftHyphen) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := sh.LeafElementBase.CloneNode(deep)
+
 	return &SoftHyphen{
-		LeafElementBase: sh.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }
 
@@ -88,23 +101,26 @@ func NewNoBreakHyphen() *NoBreakHyphen {
 }
 
 // Clone creates a deep copy of this NoBreakHyphen element.
-func (nbh *NoBreakHyphen) Clone() openxml.Element {
+func (n *NoBreakHyphen) Clone() openxml.Element {
 	return &NoBreakHyphen{
-		LeafElementBase: nbh.LeafElementBase.Clone().(*openxml.LeafElementBase),
+		LeafElementBase: n.LeafElementBase.Clone().(*openxml.LeafElementBase),
 	}
 }
 
 // CloneNode creates a copy of this NoBreakHyphen element.
-func (nbh *NoBreakHyphen) CloneNode(
+func (n *NoBreakHyphen) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := n.LeafElementBase.CloneNode(deep)
+
 	return &NoBreakHyphen{
-		LeafElementBase: nbh.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }
 
-// LastRenderedPageBreak represents the last rendered page break position (w:lastRenderedPageBreak).
-// This element marks where a page break was rendered the last time the document was saved.
+// LastRenderedPageBreak represents the last rendered page break position
+// (w:lastRenderedPageBreak). This element marks where a page break was
+// rendered the last time the document was saved.
 // It is informational and used by applications for pagination hints.
 type LastRenderedPageBreak struct {
 	*openxml.LeafElementBase
@@ -124,18 +140,20 @@ func NewLastRenderedPageBreak() *LastRenderedPageBreak {
 }
 
 // Clone creates a deep copy of this LastRenderedPageBreak element.
-func (lrpb *LastRenderedPageBreak) Clone() openxml.Element {
+func (l *LastRenderedPageBreak) Clone() openxml.Element {
 	return &LastRenderedPageBreak{
-		LeafElementBase: lrpb.LeafElementBase.Clone().(*openxml.LeafElementBase),
+		LeafElementBase: l.LeafElementBase.Clone().(*openxml.LeafElementBase),
 	}
 }
 
 // CloneNode creates a copy of this LastRenderedPageBreak element.
-func (lrpb *LastRenderedPageBreak) CloneNode(
+func (l *LastRenderedPageBreak) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := l.LeafElementBase.CloneNode(deep)
+
 	return &LastRenderedPageBreak{
-		LeafElementBase: lrpb.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }
 
@@ -145,9 +163,10 @@ type Symbol struct {
 	*openxml.LeafElementBase
 }
 
-// NewSymbol creates a new Symbol element with the specified font and character code.
-// The font parameter specifies the symbol font name (e.g., "Wingdings", "Symbol").
-// The char parameter specifies the character code in hexadecimal (e.g., "F041").
+// NewSymbol creates a new Symbol element with the specified font and
+// character code. The font parameter specifies the symbol font name
+// (e.g., "Wingdings", "Symbol"). The char parameter specifies the
+// character code in hexadecimal (e.g., "F041").
 func NewSymbol(font, char string) *Symbol {
 	elem := openxml.NewLeafElement(
 		NamespaceWML,
@@ -159,7 +178,7 @@ func NewSymbol(font, char string) *Symbol {
 		s.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
-				"font",
+				attrNameFont,
 				PrefixW,
 				font,
 			),
@@ -169,7 +188,7 @@ func NewSymbol(font, char string) *Symbol {
 		s.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
-				"char",
+				attrNameChar,
 				PrefixW,
 				char,
 			),
@@ -182,7 +201,7 @@ func NewSymbol(font, char string) *Symbol {
 // Font returns the symbol font name.
 func (s *Symbol) Font() string {
 	attr, found := s.GetAttribute(
-		"font",
+		attrNameFont,
 		NamespaceWML,
 	)
 	if !found {
@@ -195,16 +214,21 @@ func (s *Symbol) Font() string {
 // SetFont sets the symbol font name.
 func (s *Symbol) SetFont(font string) {
 	if font == "" {
-		s.RemoveAttribute("font", NamespaceWML)
+		s.RemoveAttribute(
+			attrNameFont,
+			NamespaceWML,
+		)
 	} else {
-		s.SetAttribute(openxml.NewAttribute(NamespaceWML, "font", PrefixW, font))
+		s.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, attrNameFont, PrefixW, font,
+		))
 	}
 }
 
 // Char returns the character code in hexadecimal.
 func (s *Symbol) Char() string {
 	attr, found := s.GetAttribute(
-		"char",
+		attrNameChar,
 		NamespaceWML,
 	)
 	if !found {
@@ -217,9 +241,14 @@ func (s *Symbol) Char() string {
 // SetChar sets the character code in hexadecimal.
 func (s *Symbol) SetChar(char string) {
 	if char == "" {
-		s.RemoveAttribute("char", NamespaceWML)
+		s.RemoveAttribute(
+			attrNameChar,
+			NamespaceWML,
+		)
 	} else {
-		s.SetAttribute(openxml.NewAttribute(NamespaceWML, "char", PrefixW, char))
+		s.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, attrNameChar, PrefixW, char,
+		))
 	}
 }
 
@@ -234,8 +263,10 @@ func (s *Symbol) Clone() openxml.Element {
 func (s *Symbol) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := s.LeafElementBase.CloneNode(deep)
+
 	return &Symbol{
-		LeafElementBase: s.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }
 
@@ -271,7 +302,7 @@ func NewFieldChar(
 		fc.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
-				"fldCharType",
+				attrNameFldCharType,
 				PrefixW,
 				string(charType),
 			),
@@ -284,7 +315,7 @@ func NewFieldChar(
 // Type returns the field character type.
 func (fc *FieldChar) Type() FieldCharType {
 	attr, found := fc.GetAttribute(
-		"fldCharType",
+		attrNameFldCharType,
 		NamespaceWML,
 	)
 	if !found {
@@ -300,11 +331,13 @@ func (fc *FieldChar) SetType(
 ) {
 	if charType == "" {
 		fc.RemoveAttribute(
-			"fldCharType",
+			attrNameFldCharType,
 			NamespaceWML,
 		)
 	} else {
-		fc.SetAttribute(openxml.NewAttribute(NamespaceWML, "fldCharType", PrefixW, string(charType)))
+		fc.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, attrNameFldCharType, PrefixW, string(charType),
+		))
 	}
 }
 
@@ -323,6 +356,8 @@ func (fc *FieldChar) Dirty() bool {
 }
 
 // SetDirty sets whether the field result should be recalculated.
+//
+//nolint:revive // flag-parameter: API requires bool setter
 func (fc *FieldChar) SetDirty(dirty bool) {
 	if dirty {
 		fc.SetAttribute(
@@ -349,8 +384,10 @@ func (fc *FieldChar) Clone() openxml.Element {
 func (fc *FieldChar) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := fc.LeafElementBase.CloneNode(deep)
+
 	return &FieldChar{
-		LeafElementBase: fc.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }
 
@@ -360,7 +397,8 @@ type InstrText struct {
 	*openxml.LeafElementBase
 }
 
-// NewInstrText creates a new InstrText element with the specified instruction text.
+// NewInstrText creates a new InstrText element with the specified
+// instruction text.
 func NewInstrText(text string) *InstrText {
 	elem := openxml.NewLeafElementWithText(
 		NamespaceWML,
@@ -427,8 +465,10 @@ func (it *InstrText) Clone() openxml.Element {
 func (it *InstrText) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := it.LeafElementBase.CloneNode(deep)
+
 	return &InstrText{
-		LeafElementBase: it.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }
 
@@ -450,7 +490,8 @@ type PositionalTabRelativeTo string
 const (
 	// PositionalTabRelativeToMargin positions relative to the page margins.
 	PositionalTabRelativeToMargin PositionalTabRelativeTo = "margin"
-	// PositionalTabRelativeToIndent positions relative to the paragraph indentation.
+	// PositionalTabRelativeToIndent positions relative to the paragraph
+	// indentation.
 	PositionalTabRelativeToIndent PositionalTabRelativeTo = "indent"
 )
 
@@ -487,7 +528,8 @@ func NewPositionalTab() *PositionalTab {
 	return &PositionalTab{LeafElementBase: elem}
 }
 
-// NewPositionalTabWithOptions creates a new PositionalTab element with specified options.
+// NewPositionalTabWithOptions creates a new PositionalTab element with
+// specified options.
 func NewPositionalTabWithOptions(
 	alignment PositionalTabAlignment,
 	relativeTo PositionalTabRelativeTo,
@@ -530,7 +572,9 @@ func (pt *PositionalTab) SetAlignment(
 			NamespaceWML,
 		)
 	} else {
-		pt.SetAttribute(openxml.NewAttribute(NamespaceWML, "alignment", PrefixW, string(alignment)))
+		pt.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, "alignment", PrefixW, string(alignment),
+		))
 	}
 }
 
@@ -557,7 +601,9 @@ func (pt *PositionalTab) SetRelativeTo(
 			NamespaceWML,
 		)
 	} else {
-		pt.SetAttribute(openxml.NewAttribute(NamespaceWML, "relativeTo", PrefixW, string(relativeTo)))
+		pt.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, "relativeTo", PrefixW, string(relativeTo),
+		))
 	}
 }
 
@@ -581,7 +627,9 @@ func (pt *PositionalTab) SetLeader(
 	if leader == "" {
 		pt.RemoveAttribute("leader", NamespaceWML)
 	} else {
-		pt.SetAttribute(openxml.NewAttribute(NamespaceWML, "leader", PrefixW, string(leader)))
+		pt.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, "leader", PrefixW, string(leader),
+		))
 	}
 }
 
@@ -596,8 +644,10 @@ func (pt *PositionalTab) Clone() openxml.Element {
 func (pt *PositionalTab) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := pt.LeafElementBase.CloneNode(deep)
+
 	return &PositionalTab{
-		LeafElementBase: pt.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }
 
@@ -629,14 +679,17 @@ func (s *Separator) Clone() openxml.Element {
 func (s *Separator) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := s.LeafElementBase.CloneNode(deep)
+
 	return &Separator{
-		LeafElementBase: s.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }
 
-// ContinuationSeparator represents a continuation separator element (w:continuationSeparator).
-// This element renders as a horizontal line that spans the width of the page
-// when footnotes/endnotes continue from the previous page.
+// ContinuationSeparator represents a continuation separator element
+// (w:continuationSeparator). This element renders as a horizontal line
+// that spans the width of the page when footnotes/endnotes continue from
+// the previous page.
 type ContinuationSeparator struct {
 	*openxml.LeafElementBase
 }
@@ -665,7 +718,9 @@ func (cs *ContinuationSeparator) Clone() openxml.Element {
 func (cs *ContinuationSeparator) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := cs.LeafElementBase.CloneNode(deep)
+
 	return &ContinuationSeparator{
-		LeafElementBase: cs.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }

@@ -6,27 +6,34 @@ import (
 	"strings"
 )
 
+// pathSep is the forward slash separator used in OPC part URIs.
+const pathSep = "/"
+
 // NormalizeURI normalizes a part URI according to OPC conventions.
-// It ensures the URI starts with a forward slash and uses forward slashes throughout.
-// The URI is also lowercased for case-insensitive comparison.
+// It ensures the URI starts with a forward slash and uses forward slashes
+// throughout. The URI is also lowercased for case-insensitive comparison.
 func NormalizeURI(uri string) string {
 	// Replace backslashes with forward slashes
-	uri = strings.ReplaceAll(uri, "\\", "/")
+	normalized := strings.ReplaceAll(
+		uri,
+		"\\",
+		pathSep,
+	)
 
 	// Ensure leading slash
-	if !strings.HasPrefix(uri, "/") {
-		uri = "/" + uri
+	if !strings.HasPrefix(normalized, pathSep) {
+		normalized = pathSep + normalized
 	}
 
 	// Clean the path (removes double slashes, resolves . and ..)
-	uri = path.Clean(uri)
+	normalized = path.Clean(normalized)
 
 	// Ensure leading slash after clean (Clean removes it for root)
-	if !strings.HasPrefix(uri, "/") {
-		uri = "/" + uri
+	if !strings.HasPrefix(normalized, pathSep) {
+		normalized = pathSep + normalized
 	}
 
-	return uri
+	return normalized
 }
 
 // ValidateURI validates that a string is a valid OPC part URI.
@@ -43,17 +50,17 @@ func ValidateURI(uri string) bool {
 	}
 
 	// Must start with /
-	if !strings.HasPrefix(uri, "/") {
+	if !strings.HasPrefix(uri, pathSep) {
 		return false
 	}
 
 	// Must not be just /
-	if uri == "/" {
+	if uri == pathSep {
 		return false
 	}
 
 	// Must not end with /
-	if strings.HasSuffix(uri, "/") {
+	if strings.HasSuffix(uri, pathSep) {
 		return false
 	}
 
@@ -66,7 +73,7 @@ func ValidateURI(uri string) bool {
 	// Check for empty segments (double slashes)
 	segments := strings.Split(
 		uri[1:],
-		"/",
+		pathSep,
 	) // Skip leading slash
 	for _, seg := range segments {
 		if seg == "" {
@@ -78,13 +85,17 @@ func ValidateURI(uri string) bool {
 }
 
 // ResolvePartURI resolves a relative URI against a base part URI.
-// The base URI is the URI of the source part, and relative is the target reference.
-// For example, ResolvePartURI("/word/document.xml", "media/image1.png") returns "/word/media/image1.png".
+// The base URI is the URI of the source part, and relative is the target
+// reference. For example:
+//
+//	ResolvePartURI("/word/document.xml", "media/image1.png")
+//
+// returns "/word/media/image1.png".
 func ResolvePartURI(
 	base, relative string,
 ) string {
 	// If relative is already absolute, just normalize it
-	if strings.HasPrefix(relative, "/") {
+	if strings.HasPrefix(relative, pathSep) {
 		return NormalizeURI(relative)
 	}
 
@@ -95,8 +106,8 @@ func ResolvePartURI(
 	resolved := path.Join(baseDir, relative)
 
 	// Ensure leading slash
-	if !strings.HasPrefix(resolved, "/") {
-		resolved = "/" + resolved
+	if !strings.HasPrefix(resolved, pathSep) {
+		resolved = pathSep + resolved
 	}
 
 	return resolved
@@ -114,7 +125,7 @@ func URIExtension(uri string) string {
 func URIDirectory(uri string) string {
 	dir := path.Dir(uri)
 	if dir == "." {
-		return "/"
+		return pathSep
 	}
 
 	return dir
@@ -140,7 +151,7 @@ func IsRelationshipURI(uri string) bool {
 // For "/word/document.xml", this returns "/word/_rels/document.xml.rels".
 // For package-level relationships, pass "/" to get "/_rels/.rels".
 func RelationshipPartURI(partURI string) string {
-	if partURI == "/" || partURI == "" {
+	if partURI == pathSep || partURI == "" {
 		return "/_rels/.rels"
 	}
 
@@ -154,14 +165,14 @@ func RelationshipPartURI(partURI string) string {
 	)
 }
 
-// PartURIFromRelationshipURI returns the source part URI for a relationship part.
-// For "/word/_rels/document.xml.rels", this returns "/word/document.xml".
+// PartURIFromRelationshipURI returns the source part URI for a relationship
+// part. For "/word/_rels/document.xml.rels", this returns "/word/document.xml".
 // For "/_rels/.rels", this returns "/".
 func PartURIFromRelationshipURI(
 	relURI string,
 ) string {
 	if relURI == "/_rels/.rels" {
-		return "/"
+		return pathSep
 	}
 
 	// Remove the .rels extension

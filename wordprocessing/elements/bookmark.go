@@ -6,6 +6,9 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+// attrID is the attribute name for bookmark ID.
+const attrID = "id"
+
 // BookmarkStart represents a bookmark start element (w:bookmarkStart).
 type BookmarkStart struct {
 	*openxml.CompositeElementBase
@@ -27,7 +30,7 @@ func NewBookmarkStart(
 	bs.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"id",
+			attrID,
 			PrefixW,
 			strconv.Itoa(id),
 		),
@@ -47,7 +50,7 @@ func NewBookmarkStart(
 // Id returns the bookmark ID.
 func (bs *BookmarkStart) Id() int {
 	attr, found := bs.GetAttribute(
-		"id",
+		attrID,
 		NamespaceWML,
 	)
 	if !found {
@@ -63,7 +66,7 @@ func (bs *BookmarkStart) SetId(id int) {
 	bs.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"id",
+			attrID,
 			PrefixW,
 			strconv.Itoa(id),
 		),
@@ -97,8 +100,10 @@ func (bs *BookmarkStart) SetName(name string) {
 
 // Clone creates a deep copy of this BookmarkStart element.
 func (bs *BookmarkStart) Clone() openxml.Element {
+	cloned := bs.CompositeElementBase.Clone()
+
 	return &BookmarkStart{
-		CompositeElementBase: bs.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -106,8 +111,12 @@ func (bs *BookmarkStart) Clone() openxml.Element {
 func (bs *BookmarkStart) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := bs.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &BookmarkStart{
-		CompositeElementBase: bs.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -127,7 +136,7 @@ func NewBookmarkEnd(id int) *BookmarkEnd {
 	be.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"id",
+			attrID,
 			PrefixW,
 			strconv.Itoa(id),
 		),
@@ -139,7 +148,7 @@ func NewBookmarkEnd(id int) *BookmarkEnd {
 // Id returns the bookmark ID.
 func (be *BookmarkEnd) Id() int {
 	attr, found := be.GetAttribute(
-		"id",
+		attrID,
 		NamespaceWML,
 	)
 	if !found {
@@ -155,7 +164,7 @@ func (be *BookmarkEnd) SetId(id int) {
 	be.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"id",
+			attrID,
 			PrefixW,
 			strconv.Itoa(id),
 		),
@@ -164,8 +173,10 @@ func (be *BookmarkEnd) SetId(id int) {
 
 // Clone creates a deep copy of this BookmarkEnd element.
 func (be *BookmarkEnd) Clone() openxml.Element {
+	cloned := be.CompositeElementBase.Clone()
+
 	return &BookmarkEnd{
-		CompositeElementBase: be.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -173,12 +184,17 @@ func (be *BookmarkEnd) Clone() openxml.Element {
 func (be *BookmarkEnd) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := be.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &BookmarkEnd{
-		CompositeElementBase: be.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
-// CreateBookmarkPair creates a matching pair of bookmark start and end elements.
+// CreateBookmarkPair creates a matching pair of bookmark start
+// and end elements.
 func CreateBookmarkPair(
 	id int,
 	name string,

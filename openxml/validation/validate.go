@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: validation logic is cohesive and splitting would harm readability
 package validation
 
 import (
@@ -314,13 +315,14 @@ func getChildElements(
 		if len(results) > 0 {
 			// Handle different return types
 			result := results[0]
+			//nolint:exhaustive // only Slice and Func are supported, default handles others
 			switch result.Kind() {
 			case reflect.Slice:
 				children := make(
 					[]interface{},
 					result.Len(),
 				)
-				for i := 0; i < result.Len(); i++ {
+				for i := range result.Len() {
 					children[i] = result.Index(i).
 						Interface()
 				}
@@ -330,6 +332,9 @@ func getChildElements(
 				// Handle iterator pattern (iter.Seq[Element])
 				// This requires calling the iterator function
 				return extractFromIterator(result)
+			default:
+				// Other kinds are not supported for Children
+				return nil
 			}
 		}
 	}
@@ -400,7 +405,7 @@ func GetElementAttributes(
 		if len(results) > 0 {
 			result := results[0]
 			if result.Kind() == reflect.Slice {
-				for i := 0; i < result.Len(); i++ {
+				for i := range result.Len() {
 					attr := result.Index(i)
 
 					// Handle both struct and pointer types
@@ -512,13 +517,14 @@ func getPackageParts(
 		results := partsMethod.Call(nil)
 		if len(results) > 0 {
 			result := results[0]
+			//nolint:exhaustive // only Slice and Func are supported, default handles others
 			switch result.Kind() {
 			case reflect.Slice:
 				parts := make(
 					[]interface{},
 					result.Len(),
 				)
-				for i := 0; i < result.Len(); i++ {
+				for i := range result.Len() {
 					parts[i] = result.Index(i).
 						Interface()
 				}
@@ -526,6 +532,9 @@ func getPackageParts(
 				return parts
 			case reflect.Func:
 				return extractFromIterator(result)
+			default:
+				// Other kinds are not supported for Parts
+				return nil
 			}
 		}
 	}
@@ -676,11 +685,14 @@ func getParent(element interface{}) interface{} {
 				return nil
 			}
 			// Check if the value is a nil pointer or nil interface
+			//nolint:exhaustive // only Ptr and Interface can be nil, others proceed
 			switch result.Kind() {
 			case reflect.Ptr, reflect.Interface:
 				if result.IsNil() {
 					return nil
 				}
+			default:
+				// For non-pointer/interface kinds, proceed to return
 			}
 
 			return result.Interface()

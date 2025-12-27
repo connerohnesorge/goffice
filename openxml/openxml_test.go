@@ -164,6 +164,7 @@ func TestAttribute(t *testing.T) {
 	)
 }
 
+//nolint:revive // cyclomatic complexity acceptable for comprehensive test function
 func TestCompositeElement(t *testing.T) {
 	t.Run(
 		"Create composite element",
@@ -769,9 +770,9 @@ func TestXmlSerialization(t *testing.T) {
 		parent.AppendChild(child1)
 		parent.AppendChild(child2)
 
-		innerXml := parent.InnerXml()
+		innerXML := parent.InnerXml()
 		if strings.Contains(
-			innerXml,
+			innerXML,
 			"<parent>",
 		) {
 			t.Error(
@@ -779,13 +780,13 @@ func TestXmlSerialization(t *testing.T) {
 			)
 		}
 		if !strings.Contains(
-			innerXml,
+			innerXML,
 			"<child1>text1</child1>",
 		) {
 			t.Error("expected child1 in InnerXml")
 		}
 		if !strings.Contains(
-			innerXml,
+			innerXML,
 			"<child2>text2</child2>",
 		) {
 			t.Error("expected child2 in InnerXml")
@@ -848,7 +849,12 @@ func TestCloning(t *testing.T) {
 				)
 			}
 
-			cloneComp := clone.(CompositeElement)
+			cloneComp, ok := clone.(CompositeElement)
+			if !ok {
+				t.Fatal(
+					"clone should be a CompositeElement",
+				)
+			}
 			if cloneComp.ChildCount() != 1 {
 				t.Error(
 					"clone should have same number of children",
@@ -882,7 +888,12 @@ func TestCloning(t *testing.T) {
 			parent.AppendChild(child)
 
 			clone := parent.CloneNode(false)
-			cloneComp := clone.(CompositeElement)
+			cloneComp, ok := clone.(CompositeElement)
+			if !ok {
+				t.Fatal(
+					"clone should be a CompositeElement",
+				)
+			}
 
 			if cloneComp.ChildCount() != 0 {
 				t.Error(
@@ -1060,7 +1071,12 @@ func TestXmlParsing(t *testing.T) {
 				)
 			}
 
-			comp := elem.(CompositeElement)
+			comp, ok := elem.(CompositeElement)
+			if !ok {
+				t.Fatal(
+					"parsed element should be a CompositeElement",
+				)
+			}
 			if comp.ChildCount() != 1 {
 				t.Errorf(
 					"expected 1 child, got %d",
@@ -1153,6 +1169,7 @@ func TestNamespaces(t *testing.T) {
 // Integration tests - Task 3.59
 // These tests combine the openxml package with the packaging layer
 
+//nolint:revive // cyclomatic complexity acceptable for comprehensive integration test
 func TestIntegrationOpenXmlWithPackaging(
 	t *testing.T,
 ) {
@@ -1246,7 +1263,7 @@ func TestIntegrationOpenXmlWithPackaging(
 				)
 			}
 
-			oxPkg.Close()
+			_ = oxPkg.Close()
 
 			// Verify by reopening
 			pkg2, err := packaging.Open(
@@ -1259,7 +1276,7 @@ func TestIntegrationOpenXmlWithPackaging(
 					err,
 				)
 			}
-			defer pkg2.Close()
+			defer func() { _ = pkg2.Close() }()
 
 			// Verify document part exists
 			docPart2, err := pkg2.Part(
@@ -1323,8 +1340,8 @@ func TestIntegrationOpenXmlWithPackaging(
 					"<w:document><w:body><w:p><w:r><w:t>Original</w:t></w:r></w:p></w:body></w:document>",
 				),
 			)
-			oxPkg.Save()
-			oxPkg.Close()
+			_ = oxPkg.Save()
+			_ = oxPkg.Close()
 
 			// Reopen and modify
 			oxPkg2, err := OpenPackage(
@@ -1359,14 +1376,14 @@ func TestIntegrationOpenXmlWithPackaging(
 					err,
 				)
 			}
-			oxPkg2.Close()
+			_ = oxPkg2.Close()
 
 			// Verify modifications
 			oxPkg3, _ := OpenPackage(
 				tmpPath,
 				true,
 			)
-			defer oxPkg3.Close()
+			defer func() { _ = oxPkg3.Close() }()
 
 			_, err = oxPkg3.GetPartByURI(
 				"/word/styles.xml",
@@ -1448,7 +1465,7 @@ func TestIntegrationOpenXmlWithPackaging(
 				}
 			}
 
-			oxPkg.Close()
+			_ = oxPkg.Close()
 		},
 	)
 
@@ -1481,7 +1498,7 @@ func TestIntegrationOpenXmlWithPackaging(
 			// Part's features should have access to package features through parent
 			// This is tested indirectly - if features are nil, many operations would fail
 
-			oxPkg.Close()
+			_ = oxPkg.Close()
 		},
 	)
 
@@ -1497,17 +1514,17 @@ func TestIntegrationOpenXmlWithPackaging(
 			oxPkg := NewOpenXmlPackage(pkg)
 
 			// Add parts with different content types
-			oxPkg.AddNewPart(
+			_, _ = oxPkg.AddNewPart(
 				"/word/document.xml",
 				ContentTypeWordprocessingMLDocument,
 				"",
 			)
-			oxPkg.AddNewPart(
+			_, _ = oxPkg.AddNewPart(
 				"/word/styles.xml",
 				ContentTypeStyles,
 				"",
 			)
-			oxPkg.AddNewPart(
+			_, _ = oxPkg.AddNewPart(
 				"/word/numbering.xml",
 				ContentTypeNumbering,
 				"",
@@ -1536,7 +1553,7 @@ func TestIntegrationOpenXmlWithPackaging(
 				)
 			}
 
-			oxPkg.Close()
+			_ = oxPkg.Close()
 		},
 	)
 
@@ -1556,7 +1573,7 @@ func TestIntegrationOpenXmlWithPackaging(
 				"/word/document.xml",
 				ContentTypeWordprocessingMLDocument,
 			)
-			pkg.CreateRelationship(
+			_, _ = pkg.CreateRelationship(
 				"/word/document.xml",
 				RelationshipTypeOfficeDocument,
 				"rId1",
@@ -1637,7 +1654,7 @@ func TestIntegrationOpenXmlWithPackaging(
 				t.Error("XML declaration missing")
 			}
 
-			oxPkg.Close()
+			_ = oxPkg.Close()
 		},
 	)
 
@@ -1725,15 +1742,15 @@ func TestIntegrationOpenXmlWithPackaging(
 				)
 			}
 
-			oxPkg.Save()
-			oxPkg.Close()
+			_ = oxPkg.Save()
+			_ = oxPkg.Close()
 
 			// Verify persistence
 			oxPkg2, _ := OpenPackage(
 				tmpPath,
 				true,
 			)
-			defer oxPkg2.Close()
+			defer func() { _ = oxPkg2.Close() }()
 
 			count2 := 0
 			for range oxPkg2.Parts() {
@@ -1761,7 +1778,7 @@ func TestIntegrationPartRootElement(
 				"root_element_test.docx",
 			)
 			pkg, _ := packaging.Create(tmpPath)
-			defer pkg.Close()
+			defer func() { _ = pkg.Close() }()
 
 			packPart, _ := pkg.CreatePart(
 				"/word/document.xml",
@@ -1849,7 +1866,7 @@ func TestIntegrationPartRootElement(
 				)
 			}
 
-			pkg.Close()
+			_ = pkg.Close()
 		},
 	)
 
@@ -1920,19 +1937,21 @@ func TestIntegrationRelationshipManagement(
 					)
 				}
 
-				if partData, ok := part.(*OpenXmlPartData); ok {
-					id := partData.RelationshipID()
-					if ids[id] {
-						t.Errorf(
-							"Duplicate ID generated: %s",
-							id,
-						)
-					}
-					ids[id] = true
+				partData, ok := part.(*OpenXmlPartData)
+				if !ok {
+					continue
 				}
+				id := partData.RelationshipID()
+				if ids[id] {
+					t.Errorf(
+						"Duplicate ID generated: %s",
+						id,
+					)
+				}
+				ids[id] = true
 			}
 
-			oxPkg.Close()
+			_ = oxPkg.Close()
 		},
 	)
 

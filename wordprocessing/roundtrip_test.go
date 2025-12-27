@@ -22,7 +22,7 @@ func TestRoundtripBasicDocument(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -53,14 +53,14 @@ func TestRoundtripBasicDocument(t *testing.T) {
 	if err := doc1.SaveAs(testPath); err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	doc1.Close()
+	_ = doc1.Close()
 
 	// Reopen
 	doc2, err := Open(testPath, true)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
-	defer doc2.Close()
+	defer func() { _ = doc2.Close() }()
 
 	// Verify the document can be opened
 	if doc2.MainPart() == nil {
@@ -99,7 +99,7 @@ func TestRoundtripFormattedText(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -116,14 +116,14 @@ func TestRoundtripFormattedText(t *testing.T) {
 	if err := doc1.SaveAs(testPath); err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	doc1.Close()
+	_ = doc1.Close()
 
 	// Reopen
 	doc2, err := Open(testPath, false)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
-	defer doc2.Close()
+	defer func() { _ = doc2.Close() }()
 
 	// Verify read-only
 	if doc2.IsEditable() {
@@ -371,7 +371,7 @@ func TestRoundtripDocumentTypes(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testCases := []struct {
 		docType   DocType
@@ -409,7 +409,7 @@ func TestRoundtripDocumentTypes(t *testing.T) {
 						err,
 					)
 				}
-				doc1.Close()
+				_ = doc1.Close()
 
 				// Reopen
 				doc2, err := Open(testPath, true)
@@ -429,13 +429,15 @@ func TestRoundtripDocumentTypes(t *testing.T) {
 					)
 				}
 
-				doc2.Close()
+				_ = doc2.Close()
 			},
 		)
 	}
 }
 
 // TestRoundtripParagraphProperties tests that paragraph properties survive roundtrip.
+//
+//nolint:revive // cyclomatic, early-return, max-control-nesting: test validation logic is clearer with nested structure
 func TestRoundtripParagraphProperties(
 	t *testing.T,
 ) {
@@ -633,7 +635,7 @@ func TestRoundtripEmptyDocument(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -650,14 +652,14 @@ func TestRoundtripEmptyDocument(t *testing.T) {
 	if err := doc1.SaveAs(testPath); err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
 	}
-	doc1.Close()
+	_ = doc1.Close()
 
 	// Reopen
 	doc2, err := Open(testPath, true)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
-	defer doc2.Close()
+	defer func() { _ = doc2.Close() }()
 
 	// Verify it's valid
 	if doc2.MainPart() == nil {
@@ -683,7 +685,7 @@ func TestRoundtripMultipleSaves(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -695,7 +697,7 @@ func TestRoundtripMultipleSaves(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Save multiple times
 	for i := range 3 {

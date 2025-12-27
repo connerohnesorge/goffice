@@ -4,6 +4,12 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+// Attribute name constants for hyperlink elements.
+const (
+	// attrNameID is already defined in section_properties.go
+	attrNameAnchor = "anchor"
+)
+
 // Hyperlink represents a hyperlink element (w:hyperlink).
 type Hyperlink struct {
 	*openxml.CompositeElementBase
@@ -21,7 +27,7 @@ func NewHyperlink(text, relId string) *Hyperlink {
 		h.SetAttribute(
 			openxml.NewAttribute(
 				openxml.NamespaceRelationships,
-				"id",
+				attrNameID,
 				"r",
 				relId,
 			),
@@ -38,7 +44,8 @@ func NewHyperlink(text, relId string) *Hyperlink {
 	return h
 }
 
-// NewInternalHyperlink creates a new Hyperlink element that links to a bookmark.
+// NewInternalHyperlink creates a new Hyperlink element that links
+// to a bookmark.
 func NewInternalHyperlink(
 	text, anchor string,
 ) *Hyperlink {
@@ -52,7 +59,7 @@ func NewInternalHyperlink(
 		h.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
-				"anchor",
+				attrNameAnchor,
 				PrefixW,
 				anchor,
 			),
@@ -71,7 +78,7 @@ func NewInternalHyperlink(
 // RelationshipId returns the relationship ID (for external links).
 func (h *Hyperlink) RelationshipId() string {
 	attr, found := h.GetAttribute(
-		"id",
+		attrNameID,
 		openxml.NamespaceRelationships,
 	)
 	if !found {
@@ -87,18 +94,20 @@ func (h *Hyperlink) SetRelationshipId(
 ) {
 	if relId == "" {
 		h.RemoveAttribute(
-			"id",
+			attrNameID,
 			openxml.NamespaceRelationships,
 		)
 	} else {
-		h.SetAttribute(openxml.NewAttribute(openxml.NamespaceRelationships, "id", "r", relId))
+		h.SetAttribute(openxml.NewAttribute(
+			openxml.NamespaceRelationships, attrNameID, "r", relId,
+		))
 	}
 }
 
 // Anchor returns the anchor (bookmark name) for internal links.
 func (h *Hyperlink) Anchor() string {
 	attr, found := h.GetAttribute(
-		"anchor",
+		attrNameAnchor,
 		NamespaceWML,
 	)
 	if !found {
@@ -111,9 +120,14 @@ func (h *Hyperlink) Anchor() string {
 // SetAnchor sets the anchor (bookmark name) for internal links.
 func (h *Hyperlink) SetAnchor(anchor string) {
 	if anchor == "" {
-		h.RemoveAttribute("anchor", NamespaceWML)
+		h.RemoveAttribute(
+			attrNameAnchor,
+			NamespaceWML,
+		)
 	} else {
-		h.SetAttribute(openxml.NewAttribute(NamespaceWML, "anchor", PrefixW, anchor))
+		h.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, attrNameAnchor, PrefixW, anchor,
+		))
 	}
 }
 
@@ -135,7 +149,9 @@ func (h *Hyperlink) SetTooltip(tooltip string) {
 	if tooltip == "" {
 		h.RemoveAttribute("tooltip", NamespaceWML)
 	} else {
-		h.SetAttribute(openxml.NewAttribute(NamespaceWML, "tooltip", PrefixW, tooltip))
+		h.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, "tooltip", PrefixW, tooltip,
+		))
 	}
 }
 
@@ -154,11 +170,15 @@ func (h *Hyperlink) History() bool {
 }
 
 // SetHistory sets whether to add this link to history.
+//
+//nolint:revive // flag-parameter: bool param is appropriate for setter
 func (h *Hyperlink) SetHistory(b bool) {
 	if b {
 		h.RemoveAttribute("history", NamespaceWML)
 	} else {
-		h.SetAttribute(openxml.NewAttribute(NamespaceWML, "history", PrefixW, "false"))
+		h.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, "history", PrefixW, "false",
+		))
 	}
 }
 
@@ -183,7 +203,9 @@ func (h *Hyperlink) SetDocLocation(loc string) {
 			NamespaceWML,
 		)
 	} else {
-		h.SetAttribute(openxml.NewAttribute(NamespaceWML, "docLocation", PrefixW, loc))
+		h.SetAttribute(openxml.NewAttribute(
+			NamespaceWML, "docLocation", PrefixW, loc,
+		))
 	}
 }
 
@@ -207,16 +229,22 @@ func (h *Hyperlink) AppendRun(text string) *Run {
 
 // Clone creates a deep copy of this Hyperlink element.
 func (h *Hyperlink) Clone() openxml.Element {
+	cloned := h.CompositeElementBase.Clone()
+
 	return &Hyperlink{
-		CompositeElementBase: h.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
 // CloneNode creates a copy of this Hyperlink element.
 func (h *Hyperlink) CloneNode(
-	deep bool,
+	deep bool, //nolint:revive // flag-parameter
 ) openxml.Element {
+	cloned := h.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Hyperlink{
-		CompositeElementBase: h.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }

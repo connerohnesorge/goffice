@@ -102,6 +102,8 @@ func (s *Styles) GetOrCreateLatentStyles() *LatentStyles {
 }
 
 // Styles returns an iterator over all Style elements.
+//
+//nolint:revive // cognitive-complexity: iterator with type conversion requires nested checks
 func (s *Styles) Styles() iter.Seq[*Style] {
 	return func(yield func(*Style) bool) {
 		for child := range s.Children() {
@@ -110,8 +112,13 @@ func (s *Styles) Styles() iter.Seq[*Style] {
 				var style *Style
 				if st, ok := child.(*Style); ok {
 					style = st
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					style = &Style{CompositeElementBase: comp}
+				} else {
+					comp, ok := child.(*openxml.CompositeElementBase)
+					if ok {
+						style = &Style{
+							CompositeElementBase: comp,
+						}
+					}
 				}
 				if style != nil && !yield(style) {
 					return
@@ -151,10 +158,11 @@ func (s *Styles) GetStylesByType(
 ) iter.Seq[*Style] {
 	return func(yield func(*Style) bool) {
 		for style := range s.Styles() {
-			if style.Type() == styleType {
-				if !yield(style) {
-					return
-				}
+			if style.Type() != styleType {
+				continue
+			}
+			if !yield(style) {
+				return
 			}
 		}
 	}
@@ -172,8 +180,10 @@ func (s *Styles) RemoveStyle(style *Style) bool {
 
 // Clone creates a deep copy of this Styles element.
 func (s *Styles) Clone() openxml.Element {
+	cloned := s.CompositeElementBase.Clone()
+
 	return &Styles{
-		CompositeElementBase: s.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -181,7 +191,11 @@ func (s *Styles) Clone() openxml.Element {
 func (s *Styles) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := s.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Styles{
-		CompositeElementBase: s.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }

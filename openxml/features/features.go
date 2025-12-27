@@ -1,6 +1,6 @@
-// Package features provides the feature collection infrastructure for Office Open XML.
-// Features allow parts and elements to access shared services like relationships,
-// namespaces, and document-level settings.
+// Package features provides the feature collection infrastructure for
+// Office Open XML. Features allow parts and elements to access shared
+// services like relationships, namespaces, and document-level settings.
 package features
 
 import (
@@ -9,8 +9,9 @@ import (
 )
 
 // FeatureCollection is a hierarchical container for features.
-// Features are stored by their interface type and can be inherited from parent collections.
-// This allows Element features to inherit from Part features, which inherit from Package features.
+// Features are stored by their interface type and can be inherited from
+// parent collections. This allows Element features to inherit from Part
+// features, which inherit from Package features.
 //
 // The collection is thread-safe for concurrent reads and exclusive writes.
 type FeatureCollection struct {
@@ -26,8 +27,9 @@ func NewFeatureCollection() *FeatureCollection {
 	}
 }
 
-// NewFeatureCollectionWithParent creates a new feature collection with the given parent.
-// Features not found in this collection will be looked up in the parent chain.
+// NewFeatureCollectionWithParent creates a new feature collection with
+// the given parent. Features not found in this collection will be looked
+// up in the parent chain.
 func NewFeatureCollectionWithParent(
 	parent *FeatureCollection,
 ) *FeatureCollection {
@@ -37,7 +39,8 @@ func NewFeatureCollectionWithParent(
 	}
 }
 
-// Parent returns the parent feature collection, or nil if this is a root collection.
+// Parent returns the parent feature collection, or nil if this is a root
+// collection.
 func (fc *FeatureCollection) Parent() *FeatureCollection {
 	fc.mu.RLock()
 	defer fc.mu.RUnlock()
@@ -72,7 +75,8 @@ func (fc *FeatureCollection) Set(
 }
 
 // SetByType registers a feature under a specific interface type.
-// This allows registering a feature that should be retrieved by its interface type.
+// This allows registering a feature that should be retrieved by its
+// interface type.
 func (fc *FeatureCollection) SetByType(
 	featureType reflect.Type,
 	feature Feature,
@@ -87,8 +91,8 @@ func (fc *FeatureCollection) SetByType(
 	fc.features[featureType] = feature
 }
 
-// get returns a feature by type, searching the parent chain if not found locally.
-// Returns nil if not found.
+// get returns a feature by type, searching the parent chain if not found
+// locally. Returns nil if not found.
 func (fc *FeatureCollection) get(
 	t reflect.Type,
 ) Feature {
@@ -108,7 +112,8 @@ func (fc *FeatureCollection) get(
 	return nil
 }
 
-// getLocal returns a feature by type from this collection only (no parent chain).
+// getLocal returns a feature by type from this collection only
+// (no parent chain).
 func (fc *FeatureCollection) getLocal(
 	t reflect.Type,
 ) Feature {
@@ -135,14 +140,16 @@ func (fc *FeatureCollection) Remove(
 	return false
 }
 
-// Has returns true if the collection (or parent chain) contains a feature of the given type.
+// Has returns true if the collection (or parent chain) contains a feature
+// of the given type.
 func (fc *FeatureCollection) Has(
 	featureType reflect.Type,
 ) bool {
 	return fc.get(featureType) != nil
 }
 
-// HasLocal returns true if this collection directly contains a feature of the given type.
+// HasLocal returns true if this collection directly contains a feature of
+// the given type.
 func (fc *FeatureCollection) HasLocal(
 	featureType reflect.Type,
 ) bool {
@@ -177,7 +184,8 @@ func Get[T Feature](fc *FeatureCollection) T {
 	return zero
 }
 
-// GetLocal retrieves a feature by its type T from this collection only (no parent chain).
+// GetLocal retrieves a feature by its type T from this collection only
+// (no parent chain).
 func GetLocal[T Feature](
 	fc *FeatureCollection,
 ) T {

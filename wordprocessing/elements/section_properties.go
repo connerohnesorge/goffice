@@ -1,9 +1,30 @@
+//nolint:revive // file-length-limit: comprehensive section properties with many related types
 package elements
 
 import (
 	"strconv"
 
 	"github.com/connerohnesorge/goffice/openxml"
+)
+
+const (
+	// Common attribute names
+	attrNameTitlePg = "titlePg"
+	attrNameType    = "type"
+	attrNameID      = "id"
+	attrNameVal     = "val"
+	attrNameStart   = "start"
+	attrNameName    = "name"
+
+	// Common attribute values
+	attrValueFalse = "false"
+	attrValueZero  = "0"
+
+	// Page dimensions in twips (1/20th of a point)
+	defaultPageWidth    = 12240 // 8.5 inches = 12240 twips
+	defaultPageHeight   = 15840 // 11 inches = 15840 twips
+	defaultMargin       = 1440  // 1 inch = 1440 twips
+	defaultHeaderFooter = 720   // 0.5 inches = 720 twips
 )
 
 // SectionProperties represents section properties (w:sectPr).
@@ -250,18 +271,22 @@ func (sp *SectionProperties) SetFooterReference(
 
 // TitlePage returns whether the section has a different first page header/footer.
 func (sp *SectionProperties) TitlePage() bool {
-	elem := sp.GetElement("titlePg", NamespaceWML)
+	elem := sp.GetElement(
+		attrNameTitlePg,
+		NamespaceWML,
+	)
 	if elem == nil {
 		return false
 	}
 	attr, found := elem.GetAttribute(
-		"val",
+		attrNameVal,
 		NamespaceWML,
 	)
 	if found {
 		val := attr.Value()
 
-		return val != "false" && val != "0"
+		return val != attrValueFalse &&
+			val != attrValueZero
 	}
 
 	return true
@@ -273,14 +298,14 @@ func (sp *SectionProperties) SetTitlePage(
 ) {
 	if b {
 		if sp.GetElement(
-			"titlePg",
+			attrNameTitlePg,
 			NamespaceWML,
 		) == nil {
 			elem := NewTitlePageElement()
 			sp.AppendChild(elem)
 		}
 	} else {
-		if elem := sp.GetElement("titlePg", NamespaceWML); elem != nil {
+		if elem := sp.GetElement(attrNameTitlePg, NamespaceWML); elem != nil {
 			sp.RemoveChild(elem)
 		}
 	}
@@ -288,7 +313,10 @@ func (sp *SectionProperties) SetTitlePage(
 
 // GetOrCreateTitlePage returns the title page element, creating if needed.
 func (sp *SectionProperties) GetOrCreateTitlePage() *TitlePageElement {
-	elem := sp.GetElement("titlePg", NamespaceWML)
+	elem := sp.GetElement(
+		attrNameTitlePg,
+		NamespaceWML,
+	)
 	if elem == nil {
 		tp := NewTitlePageElement()
 		sp.AppendChild(tp)
@@ -309,7 +337,10 @@ func (sp *SectionProperties) GetOrCreateTitlePage() *TitlePageElement {
 
 // SectionTypeElement returns the section type element, or nil if not present.
 func (sp *SectionProperties) SectionTypeElement() *SectionType {
-	elem := sp.GetElement("type", NamespaceWML)
+	elem := sp.GetElement(
+		attrNameType,
+		NamespaceWML,
+	)
 	if elem == nil {
 		return nil
 	}
@@ -337,7 +368,7 @@ func (sp *SectionProperties) GetSectionType() SectionTypeValue {
 func (sp *SectionProperties) SetSectionType(
 	val SectionTypeValue,
 ) {
-	if elem := sp.GetElement("type", NamespaceWML); elem != nil {
+	if elem := sp.GetElement(attrNameType, NamespaceWML); elem != nil {
 		sp.RemoveChild(elem)
 	}
 	st := NewSectionType(val)
@@ -681,9 +712,9 @@ func NewPageSize() *PageSize {
 		PrefixW,
 	)
 	ps := &PageSize{CompositeElementBase: elem}
-	// Default to Letter size (8.5 x 11 inches = 12240 x 15840 twips)
-	ps.SetWidth(12240)
-	ps.SetHeight(15840)
+	// Default to Letter size (8.5 x 11 inches)
+	ps.SetWidth(defaultPageWidth)
+	ps.SetHeight(defaultPageHeight)
 
 	return ps
 }
@@ -793,13 +824,13 @@ func NewPageMargins() *PageMargins {
 		PrefixW,
 	)
 	pm := &PageMargins{CompositeElementBase: elem}
-	// Default 1 inch margins (1440 twips)
-	pm.SetTop(1440)
-	pm.SetBottom(1440)
-	pm.SetLeft(1440)
-	pm.SetRight(1440)
-	pm.SetHeader(720)
-	pm.SetFooter(720)
+	// Default 1 inch margins
+	pm.SetTop(defaultMargin)
+	pm.SetBottom(defaultMargin)
+	pm.SetLeft(defaultMargin)
+	pm.SetRight(defaultMargin)
+	pm.SetHeader(defaultHeaderFooter)
+	pm.SetFooter(defaultHeaderFooter)
 
 	return pm
 }
@@ -1033,7 +1064,8 @@ func (c *Columns) EqualWidth() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0"
+	return val != attrValueFalse &&
+		val != attrValueZero
 }
 
 // SetEqualWidth sets whether columns have equal width.
@@ -1044,7 +1076,7 @@ func (c *Columns) SetEqualWidth(b bool) {
 			NamespaceWML,
 		)
 	} else {
-		c.SetAttribute(openxml.NewAttribute(NamespaceWML, "equalWidth", PrefixW, "false"))
+		c.SetAttribute(openxml.NewAttribute(NamespaceWML, "equalWidth", PrefixW, attrValueFalse))
 	}
 }
 
@@ -1085,7 +1117,7 @@ func NewHeaderReference(
 	hr.SetAttribute(
 		openxml.NewAttribute(
 			openxml.NamespaceRelationships,
-			"id",
+			attrNameID,
 			"r",
 			relId,
 		),
@@ -1093,7 +1125,7 @@ func NewHeaderReference(
 	hr.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"type",
+			attrNameType,
 			PrefixW,
 			string(hfType),
 		),
@@ -1105,7 +1137,7 @@ func NewHeaderReference(
 // RelationshipId returns the relationship ID.
 func (hr *HeaderReference) RelationshipId() string {
 	attr, found := hr.GetAttribute(
-		"id",
+		attrNameID,
 		openxml.NamespaceRelationships,
 	)
 	if !found {
@@ -1118,7 +1150,7 @@ func (hr *HeaderReference) RelationshipId() string {
 // Type returns the header type.
 func (hr *HeaderReference) Type() HeaderFooterType {
 	attr, found := hr.GetAttribute(
-		"type",
+		attrNameType,
 		NamespaceWML,
 	)
 	if !found {
@@ -1165,7 +1197,7 @@ func NewFooterReference(
 	fr.SetAttribute(
 		openxml.NewAttribute(
 			openxml.NamespaceRelationships,
-			"id",
+			attrNameID,
 			"r",
 			relId,
 		),
@@ -1173,7 +1205,7 @@ func NewFooterReference(
 	fr.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"type",
+			attrNameType,
 			PrefixW,
 			string(hfType),
 		),
@@ -1185,7 +1217,7 @@ func NewFooterReference(
 // RelationshipId returns the relationship ID.
 func (fr *FooterReference) RelationshipId() string {
 	attr, found := fr.GetAttribute(
-		"id",
+		attrNameID,
 		openxml.NamespaceRelationships,
 	)
 	if !found {
@@ -1198,7 +1230,7 @@ func (fr *FooterReference) RelationshipId() string {
 // Type returns the footer type.
 func (fr *FooterReference) Type() HeaderFooterType {
 	attr, found := fr.GetAttribute(
-		"type",
+		attrNameType,
 		NamespaceWML,
 	)
 	if !found {
@@ -1263,7 +1295,7 @@ func NewSectionType(
 // Value returns the section type value.
 func (st *SectionType) Value() SectionTypeValue {
 	attr, found := st.GetAttribute(
-		"val",
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
@@ -1280,7 +1312,7 @@ func (st *SectionType) SetValue(
 	st.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"val",
+			attrNameVal,
 			PrefixW,
 			string(val),
 		),
@@ -1406,7 +1438,7 @@ func (pn *PageNumberType) SetFormat(
 // Start returns the starting page number.
 func (pn *PageNumberType) Start() int {
 	attr, found := pn.GetAttribute(
-		"start",
+		attrNameStart,
 		NamespaceWML,
 	)
 	if !found {
@@ -1422,7 +1454,7 @@ func (pn *PageNumberType) SetStart(start int) {
 	pn.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"start",
+			attrNameStart,
 			PrefixW,
 			strconv.Itoa(start),
 		),
@@ -1518,9 +1550,9 @@ func NewFormProtection(
 		fp.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
-				"val",
+				attrNameVal,
 				PrefixW,
-				"false",
+				attrValueFalse,
 			),
 		)
 	}
@@ -1531,7 +1563,7 @@ func NewFormProtection(
 // Enabled returns whether form protection is enabled.
 func (fp *FormProtection) Enabled() bool {
 	attr, found := fp.GetAttribute(
-		"val",
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
@@ -1539,7 +1571,8 @@ func (fp *FormProtection) Enabled() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0"
+	return val != attrValueFalse &&
+		val != attrValueZero
 }
 
 // SetEnabled sets whether form protection is enabled.
@@ -1547,9 +1580,12 @@ func (fp *FormProtection) SetEnabled(
 	enabled bool,
 ) {
 	if enabled {
-		fp.RemoveAttribute("val", NamespaceWML)
+		fp.RemoveAttribute(
+			attrNameVal,
+			NamespaceWML,
+		)
 	} else {
-		fp.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, "false"))
+		fp.SetAttribute(openxml.NewAttribute(NamespaceWML, attrNameVal, PrefixW, attrValueFalse))
 	}
 }
 
@@ -1606,9 +1642,9 @@ func NewVerticalTextAlignment(
 }
 
 // Value returns the vertical text alignment value.
-func (vta *VerticalTextAlignment) Value() VerticalTextAlignmentValue {
-	attr, found := vta.GetAttribute(
-		"val",
+func (v *VerticalTextAlignment) Value() VerticalTextAlignmentValue {
+	attr, found := v.GetAttribute(
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
@@ -1621,13 +1657,13 @@ func (vta *VerticalTextAlignment) Value() VerticalTextAlignmentValue {
 }
 
 // SetValue sets the vertical text alignment value.
-func (vta *VerticalTextAlignment) SetValue(
+func (v *VerticalTextAlignment) SetValue(
 	val VerticalTextAlignmentValue,
 ) {
-	vta.SetAttribute(
+	v.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"val",
+			attrNameVal,
 			PrefixW,
 			string(val),
 		),
@@ -1635,18 +1671,18 @@ func (vta *VerticalTextAlignment) SetValue(
 }
 
 // Clone creates a deep copy of this VerticalTextAlignment element.
-func (vta *VerticalTextAlignment) Clone() openxml.Element {
+func (v *VerticalTextAlignment) Clone() openxml.Element {
 	return &VerticalTextAlignment{
-		LeafElementBase: vta.LeafElementBase.Clone().(*openxml.LeafElementBase),
+		LeafElementBase: v.LeafElementBase.Clone().(*openxml.LeafElementBase),
 	}
 }
 
 // CloneNode creates a copy of this VerticalTextAlignment element.
-func (vta *VerticalTextAlignment) CloneNode(
+func (v *VerticalTextAlignment) CloneNode(
 	deep bool,
 ) openxml.Element {
 	return &VerticalTextAlignment{
-		LeafElementBase: vta.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: v.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
 	}
 }
 
@@ -1667,9 +1703,9 @@ func NewNoEndnote(suppress bool) *NoEndnote {
 		ne.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
-				"val",
+				attrNameVal,
 				PrefixW,
-				"false",
+				attrValueFalse,
 			),
 		)
 	}
@@ -1680,7 +1716,7 @@ func NewNoEndnote(suppress bool) *NoEndnote {
 // Suppressed returns whether endnotes are suppressed.
 func (ne *NoEndnote) Suppressed() bool {
 	attr, found := ne.GetAttribute(
-		"val",
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
@@ -1688,7 +1724,8 @@ func (ne *NoEndnote) Suppressed() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0"
+	return val != attrValueFalse &&
+		val != attrValueZero
 }
 
 // SetSuppressed sets whether endnotes are suppressed.
@@ -1696,9 +1733,12 @@ func (ne *NoEndnote) SetSuppressed(
 	suppress bool,
 ) {
 	if suppress {
-		ne.RemoveAttribute("val", NamespaceWML)
+		ne.RemoveAttribute(
+			attrNameVal,
+			NamespaceWML,
+		)
 	} else {
-		ne.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, "false"))
+		ne.SetAttribute(openxml.NewAttribute(NamespaceWML, attrNameVal, PrefixW, attrValueFalse))
 	}
 }
 
@@ -1853,7 +1893,7 @@ func (ln *LineNumberType) SetCountBy(count int) {
 // Start returns the starting line number.
 func (ln *LineNumberType) Start() int {
 	attr, found := ln.GetAttribute(
-		"start",
+		attrNameStart,
 		NamespaceWML,
 	)
 	if !found {
@@ -1867,9 +1907,12 @@ func (ln *LineNumberType) Start() int {
 // SetStart sets the starting line number.
 func (ln *LineNumberType) SetStart(start int) {
 	if start <= 1 {
-		ln.RemoveAttribute("start", NamespaceWML)
+		ln.RemoveAttribute(
+			attrNameStart,
+			NamespaceWML,
+		)
 	} else {
-		ln.SetAttribute(openxml.NewAttribute(NamespaceWML, "start", PrefixW, strconv.Itoa(start)))
+		ln.SetAttribute(openxml.NewAttribute(NamespaceWML, attrNameStart, PrefixW, strconv.Itoa(start)))
 	}
 }
 
@@ -1983,7 +2026,7 @@ func NewTextDirection(
 // Value returns the text direction value.
 func (td *TextDirection) Value() TextDirectionValue {
 	attr, found := td.GetAttribute(
-		"val",
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
@@ -2000,7 +2043,7 @@ func (td *TextDirection) SetValue(
 	td.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"val",
+			attrNameVal,
 			PrefixW,
 			string(val),
 		),
@@ -2040,9 +2083,9 @@ func NewRTLGutter(enabled bool) *RTLGutter {
 		rg.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
-				"val",
+				attrNameVal,
 				PrefixW,
-				"false",
+				attrValueFalse,
 			),
 		)
 	}
@@ -2053,7 +2096,7 @@ func NewRTLGutter(enabled bool) *RTLGutter {
 // Enabled returns whether RTL gutter is enabled.
 func (rg *RTLGutter) Enabled() bool {
 	attr, found := rg.GetAttribute(
-		"val",
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
@@ -2061,15 +2104,19 @@ func (rg *RTLGutter) Enabled() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0"
+	return val != attrValueFalse &&
+		val != attrValueZero
 }
 
 // SetEnabled sets whether RTL gutter is enabled.
 func (rg *RTLGutter) SetEnabled(enabled bool) {
 	if enabled {
-		rg.RemoveAttribute("val", NamespaceWML)
+		rg.RemoveAttribute(
+			attrNameVal,
+			NamespaceWML,
+		)
 	} else {
-		rg.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, "false"))
+		rg.SetAttribute(openxml.NewAttribute(NamespaceWML, attrNameVal, PrefixW, attrValueFalse))
 	}
 }
 
@@ -2122,7 +2169,7 @@ func NewDocGrid() *DocGrid {
 // Type returns the document grid type.
 func (dg *DocGrid) Type() DocGridTypeValue {
 	attr, found := dg.GetAttribute(
-		"type",
+		attrNameType,
 		NamespaceWML,
 	)
 	if !found {
@@ -2135,9 +2182,12 @@ func (dg *DocGrid) Type() DocGridTypeValue {
 // SetType sets the document grid type.
 func (dg *DocGrid) SetType(val DocGridTypeValue) {
 	if val == DocGridDefault {
-		dg.RemoveAttribute("type", NamespaceWML)
+		dg.RemoveAttribute(
+			attrNameType,
+			NamespaceWML,
+		)
 	} else {
-		dg.SetAttribute(openxml.NewAttribute(NamespaceWML, "type", PrefixW, string(val)))
+		dg.SetAttribute(openxml.NewAttribute(NamespaceWML, attrNameType, PrefixW, string(val)))
 	}
 }
 

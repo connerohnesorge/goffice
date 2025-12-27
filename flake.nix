@@ -89,13 +89,13 @@ nix fmt
         };
         lint = {
           exec = ''
-            golangci-lint run
+            golangci-lint run --fix
           '';
           description = "Run golangci-lint";
         };
         tests = {
           exec = rooted ''
-            gotestsum --format short-verbose "$REPO_ROOT"/...
+            gotestsum --format short-verbose "$REPO_ROOT"/... --timeout=5m
           '';
           description = "Run tests";
           deps = [pkgs.gotestsum];

@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: complex struct with many methods
 package elements
 
 import (
@@ -17,6 +18,18 @@ const (
 	MultiLevelMultilevel MultiLevelTypeValue = "multilevel"
 	// MultiLevelHybridMultilevel indicates hybrid multi-level numbering.
 	MultiLevelHybridMultilevel MultiLevelTypeValue = "hybridMultilevel"
+)
+
+// Constants for abstract numbering definitions.
+const (
+	// valAttr is the attribute name for value attributes in numbering elements.
+	valAttr = "val"
+	// maxLevelCount is the maximum number of levels in a numbering definition (0-8).
+	maxLevelCount = 9
+	// levelIndentTwips is the base indentation per level in twips (720 = 0.5 inch).
+	levelIndentTwips = 720
+	// hangingIndentTwips is the hanging indentation in twips (360 = 0.25 inch).
+	hangingIndentTwips = 360
 )
 
 // AbstractNum represents an abstract numbering definition (w:abstractNum).
@@ -76,7 +89,7 @@ func (an *AbstractNum) MultiLevelType() MultiLevelTypeValue {
 		return MultiLevelSingleLevel
 	}
 	attr, found := elem.GetAttribute(
-		"val",
+		valAttr,
 		NamespaceWML,
 	)
 	if !found {
@@ -96,7 +109,7 @@ func (an *AbstractNum) SetMultiLevelType(
 	elem.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"val",
+			valAttr,
 			PrefixW,
 			string(t),
 		),
@@ -113,7 +126,7 @@ func (an *AbstractNum) NumberingStyleLink() string {
 		return ""
 	}
 	attr, found := elem.GetAttribute(
-		"val",
+		valAttr,
 		NamespaceWML,
 	)
 	if !found {
@@ -136,7 +149,7 @@ func (an *AbstractNum) SetNumberingStyleLink(
 	elem.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"val",
+			valAttr,
 			PrefixW,
 			styleId,
 		),
@@ -153,7 +166,7 @@ func (an *AbstractNum) StyleLink() string {
 		return ""
 	}
 	attr, found := elem.GetAttribute(
-		"val",
+		valAttr,
 		NamespaceWML,
 	)
 	if !found {
@@ -176,7 +189,7 @@ func (an *AbstractNum) SetStyleLink(
 	elem.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"val",
+			valAttr,
 			PrefixW,
 			styleId,
 		),
@@ -291,8 +304,8 @@ func NewBulletList(
 		MultiLevelHybridMultilevel,
 	)
 
-	// Create 9 levels with the same bullet
-	for i := range 9 {
+	// Create levels with the same bullet
+	for i := range maxLevelCount {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatBullet)
@@ -301,9 +314,9 @@ func NewBulletList(
 			JustificationLeft,
 		)
 
-		// Set indentation: each level indented 720 twips (0.5 inch) more
-		indent := (i + 1) * 720
-		hanging := 360
+		// Set indentation: each level indented by levelIndentTwips more
+		indent := (i + 1) * levelIndentTwips
+		hanging := hangingIndentTwips
 		lvl.SetIndentation(indent, hanging)
 
 		// Set the bullet font
@@ -365,7 +378,7 @@ func NewStandardBulletList() *AbstractNum {
 		MultiLevelHybridMultilevel,
 	)
 
-	for i := range 9 {
+	for i := range maxLevelCount {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatBullet)
@@ -375,8 +388,8 @@ func NewStandardBulletList() *AbstractNum {
 		)
 
 		// Set indentation
-		indent := (i + 1) * 720
-		hanging := 360
+		indent := (i + 1) * levelIndentTwips
+		hanging := hangingIndentTwips
 		lvl.SetIndentation(indent, hanging)
 
 		// Set the bullet font
@@ -394,7 +407,7 @@ func NewDecimalList() *AbstractNum {
 		MultiLevelHybridMultilevel,
 	)
 
-	for i := range 9 {
+	for i := range maxLevelCount {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatDecimal)
@@ -406,8 +419,8 @@ func NewDecimalList() *AbstractNum {
 		)
 
 		// Set indentation
-		indent := (i + 1) * 720
-		hanging := 360
+		indent := (i + 1) * levelIndentTwips
+		hanging := hangingIndentTwips
 		lvl.SetIndentation(indent, hanging)
 	}
 
@@ -415,6 +428,8 @@ func NewDecimalList() *AbstractNum {
 }
 
 // NewAlphabeticList creates an alphabetic list (a, b, c... or A, B, C...).
+//
+//nolint:revive // flag-parameter: lowercase is a clear, intentional design choice
 func NewAlphabeticList(
 	lowercase bool,
 ) *AbstractNum {
@@ -428,7 +443,7 @@ func NewAlphabeticList(
 		format = NumberFormatLowerLetter
 	}
 
-	for i := range 9 {
+	for i := range maxLevelCount {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(format)
@@ -440,8 +455,8 @@ func NewAlphabeticList(
 		)
 
 		// Set indentation
-		indent := (i + 1) * 720
-		hanging := 360
+		indent := (i + 1) * levelIndentTwips
+		hanging := hangingIndentTwips
 		lvl.SetIndentation(indent, hanging)
 	}
 
@@ -449,6 +464,8 @@ func NewAlphabeticList(
 }
 
 // NewRomanNumeralList creates a Roman numeral list (i, ii, iii... or I, II, III...).
+//
+//nolint:revive // flag-parameter: lowercase is a clear, intentional design choice
 func NewRomanNumeralList(
 	lowercase bool,
 ) *AbstractNum {
@@ -462,7 +479,7 @@ func NewRomanNumeralList(
 		format = NumberFormatLowerRoman
 	}
 
-	for i := range 9 {
+	for i := range maxLevelCount {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(format)
@@ -474,8 +491,8 @@ func NewRomanNumeralList(
 		)
 
 		// Set indentation
-		indent := (i + 1) * 720
-		hanging := 360
+		indent := (i + 1) * levelIndentTwips
+		hanging := hangingIndentTwips
 		lvl.SetIndentation(indent, hanging)
 	}
 
@@ -487,7 +504,10 @@ func NewOutlineList() *AbstractNum {
 	an := NewAbstractNum()
 	an.SetMultiLevelType(MultiLevelMultilevel)
 
-	for i := range 9 {
+	// outlineHangingIncrement is the additional hanging indent per level for outline lists.
+	const outlineHangingIncrement = 180
+
+	for i := range maxLevelCount {
 		lvl := an.AddLevel(i)
 		lvl.SetStart(1)
 		lvl.SetNumberFormat(NumberFormatDecimal)
@@ -506,8 +526,8 @@ func NewOutlineList() *AbstractNum {
 		)
 
 		// Set indentation
-		indent := (i + 1) * 720
-		hanging := 360 + (i * 180) // Increase hanging for longer numbers
+		indent := (i + 1) * levelIndentTwips
+		hanging := hangingIndentTwips + (i * outlineHangingIncrement) // Increase hanging for longer numbers
 		lvl.SetIndentation(indent, hanging)
 	}
 

@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: paragraph element with comprehensive functionality
 package elements
 
 import (
@@ -69,17 +70,18 @@ func (p *Paragraph) GetOrCreateProperties() *ParagraphProperties {
 func (p *Paragraph) Runs() iter.Seq[*Run] {
 	return func(yield func(*Run) bool) {
 		for child := range p.Children() {
-			if child.LocalName() == "r" &&
-				child.NamespaceURI() == NamespaceWML {
-				var r *Run
-				if run, ok := child.(*Run); ok {
-					r = run
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					r = &Run{CompositeElementBase: comp}
-				}
-				if r != nil && !yield(r) {
-					return
-				}
+			if child.LocalName() != "r" ||
+				child.NamespaceURI() != NamespaceWML {
+				continue
+			}
+			var r *Run
+			if run, ok := child.(*Run); ok {
+				r = run
+			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
+				r = &Run{CompositeElementBase: comp}
+			}
+			if r != nil && !yield(r) {
+				return
 			}
 		}
 	}
@@ -177,8 +179,10 @@ func (p *Paragraph) AppendBreak(
 
 // Clone creates a deep copy of this Paragraph element.
 func (p *Paragraph) Clone() openxml.Element {
+	cloned := p.CompositeElementBase.Clone()
+
 	return &Paragraph{
-		CompositeElementBase: p.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -186,8 +190,12 @@ func (p *Paragraph) Clone() openxml.Element {
 func (p *Paragraph) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := p.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Paragraph{
-		CompositeElementBase: p.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -340,7 +348,8 @@ func (p *Paragraph) RemoveNumbering() *Paragraph {
 	return p
 }
 
-// SetNumberingLevel sets the numbering level (0-8) for an already numbered paragraph.
+// SetNumberingLevel sets the numbering level (0-8)
+// for an already numbered paragraph.
 func (p *Paragraph) SetNumberingLevel(
 	level int,
 ) *Paragraph {
@@ -356,7 +365,8 @@ func (p *Paragraph) SetNumberingLevel(
 	return p
 }
 
-// NumberingId returns the numbering ID for this paragraph, or 0 if not numbered.
+// NumberingId returns the numbering ID for this paragraph,
+// or 0 if not numbered.
 func (p *Paragraph) NumberingId() int {
 	props := p.Properties()
 	if props == nil {
@@ -370,7 +380,8 @@ func (p *Paragraph) NumberingId() int {
 	return np.NumberingId()
 }
 
-// NumberingLevel returns the numbering level for this paragraph, or -1 if not numbered.
+// NumberingLevel returns the numbering level for this paragraph,
+// or -1 if not numbered.
 func (p *Paragraph) NumberingLevel() int {
 	props := p.Properties()
 	if props == nil {

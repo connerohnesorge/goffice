@@ -32,7 +32,8 @@ func NewBooleanValue(v bool) *BooleanValue {
 	}
 }
 
-// NewBooleanValueWithFormat creates a new BooleanValue with the given boolean and output format.
+// NewBooleanValueWithFormat creates a new BooleanValue with the given
+// boolean and output format.
 func NewBooleanValueWithFormat(
 	v bool,
 	format BooleanOutputFormat,
@@ -97,13 +98,16 @@ func (bv *BooleanValue) InnerText() string {
 		}
 
 		return "0"
-	default:
+	case BooleanFormatTrueFalse:
 		if bv.value {
 			return "true"
 		}
 
 		return "false"
 	}
+
+	// Unreachable with current enum values, but required for compilation.
+	return ""
 }
 
 // SetInnerText parses the value from a string.

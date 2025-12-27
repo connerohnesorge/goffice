@@ -1,3 +1,18 @@
+// Package openxml provides helper functions for traversing and querying
+// Open XML document element trees. This file contains generic utility functions
+// for working with Element and CompositeElement types, including:
+//
+//   - First, All: Get child elements of a specific type
+//   - OfType: Filter element sequences by type
+//   - Descendants, DescendantsOfType: Traverse all descendant elements
+//   - Ancestors, AncestorsOfType: Traverse ancestor elements
+//   - FindAncestor, FindDescendant: Find first matching element
+//   - SiblingsAfter, SiblingsBefore: Iterate sibling elements
+//   - Count, CountOfType: Count elements in a sequence
+//   - ToSlice, ToSliceOfType: Convert iterators to slices
+//
+// All traversal functions return iter.Seq iterators for lazy evaluation
+// and composition with Go's range-over-function syntax.
 package openxml
 
 import "iter"
@@ -30,10 +45,12 @@ func All[T Element](
 		}
 
 		for child := range parent.Children() {
-			if typed, ok := child.(T); ok {
-				if !yield(typed) {
-					return
-				}
+			typed, ok := child.(T)
+			if !ok {
+				continue
+			}
+			if !yield(typed) {
+				return
 			}
 		}
 	}
@@ -45,10 +62,12 @@ func OfType[T Element](
 ) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for elem := range elements {
-			if typed, ok := elem.(T); ok {
-				if !yield(typed) {
-					return
-				}
+			typed, ok := elem.(T)
+			if !ok {
+				continue
+			}
+			if !yield(typed) {
+				return
 			}
 		}
 	}
@@ -75,13 +94,15 @@ func descendantsRecursive(
 		if !yield(child) {
 			return false
 		}
-		if childComp, ok := child.(CompositeElement); ok {
-			if !descendantsRecursive(
-				childComp,
-				yield,
-			) {
-				return false
-			}
+		childComp, ok := child.(CompositeElement)
+		if !ok {
+			continue
+		}
+		if !descendantsRecursive(
+			childComp,
+			yield,
+		) {
+			return false
 		}
 	}
 
@@ -106,25 +127,27 @@ func descendantsOfTypeRecursive[T Element](
 	yield func(T) bool,
 ) bool {
 	for child := range parent.Children() {
-		if typed, ok := child.(T); ok {
-			if !yield(typed) {
-				return false
-			}
+		typed, ok := child.(T)
+		if ok && !yield(typed) {
+			return false
 		}
-		if childComp, ok := child.(CompositeElement); ok {
-			if !descendantsOfTypeRecursive[T](
-				childComp,
-				yield,
-			) {
-				return false
-			}
+		childComp, ok := child.(CompositeElement)
+		if !ok {
+			continue
+		}
+		if !descendantsOfTypeRecursive[T](
+			childComp,
+			yield,
+		) {
+			return false
 		}
 	}
 
 	return true
 }
 
-// Ancestors returns an iterator over all ancestor elements (from parent to root).
+// Ancestors returns an iterator over all ancestor elements
+// (from parent to root).
 func Ancestors(el Element) iter.Seq[Element] {
 	return func(yield func(Element) bool) {
 		if el == nil {
@@ -149,10 +172,12 @@ func AncestorsOfType[T Element](
 		}
 
 		for parent := el.Parent(); parent != nil; parent = parent.Parent() {
-			if typed, ok := parent.(T); ok {
-				if !yield(typed) {
-					return
-				}
+			typed, ok := parent.(T)
+			if !ok {
+				continue
+			}
+			if !yield(typed) {
+				return
 			}
 		}
 	}
@@ -275,7 +300,7 @@ func CountOfType[T Element](
 func ToSlice(
 	elements iter.Seq[Element],
 ) []Element {
-	var result []Element
+	result := make([]Element, 0)
 	for elem := range elements {
 		result = append(result, elem)
 	}

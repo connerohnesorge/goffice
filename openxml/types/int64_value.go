@@ -5,6 +5,12 @@ import (
 	"strconv"
 )
 
+// int64ParseBase is the base used for parsing integer strings.
+const int64ParseBase = 10
+
+// int64BitSize is the bit size for parsing int64 values.
+const int64BitSize = 64
+
 // Int64Value wraps a 64-bit signed integer value with optional nil/unset state.
 // It implements the SimpleValue interface.
 type Int64Value struct {
@@ -54,7 +60,10 @@ func (iv *Int64Value) InnerText() string {
 		return ""
 	}
 
-	return strconv.FormatInt(iv.value, 10)
+	return strconv.FormatInt(
+		iv.value,
+		int64ParseBase,
+	)
 }
 
 // SetInnerText parses the value from a string.
@@ -68,7 +77,11 @@ func (iv *Int64Value) SetInnerText(
 
 		return nil
 	}
-	v, err := strconv.ParseInt(text, 10, 64)
+	v, err := strconv.ParseInt(
+		text,
+		int64ParseBase,
+		int64BitSize,
+	)
 	if err != nil {
 		return fmt.Errorf(
 			"invalid int64 value: %w",
@@ -87,8 +100,8 @@ func (iv *Int64Value) SetNil() {
 	iv.hasValue = false
 }
 
-// UInt64Value wraps a 64-bit unsigned integer value with optional nil/unset state.
-// It implements the SimpleValue interface.
+// UInt64Value wraps a 64-bit unsigned integer value with optional
+// nil/unset state. It implements the SimpleValue interface.
 type UInt64Value struct {
 	value    uint64
 	hasValue bool
@@ -136,7 +149,10 @@ func (uv *UInt64Value) InnerText() string {
 		return ""
 	}
 
-	return strconv.FormatUint(uv.value, 10)
+	return strconv.FormatUint(
+		uv.value,
+		int64ParseBase,
+	)
 }
 
 // SetInnerText parses the value from a string.
@@ -157,7 +173,11 @@ func (uv *UInt64Value) SetInnerText(
 			text,
 		)
 	}
-	v, err := strconv.ParseUint(text, 10, 64)
+	v, err := strconv.ParseUint(
+		text,
+		int64ParseBase,
+		int64BitSize,
+	)
 	if err != nil {
 		return fmt.Errorf(
 			"invalid uint64 value: %w",
@@ -176,7 +196,8 @@ func (uv *UInt64Value) SetNil() {
 	uv.hasValue = false
 }
 
-// Ensure Int64Value and UInt64Value implement SimpleValue and Resettable interfaces.
+// Ensure Int64Value and UInt64Value implement SimpleValue and Resettable
+// interfaces.
 var (
 	_ SimpleValue = (*Int64Value)(nil)
 	_ Resettable  = (*Int64Value)(nil)

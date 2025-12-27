@@ -1,15 +1,22 @@
+//nolint:revive // file-length-limit: comprehensive document builder with many helper methods
 package wordprocessing
 
 import (
 	"bytes"
 
 	"github.com/connerohnesorge/goffice/wordprocessing/elements"
-	"github.com/connerohnesorge/goffice/wordprocessing/parts"
+)
+
+const (
+	maxHeadingLevel    = 9
+	emuPerInch         = 914400 // EMUs per inch
+	defaultBorderWidth = 6      // default border width in eighths of a point
+	twipsPerPoint      = 20     // twips per point
+	pctMultiplier      = 50     // multiplier for percentage calculations
 )
 
 // DocumentBuilder provides a fluent API for creating Word documents.
 type DocumentBuilder struct {
-	mainPart *parts.MainPart
 	document *elements.Document
 	images   []imageData
 	errors   []error
@@ -31,7 +38,8 @@ func NewDocumentBuilder() *DocumentBuilder {
 	}
 }
 
-// AddParagraph adds a paragraph with the given text and returns a ParagraphBuilder.
+// AddParagraph adds a paragraph with the given text.
+// It returns a ParagraphBuilder for further customization.
 func (db *DocumentBuilder) AddParagraph(
 	text string,
 ) *ParagraphBuilder {
@@ -58,7 +66,7 @@ func (db *DocumentBuilder) AddHeading(
 
 	// Apply heading style
 	styleId := "Heading1"
-	if level >= 1 && level <= 9 {
+	if level >= 1 && level <= maxHeadingLevel {
 		styleId = "Heading" + string(
 			rune('0'+level),
 		)
@@ -98,8 +106,8 @@ func (db *DocumentBuilder) AddImage(
 		docBuilder:  db,
 		data:        data,
 		contentType: contentType,
-		width:       914400, // Default 1 inch
-		height:      914400, // Default 1 inch
+		width:       emuPerInch, // Default 1 inch
+		height:      emuPerInch, // Default 1 inch
 	}
 }
 
@@ -137,7 +145,7 @@ func (db *DocumentBuilder) AddHorizontalRule() *DocumentBuilder {
 	borders := props.GetOrCreateParagraphBorders()
 	borders.SetBottom(
 		elements.BorderSingle,
-		6,
+		defaultBorderWidth,
 		"auto",
 	)
 
@@ -146,7 +154,7 @@ func (db *DocumentBuilder) AddHorizontalRule() *DocumentBuilder {
 
 // SetTitle sets the document title (for core properties).
 func (db *DocumentBuilder) SetTitle(
-	title string,
+	_ string,
 ) *DocumentBuilder {
 	// This would set the core properties title
 	// For now, we'll just track it
@@ -155,7 +163,7 @@ func (db *DocumentBuilder) SetTitle(
 
 // SetAuthor sets the document author (for core properties).
 func (db *DocumentBuilder) SetAuthor(
-	author string,
+	_ string,
 ) *DocumentBuilder {
 	// This would set the core properties author
 	return db
@@ -319,7 +327,7 @@ func (pb *ParagraphBuilder) Style(
 func (pb *ParagraphBuilder) SpacingBefore(
 	points int,
 ) *ParagraphBuilder {
-	twips := points * 20 // Convert points to twips
+	twips := points * twipsPerPoint
 	pb.paragraph.SetSpacingBefore(twips)
 
 	return pb
@@ -329,7 +337,7 @@ func (pb *ParagraphBuilder) SpacingBefore(
 func (pb *ParagraphBuilder) SpacingAfter(
 	points int,
 ) *ParagraphBuilder {
-	twips := points * 20 // Convert points to twips
+	twips := points * twipsPerPoint
 	pb.paragraph.SetSpacingAfter(twips)
 
 	return pb
@@ -339,7 +347,7 @@ func (pb *ParagraphBuilder) SpacingAfter(
 func (pb *ParagraphBuilder) LeftIndent(
 	points int,
 ) *ParagraphBuilder {
-	twips := points * 20 // Convert points to twips
+	twips := points * twipsPerPoint
 	pb.paragraph.SetLeftIndent(twips)
 
 	return pb
@@ -349,7 +357,7 @@ func (pb *ParagraphBuilder) LeftIndent(
 func (pb *ParagraphBuilder) RightIndent(
 	points int,
 ) *ParagraphBuilder {
-	twips := points * 20 // Convert points to twips
+	twips := points * twipsPerPoint
 	pb.paragraph.SetRightIndent(twips)
 
 	return pb
@@ -359,7 +367,7 @@ func (pb *ParagraphBuilder) RightIndent(
 func (pb *ParagraphBuilder) FirstLineIndent(
 	points int,
 ) *ParagraphBuilder {
-	twips := points * 20 // Convert points to twips
+	twips := points * twipsPerPoint
 	pb.paragraph.SetFirstLineIndent(twips)
 
 	return pb
@@ -369,7 +377,7 @@ func (pb *ParagraphBuilder) FirstLineIndent(
 func (pb *ParagraphBuilder) HangingIndent(
 	points int,
 ) *ParagraphBuilder {
-	twips := points * 20 // Convert points to twips
+	twips := points * twipsPerPoint
 	pb.paragraph.SetHangingIndent(twips)
 
 	return pb
@@ -535,6 +543,8 @@ func (tb *TableBuilder) SetCellText(
 }
 
 // SetColumnWidth sets the width of a specific column in twips.
+//
+//nolint:revive // enforce-repeated-arg-type-style: explicit types improve readability
 func (tb *TableBuilder) SetColumnWidth(
 	col int,
 	width int,
@@ -593,7 +603,7 @@ func (tb *TableBuilder) SetWidthPercent(
 	percent int,
 ) *TableBuilder {
 	// PCT is in fiftieths of a percent (5000 = 100%)
-	pct := percent * 50
+	pct := percent * pctMultiplier
 
 	return tb.SetWidth(
 		pct,
@@ -661,47 +671,47 @@ type TableRowBuilder struct {
 }
 
 // SetHeight sets the row height.
-func (trb *TableRowBuilder) SetHeight(
+func (t *TableRowBuilder) SetHeight(
 	height int,
 	rule elements.HeightRule,
 ) *TableRowBuilder {
-	trb.row.SetHeight(height, rule)
+	t.row.SetHeight(height, rule)
 
-	return trb
+	return t
 }
 
 // SetHeaderRow marks this row as a header row.
-func (trb *TableRowBuilder) SetHeaderRow(
+func (t *TableRowBuilder) SetHeaderRow(
 	isHeader bool,
 ) *TableRowBuilder {
-	trb.row.SetHeaderRow(isHeader)
+	t.row.SetHeaderRow(isHeader)
 
-	return trb
+	return t
 }
 
 // Cell returns a TableCellBuilder for the specified cell in this row.
-func (trb *TableRowBuilder) Cell(
+func (t *TableRowBuilder) Cell(
 	col int,
 ) *TableCellBuilder {
-	cell := trb.row.GetCell(col)
+	cell := t.row.GetCell(col)
 	if cell == nil {
 		return nil
 	}
 
 	return &TableCellBuilder{
 		cell:         cell,
-		tableBuilder: trb.tableBuilder,
+		tableBuilder: t.tableBuilder,
 	}
 }
 
 // Table returns the TableBuilder to continue building the table.
-func (trb *TableRowBuilder) Table() *TableBuilder {
-	return trb.tableBuilder
+func (t *TableRowBuilder) Table() *TableBuilder {
+	return t.tableBuilder
 }
 
 // Row returns the underlying TableRow element.
-func (trb *TableRowBuilder) Row() *elements.TableRow {
-	return trb.row
+func (t *TableRowBuilder) Row() *elements.TableRow {
+	return t.row
 }
 
 // TableCellBuilder provides a fluent API for building table cells.
@@ -896,7 +906,8 @@ func (ib *ImageBuilder) Inline() *ImageBuilder {
 }
 
 // Insert inserts the image and returns to the DocumentBuilder.
-// Note: The actual image part creation happens in Build() when a package is available.
+// Note: The actual image part creation happens in Build()
+// when a package is available.
 func (ib *ImageBuilder) Insert() *DocumentBuilder {
 	// Store the image data for later processing
 	ib.docBuilder.images = append(

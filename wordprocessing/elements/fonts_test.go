@@ -312,7 +312,11 @@ func TestFontsClone(t *testing.T) {
 	font := f.AddFontByName("Arial")
 	font.SetFamily(FontFamilySwiss)
 
-	clone := f.Clone().(*Fonts)
+	cloneElem := f.Clone()
+	clone, ok := cloneElem.(*Fonts)
+	if !ok {
+		t.Fatal("Expected Clone to return *Fonts")
+	}
 
 	// Verify clone has the font
 	clonedFont := clone.GetFont("Arial")
@@ -343,7 +347,11 @@ func TestFontClone(t *testing.T) {
 	font.SetFamily(FontFamilyModern)
 	font.SetPitch(FontPitchFixed)
 
-	clone := font.Clone().(*Font)
+	cloneElem := font.Clone()
+	clone, ok := cloneElem.(*Font)
+	if !ok {
+		t.Fatal("Expected Clone to return *Font")
+	}
 
 	if clone.Name() != "TestFont" {
 		t.Errorf(

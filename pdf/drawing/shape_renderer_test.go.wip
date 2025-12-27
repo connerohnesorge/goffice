@@ -1,0 +1,204 @@
+// Package drawing provides DrawingML rendering tests.
+package drawing
+
+import (
+	"testing"
+
+	"github.com/connerohnesorge/goffice-pdf/core"
+	"github.com/connerohnesorge/goffice/drawingml"
+)
+
+func TestShapeRenderer(t *testing.T) {
+	// Create test render context
+	doc := core.NewDocument()
+	page := doc.AddPage(core.PageSizeLetter)
+	ctx := &core.RenderContext{
+		Document: doc,
+		Page:     page,
+	}
+
+	renderer := NewShapeRenderer(ctx)
+
+	// Test preset shape rendering
+	t.Run("Rectangle", func(t *testing.T) {
+		sp := drawingml.NewShapeProperties()
+		sp.SetTransformValues(
+			drawingml.PointsToEmu(100),
+			drawingml.PointsToEmu(100),
+			drawingml.PointsToEmu(200),
+			drawingml.PointsToEmu(150),
+		)
+		sp.SetPresetShape(
+			drawingml.ShapeTypeRectangle,
+		)
+
+		err := renderer.RenderShapeWithFill(
+			sp,
+			nil,
+			nil,
+		)
+		if err != nil {
+			t.Errorf(
+				"Failed to render rectangle: %v",
+				err,
+			)
+		}
+	})
+
+	t.Run("Ellipse", func(t *testing.T) {
+		sp := drawingml.NewShapeProperties()
+		sp.SetTransformValues(
+			drawingml.PointsToEmu(100),
+			drawingml.PointsToEmu(200),
+			drawingml.PointsToEmu(150),
+			drawingml.PointsToEmu(150),
+		)
+		sp.SetPresetShape(
+			drawingml.ShapeTypeEllipse,
+		)
+
+		err := renderer.RenderShapeWithFill(
+			sp,
+			nil,
+			nil,
+		)
+		if err != nil {
+			t.Errorf(
+				"Failed to render ellipse: %v",
+				err,
+			)
+		}
+	})
+
+	t.Run("Star", func(t *testing.T) {
+		sp := drawingml.NewShapeProperties()
+		sp.SetTransformValues(
+			drawingml.PointsToEmu(300),
+			drawingml.PointsToEmu(100),
+			drawingml.PointsToEmu(100),
+			drawingml.PointsToEmu(100),
+		)
+		sp.SetPresetShape(
+			drawingml.ShapeTypeStar5,
+		)
+
+		err := renderer.RenderShapeWithFill(
+			sp,
+			nil,
+			nil,
+		)
+		if err != nil {
+			t.Errorf(
+				"Failed to render star: %v",
+				err,
+			)
+		}
+	})
+}
+
+func TestPresetGeometries(t *testing.T) {
+	path := &Path{}
+
+	tests := []struct {
+		name      string
+		shapeType drawingml.ShapeTypeValue
+	}{
+		{
+			"Rectangle",
+			drawingml.ShapeTypeRectangle,
+		},
+		{
+			"RoundRectangle",
+			drawingml.ShapeTypeRoundRectangle,
+		},
+		{"Ellipse", drawingml.ShapeTypeEllipse},
+		{"Triangle", drawingml.ShapeTypeTriangle},
+		{"Diamond", drawingml.ShapeTypeDiamond},
+		{"Pentagon", drawingml.ShapeTypePentagon},
+		{"Hexagon", drawingml.ShapeTypeHexagon},
+		{"Star5", drawingml.ShapeTypeStar5},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			geom := drawingml.NewPresetGeometry(
+				tt.shapeType,
+			)
+			err := renderPresetGeometry(
+				geom,
+				path,
+				0,
+				0,
+				100,
+				100,
+			)
+			if err != nil {
+				t.Errorf(
+					"Failed to render %s: %v",
+					tt.name,
+					err,
+				)
+			}
+		})
+	}
+}
+
+func TestRoundRectangle(t *testing.T) {
+	path := &Path{}
+	renderRoundRectangle(path, 0, 0, 100, 100, 10)
+	// Test passes if no panic
+}
+
+func TestEllipse(t *testing.T) {
+	path := &Path{}
+	renderEllipse(path, 0, 0, 100, 100)
+	// Test passes if no panic
+}
+
+func TestPolygon(t *testing.T) {
+	path := &Path{}
+
+	tests := []struct {
+		sides int
+	}{
+		{3}, {4}, {5}, {6}, {8},
+	}
+
+	for _, tt := range tests {
+		t.Run("Polygon", func(t *testing.T) {
+			renderPolygon(
+				path,
+				0,
+				0,
+				100,
+				100,
+				tt.sides,
+			)
+			// Test passes if no panic
+		})
+	}
+}
+
+func TestStar(t *testing.T) {
+	path := &Path{}
+
+	tests := []struct {
+		points int
+	}{
+		{4}, {5}, {6}, {8}, {10},
+	}
+
+	for _, tt := range tests {
+		t.Run("Star", func(t *testing.T) {
+			renderStar(
+				path,
+				0,
+				0,
+				100,
+				100,
+				tt.points,
+			)
+			// Test passes if no panic
+		})
+	}
+}

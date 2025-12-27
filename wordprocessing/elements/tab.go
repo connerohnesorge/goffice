@@ -22,8 +22,10 @@ func NewTab() *Tab {
 
 // Clone creates a deep copy of this Tab element.
 func (t *Tab) Clone() openxml.Element {
+	cloned := t.CompositeElementBase.Clone()
+
 	return &Tab{
-		CompositeElementBase: t.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -31,7 +33,11 @@ func (t *Tab) Clone() openxml.Element {
 func (t *Tab) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := t.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Tab{
-		CompositeElementBase: t.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }

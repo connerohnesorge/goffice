@@ -1,3 +1,4 @@
+//nolint:revive // line-length-limit: OOXML content types and relationship URIs are long strings
 package parts
 
 import (
@@ -86,7 +87,9 @@ func (fp *FootnotesPart) initializeContent() {
 }
 
 // FixedContentType returns the content type for this part.
-func (fp *FootnotesPart) FixedContentType() string {
+//
+//nolint:revive // unused-receiver: interface implementation returns constant
+func (*FootnotesPart) FixedContentType() string {
 	return ContentTypeFootnotes
 }
 
@@ -211,7 +214,9 @@ func (ep *EndnotesPart) initializeContent() {
 }
 
 // FixedContentType returns the content type for this part.
-func (ep *EndnotesPart) FixedContentType() string {
+//
+//nolint:revive // unused-receiver: interface implementation returns constant
+func (*EndnotesPart) FixedContentType() string {
 	return ContentTypeEndnotes
 }
 
@@ -280,13 +285,10 @@ func FootnotesPartFactory(
 	uri string,
 	container openxml.OpenXmlPartContainer,
 ) openxml.OpenXmlPart {
-	pkg := container.Package()
-	if pkg == nil {
-		return nil
-	}
-
-	packPart, err := pkg.Part(uri)
-	if err != nil {
+	// Use GetPackagingPart instead of Package() to avoid locking issues
+	// during initialization when the package lock is already held
+	packPart := container.GetPackagingPart(uri)
+	if packPart == nil {
 		return nil
 	}
 
@@ -307,13 +309,10 @@ func EndnotesPartFactory(
 	uri string,
 	container openxml.OpenXmlPartContainer,
 ) openxml.OpenXmlPart {
-	pkg := container.Package()
-	if pkg == nil {
-		return nil
-	}
-
-	packPart, err := pkg.Part(uri)
-	if err != nil {
+	// Use GetPackagingPart instead of Package() to avoid locking issues
+	// during initialization when the package lock is already held
+	packPart := container.GetPackagingPart(uri)
+	if packPart == nil {
 		return nil
 	}
 

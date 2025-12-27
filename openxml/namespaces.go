@@ -1,3 +1,4 @@
+//nolint:revive // Long namespace URIs cannot be broken across lines
 package openxml
 
 // Common Office Open XML namespace URIs.

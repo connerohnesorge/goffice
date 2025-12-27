@@ -6,6 +6,9 @@ import (
 	"strings"
 )
 
+// floatBitSize is the bit size for parsing float64 values.
+const floatBitSize = 64
+
 // DecimalValue wraps a float64 value for XML decimal attributes.
 // It implements the SimpleValue interface.
 type DecimalValue struct {
@@ -60,7 +63,7 @@ func (dv *DecimalValue) InnerText() string {
 		dv.value,
 		'f',
 		-1,
-		64,
+		floatBitSize,
 	)
 	// Ensure there's no trailing zeros after decimal point for cleaner output
 	// But preserve at least one decimal place if there is one
@@ -85,7 +88,7 @@ func (dv *DecimalValue) SetInnerText(
 	}
 	v, err := strconv.ParseFloat(
 		strings.TrimSpace(text),
-		64,
+		floatBitSize,
 	)
 	if err != nil {
 		return fmt.Errorf(

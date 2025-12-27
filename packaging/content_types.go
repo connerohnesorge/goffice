@@ -9,6 +9,10 @@ import (
 	"sync"
 )
 
+// ContentTypeRelationships is the content type for OPC relationships.
+const ContentTypeRelationships = "application/vnd.openxmlformats-package" +
+	".relationships+xml"
+
 // ContentTypes manages content type mappings for an OPC package.
 // It handles both default content types (by file extension) and
 // override content types (for specific part URIs).
@@ -27,7 +31,7 @@ func NewContentTypes() *ContentTypes {
 
 	// Register standard OPC defaults
 	ct.defaults["xml"] = "application/xml"
-	ct.defaults["rels"] = "application/vnd.openxmlformats-package.relationships+xml"
+	ct.defaults["rels"] = ContentTypeRelationships
 
 	return ct
 }
@@ -148,6 +152,7 @@ func (ct *ContentTypes) Overrides() map[string]string {
 // XML types for [Content_Types].xml serialization
 
 type xmlContentTypes struct {
+	//nolint:revive // XML namespace requires long struct tag
 	XMLName   xml.Name      `xml:"http://schemas.openxmlformats.org/package/2006/content-types Types"`
 	Defaults  []xmlDefault  `xml:"Default"`
 	Overrides []xmlOverride `xml:"Override"`

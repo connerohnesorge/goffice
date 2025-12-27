@@ -1,3 +1,4 @@
+//nolint:revive // line-length-limit: OOXML content types and relationship URIs are long strings
 package parts
 
 import (
@@ -64,7 +65,9 @@ func (np *NumberingPart) initializeContent() {
 }
 
 // FixedContentType returns the content type for this part.
-func (np *NumberingPart) FixedContentType() string {
+//
+//nolint:revive // unused-receiver: interface implementation returns constant
+func (*NumberingPart) FixedContentType() string {
 	return ContentTypeNumbering
 }
 
@@ -76,18 +79,22 @@ func (np *NumberingPart) Numbering() openxml.PartRootElement {
 
 // GetAbstractNum returns an abstract numbering definition by ID.
 // TODO: Implement proper AbstractNum element type.
-func (np *NumberingPart) GetAbstractNum(
-	id int,
-) interface{} {
+//
+//nolint:revive // unused-receiver: TODO stub implementation
+func (*NumberingPart) GetAbstractNum(
+	_ int,
+) any {
 	// TODO: Parse numbering and find abstract num by ID
 	return nil
 }
 
 // GetNumInstance returns a numbering instance by ID.
 // TODO: Implement proper NumInstance element type.
-func (np *NumberingPart) GetNumInstance(
-	id int,
-) interface{} {
+//
+//nolint:revive // unused-receiver: TODO stub implementation
+func (*NumberingPart) GetNumInstance(
+	_ int,
+) any {
 	// TODO: Parse numbering and find num instance by ID
 	return nil
 }
@@ -105,13 +112,10 @@ func NumberingPartFactory(
 	uri string,
 	container openxml.OpenXmlPartContainer,
 ) openxml.OpenXmlPart {
-	pkg := container.Package()
-	if pkg == nil {
-		return nil
-	}
-
-	packPart, err := pkg.Part(uri)
-	if err != nil {
+	// Use GetPackagingPart instead of Package() to avoid locking issues
+	// during initialization when the package lock is already held
+	packPart := container.GetPackagingPart(uri)
+	if packPart == nil {
 		return nil
 	}
 

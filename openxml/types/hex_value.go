@@ -25,8 +25,8 @@ func NewHexBinaryValue(v []byte) *HexBinaryValue {
 	}
 }
 
-// NewHexBinaryValueFromString creates a new HexBinaryValue by parsing a hex string.
-// Returns an error if the string is not valid hexadecimal.
+// NewHexBinaryValueFromString creates a new HexBinaryValue by parsing a
+// hex string. Returns an error if the string is not valid hexadecimal.
 func NewHexBinaryValueFromString(
 	s string,
 ) (*HexBinaryValue, error) {
@@ -71,7 +71,8 @@ func (hv *HexBinaryValue) HasValue() bool {
 	return hv.hasValue
 }
 
-// InnerText returns the uppercase hexadecimal string representation for XML serialization.
+// InnerText returns the uppercase hexadecimal string representation for
+// XML serialization.
 func (hv *HexBinaryValue) InnerText() string {
 	if !hv.hasValue {
 		return ""

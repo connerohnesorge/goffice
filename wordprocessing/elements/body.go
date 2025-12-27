@@ -26,13 +26,13 @@ func NewBody() *Body {
 func (b *Body) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range b.Children() {
-			if child.LocalName() == "p" &&
+			if child.LocalName() == "p" && //nolint:revive
 				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
 				if para, ok := child.(*Paragraph); ok {
 					p = para
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					p = &Paragraph{CompositeElementBase: comp}
+				} else if com, ok := child.(*openxml.CompositeElementBase); ok {
+					p = &Paragraph{CompositeElementBase: com}
 				}
 				if p != nil && !yield(p) {
 					return
@@ -46,13 +46,13 @@ func (b *Body) Paragraphs() iter.Seq[*Paragraph] {
 func (b *Body) Tables() iter.Seq[*Table] {
 	return func(yield func(*Table) bool) {
 		for child := range b.Children() {
-			if child.LocalName() == "tbl" &&
+			if child.LocalName() == "tbl" && //nolint:revive
 				child.NamespaceURI() == NamespaceWML {
 				var t *Table
 				if tbl, ok := child.(*Table); ok {
 					t = tbl
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					t = &Table{CompositeElementBase: comp}
+				} else if com, ok := child.(*openxml.CompositeElementBase); ok {
+					t = &Table{CompositeElementBase: com}
 				}
 				if t != nil && !yield(t) {
 					return
@@ -80,7 +80,8 @@ func (b *Body) SectionProperties() *SectionProperties {
 	return nil
 }
 
-// GetOrCreateSectionProperties returns the section properties, creating if needed.
+// GetOrCreateSectionProperties returns the section properties,
+// creating if needed.
 func (b *Body) GetOrCreateSectionProperties() *SectionProperties {
 	sp := b.SectionProperties()
 	if sp != nil {
@@ -177,8 +178,10 @@ func (b *Body) ClearContent() {
 
 // Clone creates a deep copy of this Body element.
 func (b *Body) Clone() openxml.Element {
+	cloned := b.CompositeElementBase.Clone()
+
 	return &Body{
-		CompositeElementBase: b.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -186,8 +189,12 @@ func (b *Body) Clone() openxml.Element {
 func (b *Body) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := b.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Body{
-		CompositeElementBase: b.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -241,8 +248,10 @@ func NewTable(rows, cols int) *Table {
 
 // Clone creates a deep copy of this Table element.
 func (t *Table) Clone() openxml.Element {
+	cloned := t.CompositeElementBase.Clone()
+
 	return &Table{
-		CompositeElementBase: t.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -251,7 +260,8 @@ type TableRow struct {
 	*openxml.CompositeElementBase
 }
 
-// NewTableRow creates a new TableRow element with the specified number of cells.
+// NewTableRow creates a new TableRow element with the specified
+// number of cells.
 func NewTableRow(cols int) *TableRow {
 	elem := openxml.NewCompositeElement(
 		NamespaceWML,
@@ -270,8 +280,10 @@ func NewTableRow(cols int) *TableRow {
 
 // Clone creates a deep copy of this TableRow element.
 func (tr *TableRow) Clone() openxml.Element {
+	cloned := tr.CompositeElementBase.Clone()
+
 	return &TableRow{
-		CompositeElementBase: tr.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -297,7 +309,9 @@ func NewTableCell() *TableCell {
 
 // Clone creates a deep copy of this TableCell element.
 func (tc *TableCell) Clone() openxml.Element {
+	cloned := tc.CompositeElementBase.Clone()
+
 	return &TableCell{
-		CompositeElementBase: tc.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }

@@ -101,7 +101,9 @@ func (t *Text) Clone() openxml.Element {
 func (t *Text) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := t.LeafElementBase.CloneNode(deep)
+
 	return &Text{
-		LeafElementBase: t.LeafElementBase.CloneNode(deep).(*openxml.LeafElementBase),
+		LeafElementBase: cloned.(*openxml.LeafElementBase),
 	}
 }

@@ -26,7 +26,8 @@ func NewBase64BinaryValue(
 	}
 }
 
-// NewBase64BinaryValueFromString creates a new Base64BinaryValue by parsing a base64 string.
+// NewBase64BinaryValueFromString creates a new Base64BinaryValue by
+// parsing a base64 string.
 // Returns an error if the string is not valid base64.
 func NewBase64BinaryValueFromString(
 	s string,
@@ -39,7 +40,8 @@ func NewBase64BinaryValueFromString(
 	return bv, nil
 }
 
-// NewNilBase64BinaryValue creates a new Base64BinaryValue in the unset/nil state.
+// NewNilBase64BinaryValue creates a new Base64BinaryValue in the
+// unset/nil state.
 func NewNilBase64BinaryValue() *Base64BinaryValue {
 	return &Base64BinaryValue{
 		hasValue: false,
@@ -72,7 +74,8 @@ func (bv *Base64BinaryValue) HasValue() bool {
 	return bv.hasValue
 }
 
-// InnerText returns the base64 encoded string representation for XML serialization.
+// InnerText returns the base64 encoded string representation for XML
+// serialization.
 func (bv *Base64BinaryValue) InnerText() string {
 	if !bv.hasValue {
 		return ""

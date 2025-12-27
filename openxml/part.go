@@ -1,4 +1,7 @@
-// Package openxml provides the core framework for Office Open XML document processing.
+// Package openxml provides the core framework for Office Open XML
+// document processing.
+//
+//nolint:revive // file-length-limit: this file contains the core part types
 package openxml
 
 import (
@@ -44,7 +47,8 @@ type OpenXmlPartContainer interface {
 	Package() *packaging.Package
 
 	// GetPackagingPart returns the underlying packaging.Part by its URI.
-	// This method is safe to call during part loading and doesn't acquire locks.
+	// This method is safe to call during part loading and doesn't
+	// acquire locks.
 	GetPackagingPart(uri string) *packaging.Part
 }
 
@@ -110,6 +114,86 @@ func NewOpenXmlPartData(
 	}
 
 	return part
+}
+
+// loadChildParts loads child parts from the underlying packaging part relationships.
+func (p *OpenXmlPartData) loadChildParts() {
+	p.loadChildPartsRecursive(0)
+}
+
+const maxPartRecursionDepth = 10
+
+// loadChildPartsRecursive loads child parts with a recursion depth limit.
+func (p *OpenXmlPartData) loadChildPartsRecursive(
+	depth int,
+) {
+	if depth > maxPartRecursionDepth {
+		return
+	}
+
+	if p.packagingPart == nil {
+		return
+	}
+
+	rels := p.packagingPart.Relationships()
+	if rels == nil {
+		return
+	}
+
+	for rel := range rels.All() {
+		// Resolve target URI relative to this part
+		targetURI := packaging.ResolvePartURI(
+			p.uri,
+			rel.Target(),
+		)
+
+		// Get packaging part via container to avoid deadlock
+		packPart := p.GetPackagingPart(targetURI)
+		if packPart == nil {
+			continue
+		}
+
+		// Create OpenXmlPart based on relationship type or content type
+		var childPart OpenXmlPart
+		if info, ok := GetPartTypeByRelationship(rel.Type()); ok &&
+			info.Factory != nil {
+			childPart = info.Factory(targetURI, p)
+		} else if info, ok := GetPartTypeByContentType(packPart.ContentType()); ok &&
+			info.Factory != nil {
+			childPart = info.Factory(targetURI, p)
+		} else {
+			// Create a generic part without calling loadChildParts in constructor
+			// to avoid infinite recursion. We'll load its children manually.
+			childPart = &OpenXmlPartData{
+				uri:           targetURI,
+				contentType:   packPart.ContentType(),
+				packagingPart: packPart,
+				container:     p,
+				childParts:    make(map[string]OpenXmlPart),
+				idGenerator:   NewRelationshipIDGenerator(),
+				features:      features.NewFeatureCollectionWithParent(p.features),
+			}
+		}
+
+		// Set relationship ID
+		if partData, ok := childPart.(*OpenXmlPartData); ok {
+			partData.SetRelationshipID(rel.ID())
+		} else if relPart, ok := childPart.(IRelationshipIDPart); ok {
+			relPart.SetRelationshipID(rel.ID())
+		}
+
+		p.childParts[rel.ID()] = childPart
+
+		// Recursively load child parts
+		if cp, ok := childPart.(*OpenXmlPartData); ok {
+			cp.loadChildPartsRecursive(depth + 1)
+		}
+
+		// Reload root element to ensure it's populated from XML if it was just loaded
+		if root := childPart.RootElement(); root != nil {
+			_ = root.Reload()
+		}
+	}
 }
 
 // URI returns the part URI.
@@ -230,9 +314,13 @@ func (p *OpenXmlPartData) SetRootFactory(
 	factory func() PartRootElement,
 ) {
 	p.mu.Lock()
-	defer p.mu.Unlock()
 	p.rootFactory = factory
 	p.rootLoaded = false
+	p.mu.Unlock()
+
+	// Trigger lazy load immediately if we're not during initialization
+	// or let it be lazy. For now, let's keep it lazy but ensure
+	// it can be reloaded.
 }
 
 // IsDirty returns true if the part has been modified.
@@ -347,7 +435,8 @@ func (p *OpenXmlPartData) GetPartById(
 	return part, nil
 }
 
-// GetPartsOfType returns an iterator over child parts of a specific content type.
+// GetPartsOfType returns an iterator over child parts of a specific
+// content type.
 func (p *OpenXmlPartData) GetPartsOfType(
 	contentType string,
 ) iter.Seq[OpenXmlPart] {
@@ -356,10 +445,11 @@ func (p *OpenXmlPartData) GetPartsOfType(
 		defer p.mu.RUnlock()
 
 		for _, part := range p.childParts {
-			if part.ContentType() == contentType {
-				if !yield(part) {
-					return
-				}
+			if part.ContentType() != contentType {
+				continue
+			}
+			if !yield(part) {
+				return
 			}
 		}
 	}
@@ -374,14 +464,15 @@ func (p *OpenXmlPartData) AddPart(
 	defer p.mu.Unlock()
 
 	if id == "" {
-		id = p.idGenerator.Next()
+		id = p.idGenerator.Next() //nolint:revive // modifies-parameter: intentional for generated ID
 	} else {
 		p.idGenerator.Reserve(id)
 	}
 
-	// Set the relationship ID on the part
-	if partData, ok := part.(*OpenXmlPartData); ok {
-		partData.SetRelationshipID(id)
+	// Set the relationship ID on the part (works for both *OpenXmlPartData
+	// and types that embed it like *WorksheetPart)
+	if relPart, ok := part.(IRelationshipIDPart); ok {
+		relPart.SetRelationshipID(id)
 	}
 
 	p.childParts[id] = part
@@ -544,17 +635,20 @@ func CreatePartByRelationship(
 	)
 }
 
-// GetPartsOfType is a generic function to iterate over parts of a specific type.
+// GetPartsOfType is a generic function to iterate over parts of a
+// specific type.
 // Usage: GetPartsOfType[*StylesPart](container)
 func GetPartsOfType[T OpenXmlPart](
 	container OpenXmlPartContainer,
 ) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for part := range container.Parts() {
-			if typed, ok := part.(T); ok {
-				if !yield(typed) {
-					return
-				}
+			typed, ok := part.(T)
+			if !ok {
+				continue
+			}
+			if !yield(typed) {
+				return
 			}
 		}
 	}
@@ -578,6 +672,24 @@ type IFixedContentTypePart interface {
 	OpenXmlPart
 	// FixedContentType returns the fixed content type for this part.
 	FixedContentType() string
+}
+
+// ISaveablePart is implemented by parts that can be saved.
+type ISaveablePart interface {
+	OpenXmlPart
+	// IsDirty returns true if the part has been modified.
+	IsDirty() bool
+	// Save saves the part's content.
+	Save() error
+}
+
+// IRelationshipIDPart is implemented by parts that have a relationship ID.
+type IRelationshipIDPart interface {
+	OpenXmlPart
+	// RelationshipID returns the relationship ID for this part.
+	RelationshipID() string
+	// SetRelationshipID sets the relationship ID for this part.
+	SetRelationshipID(id string)
 }
 
 // Ensure OpenXmlPartData implements OpenXmlPart.

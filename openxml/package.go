@@ -1,4 +1,7 @@
-// Package openxml provides the core framework for Office Open XML document processing.
+// Package openxml provides the core framework for Office Open XML
+// document processing.
+//
+//nolint:revive // file-length-limit: large package with many types
 package openxml
 
 import (
@@ -38,7 +41,8 @@ type OpenXmlPackage struct {
 	isDirty bool
 }
 
-// NewOpenXmlPackage creates a new OpenXmlPackage wrapping the given OPC package.
+// NewOpenXmlPackage creates a new OpenXmlPackage wrapping the given
+// OPC package.
 func NewOpenXmlPackage(
 	pkg *packaging.Package,
 ) *OpenXmlPackage {
@@ -114,7 +118,10 @@ func (p *OpenXmlPackage) loadParts() {
 			info.Factory != nil {
 			part = info.Factory(targetURI, p)
 		} else {
-			part = NewOpenXmlPartData(targetURI, packPart.ContentType(), packPart, p)
+			contentType := packPart.ContentType()
+			part = NewOpenXmlPartData(
+				targetURI, contentType, packPart, p,
+			)
 		}
 
 		// Set relationship ID
@@ -129,6 +136,33 @@ func (p *OpenXmlPackage) loadParts() {
 		if rel.Type() == RelationshipTypeOfficeDocument ||
 			rel.Type() == RelationshipTypeDocument {
 			p.mainPart = part
+		}
+	}
+
+	// Now that all top-level parts are created, load their children recursively
+	for _, part := range p.parts {
+		if partData, ok := part.(*OpenXmlPartData); ok {
+			partData.loadChildParts()
+		} else {
+			// Handle types that embed *OpenXmlPartData
+			// Use reflection to access the embedded field
+			v := reflect.ValueOf(part)
+			if v.Kind() == reflect.Ptr {
+				v = v.Elem()
+			}
+			if v.Kind() == reflect.Struct {
+				// Look for an embedded *OpenXmlPartData field
+				for i := range v.NumField() {
+					field := v.Field(i)
+					if field.Type() == reflect.TypeOf((*OpenXmlPartData)(nil)) {
+						if partData, ok := field.Interface().(*OpenXmlPartData); ok && partData != nil {
+							partData.loadChildParts()
+
+							break
+						}
+					}
+				}
+			}
 		}
 	}
 }
@@ -160,7 +194,7 @@ func (p *OpenXmlPackage) GetPackagingPart(
 }
 
 // URI returns "/" as this is the package root.
-func (p *OpenXmlPackage) URI() string {
+func (*OpenXmlPackage) URI() string {
 	return "/"
 }
 
@@ -223,10 +257,11 @@ func (p *OpenXmlPackage) GetPartsOfType(
 		defer p.mu.RUnlock()
 
 		for _, part := range p.parts {
-			if part.ContentType() == contentType {
-				if !yield(part) {
-					return
-				}
+			if part.ContentType() != contentType {
+				continue
+			}
+			if !yield(part) {
+				return
 			}
 		}
 	}
@@ -241,7 +276,7 @@ func (p *OpenXmlPackage) AddPart(
 	defer p.mu.Unlock()
 
 	if id == "" {
-		id = p.idGenerator.Next()
+		id = p.idGenerator.Next() //nolint:revive // modifies-parameter: intentional ID generation
 	} else {
 		p.idGenerator.Reserve(id)
 	}
@@ -254,9 +289,10 @@ func (p *OpenXmlPackage) AddPart(
 		return ErrPartExists
 	}
 
-	// Set relationship ID on part
-	if partData, ok := part.(*OpenXmlPartData); ok {
-		partData.SetRelationshipID(id)
+	// Set relationship ID on part (works for both *OpenXmlPartData
+	// and types that embed it like *WorkbookPart)
+	if relPart, ok := part.(IRelationshipIDPart); ok {
+		relPart.SetRelationshipID(id)
 	}
 
 	p.parts[id] = part
@@ -266,7 +302,8 @@ func (p *OpenXmlPackage) AddPart(
 	return nil
 }
 
-// AddNewPart creates and adds a new part with the given URI, content type, and relationship type.
+// AddNewPart creates and adds a new part with the given URI,
+// content type, and relationship type.
 func (p *OpenXmlPackage) AddNewPart(
 	uri, contentType, relType string,
 ) (OpenXmlPart, error) {
@@ -294,7 +331,8 @@ func (p *OpenXmlPackage) AddNewPart(
 	if info, ok := GetPartTypeByContentType(contentType); ok &&
 		info.Factory != nil {
 		part = info.Factory(normalizedURI, p)
-	} else if info, ok := GetPartTypeByRelationship(relType); ok && info.Factory != nil {
+	} else if info, ok := GetPartTypeByRelationship(relType); ok &&
+		info.Factory != nil {
 		part = info.Factory(normalizedURI, p)
 	} else {
 		part = NewOpenXmlPartData(normalizedURI, contentType, packPart, p)
@@ -311,7 +349,7 @@ func (p *OpenXmlPackage) AddNewPart(
 	// Create package-level relationship
 	target := normalizedURI
 	if relType == "" {
-		relType = RelationshipTypeDocument
+		relType = RelationshipTypeDocument //nolint:revive // modifies-parameter: intentional default
 	}
 	_, err = p.pkg.CreateRelationship(
 		target,
@@ -346,10 +384,8 @@ func (p *OpenXmlPackage) DeletePart(
 		return err
 	}
 
-	// Remove relationship
-	if err := p.pkg.DeleteRelationship(id); err != nil {
-		// Ignore if relationship doesn't exist
-	}
+	// Remove relationship - ignore error if relationship doesn't exist
+	_ = p.pkg.DeleteRelationship(id)
 
 	delete(p.parts, id)
 	delete(p.partsByURI, part.URI())
@@ -384,10 +420,11 @@ func (p *OpenXmlPackage) IsDirty() bool {
 		return true
 	}
 
-	// Check if any parts are dirty
+	// Check if any parts are dirty (works for both *OpenXmlPartData
+	// and types that embed it like *WorkbookPart)
 	for _, part := range p.parts {
-		if partData, ok := part.(*OpenXmlPartData); ok &&
-			partData.IsDirty() {
+		if saveable, ok := part.(ISaveablePart); ok &&
+			saveable.IsDirty() {
 			return true
 		}
 	}
@@ -402,10 +439,13 @@ func (p *OpenXmlPackage) Save() error {
 
 	// Save all dirty parts
 	for _, part := range p.parts {
-		if partData, ok := part.(*OpenXmlPartData); ok &&
-			partData.IsDirty() {
-			if err := partData.Save(); err != nil {
-				return err
+		// Check if the part implements ISaveablePart (works for both
+		// *OpenXmlPartData and types that embed it like *WorkbookPart)
+		if saveable, ok := part.(ISaveablePart); ok {
+			if saveable.IsDirty() {
+				if err := saveable.Save(); err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -429,10 +469,13 @@ func (p *OpenXmlPackage) SaveAs(
 
 	// Save all dirty parts first
 	for _, part := range p.parts {
-		if partData, ok := part.(*OpenXmlPartData); ok &&
-			partData.IsDirty() {
-			if err := partData.Save(); err != nil {
-				return err
+		// Check if the part implements ISaveablePart (works for both
+		// *OpenXmlPartData and types that embed it like *WorkbookPart)
+		if saveable, ok := part.(ISaveablePart); ok {
+			if saveable.IsDirty() {
+				if err := saveable.Save(); err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -448,11 +491,24 @@ func (p *OpenXmlPackage) SaveAs(
 }
 
 // Close closes the package.
+// For stream-based packages, all parts are saved before closing.
 func (p *OpenXmlPackage) Close() error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
 	if p.pkg != nil {
+		// Save all dirty parts before closing so content is available
+		// for stream-based packages
+		for _, part := range p.parts {
+			if saveable, ok := part.(ISaveablePart); ok {
+				if saveable.IsDirty() {
+					if err := saveable.Save(); err != nil {
+						return err
+					}
+				}
+			}
+		}
+
 		err := p.pkg.Close()
 		p.pkg = nil
 		p.parts = nil
@@ -474,7 +530,7 @@ type packageFeature struct {
 }
 
 // Ensure packageFeature implements the Feature marker.
-func (f *packageFeature) featureMarker() {}
+func (*packageFeature) featureMarker() {} //nolint:unused // interface implementation marker
 
 // Package returns the underlying packaging.Package.
 func (f *packageFeature) Package() any {
@@ -491,15 +547,15 @@ func (f *packageFeature) Capabilities() features.PackageCapabilities {
 		return features.PackageCapabilities{}
 	}
 
-	cap := f.pkg.pkg.Capability()
+	caps := f.pkg.pkg.Capability()
 
 	return features.PackageCapabilities{
-		CanRead: cap == packaging.Read ||
-			cap == packaging.ReadWrite,
-		CanWrite: cap == packaging.Write ||
-			cap == packaging.ReadWrite,
-		CanSave: cap == packaging.Write ||
-			cap == packaging.ReadWrite,
+		CanRead: caps == packaging.Read ||
+			caps == packaging.ReadWrite,
+		CanWrite: caps == packaging.Write ||
+			caps == packaging.ReadWrite,
+		CanSave: caps == packaging.Write ||
+			caps == packaging.ReadWrite,
 	}
 }
 
@@ -510,7 +566,7 @@ type contentTypeFeature struct {
 }
 
 // Ensure contentTypeFeature implements the Feature marker.
-func (f *contentTypeFeature) featureMarker() {}
+func (*contentTypeFeature) featureMarker() {} //nolint:unused // interface implementation marker
 
 // GetContentType returns the content type for a part URI.
 func (f *contentTypeFeature) GetContentType(
@@ -569,7 +625,7 @@ type mainPartFeature struct {
 }
 
 // Ensure mainPartFeature implements the Feature marker.
-func (f *mainPartFeature) featureMarker() {}
+func (*mainPartFeature) featureMarker() {} //nolint:unused // interface implementation marker
 
 // MainPart returns the main document part.
 func (f *mainPartFeature) MainPart() any {
@@ -590,7 +646,8 @@ func (f *mainPartFeature) RelationshipType() string {
 	return f.relationshipType
 }
 
-// SetMainPartInfo configures the main part feature with document-specific information.
+// SetMainPartInfo configures the main part feature with
+// document-specific information.
 func (p *OpenXmlPackage) SetMainPartInfo(
 	contentType, relationshipType string,
 ) {

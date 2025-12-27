@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: comprehensive document settings with many element types
 package elements
 
 import (
@@ -19,6 +20,17 @@ const (
 	ZoomViewBestFit ZoomViewType = "bestFit"
 	// ZoomViewTextFit fits text to the window width.
 	ZoomViewTextFit ZoomViewType = "textFit"
+)
+
+const (
+	// defaultZoomPercent is the default zoom percentage for documents.
+	defaultZoomPercent = 100
+)
+
+// Settings attribute name and value constants.
+const (
+	attrValueOff       = "off"
+	attrNameFormatting = "formatting"
 )
 
 // DocumentProtectionType represents document protection edit restriction types.
@@ -47,7 +59,8 @@ const (
 	ProofStateDirty ProofStateValue = "dirty"
 )
 
-// Settings represents the root element for the document settings part (w:settings).
+// Settings represents the root element for the document settings part
+// (w:settings).
 type Settings struct {
 	*openxml.CompositeElementBase
 }
@@ -130,7 +143,8 @@ func (s *Settings) GetOrCreateDefaultTabStop() *DefaultTabStop {
 	return dt
 }
 
-// DocumentProtection returns the document protection element, or nil if not present.
+// DocumentProtection returns the document protection element, or nil if not
+// present.
 func (s *Settings) DocumentProtection() *DocumentProtection {
 	elem := s.GetElement(
 		"documentProtection",
@@ -151,7 +165,8 @@ func (s *Settings) DocumentProtection() *DocumentProtection {
 	return nil
 }
 
-// GetOrCreateDocumentProtection returns the document protection, creating if needed.
+// GetOrCreateDocumentProtection returns the document protection, creating if
+// needed.
 func (s *Settings) GetOrCreateDocumentProtection() *DocumentProtection {
 	dp := s.DocumentProtection()
 	if dp != nil {
@@ -231,7 +246,8 @@ func (s *Settings) SetHideGrammaticalErrors(
 	s.setOnOffElement("hideGrammaticalErrors", b)
 }
 
-// Compatibility returns the compatibility settings element, or nil if not present.
+// Compatibility returns the compatibility settings element, or nil if not
+// present.
 func (s *Settings) Compatibility() *Compatibility {
 	elem := s.GetElement("compat", NamespaceWML)
 	if elem == nil {
@@ -249,7 +265,8 @@ func (s *Settings) Compatibility() *Compatibility {
 	return nil
 }
 
-// GetOrCreateCompatibility returns the compatibility settings, creating if needed.
+// GetOrCreateCompatibility returns the compatibility settings, creating if
+// needed.
 func (s *Settings) GetOrCreateCompatibility() *Compatibility {
 	c := s.Compatibility()
 	if c != nil {
@@ -362,7 +379,8 @@ func (s *Settings) SetRsidRoot(rsid string) {
 	)
 }
 
-// DocumentVariables returns the document variables element, or nil if not present.
+// DocumentVariables returns the document variables element, or nil if not
+// present.
 func (s *Settings) DocumentVariables() *DocumentVariables {
 	elem := s.GetElement("docVars", NamespaceWML)
 	if elem == nil {
@@ -380,7 +398,8 @@ func (s *Settings) DocumentVariables() *DocumentVariables {
 	return nil
 }
 
-// GetOrCreateDocumentVariables returns the document variables, creating if needed.
+// GetOrCreateDocumentVariables returns the document variables, creating if
+// needed.
 func (s *Settings) GetOrCreateDocumentVariables() *DocumentVariables {
 	dv := s.DocumentVariables()
 	if dv != nil {
@@ -514,6 +533,8 @@ func (s *Settings) hasOnOffElement(
 	return true
 }
 
+//
+//nolint:revive // flag-parameter: bool setter required for on/off element
 func (s *Settings) setOnOffElement(
 	name string,
 	value bool,
@@ -551,8 +572,10 @@ func (s *Settings) removeElement(name string) {
 
 // Clone creates a deep copy of this Settings element.
 func (s *Settings) Clone() openxml.Element {
+	cloned := s.CompositeElementBase.Clone()
+
 	return &Settings{
-		CompositeElementBase: s.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -560,8 +583,12 @@ func (s *Settings) Clone() openxml.Element {
 func (s *Settings) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := s.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Settings{
-		CompositeElementBase: s.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -588,7 +615,7 @@ func (z *Zoom) Percent() int {
 		NamespaceWML,
 	)
 	if !found {
-		return 100 // Default zoom
+		return defaultZoomPercent // Default zoom
 	}
 	val, _ := strconv.Atoi(attr.Value())
 
@@ -610,7 +637,7 @@ func (z *Zoom) SetPercent(p int) {
 // Val returns the zoom view type.
 func (z *Zoom) Val() ZoomViewType {
 	attr, found := z.GetAttribute(
-		"val",
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
@@ -623,14 +650,17 @@ func (z *Zoom) Val() ZoomViewType {
 // SetVal sets the zoom view type.
 func (z *Zoom) SetVal(t ZoomViewType) {
 	if t == ZoomViewNone {
-		z.RemoveAttribute("val", NamespaceWML)
+		z.RemoveAttribute(
+			attrNameVal,
+			NamespaceWML,
+		)
 
 		return
 	}
 	z.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"val",
+			attrNameVal,
 			PrefixW,
 			string(t),
 		),
@@ -639,8 +669,10 @@ func (z *Zoom) SetVal(t ZoomViewType) {
 
 // Clone creates a deep copy of this Zoom element.
 func (z *Zoom) Clone() openxml.Element {
+	cloned := z.CompositeElementBase.Clone()
+
 	return &Zoom{
-		CompositeElementBase: z.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -648,12 +680,17 @@ func (z *Zoom) Clone() openxml.Element {
 func (z *Zoom) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := z.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Zoom{
-		CompositeElementBase: z.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
-// DefaultTabStop represents the default tab stop width element (w:defaultTabStop).
+// DefaultTabStop represents the default tab stop width element
+// (w:defaultTabStop).
 type DefaultTabStop struct {
 	*openxml.CompositeElementBase
 }
@@ -678,7 +715,7 @@ func (dt *DefaultTabStop) Val() int {
 		NamespaceWML,
 	)
 	if !found {
-		return 720 // Default 0.5 inch
+		return defaultHeaderFooter // Default 0.5 inch
 	}
 	val, _ := strconv.Atoi(attr.Value())
 
@@ -699,8 +736,10 @@ func (dt *DefaultTabStop) SetVal(twips int) {
 
 // Clone creates a deep copy of this DefaultTabStop element.
 func (dt *DefaultTabStop) Clone() openxml.Element {
+	cloned := dt.CompositeElementBase.Clone()
+
 	return &DefaultTabStop{
-		CompositeElementBase: dt.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -708,12 +747,17 @@ func (dt *DefaultTabStop) Clone() openxml.Element {
 func (dt *DefaultTabStop) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := dt.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &DefaultTabStop{
-		CompositeElementBase: dt.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
-// DocumentProtection represents document protection settings (w:documentProtection).
+// DocumentProtection represents document protection settings
+// (w:documentProtection).
 type DocumentProtection struct {
 	*openxml.CompositeElementBase
 }
@@ -779,6 +823,8 @@ func (dp *DocumentProtection) Enforcement() bool {
 }
 
 // SetEnforcement sets whether protection is enforced.
+//
+//nolint:revive // flag-parameter: bool setter is the standard pattern
 func (dp *DocumentProtection) SetEnforcement(
 	b bool,
 ) {
@@ -788,7 +834,7 @@ func (dp *DocumentProtection) SetEnforcement(
 				NamespaceWML,
 				"enforcement",
 				PrefixW,
-				"1",
+				attrValueOne,
 			),
 		)
 	} else {
@@ -799,7 +845,7 @@ func (dp *DocumentProtection) SetEnforcement(
 // Formatting returns whether formatting is restricted.
 func (dp *DocumentProtection) Formatting() bool {
 	attr, found := dp.GetAttribute(
-		"formatting",
+		attrNameFormatting,
 		NamespaceWML,
 	)
 	if !found {
@@ -812,6 +858,8 @@ func (dp *DocumentProtection) Formatting() bool {
 }
 
 // SetFormatting sets whether formatting is restricted.
+//
+//nolint:revive // flag-parameter: bool setter is the standard pattern
 func (dp *DocumentProtection) SetFormatting(
 	b bool,
 ) {
@@ -819,13 +867,13 @@ func (dp *DocumentProtection) SetFormatting(
 		dp.SetAttribute(
 			openxml.NewAttribute(
 				NamespaceWML,
-				"formatting",
+				attrNameFormatting,
 				PrefixW,
-				"1",
+				attrValueOne,
 			),
 		)
 	} else {
-		dp.RemoveAttribute("formatting", NamespaceWML)
+		dp.RemoveAttribute(attrNameFormatting, NamespaceWML)
 	}
 }
 
@@ -857,8 +905,10 @@ func (dp *DocumentProtection) Salt() string {
 
 // Clone creates a deep copy of this DocumentProtection element.
 func (dp *DocumentProtection) Clone() openxml.Element {
+	cloned := dp.CompositeElementBase.Clone()
+
 	return &DocumentProtection{
-		CompositeElementBase: dp.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -866,8 +916,12 @@ func (dp *DocumentProtection) Clone() openxml.Element {
 func (dp *DocumentProtection) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := dp.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &DocumentProtection{
-		CompositeElementBase: dp.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -930,17 +984,18 @@ func (c *Compatibility) SetGrowAutofit(b bool) {
 func (c *Compatibility) CompatSettings() iter.Seq[*CompatSetting] {
 	return func(yield func(*CompatSetting) bool) {
 		for child := range c.Children() {
-			if child.LocalName() == "compatSetting" &&
-				child.NamespaceURI() == NamespaceWML {
-				var cs *CompatSetting
-				if setting, ok := child.(*CompatSetting); ok {
-					cs = setting
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					cs = &CompatSetting{CompositeElementBase: comp}
-				}
-				if cs != nil && !yield(cs) {
-					return
-				}
+			if child.LocalName() != "compatSetting" ||
+				child.NamespaceURI() != NamespaceWML {
+				continue
+			}
+			var cs *CompatSetting
+			if setting, ok := child.(*CompatSetting); ok {
+				cs = setting
+			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
+				cs = &CompatSetting{CompositeElementBase: comp}
+			}
+			if cs != nil && !yield(cs) {
+				return
 			}
 		}
 	}
@@ -982,6 +1037,8 @@ func (c *Compatibility) hasOnOffElement(
 	return true
 }
 
+//
+//nolint:revive // flag-parameter: bool setter required for on/off element
 func (c *Compatibility) setOnOffElement(
 	name string,
 	value bool,
@@ -1021,8 +1078,10 @@ func (c *Compatibility) removeElement(
 
 // Clone creates a deep copy of this Compatibility element.
 func (c *Compatibility) Clone() openxml.Element {
+	cloned := c.CompositeElementBase.Clone()
+
 	return &Compatibility{
-		CompositeElementBase: c.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1030,8 +1089,12 @@ func (c *Compatibility) Clone() openxml.Element {
 func (c *Compatibility) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := c.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Compatibility{
-		CompositeElementBase: c.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1130,8 +1193,10 @@ func (cs *CompatSetting) SetVal(val string) {
 
 // Clone creates a deep copy of this CompatSetting element.
 func (cs *CompatSetting) Clone() openxml.Element {
+	cloned := cs.CompositeElementBase.Clone()
+
 	return &CompatSetting{
-		CompositeElementBase: cs.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1139,8 +1204,12 @@ func (cs *CompatSetting) Clone() openxml.Element {
 func (cs *CompatSetting) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := cs.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &CompatSetting{
-		CompositeElementBase: cs.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1166,17 +1235,18 @@ func NewDocumentVariables() *DocumentVariables {
 func (dv *DocumentVariables) Variables() iter.Seq[*DocumentVariable] {
 	return func(yield func(*DocumentVariable) bool) {
 		for child := range dv.Children() {
-			if child.LocalName() == "docVar" &&
-				child.NamespaceURI() == NamespaceWML {
-				var v *DocumentVariable
-				if variable, ok := child.(*DocumentVariable); ok {
-					v = variable
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					v = &DocumentVariable{CompositeElementBase: comp}
-				}
-				if v != nil && !yield(v) {
-					return
-				}
+			if child.LocalName() != "docVar" ||
+				child.NamespaceURI() != NamespaceWML {
+				continue
+			}
+			var v *DocumentVariable
+			if variable, ok := child.(*DocumentVariable); ok {
+				v = variable
+			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
+				v = &DocumentVariable{CompositeElementBase: comp}
+			}
+			if v != nil && !yield(v) {
+				return
 			}
 		}
 	}
@@ -1219,25 +1289,28 @@ func (dv *DocumentVariables) RemoveVariable(
 	name string,
 ) {
 	for child := range dv.Children() {
-		if child.LocalName() == "docVar" &&
-			child.NamespaceURI() == NamespaceWML {
-			attr, found := child.GetAttribute(
-				"name",
-				NamespaceWML,
-			)
-			if found && attr.Value() == name {
-				dv.RemoveChild(child)
+		if child.LocalName() != "docVar" ||
+			child.NamespaceURI() != NamespaceWML {
+			continue
+		}
+		attr, found := child.GetAttribute(
+			attrNameName,
+			NamespaceWML,
+		)
+		if found && attr.Value() == name {
+			dv.RemoveChild(child)
 
-				return
-			}
+			return
 		}
 	}
 }
 
 // Clone creates a deep copy of this DocumentVariables element.
 func (dv *DocumentVariables) Clone() openxml.Element {
+	cloned := dv.CompositeElementBase.Clone()
+
 	return &DocumentVariables{
-		CompositeElementBase: dv.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1245,8 +1318,12 @@ func (dv *DocumentVariables) Clone() openxml.Element {
 func (dv *DocumentVariables) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := dv.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &DocumentVariables{
-		CompositeElementBase: dv.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1271,7 +1348,7 @@ func NewDocumentVariable() *DocumentVariable {
 // Name returns the variable name.
 func (v *DocumentVariable) Name() string {
 	attr, found := v.GetAttribute(
-		"name",
+		attrNameName,
 		NamespaceWML,
 	)
 	if !found {
@@ -1286,7 +1363,7 @@ func (v *DocumentVariable) SetName(name string) {
 	v.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"name",
+			attrNameName,
 			PrefixW,
 			name,
 		),
@@ -1320,8 +1397,10 @@ func (v *DocumentVariable) SetVal(val string) {
 
 // Clone creates a deep copy of this DocumentVariable element.
 func (v *DocumentVariable) Clone() openxml.Element {
+	cloned := v.CompositeElementBase.Clone()
+
 	return &DocumentVariable{
-		CompositeElementBase: v.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1329,8 +1408,12 @@ func (v *DocumentVariable) Clone() openxml.Element {
 func (v *DocumentVariable) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := v.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &DocumentVariable{
-		CompositeElementBase: v.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1368,6 +1451,8 @@ func (wp *WriteProtection) Recommended() bool {
 }
 
 // SetRecommended sets whether read-only is recommended.
+//
+//nolint:revive // flag-parameter: bool setter is the standard pattern
 func (wp *WriteProtection) SetRecommended(
 	b bool,
 ) {
@@ -1377,7 +1462,7 @@ func (wp *WriteProtection) SetRecommended(
 				NamespaceWML,
 				"recommended",
 				PrefixW,
-				"1",
+				attrValueOne,
 			),
 		)
 	} else {
@@ -1387,8 +1472,10 @@ func (wp *WriteProtection) SetRecommended(
 
 // Clone creates a deep copy of this WriteProtection element.
 func (wp *WriteProtection) Clone() openxml.Element {
+	cloned := wp.CompositeElementBase.Clone()
+
 	return &WriteProtection{
-		CompositeElementBase: wp.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1396,8 +1483,12 @@ func (wp *WriteProtection) Clone() openxml.Element {
 func (wp *WriteProtection) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := wp.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &WriteProtection{
-		CompositeElementBase: wp.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1473,8 +1564,10 @@ func (ps *ProofState) SetGrammar(
 
 // Clone creates a deep copy of this ProofState element.
 func (ps *ProofState) Clone() openxml.Element {
+	cloned := ps.CompositeElementBase.Clone()
+
 	return &ProofState{
-		CompositeElementBase: ps.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1482,8 +1575,12 @@ func (ps *ProofState) Clone() openxml.Element {
 func (ps *ProofState) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := ps.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &ProofState{
-		CompositeElementBase: ps.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1516,8 +1613,9 @@ func (rv *RevisionView) Markup() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0" &&
-		val != "off"
+	return val != attrValueFalse &&
+		val != attrValueZero &&
+		val != attrValueOff
 }
 
 // SetMarkup sets whether markup is shown.
@@ -1525,7 +1623,7 @@ func (rv *RevisionView) SetMarkup(b bool) {
 	if b {
 		rv.RemoveAttribute("markup", NamespaceWML)
 	} else {
-		rv.SetAttribute(openxml.NewAttribute(NamespaceWML, "markup", PrefixW, "0"))
+		rv.SetAttribute(openxml.NewAttribute(NamespaceWML, "markup", PrefixW, attrValueZero))
 	}
 }
 
@@ -1540,8 +1638,9 @@ func (rv *RevisionView) Comments() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0" &&
-		val != "off"
+	return val != attrValueFalse &&
+		val != attrValueZero &&
+		val != attrValueOff
 }
 
 // SetComments sets whether comments are shown.
@@ -1552,7 +1651,7 @@ func (rv *RevisionView) SetComments(b bool) {
 			NamespaceWML,
 		)
 	} else {
-		rv.SetAttribute(openxml.NewAttribute(NamespaceWML, "comments", PrefixW, "0"))
+		rv.SetAttribute(openxml.NewAttribute(NamespaceWML, "comments", PrefixW, attrValueZero))
 	}
 }
 
@@ -1567,8 +1666,9 @@ func (rv *RevisionView) InsertionsAndDeletions() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0" &&
-		val != "off"
+	return val != attrValueFalse &&
+		val != attrValueZero &&
+		val != attrValueOff
 }
 
 // SetInsertionsAndDeletions sets whether insertions and deletions are shown.
@@ -1578,14 +1678,14 @@ func (rv *RevisionView) SetInsertionsAndDeletions(
 	if b {
 		rv.RemoveAttribute("insDel", NamespaceWML)
 	} else {
-		rv.SetAttribute(openxml.NewAttribute(NamespaceWML, "insDel", PrefixW, "0"))
+		rv.SetAttribute(openxml.NewAttribute(NamespaceWML, "insDel", PrefixW, attrValueZero))
 	}
 }
 
 // Formatting returns whether formatting changes are shown.
 func (rv *RevisionView) Formatting() bool {
 	attr, found := rv.GetAttribute(
-		"formatting",
+		attrNameFormatting,
 		NamespaceWML,
 	)
 	if !found {
@@ -1593,26 +1693,35 @@ func (rv *RevisionView) Formatting() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0" &&
-		val != "off"
+	return val != attrValueFalse &&
+		val != attrValueZero &&
+		val != attrValueOff
 }
 
 // SetFormatting sets whether formatting changes are shown.
 func (rv *RevisionView) SetFormatting(b bool) {
 	if b {
 		rv.RemoveAttribute(
-			"formatting",
+			attrNameFormatting,
 			NamespaceWML,
 		)
 	} else {
-		rv.SetAttribute(openxml.NewAttribute(NamespaceWML, "formatting", PrefixW, "0"))
+		attr := openxml.NewAttribute(
+			NamespaceWML,
+			attrNameFormatting,
+			PrefixW,
+			attrValueZero,
+		)
+		rv.SetAttribute(attr)
 	}
 }
 
 // Clone creates a deep copy of this RevisionView element.
 func (rv *RevisionView) Clone() openxml.Element {
+	cloned := rv.CompositeElementBase.Clone()
+
 	return &RevisionView{
-		CompositeElementBase: rv.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1620,8 +1729,12 @@ func (rv *RevisionView) Clone() openxml.Element {
 func (rv *RevisionView) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := rv.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &RevisionView{
-		CompositeElementBase: rv.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1732,8 +1845,10 @@ func (mm *MailMerge) getOrCreateElement(
 
 // Clone creates a deep copy of this MailMerge element.
 func (mm *MailMerge) Clone() openxml.Element {
+	cloned := mm.CompositeElementBase.Clone()
+
 	return &MailMerge{
-		CompositeElementBase: mm.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1741,8 +1856,12 @@ func (mm *MailMerge) Clone() openxml.Element {
 func (mm *MailMerge) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := mm.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &MailMerge{
-		CompositeElementBase: mm.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1765,9 +1884,9 @@ func NewThemeFontLang() *ThemeFontLang {
 }
 
 // Val returns the primary language.
-func (tfl *ThemeFontLang) Val() string {
-	attr, found := tfl.GetAttribute(
-		"val",
+func (t *ThemeFontLang) Val() string {
+	attr, found := t.GetAttribute(
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
@@ -1778,16 +1897,19 @@ func (tfl *ThemeFontLang) Val() string {
 }
 
 // SetVal sets the primary language.
-func (tfl *ThemeFontLang) SetVal(lang string) {
+func (t *ThemeFontLang) SetVal(lang string) {
 	if lang == "" {
-		tfl.RemoveAttribute("val", NamespaceWML)
+		t.RemoveAttribute(
+			attrNameVal,
+			NamespaceWML,
+		)
 
 		return
 	}
-	tfl.SetAttribute(
+	t.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"val",
+			attrNameVal,
 			PrefixW,
 			lang,
 		),
@@ -1795,8 +1917,8 @@ func (tfl *ThemeFontLang) SetVal(lang string) {
 }
 
 // EastAsia returns the East Asian language.
-func (tfl *ThemeFontLang) EastAsia() string {
-	attr, found := tfl.GetAttribute(
+func (t *ThemeFontLang) EastAsia() string {
+	attr, found := t.GetAttribute(
 		"eastAsia",
 		NamespaceWML,
 	)
@@ -1808,18 +1930,18 @@ func (tfl *ThemeFontLang) EastAsia() string {
 }
 
 // SetEastAsia sets the East Asian language.
-func (tfl *ThemeFontLang) SetEastAsia(
+func (t *ThemeFontLang) SetEastAsia(
 	lang string,
 ) {
 	if lang == "" {
-		tfl.RemoveAttribute(
+		t.RemoveAttribute(
 			"eastAsia",
 			NamespaceWML,
 		)
 
 		return
 	}
-	tfl.SetAttribute(
+	t.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
 			"eastAsia",
@@ -1830,8 +1952,8 @@ func (tfl *ThemeFontLang) SetEastAsia(
 }
 
 // Bidi returns the bidirectional language.
-func (tfl *ThemeFontLang) Bidi() string {
-	attr, found := tfl.GetAttribute(
+func (t *ThemeFontLang) Bidi() string {
+	attr, found := t.GetAttribute(
 		"bidi",
 		NamespaceWML,
 	)
@@ -1843,13 +1965,13 @@ func (tfl *ThemeFontLang) Bidi() string {
 }
 
 // SetBidi sets the bidirectional language.
-func (tfl *ThemeFontLang) SetBidi(lang string) {
+func (t *ThemeFontLang) SetBidi(lang string) {
 	if lang == "" {
-		tfl.RemoveAttribute("bidi", NamespaceWML)
+		t.RemoveAttribute("bidi", NamespaceWML)
 
 		return
 	}
-	tfl.SetAttribute(
+	t.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
 			"bidi",
@@ -1860,17 +1982,23 @@ func (tfl *ThemeFontLang) SetBidi(lang string) {
 }
 
 // Clone creates a deep copy of this ThemeFontLang element.
-func (tfl *ThemeFontLang) Clone() openxml.Element {
+func (t *ThemeFontLang) Clone() openxml.Element {
+	cloned := t.CompositeElementBase.Clone()
+
 	return &ThemeFontLang{
-		CompositeElementBase: tfl.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
 // CloneNode creates a copy of this ThemeFontLang element.
-func (tfl *ThemeFontLang) CloneNode(
+func (t *ThemeFontLang) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := t.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &ThemeFontLang{
-		CompositeElementBase: tfl.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }

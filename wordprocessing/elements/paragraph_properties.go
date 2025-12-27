@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit - this file contains all paragraph properties
 package elements
 
 import (
@@ -358,6 +359,24 @@ func (pp *ParagraphProperties) GetOrCreateShading() *Shading {
 	pp.AppendChild(shd)
 
 	return shd
+}
+
+// SectionProperties returns the section properties element if present (for section breaks).
+func (pp *ParagraphProperties) SectionProperties() *SectionProperties {
+	elem := pp.GetElement("sectPr", NamespaceWML)
+	if elem == nil {
+		return nil
+	}
+	if sp, ok := elem.(*SectionProperties); ok {
+		return sp
+	}
+	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
+		return &SectionProperties{
+			CompositeElementBase: comp,
+		}
+	}
+
+	return nil
 }
 
 // OutlineLevel returns the outline level (0-8, or -1 if not set).

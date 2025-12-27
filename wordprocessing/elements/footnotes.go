@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit - this file contains related footnote types
 package elements
 
 import (

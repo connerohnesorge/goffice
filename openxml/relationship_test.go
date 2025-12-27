@@ -658,7 +658,7 @@ func TestRelationshipInterfaceCompliance(
 ) {
 	t.Run(
 		"PartRelationship implements OpenXmlRelationship",
-		func(t *testing.T) {
+		func(_ *testing.T) {
 			part := NewOpenXmlPartData(
 				"/word/styles.xml",
 				"application/xml",
@@ -671,21 +671,21 @@ func TestRelationshipInterfaceCompliance(
 
 	t.Run(
 		"ExternalRelationship implements OpenXmlRelationship",
-		func(t *testing.T) {
+		func(_ *testing.T) {
 			var _ OpenXmlRelationship = NewExternalRelationship("rId1", RelationshipTypeHyperlink, "https://example.com", nil)
 		},
 	)
 
 	t.Run(
 		"HyperlinkRelationship implements OpenXmlRelationship",
-		func(t *testing.T) {
+		func(_ *testing.T) {
 			var _ OpenXmlRelationship = NewHyperlinkRelationship("rId1", "https://example.com", true, nil)
 		},
 	)
 
 	t.Run(
 		"DataPartReferenceRelationship implements OpenXmlRelationship",
-		func(t *testing.T) {
+		func(_ *testing.T) {
 			var _ OpenXmlRelationship = NewDataPartReferenceRelationship("rId1", RelationshipTypeImage, "/media/image1.png", nil)
 		},
 	)

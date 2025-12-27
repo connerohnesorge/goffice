@@ -18,6 +18,16 @@ type PercentageValue struct {
 // 50000 = 50%, so the scale is 1000.
 const PercentageScale = 1000
 
+// percentageFloat is used for percentage calculations.
+const percentageFloat = 100.0
+
+// percentageIntParseBase is the base used for parsing percentage
+// integer strings.
+const percentageIntParseBase = 10
+
+// percentageFloatBitSize is the bit size for parsing float64 values.
+const percentageFloatBitSize = 64
+
 // NewPercentageValue creates a new PercentageValue with the given raw value.
 // The value is in 1000-based format (50000 = 50%).
 func NewPercentageValue(
@@ -29,8 +39,8 @@ func NewPercentageValue(
 	}
 }
 
-// NewPercentageValueFromPercent creates a new PercentageValue from a percentage.
-// For example, 50 creates a value representing 50%.
+// NewPercentageValueFromPercent creates a new PercentageValue from a
+// percentage. For example, 50 creates a value representing 50%.
 func NewPercentageValueFromPercent(
 	percent float64,
 ) *PercentageValue {
@@ -49,7 +59,7 @@ func NewPercentageValueFromFloat(
 ) *PercentageValue {
 	return &PercentageValue{
 		value: int64(
-			f * 100 * PercentageScale,
+			f * percentageFloat * PercentageScale,
 		),
 		hasValue: true,
 	}
@@ -86,7 +96,7 @@ func (pv *PercentageValue) ToFloat() float64 {
 
 	return float64(
 		pv.value,
-	) / (100 * PercentageScale)
+	) / (percentageFloat * PercentageScale)
 }
 
 // ToPercent returns the percentage as a number (50 for 50%).
@@ -110,7 +120,10 @@ func (pv *PercentageValue) InnerText() string {
 		return ""
 	}
 
-	return strconv.FormatInt(pv.value, 10)
+	return strconv.FormatInt(
+		pv.value,
+		percentageIntParseBase,
+	)
 }
 
 // SetInnerText parses the value from a string.
@@ -125,17 +138,17 @@ func (pv *PercentageValue) SetInnerText(
 		return nil
 	}
 
-	text = strings.TrimSpace(text)
+	trimmedText := strings.TrimSpace(text)
 
 	// Check if it's a percentage string (e.g., "50%")
-	if strings.HasSuffix(text, "%") {
+	if strings.HasSuffix(trimmedText, "%") {
 		percentStr := strings.TrimSuffix(
-			text,
+			trimmedText,
 			"%",
 		)
 		percent, err := strconv.ParseFloat(
 			percentStr,
-			64,
+			percentageFloatBitSize,
 		)
 		if err != nil {
 			return fmt.Errorf(
@@ -152,7 +165,11 @@ func (pv *PercentageValue) SetInnerText(
 	}
 
 	// Otherwise, parse as raw integer
-	v, err := strconv.ParseInt(text, 10, 64)
+	v, err := strconv.ParseInt(
+		trimmedText,
+		percentageIntParseBase,
+		percentageFloatBitSize,
+	)
 	if err != nil {
 		return fmt.Errorf(
 			"invalid percentage value: %w",

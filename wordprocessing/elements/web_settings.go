@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: This file contains complete WebSettings implementation
 package elements
 
 import (
@@ -257,7 +258,7 @@ func (ws *WebSettings) SetPixelsPerInch(ppi int) {
 	}
 	elem := ws.getOrCreateElement("pixelsPerInch")
 	// Convert int to string manually
-	s := ""
+	var s string
 	if ppi == 0 {
 		s = "0"
 	} else {

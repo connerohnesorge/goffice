@@ -1,6 +1,7 @@
 // Package elements provides Word document element types.
 //
-// This package contains the core elements used in WordprocessingML documents:
+// This package contains the core elements used in
+// WordprocessingML documents:
 //
 // # Document Structure
 //
@@ -51,4 +52,6 @@
 //	p2 := body.AppendParagraph("")
 //	r := p2.AppendRun("Bold text")
 //	r.SetBold(true)
+//
+//nolint:revive // max-public-structs: elements package defines many public types
 package elements

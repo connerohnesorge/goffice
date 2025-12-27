@@ -1,6 +1,12 @@
 // Package packaging provides the OPC (Open Packaging Conventions) layer.
 // OPC defines how Office Open XML documents are stored as ZIP-based packages
 // containing XML parts, relationships, and content types.
+//
+// type which requires cohesive implementation of all package operations
+// (create, open, save, close, parts, relationships) in a single file for
+// maintainability.
+//
+//nolint:revive // file-length-limit: This file implements the core OPC Package
 package packaging
 
 import (
@@ -227,7 +233,7 @@ func (p *Package) loadContentTypes() error {
 			if err != nil {
 				return err
 			}
-			defer rc.Close()
+			defer func() { _ = rc.Close() }()
 
 			return p.contentTypes.UnmarshalFromXML(
 				rc,
@@ -277,11 +283,11 @@ func (p *Package) loadParts() error {
 			return err
 		}
 		data, err := io.ReadAll(rc)
-		rc.Close()
+		_ = rc.Close()
 		if err != nil {
 			return err
 		}
-		part.setData(data)
+		part.loadData(data)
 
 		p.parts[uri] = part
 	}
@@ -303,11 +309,11 @@ func (p *Package) loadParts() error {
 		)
 		rels := NewRelationships(sourceURI)
 		if err := rels.UnmarshalFromXML(rc); err != nil {
-			rc.Close()
+			_ = rc.Close()
 
 			return err
 		}
-		rc.Close()
+		_ = rc.Close()
 
 		if sourceURI == "/" {
 			p.relationships = rels
@@ -330,7 +336,7 @@ func (p *Package) loadRelationships() error {
 			if err != nil {
 				return err
 			}
-			defer rc.Close()
+			defer func() { _ = rc.Close() }()
 
 			return p.relationships.UnmarshalFromXML(
 				rc,
@@ -349,7 +355,7 @@ func (p *Package) loadCoreProperties() {
 	}
 
 	r := part.GetStream()
-	p.coreProperties.UnmarshalFromXML(r)
+	_ = p.coreProperties.UnmarshalFromXML(r)
 }
 
 // Save saves the package to its original location.
@@ -396,7 +402,7 @@ func (p *Package) saveToFile(path string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	return p.saveToWriter(f)
 }
@@ -406,7 +412,7 @@ func (p *Package) saveToWriter(
 	w io.Writer,
 ) error {
 	zw := zip.NewWriter(w)
-	defer zw.Close()
+	defer func() { _ = zw.Close() }()
 
 	// Write [Content_Types].xml first
 	ctData, err := p.contentTypes.MarshalToXML()
@@ -479,13 +485,22 @@ func writeZipFile(
 }
 
 // Close closes the package and releases all resources.
-// Any unsaved changes are discarded.
+// For stream-based packages (created with CreateWriter), the content is
+// automatically saved to the writer before closing.
+// For file-based packages, any unsaved changes are discarded unless
+// Save() was called first.
 func (p *Package) Close() error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
 	if p.closed {
 		return nil
+	}
+
+	// For stream-based packages, save content before closing
+	var saveErr error
+	if p.writer != nil && p.capability == Write {
+		saveErr = p.saveToWriter(p.writer)
 	}
 
 	p.closed = true
@@ -498,7 +513,7 @@ func (p *Package) Close() error {
 	p.coreProperties = nil
 	p.writer = nil
 
-	return nil
+	return saveErr
 }
 
 // Capability returns the package's access capability.
@@ -642,7 +657,7 @@ func (p *Package) removeRelationshipsTo(
 		}
 	}
 	for _, id := range toDelete {
-		rels.Delete(id)
+		_ = rels.Delete(id)
 	}
 }
 
@@ -718,7 +733,8 @@ func (p *Package) Relationship(
 	return p.relationships.Get(id)
 }
 
-// RelationshipsByType returns an iterator over package-level relationships of the given type.
+// RelationshipsByType returns an iterator over package-level
+// relationships of the given type.
 func (p *Package) RelationshipsByType(
 	relType string,
 ) iter.Seq[*Relationship] {
@@ -836,7 +852,8 @@ func (p *Package) CoreProperties() *CoreProperties {
 	return p.coreProperties
 }
 
-// EnsureCorePropertiesPart ensures the core properties part exists in the package.
+// EnsureCorePropertiesPart ensures the core properties part exists
+// in the package.
 // This should be called before saving if core properties have been modified.
 func (p *Package) EnsureCorePropertiesPart() error {
 	p.mu.Lock()
@@ -866,7 +883,7 @@ func (p *Package) EnsureCorePropertiesPart() error {
 		)
 
 		// Create relationship to core properties
-		p.relationships.Create(
+		_, _ = p.relationships.Create(
 			CorePropertiesPartURI,
 			CorePropertiesRelationshipType,
 			"",

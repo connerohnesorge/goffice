@@ -1,16 +1,17 @@
-// Package features provides the feature collection infrastructure for Office Open XML.
-// Features allow parts and elements to access shared services like relationships,
-// namespaces, and document-level settings.
-package features
+// Package features provides the feature collection infrastructure for Office
+// Open XML. Features allow parts and elements to access shared services like
+// relationships, namespaces, and document-level settings.
+package features //nolint:revive // max-public-structs: interfaces.go defines many public types by design
 
 import (
 	"io"
 )
 
-// Feature is a marker interface for all features that can be stored in a FeatureCollection.
-// All specific feature interfaces embed this interface.
+// Feature is a marker interface for all features that can be stored in a
+// FeatureCollection. All specific feature interfaces embed this interface.
 type Feature interface {
-	// featureMarker is unexported to ensure only this package can implement Feature.
+	// featureMarker is unexported to ensure only this package can
+	// implement Feature.
 	featureMarker()
 }
 
@@ -103,7 +104,8 @@ type IMainPartFeature interface {
 	// ContentType returns the expected content type of the main part.
 	ContentType() string
 
-	// RelationshipType returns the relationship type used to identify the main part.
+	// RelationshipType returns the relationship type used to identify
+	// the main part.
 	RelationshipType() string
 }
 
@@ -165,7 +167,8 @@ const (
 	// Office2021 is Office 2021.
 	Office2021
 	// OfficeAll represents all versions.
-	OfficeAll = Office2007 | Office2010 | Office2013 | Office2016 | Office2019 | Office2021
+	OfficeAll = Office2007 | Office2010 | Office2013 |
+		Office2016 | Office2019 | Office2021
 )
 
 // Validator is an interface for element validators.

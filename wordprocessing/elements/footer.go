@@ -24,40 +24,46 @@ func NewFooter() *Footer {
 }
 
 // Paragraphs returns an iterator over all Paragraph elements in the footer.
+//
+//nolint:revive // early-return: nested logic is clearer for element iteration
 func (f *Footer) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range f.Children() {
-			if child.LocalName() == "p" &&
-				child.NamespaceURI() == NamespaceWML {
-				var p *Paragraph
-				if para, ok := child.(*Paragraph); ok {
-					p = para
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					p = &Paragraph{CompositeElementBase: comp}
-				}
-				if p != nil && !yield(p) {
-					return
-				}
+			if child.LocalName() != "p" ||
+				child.NamespaceURI() != NamespaceWML {
+				continue
+			}
+			var p *Paragraph
+			if para, ok := child.(*Paragraph); ok {
+				p = para
+			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
+				p = &Paragraph{CompositeElementBase: comp}
+			}
+			if p != nil && !yield(p) {
+				return
 			}
 		}
 	}
 }
 
 // Tables returns an iterator over all Table elements in the footer.
+//
+//nolint:revive // early-return: nested logic is clearer for element iteration
 func (f *Footer) Tables() iter.Seq[*Table] {
 	return func(yield func(*Table) bool) {
 		for child := range f.Children() {
-			if child.LocalName() == "tbl" &&
-				child.NamespaceURI() == NamespaceWML {
-				var t *Table
-				if tbl, ok := child.(*Table); ok {
-					t = tbl
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					t = &Table{CompositeElementBase: comp}
-				}
-				if t != nil && !yield(t) {
-					return
-				}
+			if child.LocalName() != "tbl" ||
+				child.NamespaceURI() != NamespaceWML {
+				continue
+			}
+			var t *Table
+			if tbl, ok := child.(*Table); ok {
+				t = tbl
+			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
+				t = &Table{CompositeElementBase: comp}
+			}
+			if t != nil && !yield(t) {
+				return
 			}
 		}
 	}
@@ -104,8 +110,10 @@ func (f *Footer) ClearContent() {
 
 // Clone creates a deep copy of this Footer element.
 func (f *Footer) Clone() openxml.Element {
+	cloned := f.PartRootElementBase.Clone()
+
 	return &Footer{
-		PartRootElementBase: f.PartRootElementBase.Clone().(*openxml.PartRootElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -113,7 +121,11 @@ func (f *Footer) Clone() openxml.Element {
 func (f *Footer) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := f.PartRootElementBase.CloneNode(
+		deep,
+	)
+
 	return &Footer{
-		PartRootElementBase: f.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }

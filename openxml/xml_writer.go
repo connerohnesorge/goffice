@@ -12,7 +12,6 @@ type XMLWriter struct {
 	namespaces       map[string]string // namespace URI -> prefix
 	declaredPrefixes map[string]bool   // prefixes declared in current scope
 	indent           string
-	currentIndent    string
 	pretty           bool
 }
 
@@ -66,7 +65,10 @@ func (xw *XMLWriter) WriteElement(
 	return elem.WriteXML(xw.w)
 }
 
-// WriteElementWithNamespaces writes an element with namespace declarations at the root.
+// WriteElementWithNamespaces writes an element with namespace declarations
+// at the root.
+//
+//nolint:revive // function-length: complex XML serialization requires many steps
 func (xw *XMLWriter) WriteElementWithNamespaces(
 	elem Element,
 	namespaces map[string]string,
@@ -150,6 +152,8 @@ func (xw *XMLWriter) WriteElementWithNamespaces(
 }
 
 // collectNamespaces collects all namespaces used in an element tree.
+//
+//nolint:revive // cognitive-complexity: recursive namespace collection is inherently complex
 func collectNamespaces(
 	elem Element,
 	prefixes map[string]string,
@@ -167,12 +171,15 @@ func collectNamespaces(
 
 	// Add attribute namespaces
 	for _, attr := range elem.Attributes() {
-		if ns := attr.NamespaceURI(); ns != "" {
-			if prefix, ok := prefixes[ns]; ok {
-				result[ns] = prefix
-			} else if attr.Prefix() != "" {
-				result[ns] = attr.Prefix()
-			}
+		ns := attr.NamespaceURI()
+		if ns == "" {
+			continue
+		}
+
+		if prefix, ok := prefixes[ns]; ok {
+			result[ns] = prefix
+		} else if attr.Prefix() != "" {
+			result[ns] = attr.Prefix()
 		}
 	}
 
@@ -198,7 +205,7 @@ func writeNamespaceDeclarations(
 	namespaces map[string]string,
 ) {
 	// Sort namespaces for deterministic output
-	var uris []string
+	uris := make([]string, 0, len(namespaces))
 	for uri := range namespaces {
 		uris = append(uris, uri)
 	}
@@ -219,14 +226,16 @@ func writeNamespaceDeclarations(
 	}
 }
 
-// WriteDocumentElement writes an element as a document root with XML declaration.
+// WriteDocumentElement writes an element as a document root
+// with XML declaration.
 func WriteDocumentElement(
 	w io.Writer,
 	elem Element,
 	namespaces map[string]string,
 ) error {
 	// Write XML declaration
-	if _, err := io.WriteString(w, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"); err != nil {
+	xmlDecl := "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+	if _, err := io.WriteString(w, xmlDecl); err != nil {
 		return err
 	}
 
@@ -239,14 +248,15 @@ func WriteDocumentElement(
 	)
 }
 
-// OuterXmlWithNamespaces returns the XML representation with namespace declarations.
+// OuterXmlWithNamespaces returns the XML representation
+// with namespace declarations.
 func OuterXmlWithNamespaces(
 	elem Element,
 	namespaces map[string]string,
 ) string {
 	var buf bytes.Buffer
 	xw := NewXMLWriter(&buf)
-	xw.WriteElementWithNamespaces(
+	_ = xw.WriteElementWithNamespaces(
 		elem,
 		namespaces,
 	)

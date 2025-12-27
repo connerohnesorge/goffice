@@ -27,12 +27,13 @@ func NewHeader() *Header {
 func (h *Header) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range h.Children() {
-			if child.LocalName() == "p" &&
+			if child.LocalName() == "p" && //nolint:revive
 				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
 				if para, ok := child.(*Paragraph); ok {
 					p = para
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
+				} else if comp, //nolint:revive // line-length-limit
+					ok := child.(*openxml.CompositeElementBase); ok {
 					p = &Paragraph{CompositeElementBase: comp}
 				}
 				if p != nil && !yield(p) {
@@ -47,17 +48,18 @@ func (h *Header) Paragraphs() iter.Seq[*Paragraph] {
 func (h *Header) Tables() iter.Seq[*Table] {
 	return func(yield func(*Table) bool) {
 		for child := range h.Children() {
-			if child.LocalName() == "tbl" &&
-				child.NamespaceURI() == NamespaceWML {
-				var t *Table
-				if tbl, ok := child.(*Table); ok {
-					t = tbl
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					t = &Table{CompositeElementBase: comp}
-				}
-				if t != nil && !yield(t) {
-					return
-				}
+			if child.LocalName() != "tbl" ||
+				child.NamespaceURI() != NamespaceWML {
+				continue
+			}
+			var t *Table
+			if tbl, ok := child.(*Table); ok {
+				t = tbl
+			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
+				t = &Table{CompositeElementBase: comp}
+			}
+			if t != nil && !yield(t) {
+				return
 			}
 		}
 	}
@@ -104,8 +106,10 @@ func (h *Header) ClearContent() {
 
 // Clone creates a deep copy of this Header element.
 func (h *Header) Clone() openxml.Element {
+	cloned := h.PartRootElementBase.Clone()
+
 	return &Header{
-		PartRootElementBase: h.PartRootElementBase.Clone().(*openxml.PartRootElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -113,7 +117,11 @@ func (h *Header) Clone() openxml.Element {
 func (h *Header) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := h.PartRootElementBase.CloneNode(
+		deep,
+	)
+
 	return &Header{
-		PartRootElementBase: h.PartRootElementBase.CloneNode(deep).(*openxml.PartRootElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }

@@ -20,7 +20,8 @@
 //   - ThemePart: Theme definitions (word/theme/theme1.xml)
 //   - ImagePart: Embedded images (word/media/image1.png, etc.)
 //   - CustomXmlPart: Custom XML data (customXml/item1.xml, etc.)
-//   - VbaProjectPart: VBA macros for macro-enabled documents (word/vbaProject.bin)
+//   - VbaProjectPart: VBA macros for macro-enabled documents
+//     (word/vbaProject.bin)
 //
 // # Creating Parts
 //

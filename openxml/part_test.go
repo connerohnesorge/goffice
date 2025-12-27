@@ -67,7 +67,7 @@ func TestNewOpenXmlPartData(t *testing.T) {
 					err,
 				)
 			}
-			defer pkg.Close()
+			defer func() { _ = pkg.Close() }()
 
 			packPart, err := pkg.CreatePart(
 				"/word/document.xml",
@@ -99,7 +99,7 @@ func TestNewOpenXmlPartData(t *testing.T) {
 // Test Part loading and content management
 
 func TestOpenXmlPartDataContent(t *testing.T) {
-	tmpPath := t.TempDir() + "/test.docx"
+	tmpPath := t.TempDir() + "/test.docx" //nolint:lll
 	pkg, err := packaging.Create(tmpPath)
 	if err != nil {
 		t.Fatalf(
@@ -107,7 +107,7 @@ func TestOpenXmlPartDataContent(t *testing.T) {
 			err,
 		)
 	}
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	packPart, err := pkg.CreatePart(
 		"/word/document.xml",
@@ -152,24 +152,27 @@ func TestOpenXmlPartDataContent(t *testing.T) {
 		},
 	)
 
-	t.Run("GetStream", func(t *testing.T) {
-		testData := []byte(
-			"<document>Stream test</document>",
-		)
-		part.SetData(testData)
-
-		reader := part.GetStream()
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(reader)
-
-		if buf.String() != string(testData) {
-			t.Errorf(
-				"GetStream() returned %q, want %q",
-				buf.String(),
-				string(testData),
+	t.Run(
+		"GetStream",
+		func(t *testing.T) { //nolint:lll
+			testData := []byte(
+				"<document>Stream test</document>",
 			)
-		}
-	})
+			part.SetData(testData)
+
+			reader := part.GetStream()
+			buf := new(bytes.Buffer)
+			_, _ = buf.ReadFrom(reader)
+
+			if buf.String() != string(testData) {
+				t.Errorf(
+					"GetStream() returned %q, want %q",
+					buf.String(),
+					string(testData),
+				)
+			}
+		},
+	)
 
 	t.Run(
 		"GetData with nil packaging part",
@@ -200,7 +203,7 @@ func TestOpenXmlPartDataContent(t *testing.T) {
 			)
 			reader := partNoPkg.GetStream()
 			buf := new(bytes.Buffer)
-			buf.ReadFrom(reader)
+			_, _ = buf.ReadFrom(reader)
 			if buf.Len() != 0 {
 				t.Error(
 					"GetStream() should return empty reader when no packaging part",
@@ -223,7 +226,7 @@ func TestOpenXmlPartDataRootElement(
 			err,
 		)
 	}
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	packPart, err := pkg.CreatePart(
 		"/word/document.xml",
@@ -349,7 +352,7 @@ func TestOpenXmlPartDataGetPartsOfType(
 			err,
 		)
 	}
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	packPart, _ := pkg.CreatePart(
 		"/word/document.xml",
@@ -381,17 +384,18 @@ func TestOpenXmlPartDataGetPartsOfType(
 		nil,
 		parent,
 	)
+	// Same content type as child1 for testing GetPartsOfType
 	child4 := NewOpenXmlPartData(
 		"/word/fontTable.xml",
 		ContentTypeStyles,
 		nil,
 		parent,
-	) // Same as child1
+	)
 
-	parent.AddPart(child1, "rId1")
-	parent.AddPart(child2, "rId2")
-	parent.AddPart(child3, "rId3")
-	parent.AddPart(child4, "rId4")
+	_ = parent.AddPart(child1, "rId1")
+	_ = parent.AddPart(child2, "rId2")
+	_ = parent.AddPart(child3, "rId3")
+	_ = parent.AddPart(child4, "rId4")
 
 	t.Run(
 		"filter by content type",
@@ -511,7 +515,7 @@ func TestOpenXmlPartDataChildParts(t *testing.T) {
 			nil,
 			part,
 		)
-		part.AddPart(child3, "rId99")
+		_ = part.AddPart(child3, "rId99")
 
 		err := part.DeletePart("rId99")
 		if err != nil {
@@ -622,7 +626,7 @@ func TestOpenXmlPartDataDirtyFlag(t *testing.T) {
 				nil,
 				part,
 			)
-			part.AddPart(child, "rIdTest")
+			_ = part.AddPart(child, "rIdTest")
 			if !part.IsDirty() {
 				t.Error(
 					"Part should be dirty after AddPart",
@@ -762,11 +766,6 @@ func TestPartTypeRegistry(t *testing.T) {
 
 // Test generic GetPartsOfType and FirstPartOfType helpers
 
-type mockOpenXmlPart struct {
-	*OpenXmlPartData
-	customField string
-}
-
 func TestGetPartsOfTypeGeneric(t *testing.T) {
 	// Create a container and add mixed part types
 	pkg, err := packaging.Create(
@@ -778,7 +777,7 @@ func TestGetPartsOfTypeGeneric(t *testing.T) {
 			err,
 		)
 	}
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	oxPkg := NewOpenXmlPackage(pkg)
 
@@ -796,8 +795,8 @@ func TestGetPartsOfTypeGeneric(t *testing.T) {
 		oxPkg,
 	)
 
-	oxPkg.AddPart(part1, "rId1")
-	oxPkg.AddPart(part2, "rId2")
+	_ = oxPkg.AddPart(part1, "rId1")
+	_ = oxPkg.AddPart(part2, "rId2")
 
 	t.Run(
 		"GetPartsOfType generic",
@@ -919,7 +918,7 @@ func TestOpenXmlPartDataSaveReload(t *testing.T) {
 			err,
 		)
 	}
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	packPart, _ := pkg.CreatePart(
 		"/word/document.xml",
@@ -1017,7 +1016,7 @@ func TestOpenXmlPartDataPackage(t *testing.T) {
 		func(t *testing.T) {
 			tmpPath := t.TempDir() + "/test.docx"
 			pkg, _ := packaging.Create(tmpPath)
-			defer pkg.Close()
+			defer func() { _ = pkg.Close() }()
 
 			oxPkg := NewOpenXmlPackage(pkg)
 			part := NewOpenXmlPartData(
@@ -1060,7 +1059,7 @@ func TestOpenXmlPartDataGetPackagingPart(
 ) {
 	tmpPath := t.TempDir() + "/test.docx"
 	pkg, _ := packaging.Create(tmpPath)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	packPart, _ := pkg.CreatePart(
 		"/word/document.xml",

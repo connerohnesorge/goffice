@@ -23,6 +23,8 @@ const (
 // String returns the string representation of the TargetMode.
 func (tm TargetMode) String() string {
 	switch tm {
+	case TargetModeInternal:
+		return "Internal"
 	case TargetModeExternal:
 		return "External"
 	default:
@@ -75,11 +77,11 @@ func (r *Relationship) TargetMode() TargetMode {
 type Relationships struct {
 	mu        sync.RWMutex
 	rels      map[string]*Relationship // id -> relationship
-	sourceURI string                   // URI of the source part (or "/" for package-level)
+	sourceURI string                   // source part URI ("/" for pkg)
 	nextID    int                      // for auto-generating IDs
 }
 
-// NewRelationships creates a new Relationships collection for the given source URI.
+// NewRelationships creates a new Relationships collection for the source URI.
 func NewRelationships(
 	sourceURI string,
 ) *Relationships {
@@ -97,7 +99,7 @@ func (rs *Relationships) SourceURI() string {
 
 // Create creates a new relationship with the given parameters.
 // If id is empty, an auto-generated ID will be used.
-// Returns ErrRelationshipExists if a relationship with the same ID already exists.
+// Returns ErrRelationshipExists if a relationship with the same ID exists.
 func (rs *Relationships) Create(
 	target, relType, id string,
 ) (*Relationship, error) {
@@ -109,9 +111,9 @@ func (rs *Relationships) Create(
 	)
 }
 
-// CreateWithMode creates a new relationship with the given parameters and target mode.
+// CreateWithMode creates a new relationship with the given parameters and mode.
 // If id is empty, an auto-generated ID will be used.
-// Returns ErrRelationshipExists if a relationship with the same ID already exists.
+// Returns ErrRelationshipExists if a relationship with the same ID exists.
 func (rs *Relationships) CreateWithMode(
 	target, relType, id string,
 	mode TargetMode,
@@ -120,27 +122,28 @@ func (rs *Relationships) CreateWithMode(
 	defer rs.mu.Unlock()
 
 	// Generate ID if not provided
-	if id == "" {
-		id = rs.generateID()
+	relID := id
+	if relID == "" {
+		relID = rs.generateID()
 	}
 
 	// Check for duplicate
-	if _, exists := rs.rels[id]; exists {
+	if _, exists := rs.rels[relID]; exists {
 		return nil, ErrRelationshipExists
 	}
 
 	rel := NewRelationship(
-		id,
+		relID,
 		relType,
 		target,
 		mode,
 	)
-	rs.rels[id] = rel
+	rs.rels[relID] = rel
 
 	return rel, nil
 }
 
-// generateID generates a unique relationship ID (must be called with lock held).
+// generateID generates a unique relationship ID (call with lock held).
 func (rs *Relationships) generateID() string {
 	for {
 		id := fmt.Sprintf("rId%d", rs.nextID)
@@ -190,10 +193,11 @@ func (rs *Relationships) ByType(
 		defer rs.mu.RUnlock()
 
 		for _, rel := range rs.rels {
-			if rel.relType == relType {
-				if !yield(rel) {
-					return
-				}
+			if rel.relType != relType {
+				continue
+			}
+			if !yield(rel) {
+				return
 			}
 		}
 	}
@@ -228,9 +232,8 @@ func (rs *Relationships) IsEmpty() bool {
 
 // XML types for .rels file serialization
 
-const relationshipsNamespace = "http://schemas.openxmlformats.org/package/2006/relationships"
-
 type xmlRelationships struct {
+	//nolint:revive // XML namespace tag cannot be shortened
 	XMLName       xml.Name          `xml:"http://schemas.openxmlformats.org/package/2006/relationships Relationships"`
 	Relationships []xmlRelationship `xml:"Relationship"`
 }
@@ -309,10 +312,11 @@ func (rs *Relationships) UnmarshalFromXML(
 
 		// Track highest ID for auto-generation
 		var num int
-		if _, err := fmt.Sscanf(xmlRel.ID, "rId%d", &num); err == nil {
-			if num >= rs.nextID {
-				rs.nextID = num + 1
-			}
+		if _, err := fmt.Sscanf(xmlRel.ID, "rId%d", &num); err != nil {
+			continue
+		}
+		if num >= rs.nextID {
+			rs.nextID = num + 1
 		}
 	}
 

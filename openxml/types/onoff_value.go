@@ -17,8 +17,8 @@ const (
 	OnOffFormatOneZero
 )
 
-// OnOffValue wraps a Word-style on/off boolean value with optional nil/unset state.
-// It implements the SimpleValue interface.
+// OnOffValue wraps a Word-style on/off boolean value with optional
+// nil/unset state. It implements the SimpleValue interface.
 // This type accepts "on", "off", "true", "false", "1", "0" on input.
 type OnOffValue struct {
 	value        bool
@@ -35,7 +35,8 @@ func NewOnOffValue(v bool) *OnOffValue {
 	}
 }
 
-// NewOnOffValueWithFormat creates a new OnOffValue with the given boolean and output format.
+// NewOnOffValueWithFormat creates a new OnOffValue with the given boolean
+// and output format.
 func NewOnOffValueWithFormat(
 	v bool,
 	format OnOffOutputFormat,
@@ -94,6 +95,12 @@ func (ov *OnOffValue) InnerText() string {
 		return ""
 	}
 	switch ov.outputFormat {
+	case OnOffFormatOnOff:
+		if ov.value {
+			return "on"
+		}
+
+		return "off"
 	case OnOffFormatTrueFalse:
 		if ov.value {
 			return "true"
@@ -106,18 +113,18 @@ func (ov *OnOffValue) InnerText() string {
 		}
 
 		return "0"
-	default: // OnOffFormatOnOff
-		if ov.value {
-			return "on"
-		}
-
-		return "off"
 	}
+	// Default fallback (should not be reached with valid OnOffOutputFormat)
+	if ov.value {
+		return "on"
+	}
+
+	return "off"
 }
 
 // SetInnerText parses the value from a string.
-// Accepts "on", "off", "true", "false", "1", "0" (case-insensitive for text values).
-// Returns an error if the string cannot be parsed.
+// Accepts "on", "off", "true", "false", "1", "0" (case-insensitive for
+// text values). Returns an error if the string cannot be parsed.
 func (ov *OnOffValue) SetInnerText(
 	text string,
 ) error {

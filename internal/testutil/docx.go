@@ -7,6 +7,9 @@ import (
 	"path/filepath"
 )
 
+// dirPerm is the permission mode for directories.
+const dirPerm = 0o755
+
 // MinimalDocxFiles contains the minimal set of files required for a valid .docx
 var MinimalDocxFiles = map[string]string{
 	"[Content_Types].xml":          contentTypesXML,
@@ -15,20 +18,39 @@ var MinimalDocxFiles = map[string]string{
 	"word/_rels/document.xml.rels": documentRelsXML,
 }
 
-const contentTypesXML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+// XML namespace base.
+const nsBase = "http://schemas.openxmlformats.org/"
+
+// XML namespace constants.
+var (
+	nsContentTypes   = nsBase + "package/2006/content-types"
+	nsRelationships  = nsBase + "package/2006/relationships"
+	nsWordprocessing = nsBase + "wordprocessingml/2006/main"
+	nsOfficeDocument = nsBase + "officeDocument/2006/relationships"
+)
+
+// Content type constants.
+const (
+	ctRelationships = "application/vnd.openxmlformats-package.relationships+xml"
+	ctDocument      = "application/vnd.openxmlformats-officedocument." +
+		"wordprocessingml.document.main+xml"
+)
+
+var contentTypesXML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="` + nsContentTypes + `">
+  <Default Extension="rels" ContentType="` + ctRelationships + `"/>
   <Default Extension="xml" ContentType="application/xml"/>
-  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/document.xml" ContentType="` + ctDocument + `"/>
 </Types>`
 
-const relsXML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+var relsXML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="` + nsRelationships + `">
+  <Relationship Id="rId1" Type="` + nsOfficeDocument +
+	`/officeDocument" Target="word/document.xml"/>
 </Relationships>`
 
-const documentXML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+var documentXML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="` + nsWordprocessing + `">
   <w:body>
     <w:p>
       <w:r>
@@ -38,15 +60,15 @@ const documentXML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
   </w:body>
 </w:document>`
 
-const documentRelsXML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+var documentRelsXML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="` + nsRelationships + `">
 </Relationships>`
 
 // CreateMinimalDocx creates a minimal valid .docx file at the specified path.
 func CreateMinimalDocx(path string) error {
 	// Ensure directory exists
 	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, dirPerm); err != nil {
 		return err
 	}
 
@@ -55,7 +77,7 @@ func CreateMinimalDocx(path string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	// Create ZIP writer
 	zw := zip.NewWriter(f)

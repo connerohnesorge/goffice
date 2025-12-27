@@ -18,7 +18,10 @@ type BaseElement struct {
 	features   *features.FeatureCollection
 }
 
-// InitBaseElement initializes a BaseElement with the given namespace URI, local name, and prefix.
+// InitBaseElement initializes a BaseElement with the given namespace URI,
+// local name, and prefix.
+//
+//nolint:revive // argument-limit: this function requires multiple parameters for initialization
 func InitBaseElement(
 	b *BaseElement,
 	namespaceURI, localName, prefix string,
@@ -88,7 +91,7 @@ func (b *BaseElement) Features() *features.FeatureCollection {
 // Attributes returns all attributes on this element.
 func (b *BaseElement) Attributes() []OpenXmlAttribute {
 	if b.attributes == nil {
-		return []OpenXmlAttribute{}
+		return make([]OpenXmlAttribute, 0)
 	}
 	// Return a copy to prevent external modification
 	result := make(
@@ -100,7 +103,8 @@ func (b *BaseElement) Attributes() []OpenXmlAttribute {
 	return result
 }
 
-// GetAttribute returns the attribute with the given local name and namespace URI.
+// GetAttribute returns the attribute with the given local name and
+// namespace URI.
 func (b *BaseElement) GetAttribute(
 	localName, namespaceURI string,
 ) (OpenXmlAttribute, bool) {
@@ -131,7 +135,8 @@ func (b *BaseElement) SetAttribute(
 	b.attributes = append(b.attributes, attr)
 }
 
-// RemoveAttribute removes the attribute with the given local name and namespace URI.
+// RemoveAttribute removes the attribute with the given local name and
+// namespace URI.
 func (b *BaseElement) RemoveAttribute(
 	localName, namespaceURI string,
 ) bool {
@@ -160,6 +165,9 @@ func (b *BaseElement) AttributeCount() int {
 }
 
 // xmlStartElement returns an xml.StartElement for this element.
+// This method is kept for potential future use with encoding/xml marshaling.
+//
+//nolint:unused // Retained for future XML marshaling support
 func (b *BaseElement) xmlStartElement() xml.StartElement {
 	name := xml.Name{
 		Space: b.qname.NamespaceURI(),
@@ -184,6 +192,8 @@ func (b *BaseElement) xmlStartElement() xml.StartElement {
 }
 
 // writeStartElement writes the opening tag to the writer.
+//
+//nolint:revive // flag-parameter: selfClose boolean is intentional for this internal method
 func (b *BaseElement) writeStartElement(
 	w io.Writer,
 	selfClose bool,
@@ -197,9 +207,36 @@ func (b *BaseElement) writeStartElement(
 	}
 	buf.WriteString(b.qname.LocalName())
 
-	// Write namespace declaration if this is a root element or has a different namespace
-	if b.prefix != "" &&
+	// Track which namespace prefixes need declarations
+	declaredPrefixes := make(map[string]bool)
+
+	// Write default namespace declaration if this element uses the default
+	// namespace (no prefix) and has a namespace URI, and is a root element
+	if b.parent == nil &&
 		b.qname.NamespaceURI() != "" {
+		if b.prefix == "" {
+			buf.WriteString(" xmlns=\"")
+			buf.WriteString(
+				escapeXmlAttr(
+					b.qname.NamespaceURI(),
+				),
+			)
+			buf.WriteByte('"')
+		} else {
+			buf.WriteString(" xmlns:")
+			buf.WriteString(b.prefix)
+			buf.WriteString("=\"")
+			buf.WriteString(
+				escapeXmlAttr(b.qname.NamespaceURI()),
+			)
+			buf.WriteByte('"')
+			declaredPrefixes[b.prefix] = true
+		}
+	}
+
+	// Write prefixed namespace declaration if element has a prefix and not already declared
+	if b.prefix != "" &&
+		b.qname.NamespaceURI() != "" && !declaredPrefixes[b.prefix] {
 		buf.WriteString(" xmlns:")
 		buf.WriteString(b.prefix)
 		buf.WriteString("=\"")
@@ -207,9 +244,29 @@ func (b *BaseElement) writeStartElement(
 			escapeXmlAttr(b.qname.NamespaceURI()),
 		)
 		buf.WriteByte('"')
+		declaredPrefixes[b.prefix] = true
 	}
 
-	// Write attributes
+	// Write attributes, collecting prefixed namespaces that need declaration
+	for _, attr := range b.attributes {
+		// Declare namespace for prefixed attributes that haven't been declared
+		if attr.Prefix() != "" &&
+			attr.NamespaceURI() != "" &&
+			!declaredPrefixes[attr.Prefix()] {
+			buf.WriteString(" xmlns:")
+			buf.WriteString(attr.Prefix())
+			buf.WriteString("=\"")
+			buf.WriteString(
+				escapeXmlAttr(
+					attr.NamespaceURI(),
+				),
+			)
+			buf.WriteByte('"')
+			declaredPrefixes[attr.Prefix()] = true
+		}
+	}
+
+	// Write attribute values
 	for _, attr := range b.attributes {
 		buf.WriteByte(' ')
 		if attr.Prefix() != "" {

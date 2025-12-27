@@ -423,7 +423,10 @@ func TestSettingsClone(t *testing.T) {
 	s.SetZoom(150)
 	s.SetTrackRevisions(true)
 
-	clone := s.Clone().(*Settings)
+	clone, ok := s.Clone().(*Settings)
+	if !ok {
+		t.Fatal("Clone did not return *Settings")
+	}
 	if clone.Zoom().Percent() != 150 {
 		t.Errorf(
 			"Expected cloned zoom 150, got %d",

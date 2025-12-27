@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit - table implementation requires many methods
 package elements
 
 import (

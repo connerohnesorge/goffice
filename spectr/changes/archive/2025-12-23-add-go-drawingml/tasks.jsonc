@@ -1,0 +1,1408 @@
+{
+  "id": "add-go-drawingml",
+  "title": "Go DrawingML Shared Package",
+  "description": "Shared package providing DrawingML types for shapes, images, effects, and charts used by Word, Presentation, and Spreadsheet SDKs",
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Core DrawingML Types",
+      "description": "Implement core DrawingML types including shapes, fills, effects, and transforms (a: namespace)",
+      "tasks": [
+        {
+          "id": "1.1",
+          "name": "Package Setup",
+          "description": "Create drawingml package structure with subpackages",
+          "subtasks": [
+            {
+              "id": "1.1.1",
+              "name": "Create drawingml/main/ directory",
+              "status": "completed"
+            },
+            {
+              "id": "1.1.2",
+              "name": "Create drawingml/chart/ directory",
+              "status": "completed"
+            },
+            {
+              "id": "1.1.3",
+              "name": "Create drawingml/spreadsheet/ directory",
+              "status": "completed"
+            },
+            {
+              "id": "1.1.4",
+              "name": "Create drawingml/word/ directory",
+              "status": "completed"
+            },
+            {
+              "id": "1.1.5",
+              "name": "Create drawingml/picture/ directory",
+              "status": "completed"
+            },
+            {
+              "id": "1.1.6",
+              "name": "Create drawingml/units/ directory",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "1.2",
+          "name": "EMU Unit Utilities",
+          "description": "Implement EMU (English Metric Unit) conversion utilities",
+          "subtasks": [
+            {
+              "id": "1.2.1",
+              "name": "Implement EMU type with constants",
+              "status": "completed"
+            },
+            {
+              "id": "1.2.2",
+              "name": "Implement Inches(), Cm(), Points(), Pixels() constructors",
+              "status": "completed"
+            },
+            {
+              "id": "1.2.3",
+              "name": "Implement ToInches(), ToCm(), ToPoints(), ToPixels() methods",
+              "status": "completed"
+            },
+            {
+              "id": "1.2.4",
+              "name": "Implement Degrees() and ToDegrees() for rotation",
+              "status": "completed"
+            },
+            {
+              "id": "1.2.5",
+              "name": "Write unit tests for EMU conversions",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "1.3",
+          "name": "Transform Types",
+          "description": "Implement 2D transform types (position, size, rotation)",
+          "subtasks": [
+            {
+              "id": "1.3.1",
+              "name": "Implement Xfrm (a:xfrm) - Transform2D",
+              "status": "completed"
+            },
+            {
+              "id": "1.3.2",
+              "name": "Implement Offset (a:off) - position",
+              "status": "completed"
+            },
+            {
+              "id": "1.3.3",
+              "name": "Implement Extent (a:ext) - size",
+              "status": "completed"
+            },
+            {
+              "id": "1.3.4",
+              "name": "Implement ChildOffset and ChildExtent for groups",
+              "status": "completed"
+            },
+            {
+              "id": "1.3.5",
+              "name": "Write unit tests for transforms",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "1.4",
+          "name": "Shape Geometry Types",
+          "description": "Implement preset and custom geometry types",
+          "subtasks": [
+            {
+              "id": "1.4.1",
+              "name": "Implement PresetGeomType constants (154+ shapes)",
+              "status": "completed"
+            },
+            {
+              "id": "1.4.2",
+              "name": "Implement PrstGeom (a:prstGeom) - preset geometry",
+              "status": "completed"
+            },
+            {
+              "id": "1.4.3",
+              "name": "Implement AdjustValueList (a:avLst)",
+              "status": "completed"
+            },
+            {
+              "id": "1.4.4",
+              "name": "Implement AdjustValue (a:gd) - guide definition",
+              "status": "completed"
+            },
+            {
+              "id": "1.4.5",
+              "name": "Implement CustGeom (a:custGeom) - custom geometry",
+              "status": "completed"
+            },
+            {
+              "id": "1.4.6",
+              "name": "Implement PathLst (a:pathLst) - path list",
+              "status": "completed"
+            },
+            {
+              "id": "1.4.7",
+              "name": "Implement Path (a:path) - geometry path",
+              "status": "completed"
+            },
+            {
+              "id": "1.4.8",
+              "name": "Implement path commands: MoveTo, LineTo, ArcTo, CubicBezTo, Close",
+              "status": "completed"
+            },
+            {
+              "id": "1.4.9",
+              "name": "Implement PresetGeomType.IsValid() validation",
+              "status": "completed"
+            },
+            {
+              "id": "1.4.10",
+              "name": "Write unit tests for geometries",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "1.5",
+          "name": "Color Types",
+          "description": "Implement all color types and transforms",
+          "subtasks": [
+            {
+              "id": "1.5.1",
+              "name": "Implement Color interface",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.2",
+              "name": "Implement SrgbClr (a:srgbClr) - RGB hex color",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.3",
+              "name": "Implement SchemeClr (a:schemeClr) - theme color",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.4",
+              "name": "Implement SchemeColorValue constants",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.5",
+              "name": "Implement SysClr (a:sysClr) - system color",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.6",
+              "name": "Implement HslClr (a:hslClr) - HSL color",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.7",
+              "name": "Implement PrstClr (a:prstClr) - preset color",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.8",
+              "name": "Implement preset color constants (150+ colors)",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.9",
+              "name": "Implement color transforms: Alpha, Tint, Shade",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.10",
+              "name": "Implement color transforms: SatMod, LumMod, HueOff",
+              "status": "completed"
+            },
+            {
+              "id": "1.5.11",
+              "name": "Write unit tests for colors",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "1.6",
+          "name": "Fill Types",
+          "description": "Implement all fill types",
+          "subtasks": [
+            {
+              "id": "1.6.1",
+              "name": "Implement Fill interface",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.2",
+              "name": "Implement NoFill (a:noFill)",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.3",
+              "name": "Implement SolidFill (a:solidFill)",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.4",
+              "name": "Implement GradFill (a:gradFill) - gradient fill",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.5",
+              "name": "Implement GradientStopList (a:gsLst)",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.6",
+              "name": "Implement GradientStop (a:gs)",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.7",
+              "name": "Implement LinearShade (a:lin) - linear gradient",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.8",
+              "name": "Implement PathShade (a:path) - radial/path gradient",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.9",
+              "name": "Implement PattFill (a:pattFill) - pattern fill",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.10",
+              "name": "Implement PatternFillType constants (50+ patterns)",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.11",
+              "name": "Implement BlipFill (a:blipFill) - image fill",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.12",
+              "name": "Implement GrpFill (a:grpFill) - group fill",
+              "status": "completed"
+            },
+            {
+              "id": "1.6.13",
+              "name": "Write unit tests for fills",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "1.7",
+          "name": "Line Types",
+          "description": "Implement line/outline properties",
+          "subtasks": [
+            {
+              "id": "1.7.1",
+              "name": "Implement Ln (a:ln) - line properties",
+              "status": "completed"
+            },
+            {
+              "id": "1.7.2",
+              "name": "Implement line width, cap, compound attributes",
+              "status": "completed"
+            },
+            {
+              "id": "1.7.3",
+              "name": "Implement PrstDash (a:prstDash) - preset dash",
+              "status": "completed"
+            },
+            {
+              "id": "1.7.4",
+              "name": "Implement dash style constants",
+              "status": "completed"
+            },
+            {
+              "id": "1.7.5",
+              "name": "Implement CustDash (a:custDash) - custom dash",
+              "status": "completed"
+            },
+            {
+              "id": "1.7.6",
+              "name": "Implement line joins: Round, Bevel, Miter",
+              "status": "completed"
+            },
+            {
+              "id": "1.7.7",
+              "name": "Implement HeadEnd/TailEnd (a:headEnd/a:tailEnd)",
+              "status": "completed"
+            },
+            {
+              "id": "1.7.8",
+              "name": "Implement line end type constants",
+              "status": "completed"
+            },
+            {
+              "id": "1.7.9",
+              "name": "Write unit tests for lines",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "1.8",
+          "name": "Effect Types",
+          "description": "Implement visual effects",
+          "subtasks": [
+            {
+              "id": "1.8.1",
+              "name": "Implement EffectLst (a:effectLst) - effect list",
+              "status": "completed"
+            },
+            {
+              "id": "1.8.2",
+              "name": "Implement OuterShdw (a:outerShdw) - outer shadow",
+              "status": "completed"
+            },
+            {
+              "id": "1.8.3",
+              "name": "Implement InnerShdw (a:innerShdw) - inner shadow",
+              "status": "completed"
+            },
+            {
+              "id": "1.8.4",
+              "name": "Implement Glow (a:glow)",
+              "status": "completed"
+            },
+            {
+              "id": "1.8.5",
+              "name": "Implement SoftEdge (a:softEdge)",
+              "status": "completed"
+            },
+            {
+              "id": "1.8.6",
+              "name": "Implement Reflection (a:reflection)",
+              "status": "completed"
+            },
+            {
+              "id": "1.8.7",
+              "name": "Implement Blur (a:blur)",
+              "status": "completed"
+            },
+            {
+              "id": "1.8.8",
+              "name": "Implement PrstShdw (a:prstShdw) - preset shadow",
+              "status": "completed"
+            },
+            {
+              "id": "1.8.9",
+              "name": "Implement FillOverlay (a:fillOverlay)",
+              "status": "completed"
+            },
+            {
+              "id": "1.8.10",
+              "name": "Write unit tests for effects",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "1.9",
+          "name": "Blip Types",
+          "description": "Implement image reference types",
+          "subtasks": [
+            {
+              "id": "1.9.1",
+              "name": "Implement Blip (a:blip) - image reference",
+              "status": "completed"
+            },
+            {
+              "id": "1.9.2",
+              "name": "Implement blip embed/link relationship attributes",
+              "status": "completed"
+            },
+            {
+              "id": "1.9.3",
+              "name": "Implement BlipCompressionState constants",
+              "status": "completed"
+            },
+            {
+              "id": "1.9.4",
+              "name": "Implement blip effects: AlphaModFix, Tint, Grayscl",
+              "status": "completed"
+            },
+            {
+              "id": "1.9.5",
+              "name": "Implement Stretch (a:stretch) - stretch fill",
+              "status": "completed"
+            },
+            {
+              "id": "1.9.6",
+              "name": "Implement Tile (a:tile) - tile fill",
+              "status": "completed"
+            },
+            {
+              "id": "1.9.7",
+              "name": "Implement SrcRect (a:srcRect) - source rectangle",
+              "status": "completed"
+            },
+            {
+              "id": "1.9.8",
+              "name": "Write unit tests for blips",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "1.10",
+          "name": "Phase 1 Testing",
+          "description": "Comprehensive tests for core types",
+          "subtasks": [
+            {
+              "id": "1.10.1",
+              "name": "Write integration tests for transforms + fills",
+              "status": "completed"
+            },
+            {
+              "id": "1.10.2",
+              "name": "Write roundtrip XML serialization tests",
+              "status": "completed"
+            },
+            {
+              "id": "1.10.3",
+              "name": "Run all tests and verify 100% pass rate",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Text Formatting",
+      "description": "Implement DrawingML text formatting (TextBody, paragraphs, runs)",
+      "tasks": [
+        {
+          "id": "2.1",
+          "name": "Text Body Structure",
+          "description": "Implement text body container elements",
+          "subtasks": [
+            {
+              "id": "2.1.1",
+              "name": "Implement TxBody (a:txBody) - text body",
+              "status": "completed"
+            },
+            {
+              "id": "2.1.2",
+              "name": "Implement BodyPr (a:bodyPr) - body properties",
+              "status": "completed"
+            },
+            {
+              "id": "2.1.3",
+              "name": "Implement text wrapping mode constants",
+              "status": "completed"
+            },
+            {
+              "id": "2.1.4",
+              "name": "Implement text anchor type constants",
+              "status": "completed"
+            },
+            {
+              "id": "2.1.5",
+              "name": "Implement text vertical type constants",
+              "status": "completed"
+            },
+            {
+              "id": "2.1.6",
+              "name": "Implement LstStyle (a:lstStyle) - list style",
+              "status": "completed"
+            },
+            {
+              "id": "2.1.7",
+              "name": "Write unit tests for text body",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "2.2",
+          "name": "Paragraph Elements",
+          "description": "Implement paragraph and paragraph properties",
+          "subtasks": [
+            {
+              "id": "2.2.1",
+              "name": "Implement Para (a:p) - paragraph",
+              "status": "completed"
+            },
+            {
+              "id": "2.2.2",
+              "name": "Implement ParaPr (a:pPr) - paragraph properties",
+              "status": "completed"
+            },
+            {
+              "id": "2.2.3",
+              "name": "Implement text alignment constants",
+              "status": "completed"
+            },
+            {
+              "id": "2.2.4",
+              "name": "Implement spacing before/after (a:spcBef/a:spcAft)",
+              "status": "completed"
+            },
+            {
+              "id": "2.2.5",
+              "name": "Implement line spacing (a:lnSpc)",
+              "status": "completed"
+            },
+            {
+              "id": "2.2.6",
+              "name": "Implement indentation (marL, marR, indent)",
+              "status": "completed"
+            },
+            {
+              "id": "2.2.7",
+              "name": "Implement bullet properties (a:buNone, a:buChar, a:buAutoNum)",
+              "status": "completed"
+            },
+            {
+              "id": "2.2.8",
+              "name": "Implement tabs (a:tabLst)",
+              "status": "completed"
+            },
+            {
+              "id": "2.2.9",
+              "name": "Write unit tests for paragraphs",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "2.3",
+          "name": "Run Elements",
+          "description": "Implement text runs and run properties",
+          "subtasks": [
+            {
+              "id": "2.3.1",
+              "name": "Implement Run (a:r) - text run",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.2",
+              "name": "Implement RunPr (a:rPr) - run properties",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.3",
+              "name": "Implement font attributes: lang, sz, b, i, u, strike",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.4",
+              "name": "Implement underline style constants",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.5",
+              "name": "Implement strike style constants",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.6",
+              "name": "Implement font properties (a:latin, a:ea, a:cs)",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.7",
+              "name": "Implement run fill (text color)",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.8",
+              "name": "Implement Text (a:t) - text content",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.9",
+              "name": "Implement Break (a:br) - line break",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.10",
+              "name": "Implement Field (a:fld) - field",
+              "status": "completed"
+            },
+            {
+              "id": "2.3.11",
+              "name": "Write unit tests for runs",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "2.4",
+          "name": "Default Text Styles",
+          "description": "Implement default paragraph/run styles",
+          "subtasks": [
+            {
+              "id": "2.4.1",
+              "name": "Implement DefPPr (a:defPPr) - default paragraph props",
+              "status": "completed"
+            },
+            {
+              "id": "2.4.2",
+              "name": "Implement level paragraph props (a:lvl1pPr - a:lvl9pPr)",
+              "status": "completed"
+            },
+            {
+              "id": "2.4.3",
+              "name": "Implement DefRPr (a:defRPr) - default run props",
+              "status": "completed"
+            },
+            {
+              "id": "2.4.4",
+              "name": "Write unit tests for default styles",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "2.5",
+          "name": "Phase 2 Testing",
+          "description": "Comprehensive tests for text formatting",
+          "subtasks": [
+            {
+              "id": "2.5.1",
+              "name": "Write integration tests for text body + styles",
+              "status": "completed"
+            },
+            {
+              "id": "2.5.2",
+              "name": "Write roundtrip tests with formatted text",
+              "status": "completed"
+            },
+            {
+              "id": "2.5.3",
+              "name": "Run all tests and verify 100% pass rate",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Charts",
+      "description": "Implement DrawingML chart types (c: namespace)",
+      "tasks": [
+        {
+          "id": "3.1",
+          "name": "Chart Container Types",
+          "description": "Implement chart root and container elements",
+          "subtasks": [
+            {
+              "id": "3.1.1",
+              "name": "Implement ChartSpace (c:chartSpace) - root element",
+              "status": "completed"
+            },
+            {
+              "id": "3.1.2",
+              "name": "Implement Chart (c:chart) - chart definition",
+              "status": "completed"
+            },
+            {
+              "id": "3.1.3",
+              "name": "Implement PlotArea (c:plotArea)",
+              "status": "completed"
+            },
+            {
+              "id": "3.1.4",
+              "name": "Implement Layout (c:layout)",
+              "status": "completed"
+            },
+            {
+              "id": "3.1.5",
+              "name": "Implement ManualLayout (c:manualLayout)",
+              "status": "completed"
+            },
+            {
+              "id": "3.1.6",
+              "name": "Write unit tests for chart containers",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.2",
+          "name": "Bar/Column Charts",
+          "description": "Implement bar and column chart types",
+          "subtasks": [
+            {
+              "id": "3.2.1",
+              "name": "Implement BarChart (c:barChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.2.2",
+              "name": "Implement Bar3DChart (c:bar3DChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.2.3",
+              "name": "Implement BarDir (bar direction) constants",
+              "status": "completed"
+            },
+            {
+              "id": "3.2.4",
+              "name": "Implement BarGrouping constants",
+              "status": "completed"
+            },
+            {
+              "id": "3.2.5",
+              "name": "Implement BarChartSeries (c:ser)",
+              "status": "completed"
+            },
+            {
+              "id": "3.2.6",
+              "name": "Write unit tests for bar charts",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.3",
+          "name": "Line Charts",
+          "description": "Implement line chart types",
+          "subtasks": [
+            {
+              "id": "3.3.1",
+              "name": "Implement LineChart (c:lineChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.3.2",
+              "name": "Implement Line3DChart (c:line3DChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.3.3",
+              "name": "Implement Grouping constants",
+              "status": "completed"
+            },
+            {
+              "id": "3.3.4",
+              "name": "Implement LineChartSeries",
+              "status": "completed"
+            },
+            {
+              "id": "3.3.5",
+              "name": "Implement Marker (c:marker) - data point marker",
+              "status": "completed"
+            },
+            {
+              "id": "3.3.6",
+              "name": "Write unit tests for line charts",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.4",
+          "name": "Pie/Doughnut Charts",
+          "description": "Implement pie and doughnut chart types",
+          "subtasks": [
+            {
+              "id": "3.4.1",
+              "name": "Implement PieChart (c:pieChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.4.2",
+              "name": "Implement Pie3DChart (c:pie3DChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.4.3",
+              "name": "Implement DoughnutChart (c:doughnutChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.4.4",
+              "name": "Implement PieChartSeries",
+              "status": "completed"
+            },
+            {
+              "id": "3.4.5",
+              "name": "Implement explosion and hole size properties",
+              "status": "completed"
+            },
+            {
+              "id": "3.4.6",
+              "name": "Write unit tests for pie charts",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.5",
+          "name": "Area Charts",
+          "description": "Implement area chart types",
+          "subtasks": [
+            {
+              "id": "3.5.1",
+              "name": "Implement AreaChart (c:areaChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.5.2",
+              "name": "Implement Area3DChart (c:area3DChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.5.3",
+              "name": "Implement AreaChartSeries",
+              "status": "completed"
+            },
+            {
+              "id": "3.5.4",
+              "name": "Write unit tests for area charts",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.6",
+          "name": "Scatter/Bubble Charts",
+          "description": "Implement scatter and bubble chart types",
+          "subtasks": [
+            {
+              "id": "3.6.1",
+              "name": "Implement ScatterChart (c:scatterChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.6.2",
+              "name": "Implement ScatterStyle constants",
+              "status": "completed"
+            },
+            {
+              "id": "3.6.3",
+              "name": "Implement ScatterChartSeries with XValues/YValues",
+              "status": "completed"
+            },
+            {
+              "id": "3.6.4",
+              "name": "Implement BubbleChart (c:bubbleChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.6.5",
+              "name": "Implement BubbleChartSeries with BubbleSize",
+              "status": "completed"
+            },
+            {
+              "id": "3.6.6",
+              "name": "Write unit tests for scatter/bubble charts",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.7",
+          "name": "Other Chart Types",
+          "description": "Implement remaining chart types",
+          "subtasks": [
+            {
+              "id": "3.7.1",
+              "name": "Implement RadarChart (c:radarChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.7.2",
+              "name": "Implement SurfaceChart (c:surfaceChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.7.3",
+              "name": "Implement Surface3DChart (c:surface3DChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.7.4",
+              "name": "Implement StockChart (c:stockChart)",
+              "status": "completed"
+            },
+            {
+              "id": "3.7.5",
+              "name": "Write unit tests for other chart types",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.8",
+          "name": "Axis Types",
+          "description": "Implement chart axis types",
+          "subtasks": [
+            {
+              "id": "3.8.1",
+              "name": "Implement CatAx (c:catAx) - category axis",
+              "status": "completed"
+            },
+            {
+              "id": "3.8.2",
+              "name": "Implement ValAx (c:valAx) - value axis",
+              "status": "completed"
+            },
+            {
+              "id": "3.8.3",
+              "name": "Implement DateAx (c:dateAx) - date axis",
+              "status": "completed"
+            },
+            {
+              "id": "3.8.4",
+              "name": "Implement SerAx (c:serAx) - series axis",
+              "status": "completed"
+            },
+            {
+              "id": "3.8.5",
+              "name": "Implement axis position, orientation, scaling",
+              "status": "completed"
+            },
+            {
+              "id": "3.8.6",
+              "name": "Implement major/minor gridlines",
+              "status": "completed"
+            },
+            {
+              "id": "3.8.7",
+              "name": "Implement tick marks and labels",
+              "status": "completed"
+            },
+            {
+              "id": "3.8.8",
+              "name": "Write unit tests for axes",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.9",
+          "name": "Chart Accessories",
+          "description": "Implement legend, title, data labels",
+          "subtasks": [
+            {
+              "id": "3.9.1",
+              "name": "Implement Legend (c:legend)",
+              "status": "completed"
+            },
+            {
+              "id": "3.9.2",
+              "name": "Implement LegendPos constants",
+              "status": "completed"
+            },
+            {
+              "id": "3.9.3",
+              "name": "Implement Title (c:title)",
+              "status": "completed"
+            },
+            {
+              "id": "3.9.4",
+              "name": "Implement DLbls (c:dLbls) - data labels",
+              "status": "completed"
+            },
+            {
+              "id": "3.9.5",
+              "name": "Implement DLbl (c:dLbl) - individual data label",
+              "status": "completed"
+            },
+            {
+              "id": "3.9.6",
+              "name": "Implement rich text in titles (c:tx/c:rich)",
+              "status": "completed"
+            },
+            {
+              "id": "3.9.7",
+              "name": "Write unit tests for accessories",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.10",
+          "name": "Data References",
+          "description": "Implement data reference types",
+          "subtasks": [
+            {
+              "id": "3.10.1",
+              "name": "Implement NumRef (c:numRef) - numeric reference",
+              "status": "completed"
+            },
+            {
+              "id": "3.10.2",
+              "name": "Implement StrRef (c:strRef) - string reference",
+              "status": "completed"
+            },
+            {
+              "id": "3.10.3",
+              "name": "Implement NumCache (c:numCache) - cached values",
+              "status": "completed"
+            },
+            {
+              "id": "3.10.4",
+              "name": "Implement StrCache (c:strCache) - cached strings",
+              "status": "completed"
+            },
+            {
+              "id": "3.10.5",
+              "name": "Implement Formula (c:f) - reference formula",
+              "status": "completed"
+            },
+            {
+              "id": "3.10.6",
+              "name": "Write unit tests for data references",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "3.11",
+          "name": "Phase 3 Testing",
+          "description": "Comprehensive tests for charts",
+          "subtasks": [
+            {
+              "id": "3.11.1",
+              "name": "Write integration tests for complete charts",
+              "status": "completed"
+            },
+            {
+              "id": "3.11.2",
+              "name": "Write roundtrip tests with chart data",
+              "status": "completed"
+            },
+            {
+              "id": "3.11.3",
+              "name": "Run all tests and verify 100% pass rate",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Document-Specific Drawing Anchors",
+      "description": "Implement spreadsheet drawing (xdr:) and word drawing (wp:) anchors",
+      "tasks": [
+        {
+          "id": "4.1",
+          "name": "Spreadsheet Drawing Types",
+          "description": "Implement xdr: namespace types",
+          "subtasks": [
+            {
+              "id": "4.1.1",
+              "name": "Implement WsDr (xdr:wsDr) - worksheet drawing",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.2",
+              "name": "Implement TwoCellAnchor (xdr:twoCellAnchor)",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.3",
+              "name": "Implement OneCellAnchor (xdr:oneCellAnchor)",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.4",
+              "name": "Implement AbsoluteAnchor (xdr:absoluteAnchor)",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.5",
+              "name": "Implement Marker (xdr:from, xdr:to) - cell markers",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.6",
+              "name": "Implement EditAsType constants",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.7",
+              "name": "Implement Sp (xdr:sp) - shape",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.8",
+              "name": "Implement Pic (xdr:pic) - picture",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.9",
+              "name": "Implement GraphicFrame (xdr:graphicFrame)",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.10",
+              "name": "Implement GrpSp (xdr:grpSp) - group shape",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.11",
+              "name": "Implement CxnSp (xdr:cxnSp) - connector shape",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.12",
+              "name": "Implement ClientData (xdr:clientData)",
+              "status": "completed"
+            },
+            {
+              "id": "4.1.13",
+              "name": "Write unit tests for spreadsheet drawing",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "4.2",
+          "name": "Word Drawing Types",
+          "description": "Implement wp: namespace types",
+          "subtasks": [
+            {
+              "id": "4.2.1",
+              "name": "Implement Inline (wp:inline) - inline positioning",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.2",
+              "name": "Implement Anchor (wp:anchor) - floating positioning",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.3",
+              "name": "Implement Extent (wp:extent) - size",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.4",
+              "name": "Implement EffectExtent (wp:effectExtent)",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.5",
+              "name": "Implement DocPr (wp:docPr) - document properties",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.6",
+              "name": "Implement CNvGraphicFramePr",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.7",
+              "name": "Implement PosH (wp:positionH) - horizontal position",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.8",
+              "name": "Implement PosV (wp:positionV) - vertical position",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.9",
+              "name": "Implement WrapNone (wp:wrapNone)",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.10",
+              "name": "Implement WrapSquare (wp:wrapSquare)",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.11",
+              "name": "Implement WrapTight (wp:wrapTight)",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.12",
+              "name": "Implement WrapThrough (wp:wrapThrough)",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.13",
+              "name": "Implement WrapTopAndBottom (wp:wrapTopAndBottom)",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.14",
+              "name": "Implement WrapPolygon (wp:wrapPolygon)",
+              "status": "completed"
+            },
+            {
+              "id": "4.2.15",
+              "name": "Write unit tests for word drawing",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "4.3",
+          "name": "Picture Types",
+          "description": "Implement pic: namespace types",
+          "subtasks": [
+            {
+              "id": "4.3.1",
+              "name": "Implement Pic (pic:pic) - picture",
+              "status": "completed"
+            },
+            {
+              "id": "4.3.2",
+              "name": "Implement NvPicPr (pic:nvPicPr) - non-visual properties",
+              "status": "completed"
+            },
+            {
+              "id": "4.3.3",
+              "name": "Implement CNvPr (pic:cNvPr)",
+              "status": "completed"
+            },
+            {
+              "id": "4.3.4",
+              "name": "Implement CNvPicPr (pic:cNvPicPr)",
+              "status": "completed"
+            },
+            {
+              "id": "4.3.5",
+              "name": "Implement BlipFill (pic:blipFill)",
+              "status": "completed"
+            },
+            {
+              "id": "4.3.6",
+              "name": "Implement SpPr (pic:spPr) - shape properties",
+              "status": "completed"
+            },
+            {
+              "id": "4.3.7",
+              "name": "Write unit tests for picture types",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "4.4",
+          "name": "Graphic Frame Types",
+          "description": "Implement graphic frame elements",
+          "subtasks": [
+            {
+              "id": "4.4.1",
+              "name": "Implement Graphic (a:graphic)",
+              "status": "completed"
+            },
+            {
+              "id": "4.4.2",
+              "name": "Implement GraphicData (a:graphicData)",
+              "status": "completed"
+            },
+            {
+              "id": "4.4.3",
+              "name": "Implement graphic data URI constants",
+              "status": "completed"
+            },
+            {
+              "id": "4.4.4",
+              "name": "Write unit tests for graphic frames",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "id": "4.5",
+          "name": "Phase 4 Testing",
+          "description": "Comprehensive tests for document-specific anchors",
+          "subtasks": [
+            {
+              "id": "4.5.1",
+              "name": "Write integration tests for spreadsheet drawings",
+              "status": "completed"
+            },
+            {
+              "id": "4.5.2",
+              "name": "Write integration tests for word drawings",
+              "status": "completed"
+            },
+            {
+              "id": "4.5.3",
+              "name": "Write roundtrip tests with anchored content",
+              "status": "completed"
+            },
+            {
+              "id": "4.5.4",
+              "name": "Run all tests and verify 100% pass rate",
+              "status": "completed"
+            },
+            {
+              "id": "4.5.5",
+              "name": "Full integration test with all phases",
+              "status": "completed"
+            }
+          ],
+          "status": "completed"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "estimated_types": "600+",
+    "estimated_lines": "30000+",
+    "namespaces": [
+      "a:",
+      "c:",
+      "xdr:",
+      "wp:",
+      "pic:"
+    ],
+    "dependencies": [
+      "openxml/",
+      "packaging/"
+    ],
+    "consumers": [
+      "wordprocessing/",
+      "presentation/",
+      "spreadsheet/"
+    ]
+  }
+}

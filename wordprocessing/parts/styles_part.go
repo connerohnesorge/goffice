@@ -1,3 +1,4 @@
+//nolint:revive // line-length-limit: OOXML content types and relationship URIs are long strings
 package parts
 
 import (
@@ -79,7 +80,9 @@ func (sp *StylesPart) initializeContent() {
 }
 
 // FixedContentType returns the content type for this part.
-func (sp *StylesPart) FixedContentType() string {
+//
+//nolint:revive // unused-receiver: interface implementation returns constant
+func (*StylesPart) FixedContentType() string {
 	return ContentTypeStyles
 }
 
@@ -91,18 +94,22 @@ func (sp *StylesPart) Styles() openxml.PartRootElement {
 
 // GetStyleById returns a style by its ID.
 // TODO: Implement proper Style element type.
-func (sp *StylesPart) GetStyleById(
-	id string,
-) interface{} {
+//
+//nolint:revive // unused-receiver: TODO stub implementation
+func (*StylesPart) GetStyleById(
+	_ string,
+) any {
 	// TODO: Parse styles and find by ID
 	return nil
 }
 
 // GetStyleByName returns a style by its name.
 // TODO: Implement proper Style element type.
-func (sp *StylesPart) GetStyleByName(
-	name string,
-) interface{} {
+//
+//nolint:revive // unused-receiver: TODO stub implementation
+func (*StylesPart) GetStyleByName(
+	_ string,
+) any {
 	// TODO: Parse styles and find by name
 	return nil
 }
@@ -120,13 +127,10 @@ func StylesPartFactory(
 	uri string,
 	container openxml.OpenXmlPartContainer,
 ) openxml.OpenXmlPart {
-	pkg := container.Package()
-	if pkg == nil {
-		return nil
-	}
-
-	packPart, err := pkg.Part(uri)
-	if err != nil {
+	// Use GetPackagingPart instead of Package() to avoid locking issues
+	// during initialization when the package lock is already held
+	packPart := container.GetPackagingPart(uri)
+	if packPart == nil {
 		return nil
 	}
 

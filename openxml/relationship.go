@@ -1,4 +1,6 @@
 // Package openxml provides the core framework for Office Open XML document processing.
+//
+//nolint:revive // Long lines required for OOXML relationship type URIs
 package openxml
 
 import (
@@ -22,6 +24,8 @@ const (
 // String returns the string representation of the TargetMode.
 func (tm TargetMode) String() string {
 	switch tm {
+	case TargetModeInternal:
+		return "Internal"
 	case TargetModeExternal:
 		return "External"
 	default:
@@ -138,6 +142,8 @@ type HyperlinkRelationship struct {
 }
 
 // NewHyperlinkRelationship creates a new hyperlink relationship.
+//
+//nolint:revive // flag-parameter - isExternal is a clear boolean flag for hyperlink mode
 func NewHyperlinkRelationship(
 	id, targetURI string,
 	isExternal bool,
@@ -170,7 +176,8 @@ type DataPartReferenceRelationship struct {
 	baseRelationship
 }
 
-// NewDataPartReferenceRelationship creates a new data part reference relationship.
+// NewDataPartReferenceRelationship creates a new data part reference
+// relationship.
 func NewDataPartReferenceRelationship(
 	id, relType, target string,
 	container OpenXmlPartContainer,
@@ -286,10 +293,12 @@ func (g *RelationshipIDGenerator) Reserve(
 
 	// Extract number if it follows rIdN pattern
 	var num uint64
-	if _, err := fmt.Sscanf(id, "rId%d", &num); err == nil {
-		if num >= g.nextID {
-			g.nextID = num + 1
-		}
+	_, err := fmt.Sscanf(id, "rId%d", &num)
+	if err != nil {
+		return
+	}
+	if num >= g.nextID {
+		g.nextID = num + 1
 	}
 }
 

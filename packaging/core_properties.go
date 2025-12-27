@@ -9,8 +9,9 @@ import (
 	"time"
 )
 
-// CoreProperties represents the core document properties (Dublin Core metadata).
-// These are stored in docProps/core.xml in the package.
+// CoreProperties represents the core document properties
+// (Dublin Core metadata). These are stored in docProps/core.xml
+// in the package.
 type CoreProperties struct {
 	mu sync.RWMutex
 
@@ -258,16 +259,21 @@ func (cp *CoreProperties) SetLastPrinted(
 	cp.lastPrinted = &t
 }
 
-// XML namespaces for core properties
+// XML namespaces for core properties.
+// These are documented here for reference and used in struct tags below.
+//
+//nolint:revive // Long URLs cannot be broken
 const (
-	nsCoreProperties = "http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
-	nsDublinCore     = "http://purl.org/dc/elements/1.1/"
-	nsDCTerms        = "http://purl.org/dc/terms/"
-	nsXSI            = "http://www.w3.org/2001/XMLSchema-instance"
+	nsCoreProperties = "http://schemas.openxmlformats.org/package/2006/metadata/core-properties" //nolint:unused
+	nsDublinCore     = "http://purl.org/dc/elements/1.1/"                                        //nolint:unused
+	nsDCTerms        = "http://purl.org/dc/terms/"                                               //nolint:unused
+	nsXSI            = "http://www.w3.org/2001/XMLSchema-instance"                               //nolint:unused
 )
 
-// XML types for core properties serialization
-// Using fully qualified namespace URIs for proper XML namespace handling
+// XML types for core properties serialization.
+// Using fully qualified namespace URIs for proper XML namespace handling.
+//
+//nolint:revive,lll // XML struct tags contain long namespace URLs
 type xmlCoreProperties struct {
 	XMLName        xml.Name        `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties coreProperties"`
 	Title          string          `xml:"http://purl.org/dc/elements/1.1/ title,omitempty"`
@@ -285,6 +291,7 @@ type xmlCoreProperties struct {
 	LastPrinted    string          `xml:"http://schemas.openxmlformats.org/package/2006/metadata/core-properties lastPrinted,omitempty"`
 }
 
+//nolint:revive // XML struct tags contain long namespace URLs
 type xmlDCTermsDate struct {
 	Type  string `xml:"http://www.w3.org/2001/XMLSchema-instance type,attr,omitempty"`
 	Value string `xml:",chardata"`
@@ -377,7 +384,11 @@ func (cp *CoreProperties) UnmarshalFromXML(
 
 	if xmlCP.Modified != nil &&
 		xmlCP.Modified.Value != "" {
-		if t, err := time.Parse(time.RFC3339, xmlCP.Modified.Value); err == nil {
+		t, err := time.Parse(
+			time.RFC3339,
+			xmlCP.Modified.Value,
+		)
+		if err == nil {
 			cp.modified = &t
 		}
 	}
@@ -391,7 +402,9 @@ func (cp *CoreProperties) UnmarshalFromXML(
 	return nil
 }
 
-// Core properties content type and relationship type constants
+// Core properties content type and relationship type constants.
+//
+//nolint:revive,lll // Long URLs cannot be broken
 const (
 	CorePropertiesContentType      = "application/vnd.openxmlformats-package.core-properties+xml"
 	CorePropertiesRelationshipType = "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties"

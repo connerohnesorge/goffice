@@ -107,7 +107,8 @@ func (p *Part) Size() int64 {
 	return int64(len(p.data))
 }
 
-// IsModified returns true if the part has been modified since creation or loading.
+// IsModified returns true if the part has been modified since creation
+// or loading.
 func (p *Part) IsModified() bool {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
@@ -122,8 +123,8 @@ func (p *Part) clearModified() {
 	p.modified = false
 }
 
-// setData sets the data without marking as modified (for loading).
-func (p *Part) setData(data []byte) {
+// loadData sets the data without marking as modified (for loading).
+func (p *Part) loadData(data []byte) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	p.data = data

@@ -201,7 +201,7 @@ func TestDeletedTextSpacePreserve(t *testing.T) {
 	dt := NewDeletedText("  spaces  ")
 
 	if dt.Space() != "preserve" {
-		t.Errorf(
+		t.Error(
 			"Expected space='preserve' for text with leading/trailing spaces",
 		)
 	}
@@ -323,7 +323,13 @@ func TestInsertedRunClone(t *testing.T) {
 	ins := NewInsertedRun(1, "Author", time.Now())
 	ins.AppendRun("Text")
 
-	clone := ins.Clone().(*InsertedRun)
+	cloned := ins.Clone()
+	clone, ok := cloned.(*InsertedRun)
+	if !ok {
+		t.Fatal(
+			"Clone did not return *InsertedRun",
+		)
+	}
 
 	if clone.Id() != ins.Id() {
 		t.Error("Cloned ID doesn't match")
@@ -340,7 +346,13 @@ func TestDeletedRunClone(t *testing.T) {
 	del := NewDeletedRun(1, "Author", time.Now())
 	del.AppendDeletedRun("Text")
 
-	clone := del.Clone().(*DeletedRun)
+	cloned := del.Clone()
+	clone, ok := cloned.(*DeletedRun)
+	if !ok {
+		t.Fatal(
+			"Clone did not return *DeletedRun",
+		)
+	}
 
 	if clone.Id() != del.Id() {
 		t.Error("Cloned ID doesn't match")

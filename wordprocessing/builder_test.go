@@ -143,6 +143,8 @@ func TestParagraphBuilderFormatting(
 			props := r.Properties()
 			if props == nil {
 				t.Fatal("Run properties is nil")
+
+				return
 			}
 			xml := props.OuterXml()
 			if !strings.Contains(xml, "<w:b") {
@@ -217,6 +219,8 @@ func TestParagraphBuilderFont(t *testing.T) {
 			props := r.Properties()
 			if props == nil {
 				t.Fatal("Run properties is nil")
+
+				return
 			}
 			xml := props.OuterXml()
 			if !strings.Contains(xml, "Arial") {
@@ -382,10 +386,14 @@ func TestTableBuilderBorders(t *testing.T) {
 		props := table.TableProperties()
 		if props == nil {
 			t.Fatal("Table properties is nil")
+
+			return
 		}
 		borders := props.TableBorders()
 		if borders == nil {
 			t.Fatal("Table borders is nil")
+
+			return
 		}
 		xml := borders.OuterXml()
 		if !strings.Contains(xml, "single") {
@@ -455,6 +463,8 @@ func TestTableRowBuilder(t *testing.T) {
 		props := r.TableRowProperties()
 		if props == nil {
 			t.Fatal("Row properties is nil")
+
+			return
 		}
 		xml := props.OuterXml()
 		if !strings.Contains(xml, "trHeight") {
@@ -572,6 +582,8 @@ func TestParagraphBuilderColor(t *testing.T) {
 			props := r.Properties()
 			if props == nil {
 				t.Fatal("Run properties is nil")
+
+				return
 			}
 			xml := props.OuterXml()
 			if !strings.Contains(xml, "FF0000") {
@@ -598,6 +610,8 @@ func TestParagraphBuilderHighlight(t *testing.T) {
 			props := r.Properties()
 			if props == nil {
 				t.Fatal("Run properties is nil")
+
+				return
 			}
 			xml := props.OuterXml()
 			if !strings.Contains(xml, "yellow") {

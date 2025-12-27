@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: revision tracking requires many element types
 package elements
 
 import (

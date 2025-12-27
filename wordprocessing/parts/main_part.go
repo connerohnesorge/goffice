@@ -1,3 +1,4 @@
+//nolint:revive // line-length-limit and file-length-limit: OOXML content types are long strings
 package parts
 
 import (
@@ -5,6 +6,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
+	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 )
 
 // MainPart represents the main document part (word/document.xml).
@@ -40,6 +42,11 @@ func NewMainPart(
 		contentType,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewDocument()
+		},
 	)
 
 	mp := &MainPart{
@@ -319,6 +326,11 @@ func MainPartFactory(
 		packPart.ContentType(),
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewDocument()
+		},
 	)
 
 	return NewMainPartFromData(

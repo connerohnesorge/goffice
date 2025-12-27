@@ -1,3 +1,4 @@
+//nolint:revive // line-length-limit: OOXML content types and relationship URIs are long strings
 package parts
 
 import (
@@ -76,7 +77,9 @@ func (fp *FontsPart) initializeContent() {
 }
 
 // FixedContentType returns the content type for this part.
-func (fp *FontsPart) FixedContentType() string {
+//
+//nolint:revive // unused-receiver: interface implementation returns constant
+func (*FontsPart) FixedContentType() string {
 	return ContentTypeFontTable
 }
 
@@ -88,9 +91,11 @@ func (fp *FontsPart) Fonts() openxml.PartRootElement {
 
 // GetFont returns a font definition by name.
 // TODO: Implement proper Font element type.
-func (fp *FontsPart) GetFont(
-	name string,
-) interface{} {
+//
+//nolint:revive // unused-receiver: TODO stub implementation
+func (*FontsPart) GetFont(
+	_ string,
+) any {
 	// TODO: Parse fonts and find by name
 	return nil
 }
@@ -108,13 +113,10 @@ func FontsPartFactory(
 	uri string,
 	container openxml.OpenXmlPartContainer,
 ) openxml.OpenXmlPart {
-	pkg := container.Package()
-	if pkg == nil {
-		return nil
-	}
-
-	packPart, err := pkg.Part(uri)
-	if err != nil {
+	// Use GetPackagingPart instead of Package() to avoid locking issues
+	// during initialization when the package lock is already held
+	packPart := container.GetPackagingPart(uri)
+	if packPart == nil {
 		return nil
 	}
 

@@ -20,7 +20,7 @@ func TestDocumentValidate(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -32,7 +32,7 @@ func TestDocumentValidate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Validate against Office 2016
 	errors := doc.Validate(validation.Office2016)
@@ -60,7 +60,7 @@ func TestDocumentValidateWithSettings(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -72,7 +72,7 @@ func TestDocumentValidateWithSettings(
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Test with fast settings
 	fastSettings := validation.FastSettings()
@@ -107,7 +107,7 @@ func TestDocumentIsValid(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -119,7 +119,7 @@ func TestDocumentIsValid(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Test IsValid method
 	valid := doc.IsValid(validation.Office2016)
@@ -146,7 +146,7 @@ func TestDocumentValidateClosedDocument(
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -158,7 +158,7 @@ func TestDocumentValidateClosedDocument(
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	doc.Close()
+	_ = doc.Close()
 
 	// Validate closed document
 	errors := doc.Validate(validation.Office2016)
@@ -198,7 +198,7 @@ func TestDocumentValidateVersions(t *testing.T) {
 			err,
 		)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	testPath := filepath.Join(
 		tmpDir,
@@ -210,7 +210,7 @@ func TestDocumentValidateVersions(t *testing.T) {
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Test all supported versions
 	versions := []validation.FileFormatVersions{
@@ -259,7 +259,7 @@ func TestDocumentValidateWithRealFile(
 			err,
 		)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Validate against Office 2016
 	errors := doc.Validate(validation.Office2016)

@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: this file contains all comment-related types
 package elements
 
 import (

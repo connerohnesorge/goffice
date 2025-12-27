@@ -1,3 +1,4 @@
+//nolint:revive // file-length-limit: comprehensive style definitions with many related types
 package elements
 
 import (
@@ -102,6 +103,14 @@ const (
 	StyleIdTableGrid = "TableGrid"
 )
 
+// Style-related constants for magic numbers and attribute names.
+const (
+	maxOutlineLevel      = 9
+	defaultStylePriority = 99
+	maxHeadingLevel      = 8
+	attrValueOne         = "1"
+)
+
 // Style represents an individual style definition (w:style).
 type Style struct {
 	*openxml.CompositeElementBase
@@ -153,8 +162,8 @@ func NewHeadingStyle(level int) *Style {
 	if level < 1 {
 		level = 1
 	}
-	if level > 9 {
-		level = 9
+	if level > maxOutlineLevel {
+		level = maxOutlineLevel
 	}
 
 	id := "Heading" + strconv.Itoa(level)
@@ -289,7 +298,7 @@ func (s *Style) SetBasedOn(id string) {
 	elem.SetAttribute(
 		openxml.NewAttribute(
 			NamespaceWML,
-			"val",
+			attrNameVal,
 			PrefixW,
 			id,
 		),
@@ -303,7 +312,7 @@ func (s *Style) NextParagraphStyle() string {
 		return ""
 	}
 	attr, found := elem.GetAttribute(
-		"val",
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
@@ -420,7 +429,7 @@ func (s *Style) SetCustomStyle(b bool) {
 				NamespaceWML,
 				"customStyle",
 				PrefixW,
-				"1",
+				attrValueOne,
 			),
 		)
 	} else {
@@ -525,18 +534,18 @@ func (s *Style) UIPriority() int {
 		NamespaceWML,
 	)
 	if elem == nil {
-		return 99 // Default priority
+		return defaultStylePriority // Default priority
 	}
 	attr, found := elem.GetAttribute(
-		"val",
+		attrNameVal,
 		NamespaceWML,
 	)
 	if !found {
-		return 99
+		return defaultStylePriority
 	}
 	val, err := strconv.Atoi(attr.Value())
 	if err != nil {
-		return 99
+		return defaultStylePriority
 	}
 
 	return val
@@ -608,6 +617,7 @@ func (s *Style) hasOnOffElement(
 	return true
 }
 
+//nolint:revive // bool parameter is intentional for on/off toggle
 func (s *Style) setOnOffElement(
 	name string,
 	value bool,
@@ -645,8 +655,10 @@ func (s *Style) removeElement(name string) {
 
 // Clone creates a deep copy of this Style element.
 func (s *Style) Clone() openxml.Element {
+	cloned := s.CompositeElementBase.Clone()
+
 	return &Style{
-		CompositeElementBase: s.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -654,8 +666,12 @@ func (s *Style) Clone() openxml.Element {
 func (s *Style) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := s.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Style{
-		CompositeElementBase: s.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -701,7 +717,7 @@ func (pp *StyleParagraphProperties) SetJustification(
 func (pp *StyleParagraphProperties) SetOutlineLevel(
 	level int,
 ) {
-	if level < 0 || level > 8 {
+	if level < 0 || level > maxHeadingLevel {
 		pp.removeElement("outlineLvl")
 
 		return
@@ -798,27 +814,8 @@ func (pp *StyleParagraphProperties) SetHangingIndent(
 	)
 }
 
-func (pp *StyleParagraphProperties) hasOnOffElement(
-	name string,
-) bool {
-	elem := pp.GetElement(name, NamespaceWML)
-	if elem == nil {
-		return false
-	}
-	attr, found := elem.GetAttribute(
-		"val",
-		NamespaceWML,
-	)
-	if found {
-		val := attr.Value()
-
-		return val != "false" && val != "0" &&
-			val != "off"
-	}
-
-	return true
-}
-
+//
+//nolint:revive // bool parameter is intentional for on/off toggle
 func (pp *StyleParagraphProperties) setOnOffElement(
 	name string,
 	value bool,
@@ -1027,6 +1024,7 @@ func (rp *StyleRunProperties) SetStrike(b bool) {
 	rp.setOnOffElement("strike", b)
 }
 
+//nolint:revive // bool parameter is intentional for on/off toggle
 func (rp *StyleRunProperties) setOnOffElement(
 	name string,
 	value bool,

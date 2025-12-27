@@ -1,3 +1,7 @@
+// (Graphic, GraphicData, Picture, BlipFill, ShapeProperties, Transform2D, PresetGeometry, etc.)
+// which are tightly coupled and belong together for cohesion and discoverability.
+//
+//nolint:revive // file-length-limit: This file contains all DrawingML graphic-related types
 package elements
 
 import (

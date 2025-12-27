@@ -384,21 +384,21 @@ func TestOnOffValue(t *testing.T) {
 func TestEnumValue(t *testing.T) {
 	type Justification string
 	const (
-		JustLeft   Justification = "left"
-		JustCenter Justification = "center"
-		JustRight  Justification = "right"
+		justLeft   Justification = "left"
+		justCenter Justification = "center"
+		justRight  Justification = "right"
 	)
 
 	t.Run("NewEnumValue", func(t *testing.T) {
-		ev := NewEnumValue(JustCenter)
+		ev := NewEnumValue(justCenter)
 		if !ev.HasValue() {
 			t.Error("HasValue should be true")
 		}
-		if ev.Value() != JustCenter {
+		if ev.Value() != justCenter {
 			t.Errorf(
 				"Value = %q, want %q",
 				ev.Value(),
-				JustCenter,
+				justCenter,
 			)
 		}
 		if ev.InnerText() != "center" {
@@ -412,12 +412,12 @@ func TestEnumValue(t *testing.T) {
 
 	t.Run("WithValidation", func(t *testing.T) {
 		validValues := map[string]Justification{
-			"left":   JustLeft,
-			"center": JustCenter,
-			"right":  JustRight,
+			"left":   justLeft,
+			"center": justCenter,
+			"right":  justRight,
 		}
 		ev := NewEnumValueWithValidation(
-			JustLeft,
+			justLeft,
 			validValues,
 		)
 
@@ -427,11 +427,11 @@ func TestEnumValue(t *testing.T) {
 				err,
 			)
 		}
-		if ev.Value() != JustCenter {
+		if ev.Value() != justCenter {
 			t.Errorf(
 				"Value = %q, want %q",
 				ev.Value(),
-				JustCenter,
+				justCenter,
 			)
 		}
 

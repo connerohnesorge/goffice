@@ -44,7 +44,7 @@ func TestCreatePackage(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
 	}
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	if pkg.Capability() != ReadWrite {
 		t.Errorf(
@@ -73,7 +73,7 @@ func TestCreateWriter(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateWriter() error = %v", err)
 	}
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	if pkg.Capability() != Write {
 		t.Errorf(
@@ -117,7 +117,7 @@ func TestPackageCreateAndSave(t *testing.T) {
 		t.Fatalf("Save() error = %v", err)
 	}
 
-	pkg.Close()
+	_ = pkg.Close()
 
 	// Verify file exists
 	if _, err := os.Stat(path); os.IsNotExist(
@@ -133,7 +133,7 @@ func TestPackageCreateAndSave(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
-	defer pkg2.Close()
+	defer func() { _ = pkg2.Close() }()
 
 	part2, err := pkg2.Part("/word/document.xml")
 	if err != nil {
@@ -161,7 +161,7 @@ func TestPackageSaveAs(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
 	}
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	part, _ := pkg.CreatePart(
 		"/word/document.xml",
@@ -222,12 +222,12 @@ func TestPackageReadOnly(t *testing.T) {
 
 	// Create a package first
 	pkg, _ := Create(path)
-	pkg.CreatePart(
+	_, _ = pkg.CreatePart(
 		"/word/document.xml",
 		"application/xml",
 	)
-	pkg.Save()
-	pkg.Close()
+	_ = pkg.Save()
+	_ = pkg.Close()
 
 	// Open read-only
 	pkg2, err := Open(path, true)
@@ -237,7 +237,7 @@ func TestPackageReadOnly(t *testing.T) {
 			err,
 		)
 	}
-	defer pkg2.Close()
+	defer func() { _ = pkg2.Close() }()
 
 	if pkg2.Capability() != Read {
 		t.Errorf(
@@ -265,7 +265,7 @@ func TestCreatePart(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	part, err := pkg.CreatePart(
 		"/word/document.xml",
@@ -294,7 +294,7 @@ func TestCreatePartDuplicate(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	_, err := pkg.CreatePart(
 		"/word/document.xml",
@@ -323,7 +323,7 @@ func TestCreatePartInvalidURI(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	_, err := pkg.CreatePart(
 		"",
@@ -341,7 +341,7 @@ func TestGetPart(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	created, _ := pkg.CreatePart(
 		"/word/document.xml",
@@ -371,7 +371,7 @@ func TestGetPartNotFound(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	_, err := pkg.Part("/nonexistent.xml")
 	if err != ErrPartNotFound {
@@ -386,9 +386,9 @@ func TestDeletePart(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
-	pkg.CreatePart(
+	_, _ = pkg.CreatePart(
 		"/word/document.xml",
 		"application/xml",
 	)
@@ -410,7 +410,7 @@ func TestDeletePartNotFound(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	err := pkg.DeletePart("/nonexistent.xml")
 	if err != ErrPartNotFound {
@@ -425,17 +425,17 @@ func TestPartsIterator(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
-	pkg.CreatePart(
+	_, _ = pkg.CreatePart(
 		"/word/document.xml",
 		"application/xml",
 	)
-	pkg.CreatePart(
+	_, _ = pkg.CreatePart(
 		"/word/styles.xml",
 		"application/xml",
 	)
-	pkg.CreatePart(
+	_, _ = pkg.CreatePart(
 		"/word/settings.xml",
 		"application/xml",
 	)
@@ -457,7 +457,7 @@ func TestPartStream(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	part, _ := pkg.CreatePart(
 		"/word/document.xml",
@@ -465,7 +465,7 @@ func TestPartStream(t *testing.T) {
 	)
 
 	// Set via stream
-	part.SetStream(
+	_ = part.SetStream(
 		strings.NewReader("stream data"),
 	)
 
@@ -752,7 +752,7 @@ func TestContentTypesSerialization(t *testing.T) {
 		"/word/document.xml",
 	)
 	if contentType != "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml" {
-		t.Errorf(
+		t.Error(
 			"After roundtrip, override not preserved",
 		)
 	}
@@ -827,7 +827,7 @@ func TestCreateRelationshipDuplicate(
 
 func TestGetRelationship(t *testing.T) {
 	rels := NewRelationships("/")
-	rels.Create("/target", "type", "rId1")
+	_, _ = rels.Create("/target", "type", "rId1")
 
 	rel, err := rels.Get("rId1")
 	if err != nil {
@@ -856,7 +856,7 @@ func TestGetRelationshipNotFound(t *testing.T) {
 
 func TestDeleteRelationship(t *testing.T) {
 	rels := NewRelationships("/")
-	rels.Create("/target", "type", "rId1")
+	_, _ = rels.Create("/target", "type", "rId1")
 
 	if err := rels.Delete("rId1"); err != nil {
 		t.Fatalf("Delete() error = %v", err)
@@ -873,9 +873,21 @@ func TestDeleteRelationship(t *testing.T) {
 
 func TestRelationshipsByType(t *testing.T) {
 	rels := NewRelationships("/")
-	rels.Create("/target1", "type-a", "rId1")
-	rels.Create("/target2", "type-b", "rId2")
-	rels.Create("/target3", "type-a", "rId3")
+	_, _ = rels.Create(
+		"/target1",
+		"type-a",
+		"rId1",
+	)
+	_, _ = rels.Create(
+		"/target2",
+		"type-b",
+		"rId2",
+	)
+	_, _ = rels.Create(
+		"/target3",
+		"type-a",
+		"rId3",
+	)
 
 	count := 0
 	for range rels.ByType("type-a") {
@@ -894,12 +906,12 @@ func TestRelationshipsSerialization(
 	t *testing.T,
 ) {
 	rels := NewRelationships("/")
-	rels.Create(
+	_, _ = rels.Create(
 		"/word/document.xml",
 		"http://example.com/document",
 		"rId1",
 	)
-	rels.CreateWithMode(
+	_, _ = rels.CreateWithMode(
 		"http://example.com",
 		"http://example.com/hyperlink",
 		"rId2",
@@ -1039,7 +1051,7 @@ func TestPackageCreateRelationship(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	rel, err := pkg.CreateRelationship(
 		"/word/document.xml",
@@ -1064,19 +1076,19 @@ func TestPackageRelationshipsByType(
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
-	pkg.CreateRelationship(
+	_, _ = pkg.CreateRelationship(
 		"/word/document.xml",
 		"http://example.com/document",
 		"rId1",
 	)
-	pkg.CreateRelationship(
+	_, _ = pkg.CreateRelationship(
 		"/word/styles.xml",
 		"http://example.com/styles",
 		"rId2",
 	)
-	pkg.CreateRelationship(
+	_, _ = pkg.CreateRelationship(
 		"/word/settings.xml",
 		"http://example.com/document",
 		"rId3",
@@ -1099,7 +1111,7 @@ func TestPartRelationships(t *testing.T) {
 	pkg, _ := Create(
 		filepath.Join(t.TempDir(), "test.docx"),
 	)
-	defer pkg.Close()
+	defer func() { _ = pkg.Close() }()
 
 	part, _ := pkg.CreatePart(
 		"/word/document.xml",
@@ -1166,14 +1178,14 @@ func TestPackageRoundtrip(t *testing.T) {
 	stylesPart.SetData([]byte("<styles/>"))
 
 	// Add package relationship
-	pkg.CreateRelationship(
+	_, _ = pkg.CreateRelationship(
 		"/word/document.xml",
 		"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
 		"rId1",
 	)
 
 	// Add part relationship
-	docPart.CreateRelationship(
+	_, _ = docPart.CreateRelationship(
 		"styles.xml",
 		"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles",
 		"rId1",
@@ -1182,20 +1194,20 @@ func TestPackageRoundtrip(t *testing.T) {
 	// Set core properties
 	pkg.CoreProperties().SetTitle("Test Document")
 	pkg.CoreProperties().SetCreator("Test Author")
-	pkg.EnsureCorePropertiesPart()
+	_ = pkg.EnsureCorePropertiesPart()
 
 	// Save
 	if err := pkg.Save(); err != nil {
 		t.Fatalf("Save() error = %v", err)
 	}
-	pkg.Close()
+	_ = pkg.Close()
 
 	// Reopen
 	pkg2, err := Open(path, true)
 	if err != nil {
 		t.Fatalf("Open() error = %v", err)
 	}
-	defer pkg2.Close()
+	defer func() { _ = pkg2.Close() }()
 
 	// Verify parts
 	docPart2, err := pkg2.Part(

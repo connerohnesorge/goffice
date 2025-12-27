@@ -165,4 +165,6 @@
 //
 // Part operations should be performed through the parent document's
 // thread-safe API. Direct part manipulation is not thread-safe.
+//
+//nolint:revive // line-length-limit: documentation examples contain long method chains
 package parts

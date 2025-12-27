@@ -1,6 +1,6 @@
-// Package validation provides the validation framework for Office Open XML documents.
-// It supports schema validation, semantic validation, and custom validation rules
-// to ensure documents conform to the OOXML specification.
+// Package validation provides the validation framework for Office Open XML
+// documents. It supports schema validation, semantic validation, and custom
+// validation rules to ensure documents conform to the OOXML specification.
 package validation
 
 import (
@@ -12,9 +12,11 @@ import (
 type ValidationSeverity int
 
 const (
-	// SeverityError indicates a validation error that makes the document non-conformant.
+	// SeverityError indicates a validation error that makes the document
+	// non-conformant.
 	SeverityError ValidationSeverity = iota
-	// SeverityWarning indicates a validation warning that may cause issues but is not strictly non-conformant.
+	// SeverityWarning indicates a validation warning that may cause issues
+	// but is not strictly non-conformant.
 	SeverityWarning
 )
 
@@ -35,40 +37,47 @@ type ErrorCode string
 
 // Schema validation error codes.
 const (
-	// Schema_MissingRequiredElement indicates a required child element is missing.
-	Schema_MissingRequiredElement ErrorCode = "Schema_MissingRequiredElement"
-	// Schema_UnexpectedElement indicates an unexpected element was found.
-	Schema_UnexpectedElement ErrorCode = "Schema_UnexpectedElement"
-	// Schema_InvalidChildOrder indicates child elements are in the wrong order.
-	Schema_InvalidChildOrder ErrorCode = "Schema_InvalidChildOrder"
-	// Schema_TooManyElements indicates too many occurrences of an element.
-	Schema_TooManyElements ErrorCode = "Schema_TooManyElements"
-	// Schema_MissingRequiredAttribute indicates a required attribute is missing.
-	Schema_MissingRequiredAttribute ErrorCode = "Schema_MissingRequiredAttribute"
-	// Schema_InvalidAttributeValue indicates an attribute has an invalid value.
-	Schema_InvalidAttributeValue ErrorCode = "Schema_InvalidAttributeValue"
-	// Schema_ValueNotInEnumeration indicates a value is not in the allowed enumeration.
-	Schema_ValueNotInEnumeration ErrorCode = "Schema_ValueNotInEnumeration"
-	// Schema_ValueOutOfRange indicates a value is outside the allowed range.
-	Schema_ValueOutOfRange ErrorCode = "Schema_ValueOutOfRange"
-	// Schema_ElementNotAvailable indicates an element is not available in the target version.
-	Schema_ElementNotAvailable ErrorCode = "Schema_ElementNotAvailable"
-	// Schema_AttributeNotAvailable indicates an attribute is not available in the target version.
-	Schema_AttributeNotAvailable ErrorCode = "Schema_AttributeNotAvailable"
+	// SchemaMissingRequiredElement indicates a required child element
+	// is missing.
+	SchemaMissingRequiredElement ErrorCode = "SchemaMissingRequiredElement"
+	// SchemaUnexpectedElement indicates an unexpected element was found.
+	SchemaUnexpectedElement ErrorCode = "SchemaUnexpectedElement"
+	// SchemaInvalidChildOrder indicates child elements are in the wrong order.
+	SchemaInvalidChildOrder ErrorCode = "SchemaInvalidChildOrder"
+	// SchemaTooManyElements indicates too many occurrences of an element.
+	SchemaTooManyElements ErrorCode = "SchemaTooManyElements"
+	// SchemaMissingRequiredAttribute indicates a required attribute is missing.
+	SchemaMissingRequiredAttribute ErrorCode = "SchemaMissingRequiredAttribute"
+	// SchemaInvalidAttributeValue indicates an attribute has an invalid value.
+	SchemaInvalidAttributeValue ErrorCode = "SchemaInvalidAttributeValue"
+	// SchemaValueNotInEnumeration indicates a value is not in the allowed
+	// enumeration.
+	SchemaValueNotInEnumeration ErrorCode = "SchemaValueNotInEnumeration"
+	// SchemaValueOutOfRange indicates a value is outside the allowed range.
+	SchemaValueOutOfRange ErrorCode = "SchemaValueOutOfRange"
+	// SchemaElementNotAvailable indicates an element is not available
+	// in the target version.
+	SchemaElementNotAvailable ErrorCode = "SchemaElementNotAvailable"
+	// SchemaAttributeNotAvailable indicates an attribute is not available
+	// in the target version.
+	SchemaAttributeNotAvailable ErrorCode = "SchemaAttributeNotAvailable"
 )
 
 // Semantic validation error codes.
 const (
-	// Semantic_DuplicateID indicates duplicate unique identifiers were found.
-	Semantic_DuplicateID ErrorCode = "Semantic_DuplicateID"
-	// Semantic_RelationshipNotFound indicates a referenced relationship was not found.
-	Semantic_RelationshipNotFound ErrorCode = "Semantic_RelationshipNotFound"
-	// Semantic_InvalidParentType indicates an element has an invalid parent type.
-	Semantic_InvalidParentType ErrorCode = "Semantic_InvalidParentType"
-	// Semantic_MutuallyExclusiveAttributes indicates mutually exclusive attributes are present.
-	Semantic_MutuallyExclusiveAttributes ErrorCode = "Semantic_MutuallyExclusiveAttributes"
-	// Semantic_InvalidReference indicates an invalid reference was found.
-	Semantic_InvalidReference ErrorCode = "Semantic_InvalidReference"
+	// SemanticDuplicateID indicates duplicate unique identifiers were found.
+	SemanticDuplicateID ErrorCode = "SemanticDuplicateID"
+	// SemanticRelationshipNotFound indicates a referenced relationship
+	// was not found.
+	SemanticRelationshipNotFound ErrorCode = "SemanticRelationshipNotFound"
+	// SemanticInvalidParentType indicates an element has an invalid
+	// parent type.
+	SemanticInvalidParentType ErrorCode = "SemanticInvalidParentType"
+	// SemanticMutuallyExclusive indicates mutually exclusive attributes
+	// are present.
+	SemanticMutuallyExclusive ErrorCode = "SemanticMutuallyExclusive"
+	// SemanticInvalidReference indicates an invalid reference was found.
+	SemanticInvalidReference ErrorCode = "SemanticInvalidReference"
 )
 
 // ValidationError represents a single validation error or warning.
@@ -79,9 +88,10 @@ type ValidationError struct {
 	Description string
 	// Path is the XPath-like path to the element with the error.
 	Path string
-	// Element is a reference to the actual element with the error (optional).
-	// This uses interface{} to avoid circular imports with the openxml package.
-	Element interface{}
+	// Element is a reference to the actual element with the error
+	// (optional).
+	// This uses any to avoid circular imports with the openxml package.
+	Element any
 	// Severity indicates whether this is an error or warning.
 	Severity ValidationSeverity
 	// RelatedInfo provides additional context about the error.
@@ -108,7 +118,7 @@ func (e *ValidationError) Error() string {
 func NewValidationError(
 	code ErrorCode,
 	description, path string,
-	element interface{},
+	element any,
 ) *ValidationError {
 	return &ValidationError{
 		Code:        code,
@@ -123,7 +133,7 @@ func NewValidationError(
 func NewValidationWarning(
 	code ErrorCode,
 	description, path string,
-	element interface{},
+	element any,
 ) *ValidationError {
 	return &ValidationError{
 		Code:        code,
@@ -143,25 +153,26 @@ func (e *ValidationError) WithRelatedInfo(
 	return e
 }
 
-// ValidationErrors is a collection of validation errors that implements the error interface.
+// ValidationErrors is a collection of validation errors that implements
+// the error interface.
 type ValidationErrors []*ValidationError
 
 // Error implements the error interface for the collection.
-func (errs ValidationErrors) Error() string {
-	if len(errs) == 0 {
+func (ve ValidationErrors) Error() string {
+	if len(ve) == 0 {
 		return "no validation errors"
 	}
-	if len(errs) == 1 {
-		return errs[0].Error()
+	if len(ve) == 1 {
+		return ve[0].Error()
 	}
 	var sb strings.Builder
 	sb.WriteString(
 		fmt.Sprintf(
 			"%d validation errors:\n",
-			len(errs),
+			len(ve),
 		),
 	)
-	for i, err := range errs {
+	for i, err := range ve {
 		if i > 0 {
 			sb.WriteString("\n")
 		}
@@ -177,9 +188,10 @@ func (errs ValidationErrors) Error() string {
 	return sb.String()
 }
 
-// HasErrors returns true if the collection contains any errors (not just warnings).
-func (errs ValidationErrors) HasErrors() bool {
-	for _, e := range errs {
+// HasErrors returns true if the collection contains any errors
+// (not just warnings).
+func (ve ValidationErrors) HasErrors() bool {
+	for _, e := range ve {
 		if e.Severity == SeverityError {
 			return true
 		}
@@ -189,9 +201,9 @@ func (errs ValidationErrors) HasErrors() bool {
 }
 
 // Errors returns only the errors (excluding warnings).
-func (errs ValidationErrors) Errors() ValidationErrors {
-	result := make(ValidationErrors, 0, len(errs))
-	for _, e := range errs {
+func (ve ValidationErrors) Errors() ValidationErrors {
+	result := make(ValidationErrors, 0, len(ve))
+	for _, e := range ve {
 		if e.Severity == SeverityError {
 			result = append(result, e)
 		}
@@ -201,9 +213,9 @@ func (errs ValidationErrors) Errors() ValidationErrors {
 }
 
 // Warnings returns only the warnings (excluding errors).
-func (errs ValidationErrors) Warnings() ValidationErrors {
-	result := make(ValidationErrors, 0, len(errs))
-	for _, e := range errs {
+func (ve ValidationErrors) Warnings() ValidationErrors {
+	result := make(ValidationErrors, 0, len(ve))
+	for _, e := range ve {
 		if e.Severity == SeverityWarning {
 			result = append(result, e)
 		}
@@ -213,11 +225,11 @@ func (errs ValidationErrors) Warnings() ValidationErrors {
 }
 
 // ByCode returns errors with the given error code.
-func (errs ValidationErrors) ByCode(
+func (ve ValidationErrors) ByCode(
 	code ErrorCode,
 ) ValidationErrors {
 	result := make(ValidationErrors, 0)
-	for _, e := range errs {
+	for _, e := range ve {
 		if e.Code == code {
 			result = append(result, e)
 		}

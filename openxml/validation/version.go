@@ -61,25 +61,30 @@ func (v FileFormatVersions) AtMost(
 	return v <= other
 }
 
-// Includes returns true if this version includes features from the given version.
-// Higher versions include features from lower versions.
+// Includes returns true if this version includes features from the given
+// version. Higher versions include features from lower versions.
 func (v FileFormatVersions) Includes(
 	other FileFormatVersions,
 ) bool {
 	return v >= other
 }
 
-// VersionAvailability tracks the Office version availability of elements and attributes.
+// VersionAvailability tracks the Office version availability of elements
+// and attributes.
 type VersionAvailability struct {
-	// IntroducedIn is the first Office version where this feature was available.
+	// IntroducedIn is the first Office version where this feature
+	// was available.
 	IntroducedIn FileFormatVersions
-	// DeprecatedIn is the version where this feature was deprecated (0 if not deprecated).
+	// DeprecatedIn is the version where this feature was deprecated
+	// (0 if not deprecated).
 	DeprecatedIn FileFormatVersions
-	// RemovedIn is the version where this feature was removed (0 if not removed).
+	// RemovedIn is the version where this feature was removed
+	// (0 if not removed).
 	RemovedIn FileFormatVersions
 }
 
-// NewVersionAvailability creates a new version availability starting from the given version.
+// NewVersionAvailability creates a new version availability starting from
+// the given version.
 func NewVersionAvailability(
 	introducedIn FileFormatVersions,
 ) *VersionAvailability {
@@ -88,22 +93,26 @@ func NewVersionAvailability(
 	}
 }
 
-// Since returns a VersionAvailability for features available since Office 2016 (all supported versions).
+// Since2016 returns a VersionAvailability for features available since
+// Office 2016 (all supported versions).
 func Since2016() *VersionAvailability {
 	return NewVersionAvailability(Office2016)
 }
 
-// Since2019 returns a VersionAvailability for features available since Office 2019.
+// Since2019 returns a VersionAvailability for features available since
+// Office 2019.
 func Since2019() *VersionAvailability {
 	return NewVersionAvailability(Office2019)
 }
 
-// Since2021 returns a VersionAvailability for features available since Office 2021.
+// Since2021 returns a VersionAvailability for features available since
+// Office 2021.
 func Since2021() *VersionAvailability {
 	return NewVersionAvailability(Office2021)
 }
 
-// Since365 returns a VersionAvailability for features available only in Microsoft 365.
+// Since365 returns a VersionAvailability for features available only in
+// Microsoft 365.
 func Since365() *VersionAvailability {
 	return NewVersionAvailability(Microsoft365)
 }
@@ -131,7 +140,8 @@ func (va *VersionAvailability) IsAvailableIn(
 	return true
 }
 
-// IsDeprecatedIn returns true if the feature is deprecated in the given version.
+// IsDeprecatedIn returns true if the feature is deprecated in the given
+// version.
 func (va *VersionAvailability) IsDeprecatedIn(
 	version FileFormatVersions,
 ) bool {
@@ -160,7 +170,8 @@ func (va *VersionAvailability) Removed(
 	return va
 }
 
-// DefaultVersion is the default version used for validation when none is specified.
+// DefaultVersion is the default version used for validation when none is
+// specified.
 const DefaultVersion = Microsoft365
 
 // AllVersions represents all supported Office versions.
@@ -171,22 +182,25 @@ var AllVersions = []FileFormatVersions{
 	Microsoft365,
 }
 
-// VersionedElement is an interface for elements that have version-specific availability.
+// VersionedElement is an interface for elements that have version-specific
+// availability.
 type VersionedElement interface {
 	// Availability returns the version availability for this element.
 	Availability() *VersionAvailability
 }
 
-// VersionedAttribute represents an attribute with version availability information.
+// VersionedAttribute represents an attribute with version availability
+// information.
 type VersionedAttribute interface {
-	// AttributeAvailability returns the version availability for this attribute.
+	// AttributeAvailability returns the version availability for this
+	// attribute.
 	AttributeAvailability() *VersionAvailability
 }
 
 // CheckElementVersion checks if an element is available in the given version.
 // Returns a validation error if not available.
 func CheckElementVersion(
-	element interface{},
+	element any,
 	version FileFormatVersions,
 	path string,
 ) *ValidationError {
@@ -195,7 +209,7 @@ func CheckElementVersion(
 		if avail != nil &&
 			!avail.IsAvailableIn(version) {
 			return NewValidationError(
-				Schema_ElementNotAvailable,
+				SchemaElementNotAvailable,
 				"Element is not available in "+version.String(),
 				path,
 				element,

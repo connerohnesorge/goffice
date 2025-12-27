@@ -1,8 +1,9 @@
-// Package openxml provides the core framework for Office Open XML document processing.
+// Package openxml provides the core framework for Office Open XML document
+// processing.
 //
 // This package implements the shared infrastructure used by document-specific
-// packages (wordprocessing, spreadsheet, presentation). It provides element types,
-// attribute handling, part management, and validation infrastructure.
+// packages (wordprocessing, spreadsheet, presentation). It provides element
+// types, attribute handling, part management, and validation infrastructure.
 //
 // # Element Types
 //
@@ -41,7 +42,8 @@
 //
 // # Part Management
 //
-// OpenXmlPackage wraps the packaging layer with document-specific functionality:
+// OpenXmlPackage wraps the packaging layer with document-specific
+// functionality:
 //
 //	pkg, err := openxml.CreatePackage("document.docx")
 //	if err != nil {
@@ -50,7 +52,8 @@
 //	defer pkg.Close()
 //
 //	// Add parts
-//	mainPart := openxml.NewOpenXmlPartData(uri, contentType, packPart, container)
+//	mainPart := openxml.NewOpenXmlPartData(
+//		uri, contentType, packPart, container)
 //
 //	// Get parts by type
 //	for part := range pkg.GetPartsOfType(contentType) {

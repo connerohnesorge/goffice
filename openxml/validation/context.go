@@ -10,7 +10,8 @@ type ValidationSettings struct {
 	// MaxErrors is the maximum number of errors to collect before stopping.
 	// 0 means unlimited.
 	MaxErrors int
-	// ContinueOnError indicates whether to continue validation after finding an error.
+	// ContinueOnError indicates whether to continue validation after
+	// finding an error.
 	ContinueOnError bool
 	// SemanticValidation enables semantic validation (business rules).
 	// Default is true.
@@ -78,15 +79,17 @@ type ValidationContext struct {
 	// stopped indicates if validation should stop.
 	stopped bool
 	// seenIDs tracks unique IDs for duplicate checking.
-	seenIDs map[string]interface{}
+	seenIDs map[string]any
 	// Package is the package being validated (if any).
-	// Uses interface{} to avoid circular import with openxml package.
-	Package interface{}
+	// Uses any to avoid circular import with openxml package.
+	Package any
 	// CurrentPart is the current part being validated (if any).
-	CurrentPart interface{}
+	CurrentPart any
 }
 
-// NewValidationContext creates a new validation context with the given settings and version.
+// NewValidationContext creates a new validation context with the given
+// settings and version.
+// nolint:revive // modifies-parameter: intentional nil check with default
 func NewValidationContext(
 	settings *ValidationSettings,
 	version FileFormatVersions,
@@ -95,48 +98,54 @@ func NewValidationContext(
 		settings = DefaultSettings()
 	}
 
+	const defaultPathStackCap = 16
+
 	return &ValidationContext{
-		Settings:  settings,
-		Version:   version,
-		errors:    make(ValidationErrors, 0),
-		pathStack: make([]string, 0, 16),
-		seenIDs:   make(map[string]interface{}),
+		Settings: settings,
+		Version:  version,
+		errors:   make(ValidationErrors, 0),
+		pathStack: make(
+			[]string,
+			0,
+			defaultPathStackCap,
+		),
+		seenIDs: make(map[string]any),
 	}
 }
 
 // AddError adds a validation error to the context.
 // Returns true if validation should continue, false if it should stop.
-func (ctx *ValidationContext) AddError(
+func (c *ValidationContext) AddError(
 	err *ValidationError,
 ) bool {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	if ctx.stopped {
+	if c.stopped {
 		return false
 	}
 
 	// In strict mode, treat warnings as errors
-	if ctx.Settings.StrictMode &&
+	if c.Settings.StrictMode &&
 		err.Severity == SeverityWarning {
 		err.Severity = SeverityError
 	}
 
-	ctx.errors = append(ctx.errors, err)
+	c.errors = append(c.errors, err)
 
 	// Check if we should stop
-	if ctx.Settings.MaxErrors > 0 &&
+	if c.Settings.MaxErrors > 0 &&
 		len(
-			ctx.errors,
-		) >= ctx.Settings.MaxErrors {
-		ctx.stopped = true
+			c.errors,
+		) >= c.Settings.MaxErrors {
+		c.stopped = true
 
 		return false
 	}
 
-	if !ctx.Settings.ContinueOnError &&
+	if !c.Settings.ContinueOnError &&
 		err.Severity == SeverityError {
-		ctx.stopped = true
+		c.stopped = true
 
 		return false
 	}
@@ -146,11 +155,11 @@ func (ctx *ValidationContext) AddError(
 
 // AddErrors adds multiple validation errors to the context.
 // Returns true if validation should continue, false if it should stop.
-func (ctx *ValidationContext) AddErrors(
+func (c *ValidationContext) AddErrors(
 	errs ...*ValidationError,
 ) bool {
 	for _, err := range errs {
-		if !ctx.AddError(err) {
+		if !c.AddError(err) {
 			return false
 		}
 	}
@@ -159,77 +168,86 @@ func (ctx *ValidationContext) AddErrors(
 }
 
 // Errors returns all collected validation errors.
-func (ctx *ValidationContext) Errors() ValidationErrors {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
+func (c *ValidationContext) Errors() ValidationErrors {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	result := make(
 		ValidationErrors,
-		len(ctx.errors),
+		len(c.errors),
 	)
-	copy(result, ctx.errors)
+	copy(result, c.errors)
 
 	return result
 }
 
 // ShouldStop returns true if validation should stop.
-func (ctx *ValidationContext) ShouldStop() bool {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
+func (c *ValidationContext) ShouldStop() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	return ctx.stopped
+	return c.stopped
 }
 
 // Stop explicitly stops validation.
-func (ctx *ValidationContext) Stop() {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
-	ctx.stopped = true
+func (c *ValidationContext) Stop() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.stopped = true
 }
 
 // PushPath pushes an element onto the path stack.
-func (ctx *ValidationContext) PushPath(
+func (c *ValidationContext) PushPath(
 	element string,
 ) {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
-	ctx.pathStack = append(ctx.pathStack, element)
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.pathStack = append(c.pathStack, element)
 }
 
 // PopPath pops the last element from the path stack.
-func (ctx *ValidationContext) PopPath() {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
-	if len(ctx.pathStack) > 0 {
-		ctx.pathStack = ctx.pathStack[:len(ctx.pathStack)-1]
+func (c *ValidationContext) PopPath() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if len(c.pathStack) > 0 {
+		c.pathStack = c.pathStack[:len(c.pathStack)-1]
 	}
 }
 
 // CurrentPath returns the current XPath-like path.
-func (ctx *ValidationContext) CurrentPath() string {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
+func (c *ValidationContext) CurrentPath() string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	return "/" + strings.Join(ctx.pathStack, "/")
+	const pathSep = "/"
+
+	return pathSep + strings.Join(
+		c.pathStack,
+		pathSep,
+	)
 }
 
-// PathWithIndex returns the current path with an index suffix for the given element.
-func (ctx *ValidationContext) PathWithIndex(
+// PathWithIndex returns the current path with an index suffix
+// for the given element.
+func (c *ValidationContext) PathWithIndex(
 	element string,
 	index int,
 ) string {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
-	basePath := "/" + strings.Join(
-		ctx.pathStack,
-		"/",
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	const pathSep = "/"
+
+	basePath := pathSep + strings.Join(
+		c.pathStack,
+		pathSep,
 	)
-	if basePath == "/" {
-		return "/" + element + "[" + itoa(
+	if basePath == pathSep {
+		return pathSep + element + "[" + itoa(
 			index,
 		) + "]"
 	}
 
-	return basePath + "/" + element + "[" + itoa(
+	return basePath + pathSep + element + "[" + itoa(
 		index,
 	) + "]"
 }
@@ -246,83 +264,90 @@ func itoa(i int) string {
 	return uitoa(uint(i))
 }
 
+// nolint:revive // modifies-parameter: loop variable modification is intentional
 func uitoa(u uint) string {
-	var buf [20]byte
+	const (
+		bufSize   = 20
+		base      = 10
+		zeroDigit = '0'
+	)
+	var buf [bufSize]byte
 	i := len(buf)
-	for u >= 10 {
+	for u >= base {
 		i--
-		q := u / 10
-		buf[i] = byte('0' + u - q*10)
+		q := u / base
+		buf[i] = byte(zeroDigit + u - q*base)
 		u = q
 	}
 	i--
-	buf[i] = byte('0' + u)
+	buf[i] = byte(zeroDigit + u)
 
 	return string(buf[i:])
 }
 
 // TrackID tracks a unique ID for duplicate checking.
 // Returns the existing element if a duplicate, or nil if new.
-func (ctx *ValidationContext) TrackID(
+func (c *ValidationContext) TrackID(
 	id string,
-	element interface{},
-) interface{} {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
+	element any,
+) any {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	if existing, ok := ctx.seenIDs[id]; ok {
+	if existing, ok := c.seenIDs[id]; ok {
 		return existing
 	}
-	ctx.seenIDs[id] = element
+	c.seenIDs[id] = element
 
 	return nil
 }
 
 // HasSeenID returns true if the ID has already been seen.
-func (ctx *ValidationContext) HasSeenID(
+func (c *ValidationContext) HasSeenID(
 	id string,
 ) bool {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
-	_, ok := ctx.seenIDs[id]
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	_, ok := c.seenIDs[id]
 
 	return ok
 }
 
 // ClearIDs clears the tracked IDs (useful between parts).
-func (ctx *ValidationContext) ClearIDs() {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
-	ctx.seenIDs = make(map[string]interface{})
+func (c *ValidationContext) ClearIDs() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.seenIDs = make(map[string]any)
 }
 
 // Reset resets the context for reuse.
-func (ctx *ValidationContext) Reset() {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
-	ctx.errors = ctx.errors[:0]
-	ctx.pathStack = ctx.pathStack[:0]
-	ctx.stopped = false
-	ctx.seenIDs = make(map[string]interface{})
-	ctx.Package = nil
-	ctx.CurrentPart = nil
+func (c *ValidationContext) Reset() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.errors = c.errors[:0]
+	c.pathStack = c.pathStack[:0]
+	c.stopped = false
+	c.seenIDs = make(map[string]any)
+	c.Package = nil
+	c.CurrentPart = nil
 }
 
 // ErrorCount returns the number of errors collected.
-func (ctx *ValidationContext) ErrorCount() int {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
+func (c *ValidationContext) ErrorCount() int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	return len(ctx.errors)
+	return len(c.errors)
 }
 
-// IsVersionAvailable checks if a feature is available in the current validation version.
-func (ctx *ValidationContext) IsVersionAvailable(
+// IsVersionAvailable checks if a feature is available in the current
+// validation version.
+func (c *ValidationContext) IsVersionAvailable(
 	avail *VersionAvailability,
 ) bool {
 	if avail == nil {
 		return true
 	}
 
-	return avail.IsAvailableIn(ctx.Version)
+	return avail.IsAvailableIn(c.Version)
 }

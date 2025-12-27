@@ -8,9 +8,11 @@ import (
 )
 
 // Element is the base interface for all OpenXML elements.
-// It provides access to the element's identity, attributes, parent, and features.
+// It provides access to the element's identity, attributes, parent,
+// and features.
 type Element interface {
-	// LocalName returns the local name of the element (without namespace prefix).
+	// LocalName returns the local name of the element
+	// (without namespace prefix).
 	LocalName() string
 
 	// NamespaceURI returns the namespace URI of the element.
@@ -32,8 +34,9 @@ type Element interface {
 	// Attributes returns all attributes on this element.
 	Attributes() []OpenXmlAttribute
 
-	// GetAttribute returns the attribute with the given local name and namespace URI.
-	// Returns the attribute and true if found, or an empty attribute and false if not.
+	// GetAttribute returns the attribute with the given local name and
+	// namespace URI. Returns the attribute and true if found, or an empty
+	// attribute and false if not.
 	GetAttribute(
 		localName, namespaceURI string,
 	) (OpenXmlAttribute, bool)
@@ -41,13 +44,14 @@ type Element interface {
 	// SetAttribute sets or adds an attribute on this element.
 	SetAttribute(attr OpenXmlAttribute)
 
-	// RemoveAttribute removes the attribute with the given local name and namespace URI.
-	// Returns true if an attribute was removed.
+	// RemoveAttribute removes the attribute with the given local name and
+	// namespace URI. Returns true if an attribute was removed.
 	RemoveAttribute(
 		localName, namespaceURI string,
 	) bool
 
-	// OuterXml returns the complete XML representation of this element including children.
+	// OuterXml returns the complete XML representation of this element
+	// including children.
 	OuterXml() string
 
 	// InnerXml returns the XML representation of this element's children only.
@@ -80,7 +84,8 @@ type CompositeElement interface {
 	// LastChild returns the last child element, or nil if empty.
 	LastChild() Element
 
-	// GetElement returns the first child element of type T, or nil if not found.
+	// GetElement returns the first child element of type T, or nil if
+	// not found.
 	GetElement(
 		localName, namespaceURI string,
 	) Element
@@ -116,7 +121,8 @@ type CompositeElement interface {
 	ChildCount() int
 }
 
-// LeafElement is an element that contains only text content (no child elements).
+// LeafElement is an element that contains only text content
+// (no child elements).
 type LeafElement interface {
 	Element
 
@@ -159,15 +165,20 @@ type OpenXmlPart interface {
 
 	// SetData sets the part's raw content.
 	SetData(data []byte)
+
+	// RootElement returns the root element of this part.
+	RootElement() PartRootElement
 }
 
 // ElementWithSiblings provides sibling navigation.
 type ElementWithSiblings interface {
 	Element
 
-	// NextSibling returns the next sibling element, or nil if this is the last child.
+	// NextSibling returns the next sibling element, or nil if this is the
+	// last child.
 	NextSibling() Element
 
-	// PreviousSibling returns the previous sibling element, or nil if this is the first child.
+	// PreviousSibling returns the previous sibling element, or nil if this
+	// is the first child.
 	PreviousSibling() Element
 }

@@ -1,3 +1,4 @@
+//nolint:revive // Package contains long URL lines
 package parts
 
 import (
@@ -40,45 +41,45 @@ func newWebSettingsPart(
 	)
 	partData.SetRelationshipID(relID)
 
-	wsp := &WebSettingsPart{
+	ws := &WebSettingsPart{
 		OpenXmlPartData: partData,
 	}
 
 	// Initialize with minimal web settings content
-	wsp.initializeContent()
+	ws.initializeContent()
 
 	// Add to main part's child parts
-	if err := mainPart.AddPart(wsp, relID); err != nil {
+	if err := mainPart.AddPart(ws, relID); err != nil {
 		return nil, err
 	}
 
-	return wsp, nil
+	return ws, nil
 }
 
 // initializeContent sets up minimal web settings content.
-func (wsp *WebSettingsPart) initializeContent() {
+func (ws *WebSettingsPart) initializeContent() {
 	content := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:webSettings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:optimizeForBrowser/>
   <w:allowPNG/>
 </w:webSettings>`
-	wsp.SetData([]byte(content))
+	ws.SetData([]byte(content))
 }
 
 // FixedContentType returns the content type for this part.
-func (wsp *WebSettingsPart) FixedContentType() string {
+func (ws *WebSettingsPart) FixedContentType() string {
 	return ContentTypeWebSettings
 }
 
 // WebSettings returns the root WebSettings element.
 // TODO: Return a proper WebSettings element type when elements are implemented.
-func (wsp *WebSettingsPart) WebSettings() openxml.PartRootElement {
-	return wsp.RootElement()
+func (ws *WebSettingsPart) WebSettings() openxml.PartRootElement {
+	return ws.RootElement()
 }
 
 // GetStream returns a reader for the part content.
-func (wsp *WebSettingsPart) GetStream() io.Reader {
-	return wsp.OpenXmlPartData.GetStream()
+func (ws *WebSettingsPart) GetStream() io.Reader {
+	return ws.OpenXmlPartData.GetStream()
 }
 
 // Ensure WebSettingsPart implements OpenXmlPart.
@@ -91,13 +92,10 @@ func WebSettingsPartFactory(
 	uri string,
 	container openxml.OpenXmlPartContainer,
 ) openxml.OpenXmlPart {
-	pkg := container.Package()
-	if pkg == nil {
-		return nil
-	}
-
-	packPart, err := pkg.Part(uri)
-	if err != nil {
+	// Use GetPackagingPart instead of Package() to avoid locking issues
+	// during initialization when the package lock is already held
+	packPart := container.GetPackagingPart(uri)
+	if packPart == nil {
 		return nil
 	}
 

@@ -603,29 +603,29 @@ func TestDocumentXMLOutput(t *testing.T) {
 func TestEnums(t *testing.T) {
 	// Test that enum values are correct strings
 	if string(JustificationCenter) != "center" {
-		t.Errorf(
+		t.Error(
 			"JustificationCenter should be 'center'",
 		)
 	}
 
 	if string(UnderlineSingle) != "single" {
-		t.Errorf(
+		t.Error(
 			"UnderlineSingle should be 'single'",
 		)
 	}
 
 	if string(HighlightYellow) != "yellow" {
-		t.Errorf(
+		t.Error(
 			"HighlightYellow should be 'yellow'",
 		)
 	}
 
 	if string(BreakPage) != "page" {
-		t.Errorf("BreakPage should be 'page'")
+		t.Error("BreakPage should be 'page'")
 	}
 
 	if string(BorderSingle) != "single" {
-		t.Errorf(
+		t.Error(
 			"BorderSingle should be 'single'",
 		)
 	}
@@ -635,7 +635,10 @@ func TestClone(t *testing.T) {
 	p := NewParagraph("Original text")
 	p.SetStyle("Heading1")
 
-	clone := p.Clone().(*Paragraph)
+	clone, ok := p.Clone().(*Paragraph)
+	if !ok {
+		t.Fatal("Clone did not return *Paragraph")
+	}
 
 	// Modify original
 	p.SetText("Modified text")

@@ -2,14 +2,16 @@ package openxml
 
 import "strings"
 
-// OpenXmlQualifiedName represents an XML qualified name (namespace URI + local name).
-// This is used to uniquely identify element and attribute names in the OpenXML schema.
+// OpenXmlQualifiedName represents an XML qualified name
+// (namespace URI + local name). This is used to uniquely identify
+// element and attribute names in the OpenXML schema.
 type OpenXmlQualifiedName struct {
 	namespaceURI string
 	localName    string
 }
 
-// NewQualifiedName creates a new qualified name with the given namespace URI and local name.
+// NewQualifiedName creates a new qualified name with the given
+// namespace URI and local name.
 func NewQualifiedName(
 	namespaceURI, localName string,
 ) OpenXmlQualifiedName {
@@ -30,7 +32,8 @@ func (qn OpenXmlQualifiedName) LocalName() string {
 }
 
 // String returns the string representation of the qualified name.
-// Format: "{namespaceURI}localName" if namespace is present, otherwise just "localName".
+// Format: "{namespaceURI}localName" if namespace is present,
+// otherwise just "localName".
 func (qn OpenXmlQualifiedName) String() string {
 	if qn.namespaceURI == "" {
 		return qn.localName

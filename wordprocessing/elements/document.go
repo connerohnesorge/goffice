@@ -6,17 +6,17 @@ import (
 
 // Document represents the root document element (w:document).
 type Document struct {
-	*openxml.CompositeElementBase
+	*openxml.PartRootElementBase
 }
 
 // NewDocument creates a new Document element with an empty body.
 func NewDocument() *Document {
-	elem := openxml.NewCompositeElement(
+	elem := openxml.NewPartRootElement(
 		NamespaceWML,
 		"document",
 		PrefixW,
 	)
-	d := &Document{CompositeElementBase: elem}
+	d := &Document{PartRootElementBase: elem}
 	d.AppendChild(NewBody())
 
 	return d
@@ -68,8 +68,10 @@ func (d *Document) AppendTable(
 
 // Clone creates a deep copy of this Document element.
 func (d *Document) Clone() openxml.Element {
+	cloned := d.PartRootElementBase.Clone()
+
 	return &Document{
-		CompositeElementBase: d.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }
 
@@ -77,7 +79,11 @@ func (d *Document) Clone() openxml.Element {
 func (d *Document) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := d.PartRootElementBase.CloneNode(
+		deep,
+	)
+
 	return &Document{
-		CompositeElementBase: d.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
 	}
 }

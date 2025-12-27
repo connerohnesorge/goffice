@@ -1,3 +1,4 @@
+//nolint:revive // line-length-limit: OOXML content types and relationship URIs are long strings
 package parts
 
 import (
@@ -49,43 +50,43 @@ func newCustomXmlPart(
 	)
 	partData.SetRelationshipID(relID)
 
-	cxp := &CustomXmlPart{
+	cp := &CustomXmlPart{
 		OpenXmlPartData: partData,
 	}
 
 	// Initialize with minimal custom XML content
-	cxp.initializeContent()
+	cp.initializeContent()
 
 	// Add to main part's child parts
-	if err := mainPart.AddPart(cxp, relID); err != nil {
+	if err := mainPart.AddPart(cp, relID); err != nil {
 		return nil, err
 	}
 
-	return cxp, nil
+	return cp, nil
 }
 
 // initializeContent sets up minimal custom XML content.
-func (cxp *CustomXmlPart) initializeContent() {
+func (cp *CustomXmlPart) initializeContent() {
 	content := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <root></root>`
-	cxp.SetData([]byte(content))
+	cp.SetData([]byte(content))
 }
 
 // SetXmlData sets the custom XML data.
-func (cxp *CustomXmlPart) SetXmlData(
+func (cp *CustomXmlPart) SetXmlData(
 	data []byte,
 ) {
-	cxp.SetData(data)
+	cp.SetData(data)
 }
 
 // GetXmlData returns the custom XML data.
-func (cxp *CustomXmlPart) GetXmlData() []byte {
-	return cxp.GetData()
+func (cp *CustomXmlPart) GetXmlData() []byte {
+	return cp.GetData()
 }
 
 // GetStream returns a reader for the part content.
-func (cxp *CustomXmlPart) GetStream() io.Reader {
-	return cxp.OpenXmlPartData.GetStream()
+func (cp *CustomXmlPart) GetStream() io.Reader {
+	return cp.OpenXmlPartData.GetStream()
 }
 
 // Ensure CustomXmlPart implements OpenXmlPart.
@@ -96,13 +97,10 @@ func CustomXmlPartFactory(
 	uri string,
 	container openxml.OpenXmlPartContainer,
 ) openxml.OpenXmlPart {
-	pkg := container.Package()
-	if pkg == nil {
-		return nil
-	}
-
-	packPart, err := pkg.Part(uri)
-	if err != nil {
+	// Use GetPackagingPart instead of Package() to avoid locking issues
+	// during initialization when the package lock is already held
+	packPart := container.GetPackagingPart(uri)
+	if packPart == nil {
 		return nil
 	}
 

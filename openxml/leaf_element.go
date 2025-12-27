@@ -14,7 +14,8 @@ type LeafElementBase struct {
 	innerText string
 }
 
-// NewLeafElement creates a new leaf element with the given namespace URI and local name.
+// NewLeafElement creates a new leaf element with the given namespace URI
+// and local name.
 func NewLeafElement(
 	namespaceURI, localName, prefix string,
 ) *LeafElementBase {
@@ -73,7 +74,8 @@ func (l *LeafElementBase) SetInnerText(
 	l.innerText = value
 }
 
-// NextSibling returns the next sibling element, or nil if this is the last child.
+// NextSibling returns the next sibling element, or nil if this is the
+// last child.
 func (l *LeafElementBase) NextSibling() Element {
 	if l.parent == nil {
 		return nil
@@ -81,8 +83,8 @@ func (l *LeafElementBase) NextSibling() Element {
 
 	if parentComp, ok := l.parent.(*CompositeElementBase); ok {
 		for node := parentComp.firstChild; node != nil; node = node.next {
-			if node.element == Element(l) &&
-				node.next != nil {
+			if node.next != nil &&
+				node.element == Element(l) {
 				return node.next.element
 			}
 		}
@@ -91,7 +93,8 @@ func (l *LeafElementBase) NextSibling() Element {
 	return nil
 }
 
-// PreviousSibling returns the previous sibling element, or nil if this is the first child.
+// PreviousSibling returns the previous sibling element, or nil if this is
+// the first child.
 func (l *LeafElementBase) PreviousSibling() Element {
 	if l.parent == nil {
 		return nil
@@ -99,8 +102,8 @@ func (l *LeafElementBase) PreviousSibling() Element {
 
 	if parentComp, ok := l.parent.(*CompositeElementBase); ok {
 		for node := parentComp.firstChild; node != nil; node = node.next {
-			if node.element == Element(l) &&
-				node.prev != nil {
+			if node.prev != nil &&
+				node.element == Element(l) {
 				return node.prev.element
 			}
 		}
@@ -155,7 +158,7 @@ func (l *LeafElementBase) Clone() Element {
 // CloneNode creates a copy of this element.
 // For leaf elements, deep has no effect since there are no children.
 func (l *LeafElementBase) CloneNode(
-	deep bool,
+	_ bool,
 ) Element {
 	return &LeafElementBase{
 		BaseElement: l.copyBaseElement(),

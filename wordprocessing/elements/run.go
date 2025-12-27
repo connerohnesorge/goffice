@@ -46,8 +46,9 @@ func (r *Run) Properties() *RunProperties {
 	return nil
 }
 
-// GetOrCreateProperties returns the run properties element, creating it if needed.
-func (r *Run) GetOrCreateProperties() *RunProperties {
+// GetOrCreateProperties returns the run properties element,
+// creating it if needed.
+func (r *Run) GetOrCreateProperties() *RunProperties { //nolint:ireturn
 	props := r.Properties()
 	if props != nil {
 		return props
@@ -84,17 +85,18 @@ func (r *Run) Text() *Text {
 func (r *Run) Texts() iter.Seq[*Text] {
 	return func(yield func(*Text) bool) {
 		for child := range r.Children() {
-			if child.LocalName() == "t" &&
-				child.NamespaceURI() == NamespaceWML {
-				var t *Text
-				if text, ok := child.(*Text); ok {
-					t = text
-				} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-					t = &Text{LeafElementBase: leaf}
-				}
-				if t != nil && !yield(t) {
-					return
-				}
+			if child.LocalName() != "t" ||
+				child.NamespaceURI() != NamespaceWML {
+				continue
+			}
+			var t *Text
+			if text, ok := child.(*Text); ok {
+				t = text
+			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
+				t = &Text{LeafElementBase: leaf}
+			}
+			if t != nil && !yield(t) {
+				return
 			}
 		}
 	}
@@ -160,8 +162,10 @@ func (r *Run) AppendTab() *Tab {
 
 // Clone creates a deep copy of this Run element.
 func (r *Run) Clone() openxml.Element {
+	cloned := r.CompositeElementBase.Clone()
+
 	return &Run{
-		CompositeElementBase: r.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -169,8 +173,12 @@ func (r *Run) Clone() openxml.Element {
 func (r *Run) CloneNode(
 	deep bool,
 ) openxml.Element {
+	cloned := r.CompositeElementBase.CloneNode(
+		deep,
+	)
+
 	return &Run{
-		CompositeElementBase: r.CompositeElementBase.CloneNode(deep).(*openxml.CompositeElementBase),
+		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
 }
 
@@ -221,11 +229,29 @@ func (r *Run) SetColor(hex string) *Run {
 	return r
 }
 
+// SetStrike sets strikethrough formatting on this run.
+func (r *Run) SetStrike(b bool) *Run {
+	r.GetOrCreateProperties().SetStrike(b)
+
+	return r
+}
+
 // SetHighlight sets the highlight color.
 func (r *Run) SetHighlight(
 	color HighlightColor,
 ) *Run {
 	r.GetOrCreateProperties().SetHighlight(color)
+
+	return r
+}
+
+// SetVerticalTextAlignment sets vertical text alignment
+// (subscript, superscript, baseline).
+func (r *Run) SetVerticalTextAlignment(
+	v VerticalAlignValue,
+) *Run {
+	r.GetOrCreateProperties().
+		SetVerticalTextAlignment(v)
 
 	return r
 }
@@ -330,7 +356,8 @@ func (r *Run) AppendSeparator() *Separator {
 	return s
 }
 
-// AppendContinuationSeparator appends a continuation separator element to this run.
+// AppendContinuationSeparator appends a continuation separator
+// element to this run.
 func (r *Run) AppendContinuationSeparator() *ContinuationSeparator {
 	cs := NewContinuationSeparator()
 	r.AppendChild(cs)
@@ -338,7 +365,8 @@ func (r *Run) AppendContinuationSeparator() *ContinuationSeparator {
 	return cs
 }
 
-// AppendLastRenderedPageBreak appends a last rendered page break element to this run.
+// AppendLastRenderedPageBreak appends a last rendered page break
+// element to this run.
 func (r *Run) AppendLastRenderedPageBreak() *LastRenderedPageBreak {
 	lrpb := NewLastRenderedPageBreak()
 	r.AppendChild(lrpb)

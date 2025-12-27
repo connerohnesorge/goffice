@@ -18,11 +18,11 @@ func (e *mockElement) LocalName() string { return e.localName }
 
 func (e *mockElement) NamespaceURI() string { return e.namespaceURI }
 
-func (e *mockElement) Parent() interface{} { return e.parent }
+func (e *mockElement) Parent() any { return e.parent }
 
 func (e *mockElement) Attributes() []mockAttribute { return mapToAttrs(e.attributes) }
 
-func (e *mockElement) Children() []interface{} { return elementsToInterfaces(e.children) }
+func (e *mockElement) Children() []any { return elementsToInterfaces(e.children) }
 
 type mockAttribute struct {
 	name  string
@@ -49,8 +49,8 @@ func mapToAttrs(
 
 func elementsToInterfaces(
 	elements []*mockElement,
-) []interface{} {
-	result := make([]interface{}, len(elements))
+) []any {
+	result := make([]any, len(elements))
 	for i, e := range elements {
 		result[i] = e
 	}
@@ -98,16 +98,16 @@ func TestValidationError(t *testing.T) {
 		"creates error with correct fields",
 		func(t *testing.T) {
 			err := NewValidationError(
-				Schema_MissingRequiredElement,
+				SchemaMissingRequiredElement,
 				"Element 'body' is required",
 				"/w:document",
 				nil,
 			)
 
-			if err.Code != Schema_MissingRequiredElement {
+			if err.Code != SchemaMissingRequiredElement {
 				t.Errorf(
 					"expected code %s, got %s",
-					Schema_MissingRequiredElement,
+					SchemaMissingRequiredElement,
 					err.Code,
 				)
 			}
@@ -128,7 +128,7 @@ func TestValidationError(t *testing.T) {
 
 	t.Run("creates warning", func(t *testing.T) {
 		err := NewValidationWarning(
-			Schema_ValueNotInEnumeration,
+			SchemaValueNotInEnumeration,
 			"Value not recommended",
 			"/w:document/w:body",
 			nil,
@@ -146,7 +146,7 @@ func TestValidationError(t *testing.T) {
 		"implements error interface",
 		func(t *testing.T) {
 			var err error = NewValidationError(
-				Schema_MissingRequiredElement,
+				SchemaMissingRequiredElement,
 				"test error",
 				"/path",
 				nil,
@@ -167,13 +167,13 @@ func TestValidationErrors(t *testing.T) {
 		func(t *testing.T) {
 			errs := ValidationErrors{
 				NewValidationWarning(
-					Schema_ValueNotInEnumeration,
+					SchemaValueNotInEnumeration,
 					"warning",
 					"/",
 					nil,
 				),
 				NewValidationError(
-					Schema_MissingRequiredElement,
+					SchemaMissingRequiredElement,
 					"error",
 					"/",
 					nil,
@@ -193,13 +193,13 @@ func TestValidationErrors(t *testing.T) {
 		func(t *testing.T) {
 			errs := ValidationErrors{
 				NewValidationWarning(
-					Schema_ValueNotInEnumeration,
+					SchemaValueNotInEnumeration,
 					"warning1",
 					"/",
 					nil,
 				),
 				NewValidationWarning(
-					Schema_ValueNotInEnumeration,
+					SchemaValueNotInEnumeration,
 					"warning2",
 					"/",
 					nil,
@@ -219,13 +219,13 @@ func TestValidationErrors(t *testing.T) {
 		func(t *testing.T) {
 			errs := ValidationErrors{
 				NewValidationWarning(
-					Schema_ValueNotInEnumeration,
+					SchemaValueNotInEnumeration,
 					"warning",
 					"/",
 					nil,
 				),
 				NewValidationError(
-					Schema_MissingRequiredElement,
+					SchemaMissingRequiredElement,
 					"error",
 					"/",
 					nil,
@@ -247,13 +247,13 @@ func TestValidationErrors(t *testing.T) {
 		func(t *testing.T) {
 			errs := ValidationErrors{
 				NewValidationWarning(
-					Schema_ValueNotInEnumeration,
+					SchemaValueNotInEnumeration,
 					"warning",
 					"/",
 					nil,
 				),
 				NewValidationError(
-					Schema_MissingRequiredElement,
+					SchemaMissingRequiredElement,
 					"error",
 					"/",
 					nil,
@@ -368,7 +368,7 @@ func TestValidationContext(t *testing.T) {
 
 			ctx.AddError(
 				NewValidationError(
-					Schema_MissingRequiredElement,
+					SchemaMissingRequiredElement,
 					"error1",
 					"/",
 					nil,
@@ -382,7 +382,7 @@ func TestValidationContext(t *testing.T) {
 
 			ctx.AddError(
 				NewValidationError(
-					Schema_MissingRequiredElement,
+					SchemaMissingRequiredElement,
 					"error2",
 					"/",
 					nil,
@@ -410,7 +410,7 @@ func TestValidationContext(t *testing.T) {
 
 			ctx.AddError(
 				NewValidationError(
-					Schema_MissingRequiredElement,
+					SchemaMissingRequiredElement,
 					"error1",
 					"/",
 					nil,
@@ -575,7 +575,7 @@ func TestParticles(t *testing.T) {
 				1,
 			)
 
-			children := []ElementInfo{}
+			children := make([]ElementInfo, 0)
 
 			ctx := NewValidationContext(
 				nil,
@@ -593,9 +593,9 @@ func TestParticles(t *testing.T) {
 					len(errors),
 				)
 			}
-			if errors[0].Code != Schema_MissingRequiredElement {
+			if errors[0].Code != SchemaMissingRequiredElement {
 				t.Errorf(
-					"expected Schema_MissingRequiredElement, got %s",
+					"expected SchemaMissingRequiredElement, got %s",
 					errors[0].Code,
 				)
 			}
@@ -639,9 +639,9 @@ func TestParticles(t *testing.T) {
 					len(errors),
 				)
 			}
-			if errors[0].Code != Schema_TooManyElements {
+			if errors[0].Code != SchemaTooManyElements {
 				t.Errorf(
-					"expected Schema_TooManyElements, got %s",
+					"expected SchemaTooManyElements, got %s",
 					errors[0].Code,
 				)
 			}
@@ -774,7 +774,7 @@ func TestParticles(t *testing.T) {
 		func(t *testing.T) {
 			particle := NewEmptyParticle()
 
-			children := []ElementInfo{}
+			children := make([]ElementInfo, 0)
 
 			ctx := NewValidationContext(
 				nil,
@@ -826,9 +826,9 @@ func TestParticles(t *testing.T) {
 					len(errors),
 				)
 			}
-			if errors[0].Code != Schema_UnexpectedElement {
+			if errors[0].Code != SchemaUnexpectedElement {
 				t.Errorf(
-					"expected Schema_UnexpectedElement, got %s",
+					"expected SchemaUnexpectedElement, got %s",
 					errors[0].Code,
 				)
 			}
@@ -846,7 +846,7 @@ func TestConstraints(t *testing.T) {
 			)
 
 			constraint := NewUniqueIDConstraint(
-				func(e interface{}) string {
+				func(e any) string {
 					if me, ok := e.(*mockElement); ok {
 						return me.attributes["id"]
 					}
@@ -880,9 +880,9 @@ func TestConstraints(t *testing.T) {
 				)
 			}
 			if len(errs) > 0 &&
-				errs[0].Code != Semantic_DuplicateID {
+				errs[0].Code != SemanticDuplicateID {
 				t.Errorf(
-					"expected Semantic_DuplicateID, got %s",
+					"expected SemanticDuplicateID, got %s",
 					errs[0].Code,
 				)
 			}
@@ -927,9 +927,9 @@ func TestConstraints(t *testing.T) {
 				)
 			}
 			if len(errs) > 0 &&
-				errs[0].Code != Semantic_MutuallyExclusiveAttributes {
+				errs[0].Code != SemanticMutuallyExclusive {
 				t.Errorf(
-					"expected Semantic_MutuallyExclusiveAttributes, got %s",
+					"expected SemanticMutuallyExclusive, got %s",
 					errs[0].Code,
 				)
 			}
@@ -945,7 +945,7 @@ func TestConstraints(t *testing.T) {
 				&mockElement{},
 			)
 			constraint := NewUniqueIDConstraint(
-				func(e interface{}) string { return "" },
+				func(_ any) string { return "" },
 			)
 
 			RegisterConstraint(
@@ -996,9 +996,9 @@ func TestSchemaValidator(t *testing.T) {
 				)
 			}
 			if len(errors) > 0 &&
-				errors[0].Code != Schema_MissingRequiredAttribute {
+				errors[0].Code != SchemaMissingRequiredAttribute {
 				t.Errorf(
-					"expected Schema_MissingRequiredAttribute, got %s",
+					"expected SchemaMissingRequiredAttribute, got %s",
 					errors[0].Code,
 				)
 			}
@@ -1038,9 +1038,9 @@ func TestSchemaValidator(t *testing.T) {
 				)
 			}
 			if len(errors) > 0 &&
-				errors[0].Code != Schema_ValueNotInEnumeration {
+				errors[0].Code != SchemaValueNotInEnumeration {
 				t.Errorf(
-					"expected Schema_ValueNotInEnumeration, got %s",
+					"expected SchemaValueNotInEnumeration, got %s",
 					errors[0].Code,
 				)
 			}

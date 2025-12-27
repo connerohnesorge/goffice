@@ -7,7 +7,8 @@ type OpenXmlAttribute struct {
 	value  string
 }
 
-// NewAttribute creates a new attribute with the given namespace URI, local name, and value.
+// NewAttribute creates a new attribute with the given namespace URI,
+// local name, and value.
 func NewAttribute(
 	namespaceURI, localName, prefix, value string,
 ) OpenXmlAttribute {
@@ -21,7 +22,8 @@ func NewAttribute(
 	}
 }
 
-// NewAttributeWithQName creates a new attribute with the given qualified name and value.
+// NewAttributeWithQName creates a new attribute with the given qualified
+// name and value.
 func NewAttributeWithQName(
 	qname OpenXmlQualifiedName,
 	prefix, value string,
@@ -75,7 +77,8 @@ func (a *OpenXmlAttribute) SetValue(
 	a.value = value
 }
 
-// String returns a string representation of the attribute in the form "prefix:localName=value".
+// String returns a string representation of the attribute in the form
+// "prefix:localName=value".
 func (a OpenXmlAttribute) String() string {
 	name := a.qname.LocalName()
 	if a.prefix != "" {
@@ -90,7 +93,8 @@ func (a OpenXmlAttribute) IsEmpty() bool {
 	return a.qname.LocalName() == ""
 }
 
-// Equals returns true if this attribute has the same qualified name as the other.
+// Equals returns true if this attribute has the same qualified name
+// as the other.
 // Note: This compares by name only, not value.
 func (a OpenXmlAttribute) Equals(
 	other OpenXmlAttribute,

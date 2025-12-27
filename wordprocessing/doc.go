@@ -158,4 +158,6 @@
 //   - wordprocessing/parts: Document part types (MainPart, StylesPart, etc.)
 //
 // See those packages for lower-level element manipulation.
+//
+//nolint:revive // line-length-limit: documentation examples contain long code samples
 package wordprocessing

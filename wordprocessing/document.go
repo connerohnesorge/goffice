@@ -1,6 +1,8 @@
 // Package wordprocessing provides WordprocessingML support for Word documents.
 // This package implements the document-level API for creating, reading,
 // and modifying .docx files.
+//
+//nolint:revive // file-length-limit and line-length-limit: comprehensive document API with OOXML constants
 package wordprocessing
 
 import (
@@ -35,6 +37,8 @@ const (
 // String returns the string representation of the document type.
 func (dt DocType) String() string {
 	switch dt {
+	case DocTypeDocument:
+		return "Document"
 	case DocTypeTemplate:
 		return "Template"
 	case DocTypeMacroEnabled:
@@ -49,6 +53,8 @@ func (dt DocType) String() string {
 // Extension returns the file extension for this document type.
 func (dt DocType) Extension() string {
 	switch dt {
+	case DocTypeDocument:
+		return ".docx"
 	case DocTypeTemplate:
 		return ".dotx"
 	case DocTypeMacroEnabled:
@@ -63,6 +69,8 @@ func (dt DocType) Extension() string {
 // ContentType returns the MIME content type for the main document part.
 func (dt DocType) ContentType() string {
 	switch dt {
+	case DocTypeDocument:
+		return ContentTypeWordMLDocument
 	case DocTypeTemplate:
 		return ContentTypeWordMLTemplate
 	case DocTypeMacroEnabled:
@@ -76,16 +84,20 @@ func (dt DocType) ContentType() string {
 
 // Content types for Word documents.
 const (
-	// ContentTypeWordMLDocument is the content type for a standard Word document main part.
+	// ContentTypeWordMLDocument is the content type for a standard
+	// Word document main part.
 	ContentTypeWordMLDocument = "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
 
-	// ContentTypeWordMLTemplate is the content type for a Word template main part.
+	// ContentTypeWordMLTemplate is the content type for a Word
+	// template main part.
 	ContentTypeWordMLTemplate = "application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml"
 
-	// ContentTypeWordMLMacroEnabled is the content type for a macro-enabled Word document main part.
+	// ContentTypeWordMLMacroEnabled is the content type for a
+	// macro-enabled Word document main part.
 	ContentTypeWordMLMacroEnabled = "application/vnd.ms-word.document.macroEnabled.main+xml"
 
-	// ContentTypeWordMLMacroTemplate is the content type for a macro-enabled Word template main part.
+	// ContentTypeWordMLMacroTemplate is the content type for a
+	// macro-enabled Word template main part.
 	ContentTypeWordMLMacroTemplate = "application/vnd.ms-word.template.macroEnabled.main+xml"
 )
 
@@ -133,7 +145,7 @@ func New(
 
 	// Initialize the document structure
 	if err := doc.initializeDocument(); err != nil {
-		pkg.Close()
+		_ = pkg.Close()
 
 		return nil, err
 	}
@@ -163,7 +175,7 @@ func NewWriter(
 
 	// Initialize the document structure
 	if err := doc.initializeDocument(); err != nil {
-		doc.pkg.Close()
+		_ = doc.pkg.Close()
 
 		return nil, err
 	}
@@ -241,14 +253,14 @@ func OpenWithSettings(
 // If attachTemplate is true, the template remains linked to the document.
 func NewFromTemplate(
 	templatePath string,
-	attachTemplate bool,
+	_ bool, // attachTemplate - TODO: implement template attachment
 ) (*Document, error) {
 	// Open the template as read-only
 	templateDoc, err := Open(templatePath, false)
 	if err != nil {
 		return nil, err
 	}
-	defer templateDoc.Close()
+	defer func() { _ = templateDoc.Close() }()
 
 	// Create a new document
 	// Note: We don't save to a path yet - caller should use SaveAs
@@ -269,7 +281,7 @@ func NewFromTemplate(
 	// Copy content from template
 	// For now, just initialize with basic structure
 	if err := doc.initializeDocument(); err != nil {
-		doc.pkg.Close()
+		_ = doc.pkg.Close()
 
 		return nil, err
 	}
@@ -293,7 +305,8 @@ func (d *Document) initializeDocument() error {
 	return nil
 }
 
-// detectDocumentType determines the document type from the main part content type.
+// detectDocumentType determines the document type from the main part
+// content type.
 func (d *Document) detectDocumentType() {
 	mainPart := d.pkg.MainPart()
 	if mainPart == nil {
@@ -448,7 +461,9 @@ func (d *Document) SaveAs(path string) error {
 }
 
 // SaveTo writes the document to the given io.Writer.
-func (d *Document) SaveTo(w io.Writer) error {
+func (d *Document) SaveTo(
+	_ io.Writer,
+) error { // TODO: Implement proper SaveTo for writers
 	// Create a temporary package and write to the writer
 	pkg := d.pkg.Package()
 	if pkg == nil {
@@ -462,7 +477,8 @@ func (d *Document) SaveTo(w io.Writer) error {
 }
 
 // Close closes the document and releases all resources.
-// If AutoSave is enabled and the document has unsaved changes, it will be saved.
+// If AutoSave is enabled and the document has unsaved changes,
+// it will be saved.
 func (d *Document) Close() error {
 	if d.pkg == nil {
 		return nil
@@ -546,10 +562,11 @@ var _ io.Closer = (*Document)(nil)
 
 // Header/Footer Methods
 
-// AddHeader adds a new header part of the specified type and returns the Header element.
+// AddHeader adds a new header part of the specified type and returns
+// the Header element.
 // The header is also linked to the document's section properties.
 func (d *Document) AddHeader(
-	hfType elements.HeaderFooterType,
+	_ elements.HeaderFooterType, // hfType - TODO: use for section properties linkage
 ) (*elements.Header, error) {
 	mainPart := d.MainPart()
 	if mainPart == nil {
@@ -565,14 +582,16 @@ func (d *Document) AddHeader(
 
 	// Link the header to section properties
 	// Note: This assumes a single section in the document
-	// For multi-section documents, users should manually manage section properties
+	// For multi-section documents, users should manually manage
+	// section properties
 
 	return header, nil
 }
 
-// AddFooter adds a new footer part of the specified type and returns the Footer element.
+// AddFooter adds a new footer part of the specified type and returns
+// the Footer element.
 func (d *Document) AddFooter(
-	hfType elements.HeaderFooterType,
+	_ elements.HeaderFooterType, // hfType - TODO: use for section properties linkage
 ) (*elements.Footer, error) {
 	mainPart := d.MainPart()
 	if mainPart == nil {
@@ -684,9 +703,10 @@ func (d *Document) AddComment(
 	return cp.AddComment(author, text), nil
 }
 
-// Validate validates the document structure against the specified Office version.
-// It checks for schema compliance and semantic constraints.
-// Returns validation errors if any issues are found, or an empty slice if valid.
+// Validate validates the document structure against the specified
+// Office version. It checks for schema compliance and semantic
+// constraints. Returns validation errors if any issues are found,
+// or an empty slice if valid.
 func (d *Document) Validate(
 	version validation.FileFormatVersions,
 ) validation.ValidationErrors {
@@ -696,9 +716,10 @@ func (d *Document) Validate(
 	)
 }
 
-// ValidateWithSettings validates the document with custom validation settings.
-// This allows control over validation behavior such as maximum errors to collect,
-// whether to validate semantics, and strict mode.
+// ValidateWithSettings validates the document with custom validation
+// settings. This allows control over validation behavior such as
+// maximum errors to collect, whether to validate semantics,
+// and strict mode.
 func (d *Document) ValidateWithSettings(
 	version validation.FileFormatVersions,
 	settings *validation.ValidationSettings,
@@ -706,7 +727,7 @@ func (d *Document) ValidateWithSettings(
 	if d.pkg == nil {
 		return validation.ValidationErrors{
 			validation.NewValidationError(
-				validation.Schema_MissingRequiredElement,
+				validation.SchemaMissingRequiredElement,
 				"Document package is nil or closed",
 				"/",
 				nil,
@@ -722,8 +743,9 @@ func (d *Document) ValidateWithSettings(
 	)
 }
 
-// IsValid returns true if the document has no validation errors for the specified version.
-// This is a convenience method that calls Validate and checks if there are any errors.
+// IsValid returns true if the document has no validation errors for
+// the specified version. This is a convenience method that calls
+// Validate and checks if there are any errors.
 func (d *Document) IsValid(
 	version validation.FileFormatVersions,
 ) bool {

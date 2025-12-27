@@ -36,7 +36,7 @@ func TestCreateMinimalDocx(t *testing.T) {
 			err,
 		)
 	}
-	defer r.Close()
+	defer func() { _ = r.Close() }()
 
 	// Check that required files exist
 	requiredFiles := map[string]bool{
