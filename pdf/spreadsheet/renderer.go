@@ -35,6 +35,13 @@ type SpreadsheetRenderer struct {
 
 	// currentPageNumber tracks the current page number (1-based).
 	currentPageNumber int
+
+	// fontRegistry tracks registered fonts per page to avoid duplicates.
+	// Maps page pointer to a map of font family names to PDF resource names.
+	fontRegistry map[*core.Page]map[string]string
+
+	// nextFontNumber tracks the next available font number for naming.
+	nextFontNumber int
 }
 
 // RenderOptions configures spreadsheet rendering behavior.
@@ -97,6 +104,10 @@ func NewSpreadsheetRenderer(
 		fontCache:         cache,
 		numberFormats:     make(map[int]string),
 		currentPageNumber: 0,
+		fontRegistry: make(
+			map[*core.Page]map[string]string,
+		),
+		nextFontNumber: 1,
 	}, nil
 }
 
@@ -187,9 +198,24 @@ func (r *SpreadsheetRenderer) loadNumberFormats() error {
 		return nil
 	}
 
-	// TODO: Fix stylesheet access from WorkbookStylesPart
-	// The Stylesheet() method returns an interface that can't be type asserted
-	// Need to find the proper way to access the concrete Stylesheet element
+	// Get the stylesheet from the styles part
+	stylesheet := stylesPart.Stylesheet()
+	if stylesheet == nil {
+		return nil
+	}
+
+	// Get the number formats collection
+	numFmts := stylesheet.NumFmts()
+	if numFmts == nil {
+		return nil
+	}
+
+	// Iterate through all custom number formats and store them
+	for numFmt := range numFmts.NumFmts() {
+		numFmtId := numFmt.NumFmtId()
+		formatCode := numFmt.FormatCode()
+		r.numberFormats[int(numFmtId)] = formatCode
+	}
 
 	return nil
 }
@@ -501,4 +527,53 @@ type CellRange struct {
 	StartCol int
 	EndRow   int
 	EndCol   int
+}
+
+// registerFont registers a font in the page's PDF resources and returns its resource name.
+// This ensures fonts are properly registered before use in the content stream.
+func (r *SpreadsheetRenderer) registerFont(
+	page *core.Page,
+	fontObj *font.Font,
+) string {
+	if fontObj == nil {
+		// Fallback to a default font name if no font provided
+		return "F1"
+	}
+
+	fontFamily := fontObj.Family
+	if fontFamily == "" {
+		fontFamily = "Helvetica"
+	}
+
+	// Check if this page has a font registry
+	if r.fontRegistry[page] == nil {
+		r.fontRegistry[page] = make(
+			map[string]string,
+		)
+	}
+
+	// Check if font is already registered on this page
+	if resourceName, exists := r.fontRegistry[page][fontFamily]; exists {
+		return resourceName
+	}
+
+	// Generate a new font resource name
+	resourceName := fmt.Sprintf(
+		"F%d",
+		r.nextFontNumber,
+	)
+	r.nextFontNumber++
+
+	// Register the font in the PDF page resources
+	// For now, using the family name as the base font (Type1 approximation)
+	// TODO: Implement proper TrueType font embedding for better fidelity
+	page.RegisterFont(
+		"/"+resourceName,
+		fontFamily,
+	)
+
+	// Track this registration
+	r.fontRegistry[page][fontFamily] = resourceName
+
+	return resourceName
 }

@@ -9518,10 +9518,11 @@ const (
 
 // Compatibility constant aliases for JustificationValue
 const (
-	JustificationLeft   = JustificationValuesLeft
-	JustificationCenter = JustificationValuesCenter
-	JustificationRight  = JustificationValuesRight
-	JustificationBoth   = JustificationValuesBoth
+	JustificationLeft       = JustificationValuesLeft
+	JustificationCenter     = JustificationValuesCenter
+	JustificationRight      = JustificationValuesRight
+	JustificationBoth       = JustificationValuesBoth
+	JustificationDistribute = JustificationValuesDistribute
 )
 
 // SpaceProcessingModeValues for xml:space attribute
@@ -9567,6 +9568,10 @@ const (
 	UnderlineSingle   = UnderlineValuesSingle
 	UnderlineDouble   = UnderlineValuesDouble
 	UnderlineNone     = UnderlineValuesNone
+	UnderlineThick    = UnderlineValuesThick
+	UnderlineDotted   = UnderlineValuesDotted
+	UnderlineDash     = UnderlineValuesDash
+	UnderlineWave     = UnderlineValuesWave
 	TextAlignmentAuto = TextAlignmentTypeValues(
 		"auto",
 	)
@@ -9580,8 +9585,12 @@ const (
 	HighlightNone            = HighlightColorValuesNone
 	HighlightYellow          = HighlightColorValuesYellow
 	VerticalAlignBaseline    = VerticalAlignmentRunValuesBaseline
+	VerticalAlignSubscript   = VerticalAlignmentRunValuesSubscript
+	VerticalAlignSuperscript = VerticalAlignmentRunValuesSuperscript
 	EmphasisNone             = EmphasisMarkValuesNone
 	PageOrientationPortrait  = PageOrientationValuesPortrait
 	PageOrientationLandscape = PageOrientationValuesLandscape
 	HeaderFooterDefault      = HeaderFooterValuesDefault
+	HeaderFooterFirst        = HeaderFooterValuesFirst
+	HeaderFooterEven         = HeaderFooterValuesEven
 )

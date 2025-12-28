@@ -34,13 +34,7 @@ func TestFieldRendering(t *testing.T) {
 	_ = mainPart.Reload()
 
 	docElem := mainPart.Document()
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-	body := doc2.Body()
+	body := docElem.Body()
 
 	// Add first paragraph with PAGE field
 	p1 := elements.NewParagraph()
@@ -134,13 +128,7 @@ func TestHyperlinkRendering(t *testing.T) {
 	_ = mainPart.Reload()
 
 	docElem := mainPart.Document()
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-	body := doc2.Body()
+	body := docElem.Body()
 
 	// Add paragraph with external hyperlink
 	p1 := elements.NewParagraph()
@@ -234,13 +222,7 @@ func TestBookmarkRendering(t *testing.T) {
 	_ = mainPart.Reload()
 
 	docElem := mainPart.Document()
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-	body := doc2.Body()
+	body := docElem.Body()
 
 	// Add paragraph with bookmarks
 	p1 := elements.NewParagraph()
@@ -350,13 +332,7 @@ func TestFootnoteRendering(t *testing.T) {
 	// For this test, we'll verify the renderer can handle footnote references
 
 	docElem := mainPart.Document()
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-	body := doc2.Body()
+	body := docElem.Body()
 
 	// Add paragraph with footnote reference
 	p1 := elements.NewParagraph()
@@ -430,13 +406,7 @@ func TestEndnoteRendering(t *testing.T) {
 	_ = mainPart.Reload()
 
 	docElem := mainPart.Document()
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-	body := doc2.Body()
+	body := docElem.Body()
 
 	// Add paragraph with endnote reference
 	p1 := elements.NewParagraph()
@@ -605,13 +575,7 @@ func TestComplexFieldScenarios(t *testing.T) {
 	_ = mainPart.Reload()
 
 	docElem := mainPart.Document()
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-	body := doc2.Body()
+	body := docElem.Body()
 
 	// Create a complex document with multiple special content types
 	p1 := elements.NewParagraph()
@@ -687,16 +651,11 @@ func TestComplexFieldScenarios(t *testing.T) {
 		)
 	}
 
-	// Verify page count
-	// TODO: Page break logic doesn't always create new pages in all scenarios
-	// This is a known limitation - page breaks work in most cases but may not
-	// work correctly when documents are built programmatically with minimal content.
-	// The numbering tests verify page breaks work in realistic scenarios.
-	if renderer.totalPages < 1 {
+	// Verify page count - with the page break fixed, we should have at least 2 pages
+	if renderer.totalPages < 2 {
 		t.Errorf(
-			"Expected at least 1 page, got %d",
+			"Expected at least 2 pages due to page break, got %d",
 			renderer.totalPages,
 		)
 	}
-	// Note: Ideally this should be >= 2 but page break handling needs improvement
 }

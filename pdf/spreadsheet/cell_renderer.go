@@ -910,6 +910,7 @@ func (r *SpreadsheetRenderer) renderCellText(
 
 	// Render text
 	_ = drawText(
+		r,
 		page,
 		fontObj,
 		text,

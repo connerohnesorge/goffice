@@ -51,15 +51,7 @@ func TestWordRenderer_SimpleHeader(t *testing.T) {
 		t.Fatal("No document element")
 	}
 
-	// Cast to *elements.Document
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-
-	body := doc2.Body()
+	body := docElem.Body()
 	if body == nil {
 		t.Fatal("No body element")
 	}
@@ -141,14 +133,7 @@ func TestWordRenderer_SimpleFooter(t *testing.T) {
 		t.Fatal("No document element")
 	}
 
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-
-	body := doc2.Body()
+	body := docElem.Body()
 	if body == nil {
 		t.Fatal("No body element")
 	}
@@ -244,14 +229,7 @@ func TestWordRenderer_FirstPageDifferent(
 		t.Fatal("No document element")
 	}
 
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-
-	body := doc2.Body()
+	body := docElem.Body()
 	if body == nil {
 		t.Fatal("No body element")
 	}
@@ -344,14 +322,7 @@ func TestWordRenderer_PageNumbers(t *testing.T) {
 		t.Fatal("No document element")
 	}
 
-	doc2, ok := docElem.(*elements.Document)
-	if !ok {
-		t.Fatal(
-			"Document is not *elements.Document",
-		)
-	}
-
-	body := doc2.Body()
+	body := docElem.Body()
 	if body == nil {
 		t.Fatal("No body element")
 	}

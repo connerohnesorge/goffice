@@ -597,6 +597,7 @@ func (r *SpreadsheetRenderer) renderHeaderFooterContent(
 	// Render left section
 	if left != "" {
 		_ = drawText(
+			r,
 			page,
 			fontObj,
 			left,
@@ -615,6 +616,7 @@ func (r *SpreadsheetRenderer) renderHeaderFooterContent(
 		) * 10.0 * 0.5
 		x := (pageSize.Width - textWidth) / 2
 		_ = drawText(
+			r,
 			page,
 			fontObj,
 			center,
@@ -633,6 +635,7 @@ func (r *SpreadsheetRenderer) renderHeaderFooterContent(
 		) * 10.0 * 0.5
 		x := pageSize.Width - margins.Right - textWidth
 		_ = drawText(
+			r,
 			page,
 			fontObj,
 			right,

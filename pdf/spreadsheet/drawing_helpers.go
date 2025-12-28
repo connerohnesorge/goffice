@@ -108,7 +108,9 @@ func drawLine(
 }
 
 // drawText draws text on a page at the specified position.
+// The renderer is needed to properly register fonts in the PDF resources.
 func drawText(
+	renderer *SpreadsheetRenderer,
 	page *core.Page,
 	fontObj *font.Font,
 	text string,
@@ -119,10 +121,11 @@ func drawText(
 		return nil
 	}
 
-	// Register font in page resources
-	// For now, use a default font name
-	fontName := "F1"
-	// TODO: Actually register font in PDF resources
+	// Register font in page resources and get the resource name
+	fontName := renderer.registerFont(
+		page,
+		fontObj,
+	)
 
 	// Set text color
 	page.WriteContentString(

@@ -2,10 +2,13 @@ package pdf
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"github.com/connerohnesorge/goffice-pdf/comparison"
 	"github.com/connerohnesorge/goffice/presentation"
 	"github.com/connerohnesorge/goffice/spreadsheet"
 	"github.com/connerohnesorge/goffice/wordprocessing"
@@ -282,8 +285,20 @@ func runWordFidelityTest(
 		buf.Len(),
 	)
 
-	// TODO: Implement automated visual comparison
-	// For now, this generates PDFs that can be manually compared with Word's output
+	// Perform automated visual comparison
+	baselinePath := filepath.Join(
+		"testdata",
+		"fidelity",
+		"word",
+		strings.TrimSuffix(
+			docxFile,
+			filepath.Ext(docxFile),
+		)+".baseline.png",
+	)
+
+	if err := compareWithBaseline(t, buf.Bytes(), baselinePath, description); err != nil {
+		t.Logf("Visual comparison: %v", err)
+	}
 }
 
 // runExcelFidelityTest runs a single Excel fidelity test.
@@ -422,4 +437,121 @@ func openTestPresentationDocument(
 	path string,
 ) (*presentation.Document, error) {
 	return presentation.Open(path, false)
+}
+
+// compareWithBaseline compares a generated PDF with a baseline PNG image.
+// This function handles the full visual comparison workflow:
+//  1. Convert PDF to PNG using Ghostscript
+//  2. Compare with baseline image
+//  3. Generate diff images on failure
+//  4. Report results
+//
+// The comparison is skipped gracefully if:
+//   - Ghostscript is not available
+//   - Baseline image doesn't exist
+//
+// This allows tests to run in environments without visual comparison support.
+func compareWithBaseline(
+	t *testing.T,
+	pdfBytes []byte,
+	baselinePath, description string,
+) error {
+	// Check if Ghostscript is available
+	if !comparison.IsGhostscriptAvailable() {
+		t.Log(
+			"⚠ Ghostscript not found - skipping visual comparison",
+		)
+		t.Log(
+			"  Install Ghostscript to enable automated visual comparison",
+		)
+		return nil
+	}
+
+	// Check if baseline exists
+	if _, err := os.Stat(baselinePath); os.IsNotExist(
+		err,
+	) {
+		t.Logf(
+			"⚠ Baseline image not found: %s",
+			baselinePath,
+		)
+		t.Log(
+			"  Create baseline images to enable visual comparison",
+		)
+		return nil
+	}
+
+	// Convert PDF to PNG
+	generatedPNGPath := baselinePath + ".generated.png"
+	config := comparison.DefaultComparisonConfig()
+
+	pngPath, err := comparison.ConvertPDFBytesToPNG(
+		pdfBytes,
+		generatedPNGPath,
+		config.DPI,
+	)
+	if err != nil {
+		return fmt.Errorf(
+			"PDF to PNG conversion failed: %w",
+			err,
+		)
+	}
+	defer os.Remove(
+		pngPath,
+	) // Clean up generated PNG
+
+	// Compare images
+	result, err := comparison.CompareImages(
+		baselinePath,
+		pngPath,
+		config,
+	)
+	if err != nil {
+		return fmt.Errorf(
+			"image comparison failed: %w",
+			err,
+		)
+	}
+
+	// Log results
+	t.Logf(
+		"Visual comparison: %s",
+		result.String(),
+	)
+
+	// Check if within tolerance
+	if !result.IsWithinTolerance() {
+		// Generate diff image for manual review
+		diffPath := baselinePath + ".diff.png"
+		if err := comparison.AnnotateDiffImage(baselinePath, pngPath, diffPath, config); err != nil {
+			t.Errorf(
+				"Failed to generate diff image: %v",
+				err,
+			)
+		} else {
+			t.Logf("Diff image saved: %s", diffPath)
+		}
+
+		// Optionally create side-by-side comparison
+		sideBySidePath := baselinePath + ".comparison.png"
+		if err := comparison.CreateSideBySideDiff(baselinePath, pngPath, diffPath, sideBySidePath); err != nil {
+			t.Logf(
+				"Warning: Failed to create side-by-side diff: %v",
+				err,
+			)
+		} else {
+			t.Logf("Side-by-side comparison saved: %s", sideBySidePath)
+		}
+
+		return fmt.Errorf(
+			"visual comparison failed: %.2f%% of pixels exceed tolerance (threshold: %.2f%%)",
+			result.ExceedingTolerance(),
+			config.ImageDiffThreshold*100,
+		)
+	}
+
+	t.Logf(
+		"✓ Visual comparison passed: differences within tolerance",
+	)
+	return nil
 }

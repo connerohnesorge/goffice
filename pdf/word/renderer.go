@@ -53,6 +53,13 @@ type WordRenderer struct {
 
 	// hyperlinks tracks hyperlinks for PDF annotation creation.
 	pendingHyperlinks []HyperlinkInfo
+
+	// fontRegistry maps font family+style to PDF resource names
+	// Key format: "FontFamily-StyleName" (e.g., "Arial-Regular", "Arial-Bold")
+	fontRegistry map[string]string
+
+	// fontCounter generates unique font resource names
+	fontCounter int
 }
 
 // BookmarkPosition tracks the position of a bookmark in the document.
@@ -140,6 +147,10 @@ func NewWordRenderer(
 			pendingFootnotes:  []FootnoteInfo{},
 			collectedEndnotes: []EndnoteInfo{},
 			pendingHyperlinks: []HyperlinkInfo{},
+			fontRegistry: make(
+				map[string]string,
+			),
+			fontCounter: 0,
 		},
 		nil
 }
@@ -159,6 +170,56 @@ func (r *WordRenderer) registerStandardFonts(
 	)
 }
 
+// getFontResourceName returns the PDF resource name for a font, registering it if needed.
+// This method ensures each unique font (family + style) gets a unique resource name.
+func (r *WordRenderer) getFontResourceName(
+	page *core.Page,
+	f *font.Font,
+) string {
+	if f == nil {
+		// Fallback to default font if nil
+		return "/F1"
+	}
+
+	// Create a unique key for this font based on family and style
+	styleStr := "Regular"
+	baseFontName := f.Family
+
+	switch f.Style {
+	case font.StyleBold:
+		styleStr = "Bold"
+		baseFontName = f.Family + "-Bold"
+	case font.StyleItalic:
+		styleStr = "Italic"
+		baseFontName = f.Family + "-Oblique"
+	case font.StyleBoldItalic:
+		styleStr = "BoldItalic"
+		baseFontName = f.Family + "-BoldOblique"
+	}
+
+	fontKey := f.Family + "-" + styleStr
+
+	// Check if we've already registered this font
+	if resourceName, exists := r.fontRegistry[fontKey]; exists {
+		return resourceName
+	}
+
+	// Generate a new resource name
+	r.fontCounter++
+	resourceName := fmt.Sprintf(
+		"/F%d",
+		r.fontCounter,
+	)
+
+	// Register the font in the page
+	page.RegisterFont(resourceName, baseFontName)
+
+	// Store in our registry
+	r.fontRegistry[fontKey] = resourceName
+
+	return resourceName
+}
+
 // Render converts the Word document to a PDF and writes it to the specified path.
 func (r *WordRenderer) Render(
 	outputPath string,
@@ -174,6 +235,7 @@ func (r *WordRenderer) Render(
 		_, _ = r.pdf.AddPage(
 			r.options.DefaultPageSize,
 		)
+		r.currentPageNumber++
 	}
 
 	for sectionIdx, section := range sections {
@@ -274,6 +336,7 @@ func (r *WordRenderer) Render(
 							page,
 						)
 						page.SetMargins(margins)
+						r.currentPageNumber++
 						currentY = page.Height() - margins.Top
 						currentCol = 0
 					}
@@ -361,6 +424,7 @@ func (r *WordRenderer) Render(
 							page,
 						)
 						page.SetMargins(margins)
+						r.currentPageNumber++
 						currentCol = 0
 					}
 					currentY = page.Height() - margins.Top
@@ -396,6 +460,7 @@ func (r *WordRenderer) Render(
 							page,
 						)
 						page.SetMargins(margins)
+						r.currentPageNumber++
 						currentCol = 0
 					}
 					currentY = page.Height() - margins.Top
@@ -419,6 +484,7 @@ func (r *WordRenderer) Render(
 							r.registerStandardFonts(
 								page,
 							)
+							r.currentPageNumber++
 							currentY = page.Height() - margins.Top
 							currentCol = 0
 						}
@@ -464,6 +530,7 @@ func (r *WordRenderer) Render(
 							}
 							r.registerStandardFonts(page)
 							page.SetMargins(margins)
+							r.currentPageNumber++
 							currentCol = 0
 						}
 						currentY = page.Height() - margins.Top
@@ -1226,6 +1293,7 @@ func (r *WordRenderer) renderEndnotes() error {
 		return err
 	}
 	r.registerStandardFonts(page)
+	r.currentPageNumber++
 
 	margins := core.Margins{
 		Top:    72.0,
@@ -1276,6 +1344,7 @@ func (r *WordRenderer) renderEndnotes() error {
 				}
 				r.registerStandardFonts(page)
 				page.SetMargins(margins)
+				r.currentPageNumber++
 				currentY = page.Height() - margins.Top
 			}
 		}
@@ -1311,21 +1380,14 @@ func (r *WordRenderer) drawLayoutLine(
 
 		// 1. Set Font
 
-		_ = r.resolveFont(
-			pr.Run,
-		) // TODO: Use this font for proper rendering
+		// Resolve the font based on the run's style
+		resolvedFont := r.resolveFont(pr.Run)
 
-		// Register font in page and get resource name (FIXME: this is simplified)
-
-		fontName := "/F1"
-
-		if pr.Run.Bold && pr.Run.Italic {
-			fontName = "/F4"
-		} else if pr.Run.Bold {
-			fontName = "/F2"
-		} else if pr.Run.Italic {
-			fontName = "/F3"
-		}
+		// Get or register the font resource name
+		fontName := r.getFontResourceName(
+			page,
+			resolvedFont,
+		)
 
 		tb.SetFont(fontName, pr.Run.FontSize)
 
@@ -1519,6 +1581,7 @@ func (r *WordRenderer) renderTable(
 			}
 			r.registerStandardFonts(newPage)
 			newPage.SetMargins(margins)
+			r.currentPageNumber++
 			*page = newPage
 			currentY = (*page).Height() - margins.Top
 			split.Y = currentY

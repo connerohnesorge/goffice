@@ -543,10 +543,10 @@ func (ns *NumberingState) getNumbering(
 		return num
 	}
 
-	// Try CompositeElementBase wrapper
-	if comp, ok := root.(*openxml.CompositeElementBase); ok {
+	// Try PartRootElementBase wrapper
+	if partRoot, ok := root.(*openxml.PartRootElementBase); ok {
 		return &elements.Numbering{
-			CompositeElementBase: comp,
+			PartRootElementBase: partRoot,
 		}
 	}
 

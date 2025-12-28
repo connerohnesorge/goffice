@@ -4,6 +4,8 @@ package spreadsheet
 
 import (
 	"github.com/connerohnesorge/goffice/drawingml"
+	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 	"github.com/connerohnesorge/goffice/spreadsheet/parts"
 )
 
@@ -62,8 +64,8 @@ func newChart(
 	sheet *Sheet,
 	drawingsPart *parts.DrawingsPart,
 	chartType ChartType,
-	_ string, // dataRange - TODO: use for data binding
-	_ CellRef, // anchor - TODO: use for positioning
+	dataRange string,
+	anchor CellRef,
 ) (*Chart, error) {
 	// Add a chart part to the drawings part
 	chartPart, err := drawingsPart.AddChartPart()
@@ -203,7 +205,101 @@ func newChart(
 		)
 	}
 
+	// Add initial series if dataRange is provided
+	if dataRange != "" {
+		c.AddSeries("Series 1", dataRange)
+	}
+
+	// Position the chart using the anchor
+	if anchor.IsValid() {
+		if err := c.setAnchorPosition(anchor); err != nil {
+			return nil, err
+		}
+	}
+
 	return c, nil
+}
+
+// setAnchorPosition positions the chart at the specified cell location.
+func (c *Chart) setAnchorPosition(
+	anchor CellRef,
+) error {
+	// Get the worksheet drawing
+	drawing := c.drawingsPart.Drawing()
+	if drawing == nil {
+		return nil
+	}
+
+	// Create a one-cell anchor for the chart
+	oneCellAnchor := drawing.AddOneCellAnchor()
+
+	// Set the from marker to the anchor position
+	// Note: Excel uses 0-based indexing for columns and rows in anchors
+	from := oneCellAnchor.GetOrCreateFrom()
+	from.SetPosition(
+		anchor.Col-1, // Convert from 1-based to 0-based
+		0,            // No column offset
+		anchor.Row-1, // Convert from 1-based to 0-based
+		0,            // No row offset
+	)
+
+	// Set default extent (size) for the chart
+	// Default size: approximately 10 columns x 15 rows in EMUs
+	const (
+		defaultWidth  int64 = 5486400 // ~10 columns
+		defaultHeight int64 = 3200400 // ~15 rows
+	)
+	ext := oneCellAnchor.GetOrCreateExt()
+	ext.SetCx(defaultWidth)
+	ext.SetCy(defaultHeight)
+
+	// Create a graphic frame to hold the chart reference
+	gf := oneCellAnchor.GetOrCreateGraphicFrame()
+
+	// Set the chart information
+	gf.SetChartInfo(1, "Chart 1")
+
+	// Create the graphic and graphic data to hold the chart reference
+	graphic := gf.GetOrCreateGraphic()
+	graphicData := graphic.GetOrCreateGraphicData()
+
+	// Set the URI to indicate this is a chart
+	graphicData.SetChartURI()
+
+	// Create a c:chart element with the relationship ID
+	c.addChartReferenceToGraphicData(graphicData)
+
+	// Set client data
+	clientData := oneCellAnchor.GetOrCreateClientData()
+	clientData.SetFLocksWithSheet(true)
+	clientData.SetFPrintsWithSheet(true)
+
+	return nil
+}
+
+// addChartReferenceToGraphicData adds a c:chart element with r:id
+// to the graphic data.
+func (c *Chart) addChartReferenceToGraphicData(
+	graphicData *elements.GraphicData,
+) {
+	// Import the necessary packages at the top of the file
+	chartElem := openxml.NewLeafElement(
+		"http://schemas.openxmlformats.org/drawingml/2006/chart",
+		"chart",
+		"c",
+	)
+
+	// Set the r:id attribute to link to the chart part
+	chartElem.SetAttribute(
+		openxml.NewAttribute(
+			openxml.NamespaceRelationships,
+			"id",
+			"r",
+			c.chartPart.RelationshipID(),
+		),
+	)
+
+	graphicData.AppendChild(chartElem)
 }
 
 // Type returns the chart type.
