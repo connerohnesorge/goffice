@@ -51,10 +51,11 @@ func (sv *SheetViews) SheetViews() iter.Seq[*SheetView] {
 				continue
 			}
 			var view *SheetView
-			if v, ok := child.(*SheetView); ok {
-				view = v
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				view = &SheetView{CompositeElementBase: comp}
+			switch sv := child.(type) {
+			case *SheetView:
+				view = sv
+			case *openxml.CompositeElementBase:
+				view = &SheetView{CompositeElementBase: sv}
 			}
 			if view != nil && !yield(view) {
 				return

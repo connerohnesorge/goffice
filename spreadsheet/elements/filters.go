@@ -151,10 +151,11 @@ func (f *Filters) GetFilters() iter.Seq[*Filter] {
 				continue
 			}
 			var filter *Filter
-			if fl, ok := child.(*Filter); ok {
-				filter = fl
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				filter = &Filter{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Filter:
+				filter = v
+			case *openxml.LeafElementBase:
+				filter = &Filter{LeafElementBase: v}
 			}
 			if filter != nil && !yield(filter) {
 				return
@@ -231,10 +232,11 @@ func (f *Filters) GetDateGroupItems() iter.Seq[*DateGroupItem] {
 				continue
 			}
 			var dgi *DateGroupItem
-			if d, ok := child.(*DateGroupItem); ok {
-				dgi = d
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				dgi = &DateGroupItem{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *DateGroupItem:
+				dgi = v
+			case *openxml.LeafElementBase:
+				dgi = &DateGroupItem{LeafElementBase: v}
 			}
 			if dgi != nil && !yield(dgi) {
 				return

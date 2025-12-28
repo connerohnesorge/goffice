@@ -48,10 +48,11 @@ func (wd *WorksheetDrawing) TwoCellAnchors() []*TwoCellAnchor {
 			child.NamespaceURI() != NamespaceSpreadsheetDrawing {
 			continue
 		}
-		if tca, ok := child.(*TwoCellAnchor); ok {
-			result = append(result, tca)
-		} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-			result = append(result, &TwoCellAnchor{CompositeElementBase: comp})
+		switch v := child.(type) {
+		case *TwoCellAnchor:
+			result = append(result, v)
+		case *openxml.CompositeElementBase:
+			result = append(result, &TwoCellAnchor{CompositeElementBase: v})
 		}
 	}
 
@@ -74,10 +75,11 @@ func (wd *WorksheetDrawing) OneCellAnchors() []*OneCellAnchor {
 			child.NamespaceURI() != NamespaceSpreadsheetDrawing {
 			continue
 		}
-		if oca, ok := child.(*OneCellAnchor); ok {
-			result = append(result, oca)
-		} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-			result = append(result, &OneCellAnchor{CompositeElementBase: comp})
+		switch v := child.(type) {
+		case *OneCellAnchor:
+			result = append(result, v)
+		case *openxml.CompositeElementBase:
+			result = append(result, &OneCellAnchor{CompositeElementBase: v})
 		}
 	}
 
@@ -100,10 +102,11 @@ func (wd *WorksheetDrawing) AbsoluteAnchors() []*AbsoluteAnchor {
 			child.NamespaceURI() != NamespaceSpreadsheetDrawing {
 			continue
 		}
-		if aa, ok := child.(*AbsoluteAnchor); ok {
-			result = append(result, aa)
-		} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-			result = append(result, &AbsoluteAnchor{CompositeElementBase: comp})
+		switch v := child.(type) {
+		case *AbsoluteAnchor:
+			result = append(result, v)
+		case *openxml.CompositeElementBase:
+			result = append(result, &AbsoluteAnchor{CompositeElementBase: v})
 		}
 	}
 

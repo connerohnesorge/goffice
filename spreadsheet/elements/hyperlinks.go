@@ -32,10 +32,11 @@ func (h *Hyperlinks) GetHyperlinks() iter.Seq[*Hyperlink] {
 				continue
 			}
 			var hyperlink *Hyperlink
-			if hl, ok := child.(*Hyperlink); ok {
-				hyperlink = hl
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				hyperlink = &Hyperlink{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Hyperlink:
+				hyperlink = v
+			case *openxml.LeafElementBase:
+				hyperlink = &Hyperlink{LeafElementBase: v}
 			}
 			if hyperlink != nil &&
 				!yield(hyperlink) {

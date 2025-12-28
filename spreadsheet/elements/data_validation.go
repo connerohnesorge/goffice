@@ -166,10 +166,11 @@ func (dv *DataValidations) GetDataValidations() iter.Seq[*DataValidation] {
 				continue
 			}
 			var validation *DataValidation
-			if v, ok := child.(*DataValidation); ok {
+			switch v := child.(type) {
+			case *DataValidation:
 				validation = v
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				validation = &DataValidation{CompositeElementBase: comp}
+			case *openxml.CompositeElementBase:
+				validation = &DataValidation{CompositeElementBase: v}
 			}
 			if validation != nil &&
 				!yield(validation) {

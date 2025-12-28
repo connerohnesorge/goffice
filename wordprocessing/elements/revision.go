@@ -119,10 +119,11 @@ func (ins *InsertedRun) Runs() iter.Seq[*Run] {
 			if child.LocalName() == "r" &&
 				child.NamespaceURI() == NamespaceWML {
 				var r *Run
-				if run, ok := child.(*Run); ok {
-					r = run
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					r = &Run{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Run:
+					r = v
+				case *openxml.CompositeElementBase:
+					r = &Run{CompositeElementBase: v}
 				}
 				if r != nil && !yield(r) {
 					return
@@ -276,10 +277,11 @@ func (del *DeletedRun) Runs() iter.Seq[*Run] {
 			if child.LocalName() == "r" &&
 				child.NamespaceURI() == NamespaceWML {
 				var r *Run
-				if run, ok := child.(*Run); ok {
-					r = run
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					r = &Run{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Run:
+					r = v
+				case *openxml.CompositeElementBase:
+					r = &Run{CompositeElementBase: v}
 				}
 				if r != nil && !yield(r) {
 					return
@@ -298,10 +300,11 @@ func (del *DeletedRun) DeletedTexts() iter.Seq[*DeletedText] {
 				if child.LocalName() == "delText" &&
 					child.NamespaceURI() == NamespaceWML {
 					var dt *DeletedText
-					if delText, ok := child.(*DeletedText); ok {
-						dt = delText
-					} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-						dt = &DeletedText{LeafElementBase: leaf}
+					switch v := child.(type) {
+					case *DeletedText:
+						dt = v
+					case *openxml.LeafElementBase:
+						dt = &DeletedText{LeafElementBase: v}
 					}
 					if dt != nil && !yield(dt) {
 						return

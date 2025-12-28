@@ -71,10 +71,11 @@ func (p *PivotCacheRecords) Records() iter.Seq[*R] {
 				continue
 			}
 			var record *R
-			if r, ok := child.(*R); ok {
-				record = r
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				record = &R{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *R:
+				record = v
+			case *openxml.CompositeElementBase:
+				record = &R{CompositeElementBase: v}
 			}
 			if record != nil && !yield(record) {
 				return

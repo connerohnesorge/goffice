@@ -75,10 +75,11 @@ func (p *Paragraph) Runs() iter.Seq[*Run] {
 				continue
 			}
 			var r *Run
-			if run, ok := child.(*Run); ok {
-				r = run
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				r = &Run{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Run:
+				r = v
+			case *openxml.CompositeElementBase:
+				r = &Run{CompositeElementBase: v}
 			}
 			if r != nil && !yield(r) {
 				return

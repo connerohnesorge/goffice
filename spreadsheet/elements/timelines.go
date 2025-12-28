@@ -41,10 +41,11 @@ func (t *Timelines) Timelines() iter.Seq[*Timeline] {
 				continue
 			}
 			var timeline *Timeline
-			if tl, ok := child.(*Timeline); ok {
-				timeline = tl
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				timeline = &Timeline{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Timeline:
+				timeline = v
+			case *openxml.LeafElementBase:
+				timeline = &Timeline{LeafElementBase: v}
 			}
 			if timeline != nil &&
 				!yield(timeline) {

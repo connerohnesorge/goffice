@@ -38,10 +38,11 @@ func (cs *ColorScale) Cfvos() iter.Seq[*Cfvo] {
 				continue
 			}
 			var cfvo *Cfvo
-			if c, ok := child.(*Cfvo); ok {
-				cfvo = c
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				cfvo = &Cfvo{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Cfvo:
+				cfvo = v
+			case *openxml.LeafElementBase:
+				cfvo = &Cfvo{LeafElementBase: v}
 			}
 			if cfvo != nil && !yield(cfvo) {
 				return
@@ -91,10 +92,11 @@ func (cs *ColorScale) Colors() iter.Seq[*Color] {
 				continue
 			}
 			var color *Color
-			if c, ok := child.(*Color); ok {
-				color = c
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				color = &Color{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Color:
+				color = v
+			case *openxml.LeafElementBase:
+				color = &Color{LeafElementBase: v}
 			}
 			if color != nil && !yield(color) {
 				return

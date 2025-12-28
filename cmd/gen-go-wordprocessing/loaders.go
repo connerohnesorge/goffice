@@ -13,17 +13,20 @@ import (
 // It populates drawingMLTypes map with type names found in drawingml/*.go.
 // This prevents the generator from creating duplicates.
 func collectDrawingMLTypes() {
+	// Find all Go files in the drawingml directory.
 	files, _ := filepath.Glob("drawingml/*.go")
 	for _, f := range files {
 		data, errRead := os.ReadFile(f)
 		if errRead != nil {
 			continue
 		}
+		// Parse each file line by line to find type declarations.
 		lines := strings.Split(string(data), "\n")
 		for _, line := range lines {
 			if !strings.HasPrefix(line, "type ") {
 				continue
 			}
+			// Extract the type name from the declaration.
 			parts := strings.Fields(line)
 			if len(parts) >= 2 {
 				name := parts[1]
@@ -114,7 +117,8 @@ func collectTypes(path string) {
 		panic(fmt.Errorf(msg, path, errUnmarshal))
 	}
 
-	for _, t := range schema.Types {
+	for i := range schema.Types {
+		t := &schema.Types[i]
 		t.TargetNamespace = schema.TargetNamespace
 		if t.ClassName != "" {
 			typeMap[t.Name] = TypeInfo{
@@ -124,8 +128,9 @@ func collectTypes(path string) {
 		}
 	}
 
-	for _, e := range schema.Enums {
+	for i := range schema.Enums {
+		e := &schema.Enums[i]
 		e.TargetNamespace = schema.TargetNamespace
-		enumMap[e.Name] = e
+		enumMap[e.Name] = *e
 	}
 }

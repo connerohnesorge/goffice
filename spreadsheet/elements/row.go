@@ -414,10 +414,11 @@ func (r *Row) Cells() iter.Seq[*Cell] {
 				continue
 			}
 			var cell *Cell
-			if c, ok := child.(*Cell); ok {
-				cell = c
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				cell = &Cell{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Cell:
+				cell = v
+			case *openxml.CompositeElementBase:
+				cell = &Cell{CompositeElementBase: v}
 			}
 			if cell != nil && !yield(cell) {
 				return
@@ -474,10 +475,11 @@ func (r *Row) AddCell(ref string) *Cell {
 			continue
 		}
 		var existingCell *Cell
-		if c, ok := child.(*Cell); ok {
-			existingCell = c
-		} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-			existingCell = &Cell{CompositeElementBase: comp}
+		switch v := child.(type) {
+		case *Cell:
+			existingCell = v
+		case *openxml.CompositeElementBase:
+			existingCell = &Cell{CompositeElementBase: v}
 		}
 		if existingCell == nil {
 			continue

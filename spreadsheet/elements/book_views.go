@@ -44,10 +44,11 @@ func (bv *BookViews) WorkbookViews() iter.Seq[*WorkbookView] {
 				continue
 			}
 			var wv *WorkbookView
-			if view, ok := child.(*WorkbookView); ok {
-				wv = view
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				wv = &WorkbookView{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *WorkbookView:
+				wv = v
+			case *openxml.CompositeElementBase:
+				wv = &WorkbookView{CompositeElementBase: v}
 			}
 			if wv != nil && !yield(wv) {
 				return

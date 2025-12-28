@@ -48,10 +48,11 @@ func (tc *ThreadedComments) Comments() iter.Seq[*ThreadedComment] {
 				continue
 			}
 			var comment *ThreadedComment
-			if c, ok := child.(*ThreadedComment); ok {
-				comment = c
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				comment = &ThreadedComment{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *ThreadedComment:
+				comment = v
+			case *openxml.CompositeElementBase:
+				comment = &ThreadedComment{CompositeElementBase: v}
 			}
 			if comment != nil && !yield(comment) {
 				return
@@ -417,10 +418,11 @@ func (tc *ThreadedComment) Mentions() iter.Seq[*Mention] {
 				continue
 			}
 			var mention *Mention
-			if m, ok := child.(*Mention); ok {
-				mention = m
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				mention = &Mention{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Mention:
+				mention = v
+			case *openxml.LeafElementBase:
+				mention = &Mention{LeafElementBase: v}
 			}
 			if mention != nil && !yield(mention) {
 				return
@@ -666,10 +668,11 @@ func (pl *PersonList) Persons() iter.Seq[*Person] {
 				continue
 			}
 			var person *Person
-			if p, ok := child.(*Person); ok {
-				person = p
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				person = &Person{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Person:
+				person = v
+			case *openxml.CompositeElementBase:
+				person = &Person{CompositeElementBase: v}
 			}
 			if person != nil && !yield(person) {
 				return

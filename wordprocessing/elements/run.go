@@ -48,7 +48,7 @@ func (r *Run) Properties() *RunProperties {
 
 // GetOrCreateProperties returns the run properties element,
 // creating it if needed.
-func (r *Run) GetOrCreateProperties() *RunProperties { //nolint:ireturn
+func (r *Run) GetOrCreateProperties() *RunProperties { //nolint:ireturn // interface return required by API
 	props := r.Properties()
 	if props != nil {
 		return props
@@ -90,10 +90,11 @@ func (r *Run) Texts() iter.Seq[*Text] {
 				continue
 			}
 			var t *Text
-			if text, ok := child.(*Text); ok {
-				t = text
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				t = &Text{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Text:
+				t = v
+			case *openxml.LeafElementBase:
+				t = &Text{LeafElementBase: v}
 			}
 			if t != nil && !yield(t) {
 				return

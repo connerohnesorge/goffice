@@ -351,7 +351,7 @@ func (fc *FieldChar) Dirty() bool {
 		return false
 	}
 
-	return attr.Value() == "true" ||
+	return attr.Value() == attrValueTrue ||
 		attr.Value() == "1"
 }
 

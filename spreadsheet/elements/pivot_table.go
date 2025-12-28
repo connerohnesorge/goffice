@@ -3315,10 +3315,11 @@ func (ri *RowItems) Items() iter.Seq[*I] {
 				continue
 			}
 			var item *I
-			if i, ok := child.(*I); ok {
-				item = i
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				item = &I{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *I:
+				item = v
+			case *openxml.CompositeElementBase:
+				item = &I{CompositeElementBase: v}
 			}
 			if item != nil && !yield(item) {
 				return
@@ -3412,10 +3413,11 @@ func (ci *ColItems) Items() iter.Seq[*I] {
 				continue
 			}
 			var item *I
-			if i, ok := child.(*I); ok {
-				item = i
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				item = &I{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *I:
+				item = v
+			case *openxml.CompositeElementBase:
+				item = &I{CompositeElementBase: v}
 			}
 			if item != nil && !yield(item) {
 				return
@@ -3474,7 +3476,9 @@ func NewI() *I {
 func (i *I) T() string {
 	attr, found := i.GetAttribute("t", "")
 	if !found {
-		return "data" // Default is data
+		return string(
+			ItemValuesData,
+		) // Default is data
 	}
 
 	return attr.Value()
@@ -3482,7 +3486,7 @@ func (i *I) T() string {
 
 // SetT sets the item type. Attribute: t.
 func (i *I) SetT(t string) {
-	if t == "" || t == "data" {
+	if t == "" || t == string(ItemValuesData) {
 		i.RemoveAttribute(
 			"t",
 			"",

@@ -74,10 +74,11 @@ func (c *CellStyleXfs) Xfs() iter.Seq[*Xf] {
 				continue
 			}
 			var xf *Xf
-			if x, ok := child.(*Xf); ok {
-				xf = x
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				xf = &Xf{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Xf:
+				xf = v
+			case *openxml.CompositeElementBase:
+				xf = &Xf{CompositeElementBase: v}
 			}
 			if xf != nil && !yield(xf) {
 				return
@@ -199,10 +200,11 @@ func (c *CellXfs) Xfs() iter.Seq[*Xf] {
 				continue
 			}
 			var xf *Xf
-			if x, ok := child.(*Xf); ok {
-				xf = x
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				xf = &Xf{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Xf:
+				xf = v
+			case *openxml.CompositeElementBase:
+				xf = &Xf{CompositeElementBase: v}
 			}
 			if xf != nil && !yield(xf) {
 				return

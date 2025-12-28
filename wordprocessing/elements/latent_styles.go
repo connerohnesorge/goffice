@@ -37,7 +37,7 @@ func (ls *LatentStyles) DefLockedState() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 
@@ -70,7 +70,7 @@ func (ls *LatentStyles) DefSemiHidden() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 
@@ -101,7 +101,7 @@ func (ls *LatentStyles) DefUnhideWhenUsed() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 
@@ -134,7 +134,7 @@ func (ls *LatentStyles) DefQFormat() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 
@@ -221,10 +221,11 @@ func (ls *LatentStyles) LatentStyleExceptions() iter.Seq[*LatentStyleException] 
 			if child.LocalName() == "lsdException" &&
 				child.NamespaceURI() == NamespaceWML {
 				var lse *LatentStyleException
-				if ex, ok := child.(*LatentStyleException); ok {
-					lse = ex
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					lse = &LatentStyleException{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *LatentStyleException:
+					lse = v
+				case *openxml.CompositeElementBase:
+					lse = &LatentStyleException{CompositeElementBase: v}
 				}
 				if lse != nil && !yield(lse) {
 					return
@@ -339,7 +340,7 @@ func (ls *LatentStyleException) Locked() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 
@@ -372,7 +373,7 @@ func (ls *LatentStyleException) SemiHidden() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 
@@ -405,7 +406,7 @@ func (ls *LatentStyleException) UnhideWhenUsed() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 
@@ -438,7 +439,7 @@ func (ls *LatentStyleException) QFormat() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 

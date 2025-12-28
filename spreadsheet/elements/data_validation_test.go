@@ -97,7 +97,7 @@ func TestDataValidations_AddDataValidation(
 	if validation == nil {
 		t.Fatal("expected non-nil DataValidation")
 	}
-	if validation.Sqref() != "A1:A10" {
+	if validation.Sqref() != testRangeA1A10 {
 		t.Errorf(
 			"expected sqref 'A1:A10', got '%s'",
 			validation.Sqref(),

@@ -98,10 +98,11 @@ func (b *Borders) Borders() iter.Seq[*Border] {
 				continue
 			}
 			var border *Border
-			if br, ok := child.(*Border); ok {
-				border = br
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				border = &Border{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Border:
+				border = v
+			case *openxml.CompositeElementBase:
+				border = &Border{CompositeElementBase: v}
 			}
 			if border != nil && !yield(border) {
 				return

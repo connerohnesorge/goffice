@@ -258,10 +258,11 @@ func (gf *GradientFill) Stops() iter.Seq[*GradientStop] {
 				continue
 			}
 			var stop *GradientStop
-			if s, ok := child.(*GradientStop); ok {
-				stop = s
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				stop = &GradientStop{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *GradientStop:
+				stop = v
+			case *openxml.CompositeElementBase:
+				stop = &GradientStop{CompositeElementBase: v}
 			}
 			if stop != nil && !yield(stop) {
 				return

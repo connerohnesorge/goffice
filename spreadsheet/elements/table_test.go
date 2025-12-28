@@ -60,7 +60,7 @@ func TestNewTableWithDefaults(t *testing.T) {
 		)
 	}
 
-	if table.Ref() != "A1:D10" {
+	if table.Ref() != testRefA1D10 {
 		t.Errorf(
 			"Expected Ref 'A1:D10', got '%s'",
 			table.Ref(),

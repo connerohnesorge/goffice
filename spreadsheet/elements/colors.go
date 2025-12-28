@@ -237,10 +237,11 @@ func (ic *IndexedColors) RgbColors() iter.Seq[*RgbColor] {
 				continue
 			}
 			var rgb *RgbColor
-			if r, ok := child.(*RgbColor); ok {
-				rgb = r
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				rgb = &RgbColor{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *RgbColor:
+				rgb = v
+			case *openxml.LeafElementBase:
+				rgb = &RgbColor{LeafElementBase: v}
 			}
 			if rgb != nil && !yield(rgb) {
 				return
@@ -386,15 +387,16 @@ func NewMruColors() *MruColors {
 func (m *MruColors) Colors() iter.Seq[*Color] {
 	return func(yield func(*Color) bool) {
 		for child := range m.Children() {
-			if child.LocalName() != "color" ||
+			if child.LocalName() != elemNameColor ||
 				child.NamespaceURI() != NamespaceSML {
 				continue
 			}
 			var color *Color
-			if c, ok := child.(*Color); ok {
-				color = c
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				color = &Color{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Color:
+				color = v
+			case *openxml.LeafElementBase:
+				color = &Color{LeafElementBase: v}
 			}
 			if color != nil && !yield(color) {
 				return

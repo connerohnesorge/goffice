@@ -96,10 +96,11 @@ func (ss *SharedStringTable) Items() iter.Seq[*SharedStringItem] {
 				continue
 			}
 			var si *SharedStringItem
-			if item, ok := child.(*SharedStringItem); ok {
-				si = item
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				si = &SharedStringItem{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *SharedStringItem:
+				si = v
+			case *openxml.CompositeElementBase:
+				si = &SharedStringItem{CompositeElementBase: v}
 			}
 			if si != nil && !yield(si) {
 				return

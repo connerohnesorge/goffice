@@ -82,10 +82,11 @@ func (t *Table) Rows() iter.Seq[*TableRow] {
 			if child.LocalName() == "tr" &&
 				child.NamespaceURI() == NamespaceWML {
 				var tr *TableRow
-				if row, ok := child.(*TableRow); ok {
-					tr = row
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					tr = &TableRow{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *TableRow:
+					tr = v
+				case *openxml.CompositeElementBase:
+					tr = &TableRow{CompositeElementBase: v}
 				}
 				if tr != nil && !yield(tr) {
 					return
@@ -730,10 +731,11 @@ func (tg *TableGrid) GridColumns() iter.Seq[*GridColumn] {
 			if child.LocalName() == "gridCol" &&
 				child.NamespaceURI() == NamespaceWML {
 				var gc *GridColumn
-				if col, ok := child.(*GridColumn); ok {
-					gc = col
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					gc = &GridColumn{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *GridColumn:
+					gc = v
+				case *openxml.CompositeElementBase:
+					gc = &GridColumn{CompositeElementBase: v}
 				}
 				if gc != nil && !yield(gc) {
 					return
@@ -860,10 +862,11 @@ func (tr *TableRow) Cells() iter.Seq[*TableCell] {
 			if child.LocalName() == "tc" &&
 				child.NamespaceURI() == NamespaceWML {
 				var tc *TableCell
-				if cell, ok := child.(*TableCell); ok {
-					tc = cell
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					tc = &TableCell{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *TableCell:
+					tc = v
+				case *openxml.CompositeElementBase:
+					tc = &TableCell{CompositeElementBase: v}
 				}
 				if tc != nil && !yield(tc) {
 					return
@@ -1059,10 +1062,11 @@ func (tc *TableCell) Paragraphs() iter.Seq[*Paragraph] {
 			if child.LocalName() == "p" &&
 				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
-				if para, ok := child.(*Paragraph); ok {
-					p = para
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					p = &Paragraph{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Paragraph:
+					p = v
+				case *openxml.CompositeElementBase:
+					p = &Paragraph{CompositeElementBase: v}
 				}
 				if p != nil && !yield(p) {
 					return

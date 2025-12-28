@@ -316,8 +316,9 @@ func (l *Level) IsLegalNumbering() bool {
 	if found {
 		val := attr.Value()
 
-		return val != "false" && val != "0" &&
-			val != "off"
+		return val != attrValueFalse &&
+			val != "0" &&
+			val != attrValueOff
 	}
 
 	return true

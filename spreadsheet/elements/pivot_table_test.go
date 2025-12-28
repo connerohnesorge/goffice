@@ -350,8 +350,8 @@ func TestPivotTableDefinitionPivotFields(
 		t.Fatal("AddField returned nil")
 	}
 
-	field.SetName("Category")
-	if field.Name() != "Category" {
+	field.SetName(testCategoryName)
+	if field.Name() != testCategoryName {
 		t.Errorf(
 			"Expected Name 'Category', got '%s'",
 			field.Name(),

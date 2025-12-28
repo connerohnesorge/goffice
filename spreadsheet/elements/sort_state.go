@@ -191,10 +191,11 @@ func (ss *SortState) GetSortConditions() iter.Seq[*SortCondition] {
 				continue
 			}
 			var sc *SortCondition
-			if s, ok := child.(*SortCondition); ok {
-				sc = s
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				sc = &SortCondition{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *SortCondition:
+				sc = v
+			case *openxml.LeafElementBase:
+				sc = &SortCondition{LeafElementBase: v}
 			}
 			if sc != nil && !yield(sc) {
 				return

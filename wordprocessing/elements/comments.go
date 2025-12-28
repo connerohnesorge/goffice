@@ -36,10 +36,11 @@ func (c *Comments) Comments() iter.Seq[*Comment] {
 			if child.LocalName() == "comment" &&
 				child.NamespaceURI() == NamespaceWML {
 				var comment *Comment
-				if cm, ok := child.(*Comment); ok {
-					comment = cm
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					comment = &Comment{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Comment:
+					comment = v
+				case *openxml.CompositeElementBase:
+					comment = &Comment{CompositeElementBase: v}
 				}
 				if comment != nil &&
 					!yield(comment) {
@@ -243,10 +244,11 @@ func (c *Comment) Paragraphs() iter.Seq[*Paragraph] {
 			if child.LocalName() == "p" &&
 				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
-				if para, ok := child.(*Paragraph); ok {
-					p = para
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					p = &Paragraph{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Paragraph:
+					p = v
+				case *openxml.CompositeElementBase:
+					p = &Paragraph{CompositeElementBase: v}
 				}
 				if p != nil && !yield(p) {
 					return

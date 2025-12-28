@@ -299,10 +299,11 @@ func (ws *Worksheet) ConditionalFormatting() []*ConditionalFormatting {
 			child.NamespaceURI() != NamespaceSML {
 			continue
 		}
-		if cf, ok := child.(*ConditionalFormatting); ok {
-			result = append(result, cf)
-		} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-			result = append(result, &ConditionalFormatting{CompositeElementBase: comp})
+		switch v := child.(type) {
+		case *ConditionalFormatting:
+			result = append(result, v)
+		case *openxml.CompositeElementBase:
+			result = append(result, &ConditionalFormatting{CompositeElementBase: v})
 		}
 	}
 

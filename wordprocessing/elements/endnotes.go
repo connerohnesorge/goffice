@@ -79,10 +79,11 @@ func (en *Endnotes) Endnotes() iter.Seq[*Endnote] {
 			if child.LocalName() == "endnote" &&
 				child.NamespaceURI() == NamespaceWML {
 				var e *Endnote
-				if endnote, ok := child.(*Endnote); ok {
-					e = endnote
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					e = &Endnote{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Endnote:
+					e = v
+				case *openxml.CompositeElementBase:
+					e = &Endnote{CompositeElementBase: v}
 				}
 				if e != nil {
 					// Skip separator endnotes
@@ -105,10 +106,11 @@ func (en *Endnotes) AllEndnotes() iter.Seq[*Endnote] {
 			if child.LocalName() == "endnote" &&
 				child.NamespaceURI() == NamespaceWML {
 				var e *Endnote
-				if endnote, ok := child.(*Endnote); ok {
-					e = endnote
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					e = &Endnote{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Endnote:
+					e = v
+				case *openxml.CompositeElementBase:
+					e = &Endnote{CompositeElementBase: v}
 				}
 				if e != nil && !yield(e) {
 					return
@@ -274,10 +276,11 @@ func (e *Endnote) Paragraphs() iter.Seq[*Paragraph] {
 			if child.LocalName() == "p" &&
 				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
-				if para, ok := child.(*Paragraph); ok {
-					p = para
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					p = &Paragraph{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Paragraph:
+					p = v
+				case *openxml.CompositeElementBase:
+					p = &Paragraph{CompositeElementBase: v}
 				}
 				if p != nil && !yield(p) {
 					return

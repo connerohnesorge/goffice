@@ -85,10 +85,11 @@ func (cf *CustomFilters) GetCustomFilters() iter.Seq[*CustomFilter] {
 				continue
 			}
 			var filter *CustomFilter
-			if f, ok := child.(*CustomFilter); ok {
-				filter = f
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				filter = &CustomFilter{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *CustomFilter:
+				filter = v
+			case *openxml.LeafElementBase:
+				filter = &CustomFilter{LeafElementBase: v}
 			}
 			if filter != nil && !yield(filter) {
 				return

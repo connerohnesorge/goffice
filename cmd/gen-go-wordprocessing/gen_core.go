@@ -149,7 +149,8 @@ func processSchemaFile(f *os.File, path string) {
 	if err := json.Unmarshal(data, &schema); err != nil {
 		return
 	}
-	for _, t := range schema.Types {
+	for i := range schema.Types {
+		t := &schema.Types[i]
 		t.TargetNamespace = schema.TargetNamespace
 		if len(t.Facets) == 0 &&
 			t.ClassName != "" {

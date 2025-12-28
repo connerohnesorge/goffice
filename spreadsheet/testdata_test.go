@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+const extXLSX = ".xlsx"
+
 // TestTestDataFilesExist verifies that all test data files are accessible
 func TestTestDataFilesExist(t *testing.T) {
 	testFiles := []struct {
@@ -117,7 +119,7 @@ func TestTestDataFileCount(t *testing.T) {
 		}
 		ext := filepath.Ext(entry.Name())
 		switch ext {
-		case ".xlsx":
+		case extXLSX:
 			xlsxCount++
 		case ".xltx":
 			xltxCount++

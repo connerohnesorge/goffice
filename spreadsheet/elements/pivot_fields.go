@@ -67,10 +67,11 @@ func (pf *PivotFields) PivotFields() iter.Seq[*PivotField] {
 				continue
 			}
 			var field *PivotField
-			if f, ok := child.(*PivotField); ok {
-				field = f
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				field = &PivotField{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *PivotField:
+				field = v
+			case *openxml.CompositeElementBase:
+				field = &PivotField{CompositeElementBase: v}
 			}
 			if field != nil && !yield(field) {
 				return
@@ -1894,10 +1895,11 @@ func (i *Items) Items() iter.Seq[*Item] {
 				continue
 			}
 			var item *Item
-			if it, ok := child.(*Item); ok {
-				item = it
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				item = &Item{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Item:
+				item = v
+			case *openxml.LeafElementBase:
+				item = &Item{LeafElementBase: v}
 			}
 			if item != nil && !yield(item) {
 				return
@@ -2350,10 +2352,11 @@ func (rf *RowFields) Fields() iter.Seq[*Field] {
 				continue
 			}
 			var field *Field
-			if f, ok := child.(*Field); ok {
-				field = f
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				field = &Field{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Field:
+				field = v
+			case *openxml.LeafElementBase:
+				field = &Field{LeafElementBase: v}
 			}
 			if field != nil && !yield(field) {
 				return
@@ -2448,10 +2451,11 @@ func (cf *ColFields) Fields() iter.Seq[*Field] {
 				continue
 			}
 			var field *Field
-			if f, ok := child.(*Field); ok {
-				field = f
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				field = &Field{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Field:
+				field = v
+			case *openxml.LeafElementBase:
+				field = &Field{LeafElementBase: v}
 			}
 			if field != nil && !yield(field) {
 				return
@@ -2616,10 +2620,11 @@ func (pf *PageFields) PageFields() iter.Seq[*PageField] {
 				continue
 			}
 			var field *PageField
-			if f, ok := child.(*PageField); ok {
-				field = f
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				field = &PageField{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *PageField:
+				field = v
+			case *openxml.LeafElementBase:
+				field = &PageField{LeafElementBase: v}
 			}
 			if field != nil && !yield(field) {
 				return
@@ -2912,10 +2917,11 @@ func (df *DataFields) DataFields() iter.Seq[*DataField] {
 				continue
 			}
 			var field *DataField
-			if f, ok := child.(*DataField); ok {
-				field = f
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				field = &DataField{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *DataField:
+				field = v
+			case *openxml.LeafElementBase:
+				field = &DataField{LeafElementBase: v}
 			}
 			if field != nil && !yield(field) {
 				return

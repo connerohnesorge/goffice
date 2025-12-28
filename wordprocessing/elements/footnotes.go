@@ -79,10 +79,11 @@ func (fn *Footnotes) Footnotes() iter.Seq[*Footnote] {
 			if child.LocalName() == "footnote" &&
 				child.NamespaceURI() == NamespaceWML {
 				var f *Footnote
-				if footnote, ok := child.(*Footnote); ok {
-					f = footnote
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					f = &Footnote{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Footnote:
+					f = v
+				case *openxml.CompositeElementBase:
+					f = &Footnote{CompositeElementBase: v}
 				}
 				if f != nil {
 					// Skip separator footnotes
@@ -105,10 +106,11 @@ func (fn *Footnotes) AllFootnotes() iter.Seq[*Footnote] {
 			if child.LocalName() == "footnote" &&
 				child.NamespaceURI() == NamespaceWML {
 				var f *Footnote
-				if footnote, ok := child.(*Footnote); ok {
-					f = footnote
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					f = &Footnote{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Footnote:
+					f = v
+				case *openxml.CompositeElementBase:
+					f = &Footnote{CompositeElementBase: v}
 				}
 				if f != nil && !yield(f) {
 					return
@@ -279,10 +281,11 @@ func (f *Footnote) Paragraphs() iter.Seq[*Paragraph] {
 			if child.LocalName() == "p" &&
 				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
-				if para, ok := child.(*Paragraph); ok {
-					p = para
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					p = &Paragraph{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Paragraph:
+					p = v
+				case *openxml.CompositeElementBase:
+					p = &Paragraph{CompositeElementBase: v}
 				}
 				if p != nil && !yield(p) {
 					return

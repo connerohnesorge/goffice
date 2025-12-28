@@ -597,7 +597,7 @@ func TestDrawingPicture(t *testing.T) {
 	if blip == nil {
 		t.Fatal("expected non-nil Blip")
 	}
-	if blip.Embed() != "rId1" {
+	if blip.Embed() != relationIdOne {
 		t.Errorf(
 			"expected embed 'rId1', got '%s'",
 			blip.Embed(),

@@ -10,7 +10,7 @@ import (
 
 // TestRoundtripBasic tests opening, modifying, saving, and reopening a document.
 func TestRoundtripBasic(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	// Check if fixture exists
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
@@ -168,7 +168,7 @@ func TestRoundtripNumbers(t *testing.T) {
 func TestRoundtripWithModifications(
 	t *testing.T,
 ) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
 		err,
@@ -284,7 +284,7 @@ func TestRoundtripWithModifications(
 
 // TestRoundtripValidation tests that documents remain valid after roundtrip.
 func TestRoundtripValidation(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
 		err,
@@ -429,7 +429,7 @@ func TestRoundtripTypeChange(t *testing.T) {
 
 // TestRoundtripMultipleTimes tests many consecutive roundtrips.
 func TestRoundtripMultipleTimes(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
 		err,

@@ -48,10 +48,11 @@ func (s *Sheets) Sheets() iter.Seq[*Sheet] {
 				continue
 			}
 			var sheet *Sheet
-			if sh, ok := child.(*Sheet); ok {
-				sheet = sh
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				sheet = &Sheet{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Sheet:
+				sheet = v
+			case *openxml.CompositeElementBase:
+				sheet = &Sheet{CompositeElementBase: v}
 			}
 			if sheet != nil && !yield(sheet) {
 				return

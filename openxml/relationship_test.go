@@ -40,7 +40,7 @@ func TestTargetMode(t *testing.T) {
 
 func TestBaseRelationship(t *testing.T) {
 	rel := &baseRelationship{
-		id:         "rId1",
+		id:         testRelID,
 		relType:    "http://example.com/relationship",
 		target:     "/word/document.xml",
 		targetMode: TargetModeInternal,
@@ -48,7 +48,7 @@ func TestBaseRelationship(t *testing.T) {
 	}
 
 	t.Run("ID", func(t *testing.T) {
-		if rel.ID() != "rId1" {
+		if rel.ID() != testRelID {
 			t.Errorf(
 				"ID() = %q, want rId1",
 				rel.ID(),
@@ -99,14 +99,14 @@ func TestPartRelationship(t *testing.T) {
 	)
 
 	rel := NewPartRelationship(
-		"rId1",
+		testRelID,
 		RelationshipTypeStyles,
 		targetPart,
 		nil,
 	)
 
 	t.Run("properties", func(t *testing.T) {
-		if rel.ID() != "rId1" {
+		if rel.ID() != testRelID {
 			t.Errorf(
 				"ID() = %q, want rId1",
 				rel.ID(),
@@ -142,14 +142,14 @@ func TestPartRelationship(t *testing.T) {
 
 func TestExternalRelationship(t *testing.T) {
 	rel := NewExternalRelationship(
-		"rId1",
+		testRelID,
 		RelationshipTypeHyperlink,
 		"https://example.com",
 		nil,
 	)
 
 	t.Run("properties", func(t *testing.T) {
-		if rel.ID() != "rId1" {
+		if rel.ID() != testRelID {
 			t.Errorf(
 				"ID() = %q, want rId1",
 				rel.ID(),
@@ -180,13 +180,13 @@ func TestHyperlinkRelationship(t *testing.T) {
 		"external hyperlink",
 		func(t *testing.T) {
 			rel := NewHyperlinkRelationship(
-				"rId1",
+				testRelID,
 				"https://example.com",
 				true,
 				nil,
 			)
 
-			if rel.ID() != "rId1" {
+			if rel.ID() != testRelID {
 				t.Errorf(
 					"ID() = %q, want rId1",
 					rel.ID(),
@@ -243,14 +243,14 @@ func TestDataPartReferenceRelationship(
 	t *testing.T,
 ) {
 	rel := NewDataPartReferenceRelationship(
-		"rId1",
+		testRelID,
 		RelationshipTypeImage,
 		"/word/media/image1.png",
 		nil,
 	)
 
 	t.Run("properties", func(t *testing.T) {
-		if rel.ID() != "rId1" {
+		if rel.ID() != testRelID {
 			t.Errorf(
 				"ID() = %q, want rId1",
 				rel.ID(),
@@ -286,7 +286,7 @@ func TestRelationshipIDGenerator(t *testing.T) {
 			id2 := gen.Next()
 			id3 := gen.Next()
 
-			if id1 != "rId1" {
+			if id1 != testRelID {
 				t.Errorf(
 					"First ID = %q, want rId1",
 					id1,
@@ -357,7 +357,7 @@ func TestRelationshipIDGenerator(t *testing.T) {
 
 			// Should be able to generate rId1
 			id := gen.Next()
-			if id != "rId1" {
+			if id != testRelID {
 				t.Errorf(
 					"Next() = %q, want rId1",
 					id,
@@ -388,7 +388,7 @@ func TestRelationshipIDGenerator(t *testing.T) {
 			gen := NewRelationshipIDGenerator()
 
 			// Reserve first few IDs
-			gen.Reserve("rId1")
+			gen.Reserve(testRelID)
 			gen.Reserve("rId2")
 			gen.Reserve("rId3")
 
@@ -670,28 +670,28 @@ func TestRelationshipInterfaceCompliance(
 				nil,
 				nil,
 			)
-			var _ OpenXmlRelationship = NewPartRelationship("rId1", RelationshipTypeStyles, part, nil)
+			var _ OpenXmlRelationship = NewPartRelationship(testRelID, RelationshipTypeStyles, part, nil)
 		},
 	)
 
 	t.Run(
 		"ExternalRelationship implements OpenXmlRelationship",
 		func(_ *testing.T) {
-			var _ OpenXmlRelationship = NewExternalRelationship("rId1", RelationshipTypeHyperlink, "https://example.com", nil)
+			var _ OpenXmlRelationship = NewExternalRelationship(testRelID, RelationshipTypeHyperlink, "https://example.com", nil)
 		},
 	)
 
 	t.Run(
 		"HyperlinkRelationship implements OpenXmlRelationship",
 		func(_ *testing.T) {
-			var _ OpenXmlRelationship = NewHyperlinkRelationship("rId1", "https://example.com", true, nil)
+			var _ OpenXmlRelationship = NewHyperlinkRelationship(testRelID, "https://example.com", true, nil)
 		},
 	)
 
 	t.Run(
 		"DataPartReferenceRelationship implements OpenXmlRelationship",
 		func(_ *testing.T) {
-			var _ OpenXmlRelationship = NewDataPartReferenceRelationship("rId1", RelationshipTypeImage, "/media/image1.png", nil)
+			var _ OpenXmlRelationship = NewDataPartReferenceRelationship(testRelID, RelationshipTypeImage, "/media/image1.png", nil)
 		},
 	)
 }

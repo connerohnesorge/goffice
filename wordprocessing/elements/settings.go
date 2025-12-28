@@ -526,8 +526,9 @@ func (s *Settings) hasOnOffElement(
 	if found {
 		val := attr.Value()
 
-		return val != "false" && val != "0" &&
-			val != "off"
+		return val != attrValueFalse &&
+			val != "0" &&
+			val != attrValueOff
 	}
 
 	return true
@@ -818,7 +819,7 @@ func (dp *DocumentProtection) Enforcement() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 
@@ -853,7 +854,7 @@ func (dp *DocumentProtection) Formatting() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 
@@ -989,10 +990,11 @@ func (c *Compatibility) CompatSettings() iter.Seq[*CompatSetting] {
 				continue
 			}
 			var cs *CompatSetting
-			if setting, ok := child.(*CompatSetting); ok {
-				cs = setting
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				cs = &CompatSetting{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *CompatSetting:
+				cs = v
+			case *openxml.CompositeElementBase:
+				cs = &CompatSetting{CompositeElementBase: v}
 			}
 			if cs != nil && !yield(cs) {
 				return
@@ -1030,8 +1032,9 @@ func (c *Compatibility) hasOnOffElement(
 	if found {
 		val := attr.Value()
 
-		return val != "false" && val != "0" &&
-			val != "off"
+		return val != attrValueFalse &&
+			val != "0" &&
+			val != attrValueOff
 	}
 
 	return true
@@ -1240,10 +1243,11 @@ func (dv *DocumentVariables) Variables() iter.Seq[*DocumentVariable] {
 				continue
 			}
 			var v *DocumentVariable
-			if variable, ok := child.(*DocumentVariable); ok {
-				v = variable
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				v = &DocumentVariable{CompositeElementBase: comp}
+			switch val := child.(type) {
+			case *DocumentVariable:
+				v = val
+			case *openxml.CompositeElementBase:
+				v = &DocumentVariable{CompositeElementBase: val}
 			}
 			if v != nil && !yield(v) {
 				return
@@ -1446,7 +1450,7 @@ func (wp *WriteProtection) Recommended() bool {
 	}
 	val := attr.Value()
 
-	return val == "1" || val == "true" ||
+	return val == "1" || val == attrValueTrue ||
 		val == "on"
 }
 

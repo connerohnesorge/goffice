@@ -70,10 +70,11 @@ func (mc *MergeCells) GetMergeCells() iter.Seq[*MergeCell] {
 				continue
 			}
 			var mergeCell *MergeCell
-			if m, ok := child.(*MergeCell); ok {
-				mergeCell = m
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				mergeCell = &MergeCell{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *MergeCell:
+				mergeCell = v
+			case *openxml.LeafElementBase:
+				mergeCell = &MergeCell{LeafElementBase: v}
 			}
 			if mergeCell != nil &&
 				!yield(mergeCell) {

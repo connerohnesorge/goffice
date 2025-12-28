@@ -95,10 +95,11 @@ func (rb *RowBreaks) Breaks() iter.Seq[*Break] {
 				continue
 			}
 			var brk *Break
-			if b, ok := child.(*Break); ok {
-				brk = b
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				brk = &Break{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Break:
+				brk = v
+			case *openxml.CompositeElementBase:
+				brk = &Break{CompositeElementBase: v}
 			}
 			if brk != nil && !yield(brk) {
 				return
@@ -240,10 +241,11 @@ func (cb *ColBreaks) Breaks() iter.Seq[*Break] {
 				continue
 			}
 			var brk *Break
-			if b, ok := child.(*Break); ok {
-				brk = b
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				brk = &Break{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Break:
+				brk = v
+			case *openxml.CompositeElementBase:
+				brk = &Break{CompositeElementBase: v}
 			}
 			if brk != nil && !yield(brk) {
 				return

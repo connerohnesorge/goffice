@@ -71,11 +71,15 @@ func TestWorkbook_GetOrCreateSheets(
 	}
 
 	// Add a sheet
-	sheet := sheets.AddSheet("Sheet1", 1, "rId1")
+	sheet := sheets.AddSheet(
+		"Sheet1",
+		1,
+		relationIdOne,
+	)
 	if sheet == nil {
 		t.Fatal("expected non-nil Sheet")
 	}
-	if sheet.Name() != "Sheet1" {
+	if sheet.Name() != testSheet1Name {
 		t.Errorf(
 			"expected sheet name 'Sheet1', got '%s'",
 			sheet.Name(),
@@ -87,7 +91,7 @@ func TestWorkbook_GetOrCreateSheets(
 			sheet.SheetId(),
 		)
 	}
-	if sheet.RelationshipId() != "rId1" {
+	if sheet.RelationshipId() != relationIdOne {
 		t.Errorf(
 			"expected relationshipId 'rId1', got '%s'",
 			sheet.RelationshipId(),
@@ -317,7 +321,11 @@ func TestSheets(t *testing.T) {
 	sheets := NewSheets()
 
 	// Add sheets
-	s1 := sheets.AddSheet("Sheet1", 1, "rId1")
+	s1 := sheets.AddSheet(
+		"Sheet1",
+		1,
+		relationIdOne,
+	)
 	s2 := sheets.AddSheet("Sheet2", 2, "rId2")
 	s3 := sheets.AddSheet("Sheet3", 3, "rId3")
 
@@ -625,7 +633,7 @@ func TestPivotCaches(t *testing.T) {
 	pc := NewPivotCaches()
 
 	// Add pivot cache
-	cache := pc.AddPivotCache(1, "rId1")
+	cache := pc.AddPivotCache(1, relationIdOne)
 	if cache == nil {
 		t.Fatal("expected non-nil PivotCache")
 	}
@@ -635,7 +643,7 @@ func TestPivotCaches(t *testing.T) {
 			cache.CacheId(),
 		)
 	}
-	if cache.RelationshipId() != "rId1" {
+	if cache.RelationshipId() != relationIdOne {
 		t.Errorf(
 			"expected relationshipId 'rId1', got '%s'",
 			cache.RelationshipId(),
@@ -806,7 +814,7 @@ func TestWorkbook_XMLSerialization(t *testing.T) {
 
 	// Add sheets
 	sheets := wb.GetOrCreateSheets()
-	sheets.AddSheet("Sheet1", 1, "rId1")
+	sheets.AddSheet("Sheet1", 1, relationIdOne)
 	sheets.AddSheet("Sheet2", 2, "rId2")
 
 	// Add calculation properties
@@ -843,7 +851,7 @@ func TestClone(t *testing.T) {
 	// Test Workbook clone
 	wb := NewWorkbook()
 	sheets := wb.GetOrCreateSheets()
-	sheets.AddSheet("Sheet1", 1, "rId1")
+	sheets.AddSheet("Sheet1", 1, relationIdOne)
 
 	cloned := wb.Clone()
 	clone, ok := cloned.(*Workbook)

@@ -383,10 +383,11 @@ func (t *TableStyles) TableStyles() iter.Seq[*TableStyle] {
 				continue
 			}
 			var style *TableStyle
-			if s, ok := child.(*TableStyle); ok {
-				style = s
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				style = &TableStyle{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *TableStyle:
+				style = v
+			case *openxml.CompositeElementBase:
+				style = &TableStyle{CompositeElementBase: v}
 			}
 			if style != nil && !yield(style) {
 				return
@@ -591,10 +592,11 @@ func (t *TableStyle) TableStyleElements() iter.Seq[*TableStyleElement] {
 				continue
 			}
 			var elem *TableStyleElement
-			if e, ok := child.(*TableStyleElement); ok {
-				elem = e
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				elem = &TableStyleElement{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *TableStyleElement:
+				elem = v
+			case *openxml.LeafElementBase:
+				elem = &TableStyleElement{LeafElementBase: v}
 			}
 			if elem != nil && !yield(elem) {
 				return

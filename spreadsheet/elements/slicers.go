@@ -45,10 +45,11 @@ func (s *Slicers) Slicers() iter.Seq[*Slicer] {
 				continue
 			}
 			var slicer *Slicer
-			if sl, ok := child.(*Slicer); ok {
-				slicer = sl
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				slicer = &Slicer{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Slicer:
+				slicer = v
+			case *openxml.LeafElementBase:
+				slicer = &Slicer{LeafElementBase: v}
 			}
 			if slicer != nil && !yield(slicer) {
 				return

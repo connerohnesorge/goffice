@@ -164,10 +164,11 @@ func (nf *NumFmts) NumFmts() iter.Seq[*NumFmt] {
 				continue
 			}
 			var numFmt *NumFmt
-			if n, ok := child.(*NumFmt); ok {
-				numFmt = n
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				numFmt = &NumFmt{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *NumFmt:
+				numFmt = v
+			case *openxml.LeafElementBase:
+				numFmt = &NumFmt{LeafElementBase: v}
 			}
 			if numFmt != nil && !yield(numFmt) {
 				return

@@ -882,7 +882,7 @@ func TestEnumCompleteness(t *testing.T) {
 
 // TestReadFromStream tests opening workbook from io.ReaderAt.
 func TestReadFromStream(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	// Check if fixture exists
 	if _, err := os.Stat(fixturePath); os.IsNotExist(

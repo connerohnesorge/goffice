@@ -20,7 +20,7 @@ func TestNewOpenXmlPartData(t *testing.T) {
 				nil,
 			)
 
-			if part.URI() != "/word/document.xml" {
+			if part.URI() != testDocumentXML {
 				t.Errorf(
 					"URI() = %q, want /word/document.xml",
 					part.URI(),
@@ -479,7 +479,7 @@ func TestOpenXmlPartDataChildParts(t *testing.T) {
 				)
 			}
 
-			if child1.RelationshipID() != "rId1" {
+			if child1.RelationshipID() != testRelID {
 				t.Errorf(
 					"Child RelationshipID() = %q, want rId1",
 					child1.RelationshipID(),

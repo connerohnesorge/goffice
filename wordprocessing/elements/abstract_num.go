@@ -203,10 +203,11 @@ func (an *AbstractNum) Levels() iter.Seq[*Level] {
 			if child.LocalName() == "lvl" &&
 				child.NamespaceURI() == NamespaceWML {
 				var lvl *Level
-				if level, ok := child.(*Level); ok {
-					lvl = level
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					lvl = &Level{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Level:
+					lvl = v
+				case *openxml.CompositeElementBase:
+					lvl = &Level{CompositeElementBase: v}
 				}
 				if lvl != nil && !yield(lvl) {
 					return

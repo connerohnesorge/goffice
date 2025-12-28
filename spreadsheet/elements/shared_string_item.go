@@ -111,10 +111,11 @@ func (si *SharedStringItem) RichTextRuns() iter.Seq[*RichTextRun] {
 				continue
 			}
 			var rtr *RichTextRun
-			if r, ok := child.(*RichTextRun); ok {
-				rtr = r
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				rtr = &RichTextRun{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *RichTextRun:
+				rtr = v
+			case *openxml.CompositeElementBase:
+				rtr = &RichTextRun{CompositeElementBase: v}
 			}
 			if rtr != nil && !yield(rtr) {
 				return
@@ -178,10 +179,11 @@ func (si *SharedStringItem) PhoneticRuns() iter.Seq[*PhoneticRun] {
 				continue
 			}
 			var rph *PhoneticRun
-			if r, ok := child.(*PhoneticRun); ok {
-				rph = r
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				rph = &PhoneticRun{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *PhoneticRun:
+				rph = v
+			case *openxml.CompositeElementBase:
+				rph = &PhoneticRun{CompositeElementBase: v}
 			}
 			if rph != nil && !yield(rph) {
 				return

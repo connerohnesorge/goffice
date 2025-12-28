@@ -60,10 +60,11 @@ func (f *Fonts) Fonts() iter.Seq[*Font] {
 			if child.LocalName() == "font" &&
 				child.NamespaceURI() == NamespaceWML {
 				var font *Font
-				if fn, ok := child.(*Font); ok {
-					font = fn
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					font = &Font{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *Font:
+					font = v
+				case *openxml.CompositeElementBase:
+					font = &Font{CompositeElementBase: v}
 				}
 				if font != nil && !yield(font) {
 					return

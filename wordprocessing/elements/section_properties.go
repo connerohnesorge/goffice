@@ -142,10 +142,11 @@ func (sp *SectionProperties) HeaderReferences() []*HeaderReference {
 	for child := range sp.Children() {
 		if child.LocalName() == "headerReference" &&
 			child.NamespaceURI() == NamespaceWML {
-			if hr, ok := child.(*HeaderReference); ok {
-				refs = append(refs, hr)
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				refs = append(refs, &HeaderReference{CompositeElementBase: comp})
+			switch v := child.(type) {
+			case *HeaderReference:
+				refs = append(refs, v)
+			case *openxml.CompositeElementBase:
+				refs = append(refs, &HeaderReference{CompositeElementBase: v})
 			}
 		}
 	}
@@ -159,10 +160,11 @@ func (sp *SectionProperties) FooterReferences() []*FooterReference {
 	for child := range sp.Children() {
 		if child.LocalName() == "footerReference" &&
 			child.NamespaceURI() == NamespaceWML {
-			if fr, ok := child.(*FooterReference); ok {
-				refs = append(refs, fr)
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				refs = append(refs, &FooterReference{CompositeElementBase: comp})
+			switch v := child.(type) {
+			case *FooterReference:
+				refs = append(refs, v)
+			case *openxml.CompositeElementBase:
+				refs = append(refs, &FooterReference{CompositeElementBase: v})
 			}
 		}
 	}

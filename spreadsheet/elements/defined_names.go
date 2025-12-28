@@ -36,10 +36,11 @@ func (dn *DefinedNames) DefinedNames() iter.Seq[*DefinedName] {
 				continue
 			}
 			var name *DefinedName
-			if n, ok := child.(*DefinedName); ok {
-				name = n
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				name = &DefinedName{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *DefinedName:
+				name = v
+			case *openxml.LeafElementBase:
+				name = &DefinedName{LeafElementBase: v}
 			}
 			if name != nil && !yield(name) {
 				return

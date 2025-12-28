@@ -165,10 +165,11 @@ func (c *CellStyles) CellStyles() iter.Seq[*CellStyle] {
 				continue
 			}
 			var style *CellStyle
-			if s, ok := child.(*CellStyle); ok {
-				style = s
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				style = &CellStyle{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *CellStyle:
+				style = v
+			case *openxml.LeafElementBase:
+				style = &CellStyle{LeafElementBase: v}
 			}
 			if style != nil && !yield(style) {
 				return

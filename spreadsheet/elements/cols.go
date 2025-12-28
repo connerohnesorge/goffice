@@ -34,10 +34,11 @@ func (c *Cols) Cols() iter.Seq[*Col] {
 				continue
 			}
 			var col *Col
-			if cl, ok := child.(*Col); ok {
-				col = cl
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				col = &Col{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Col:
+				col = v
+			case *openxml.CompositeElementBase:
+				col = &Col{CompositeElementBase: v}
 			}
 			if col != nil && !yield(col) {
 				return

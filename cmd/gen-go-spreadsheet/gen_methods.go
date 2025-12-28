@@ -10,7 +10,7 @@ import (
 // It initializes the embedded base element with correct namespace.
 func generateConstructor(
 	f *os.File,
-	t SchemaType,
+	t *SchemaType,
 	partRoot bool,
 ) {
 	// Check if constructor name would conflict with a type name
@@ -71,7 +71,7 @@ func generateConstructor(
 
 // generateClone writes the Clone() method for the struct.
 // It deep copies all attributes and children of the element.
-func generateClone(f *os.File, t SchemaType) {
+func generateClone(f *os.File, t *SchemaType) {
 	safeFprintf(
 		f,
 		"func (m *%s) Clone() openxml.Element {\n\tret := New%s()\n",
@@ -87,7 +87,7 @@ func generateClone(f *os.File, t SchemaType) {
 // It iterates through all schema attributes and copies their values.
 func generateCloneAttributes(
 	f *os.File,
-	t SchemaType,
+	t *SchemaType,
 ) {
 	for _, attr := range t.Attributes {
 		propName := attr.PropertyName
@@ -121,7 +121,7 @@ func toPascalCaseFromQName(qname string) string {
 // It handles both struct-value types and pointer-based elements.
 func generateCloneChildren(
 	f *os.File,
-	t SchemaType,
+	t *SchemaType,
 ) {
 	seen := make(map[string]bool)
 	for _, child := range t.Children {
@@ -174,7 +174,7 @@ func generateCloneChildren(
 
 // generateValidate writes the Validate() method for the struct.
 // It recursively validates all child elements.
-func generateValidate(f *os.File, t SchemaType) {
+func generateValidate(f *os.File, t *SchemaType) {
 	safeFprintf(
 		f,
 		"func (m *%s) Validate() error {\n",

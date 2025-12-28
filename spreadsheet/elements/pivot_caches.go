@@ -34,10 +34,11 @@ func (pc *PivotCaches) PivotCaches() iter.Seq[*PivotCache] {
 				continue
 			}
 			var cache *PivotCache
-			if c, ok := child.(*PivotCache); ok {
-				cache = c
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				cache = &PivotCache{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *PivotCache:
+				cache = v
+			case *openxml.CompositeElementBase:
+				cache = &PivotCache{CompositeElementBase: v}
 			}
 			if cache != nil && !yield(cache) {
 				return

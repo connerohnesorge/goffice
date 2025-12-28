@@ -65,10 +65,11 @@ func (d *Dxfs) Dxfs() iter.Seq[*Dxf] {
 				continue
 			}
 			var dxf *Dxf
-			if dx, ok := child.(*Dxf); ok {
-				dxf = dx
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				dxf = &Dxf{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Dxf:
+				dxf = v
+			case *openxml.CompositeElementBase:
+				dxf = &Dxf{CompositeElementBase: v}
 			}
 			if dxf != nil && !yield(dxf) {
 				return

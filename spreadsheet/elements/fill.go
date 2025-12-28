@@ -108,10 +108,11 @@ func (f *Fills) Fills() iter.Seq[*Fill] {
 				continue
 			}
 			var fill *Fill
-			if fl, ok := child.(*Fill); ok {
-				fill = fl
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				fill = &Fill{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Fill:
+				fill = v
+			case *openxml.CompositeElementBase:
+				fill = &Fill{CompositeElementBase: v}
 			}
 			if fill != nil && !yield(fill) {
 				return

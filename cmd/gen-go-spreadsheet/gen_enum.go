@@ -8,7 +8,7 @@ import (
 
 // generateEnum generates a Go string-based enumeration for a schema type.
 // It includes XML attribute marshaling and unmarshaling implementations.
-func generateEnum(f *os.File, t SchemaType) {
+func generateEnum(f *os.File, t *SchemaType) {
 	if existingTypes[t.Name] ||
 		generatedTypes[t.Name] {
 		return

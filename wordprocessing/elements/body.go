@@ -26,13 +26,14 @@ func NewBody() *Body {
 func (b *Body) Paragraphs() iter.Seq[*Paragraph] {
 	return func(yield func(*Paragraph) bool) {
 		for child := range b.Children() {
-			if child.LocalName() == "p" && //nolint:revive
+			if child.LocalName() == "p" && //nolint:revive // early-return: iterator pattern
 				child.NamespaceURI() == NamespaceWML {
 				var p *Paragraph
-				if para, ok := child.(*Paragraph); ok {
-					p = para
-				} else if com, ok := child.(*openxml.CompositeElementBase); ok {
-					p = &Paragraph{CompositeElementBase: com}
+				switch v := child.(type) {
+				case *Paragraph:
+					p = v
+				case *openxml.CompositeElementBase:
+					p = &Paragraph{CompositeElementBase: v}
 				}
 				if p != nil && !yield(p) {
 					return
@@ -46,17 +47,21 @@ func (b *Body) Paragraphs() iter.Seq[*Paragraph] {
 func (b *Body) Tables() iter.Seq[*Table] {
 	return func(yield func(*Table) bool) {
 		for child := range b.Children() {
-			if child.LocalName() == "tbl" && //nolint:revive
-				child.NamespaceURI() == NamespaceWML {
-				var t *Table
-				if tbl, ok := child.(*Table); ok {
-					t = tbl
-				} else if com, ok := child.(*openxml.CompositeElementBase); ok {
-					t = &Table{CompositeElementBase: com}
-				}
-				if t != nil && !yield(t) {
-					return
-				}
+			if child.LocalName() != string(
+				PlaceholderValuesTbl,
+			) ||
+				child.NamespaceURI() != NamespaceWML {
+				continue
+			}
+			var t *Table
+			switch v := child.(type) {
+			case *Table:
+				t = v
+			case *openxml.CompositeElementBase:
+				t = &Table{CompositeElementBase: v}
+			}
+			if t != nil && !yield(t) {
+				return
 			}
 		}
 	}

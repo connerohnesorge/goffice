@@ -96,10 +96,11 @@ func (tc *TableColumns) Columns() iter.Seq[*TableColumn] {
 				continue
 			}
 			var col *TableColumn
-			if c, ok := child.(*TableColumn); ok {
-				col = c
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				col = &TableColumn{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *TableColumn:
+				col = v
+			case *openxml.CompositeElementBase:
+				col = &TableColumn{CompositeElementBase: v}
 			}
 			if col != nil && !yield(col) {
 				return

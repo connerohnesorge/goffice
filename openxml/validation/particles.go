@@ -412,8 +412,7 @@ func (p *AllParticle) Validate(
 	ctx *ValidationContext,
 	children []ElementInfo,
 	path string,
-) ([]*ValidationError, int) {
-	var errors []*ValidationError
+) (errors []*ValidationError, consumed int) {
 	totalConsumed := 0
 
 	// Track which particles have been matched
@@ -529,9 +528,8 @@ func (p *AnyParticle) Validate(
 	_ *ValidationContext,
 	children []ElementInfo,
 	path string,
-) ([]*ValidationError, int) {
-	var errors []*ValidationError
-	consumed := 0
+) (errors []*ValidationError, consumed int) {
+	consumed = 0
 
 	for consumed < len(children) {
 		// Check max occurs
@@ -606,7 +604,7 @@ func (*EmptyParticle) Validate(
 	_ *ValidationContext,
 	children []ElementInfo,
 	path string,
-) ([]*ValidationError, int) {
+) (errors []*ValidationError, consumed int) {
 	if len(children) > 0 {
 		msg := "Element should have no children but found " +
 			children[0].LocalName
@@ -646,7 +644,7 @@ func (*TextOnlyParticle) Validate(
 	_ *ValidationContext,
 	children []ElementInfo,
 	path string,
-) ([]*ValidationError, int) {
+) (errors []*ValidationError, consumed int) {
 	// For text-only, we shouldn't have element children
 	if len(children) > 0 {
 		msg := "Element should contain only text but found child element " +

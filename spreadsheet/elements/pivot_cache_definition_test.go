@@ -40,10 +40,10 @@ func TestPivotCacheDefinitionAttributes(
 	pcd := NewPivotCacheDefinition()
 
 	// Test RelationshipId
-	pcd.SetRelationshipId("rId1")
-	if pcd.RelationshipId() != "rId1" {
+	pcd.SetRelationshipId("relationIdOne")
+	if pcd.RelationshipId() != "relationIdOne" {
 		t.Errorf(
-			"Expected RelationshipId 'rId1', got '%s'",
+			"Expected RelationshipId 'relationIdOne', got '%s'",
 			pcd.RelationshipId(),
 		)
 	}
@@ -161,8 +161,8 @@ func TestPivotCacheDefinitionCacheSource(
 		)
 	}
 
-	cs.SetType("worksheet")
-	if cs.Type() != "worksheet" {
+	cs.SetType(attrValueWorksheet)
+	if cs.Type() != attrValueWorksheet {
 		t.Errorf(
 			"Expected Type 'worksheet', got '%s'",
 			cs.Type(),
@@ -236,7 +236,7 @@ func TestCacheSource(t *testing.T) {
 	}
 
 	// Test Type (default is worksheet)
-	if cs.Type() != "worksheet" {
+	if cs.Type() != attrValueWorksheet {
 		t.Errorf(
 			"Expected default Type 'worksheet', got '%s'",
 			cs.Type(),
@@ -700,7 +700,7 @@ func TestCacheItemElements(t *testing.T) {
 
 func TestPivotCacheDefinitionClone(t *testing.T) {
 	pcd := NewPivotCacheDefinition()
-	pcd.SetRelationshipId("rId1")
+	pcd.SetRelationshipId("relationIdOne")
 	pcd.SetRecordCount(100)
 	pcd.GetOrCreateCacheSource().
 		SetType("worksheet")
@@ -720,9 +720,9 @@ func TestPivotCacheDefinitionClone(t *testing.T) {
 		)
 	}
 
-	if cloned.RelationshipId() != "rId1" {
+	if cloned.RelationshipId() != "relationIdOne" {
 		t.Errorf(
-			"Cloned RelationshipId should be 'rId1', got '%s'",
+			"Cloned RelationshipId should be 'relationIdOne', got '%s'",
 			cloned.RelationshipId(),
 		)
 	}

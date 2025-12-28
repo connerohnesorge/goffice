@@ -148,10 +148,11 @@ func (a *Authors) AuthorList() iter.Seq[*Author] {
 				continue
 			}
 			var author *Author
-			if au, ok := child.(*Author); ok {
-				author = au
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				author = &Author{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Author:
+				author = v
+			case *openxml.LeafElementBase:
+				author = &Author{LeafElementBase: v}
 			}
 			if author != nil && !yield(author) {
 				return
@@ -334,10 +335,11 @@ func (cl *CommentList) Comments() iter.Seq[*Comment] {
 				continue
 			}
 			var comment *Comment
-			if c, ok := child.(*Comment); ok {
-				comment = c
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				comment = &Comment{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Comment:
+				comment = v
+			case *openxml.CompositeElementBase:
+				comment = &Comment{CompositeElementBase: v}
 			}
 			if comment != nil && !yield(comment) {
 				return
@@ -678,10 +680,13 @@ func (ct *CommentText) SetPlainText(text string) {
 		t := NewText()
 		t.SetText(text)
 		ct.AppendChild(t)
-	} else if t, ok := elem.(*Text); ok {
-		t.SetText(text)
-	} else if leaf, ok := elem.(*openxml.LeafElementBase); ok {
-		leaf.SetInnerText(text)
+	} else {
+		switch v := elem.(type) {
+		case *Text:
+			v.SetText(text)
+		case *openxml.LeafElementBase:
+			v.SetInnerText(text)
+		}
 	}
 }
 
@@ -694,10 +699,11 @@ func (ct *CommentText) RichTextRuns() iter.Seq[*RichTextRun] {
 				continue
 			}
 			var rtr *RichTextRun
-			if r, ok := child.(*RichTextRun); ok {
-				rtr = r
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				rtr = &RichTextRun{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *RichTextRun:
+				rtr = v
+			case *openxml.CompositeElementBase:
+				rtr = &RichTextRun{CompositeElementBase: v}
 			}
 			if rtr != nil && !yield(rtr) {
 				return

@@ -32,10 +32,11 @@ func (sd *SheetData) Rows() iter.Seq[*Row] {
 				continue
 			}
 			var row *Row
-			if r, ok := child.(*Row); ok {
-				row = r
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				row = &Row{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *Row:
+				row = v
+			case *openxml.CompositeElementBase:
+				row = &Row{CompositeElementBase: v}
 			}
 			if row != nil && !yield(row) {
 				return
@@ -99,10 +100,11 @@ func (sd *SheetData) AddRow(
 			continue
 		}
 		var existingRow *Row
-		if r, ok := child.(*Row); ok {
-			existingRow = r
-		} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-			existingRow = &Row{CompositeElementBase: comp}
+		switch v := child.(type) {
+		case *Row:
+			existingRow = v
+		case *openxml.CompositeElementBase:
+			existingRow = &Row{CompositeElementBase: v}
 		}
 		if existingRow != nil &&
 			existingRow.RowIndex() > rowIndex {

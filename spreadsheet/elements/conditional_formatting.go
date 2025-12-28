@@ -103,10 +103,11 @@ func (cf *ConditionalFormatting) Rules() iter.Seq[*CfRule] {
 				continue
 			}
 			var rule *CfRule
-			if r, ok := child.(*CfRule); ok {
-				rule = r
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				rule = &CfRule{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *CfRule:
+				rule = v
+			case *openxml.CompositeElementBase:
+				rule = &CfRule{CompositeElementBase: v}
 			}
 			if rule != nil && !yield(rule) {
 				return

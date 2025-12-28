@@ -202,10 +202,11 @@ func (is *IconSet) Cfvos() iter.Seq[*Cfvo] {
 				continue
 			}
 			var cfvo *Cfvo
-			if c, ok := child.(*Cfvo); ok {
-				cfvo = c
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				cfvo = &Cfvo{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *Cfvo:
+				cfvo = v
+			case *openxml.LeafElementBase:
+				cfvo = &Cfvo{LeafElementBase: v}
 			}
 			if cfvo != nil && !yield(cfvo) {
 				return

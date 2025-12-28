@@ -37,10 +37,11 @@ func (n *Numbering) AbstractNums() iter.Seq[*AbstractNum] {
 			if child.LocalName() == "abstractNum" &&
 				child.NamespaceURI() == NamespaceWML {
 				var an *AbstractNum
-				if absNum, ok := child.(*AbstractNum); ok {
-					an = absNum
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					an = &AbstractNum{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *AbstractNum:
+					an = v
+				case *openxml.CompositeElementBase:
+					an = &AbstractNum{CompositeElementBase: v}
 				}
 				if an != nil && !yield(an) {
 					return
@@ -57,10 +58,11 @@ func (n *Numbering) NumInstances() iter.Seq[*NumberingInstance] {
 			if child.LocalName() == "num" &&
 				child.NamespaceURI() == NamespaceWML {
 				var ni *NumberingInstance
-				if numInst, ok := child.(*NumberingInstance); ok {
-					ni = numInst
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					ni = &NumberingInstance{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *NumberingInstance:
+					ni = v
+				case *openxml.CompositeElementBase:
+					ni = &NumberingInstance{CompositeElementBase: v}
 				}
 				if ni != nil && !yield(ni) {
 					return
@@ -298,10 +300,11 @@ func (ni *NumberingInstance) LevelOverrides() iter.Seq[*LevelOverride] {
 			if child.LocalName() == "lvlOverride" &&
 				child.NamespaceURI() == NamespaceWML {
 				var lo *LevelOverride
-				if lvlOvr, ok := child.(*LevelOverride); ok {
-					lo = lvlOvr
-				} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-					lo = &LevelOverride{CompositeElementBase: comp}
+				switch v := child.(type) {
+				case *LevelOverride:
+					lo = v
+				case *openxml.CompositeElementBase:
+					lo = &LevelOverride{CompositeElementBase: v}
 				}
 				if lo != nil && !yield(lo) {
 					return

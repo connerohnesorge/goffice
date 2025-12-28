@@ -449,10 +449,11 @@ func (r *CfRule) Formulas() iter.Seq[*CfFormula] {
 				continue
 			}
 			var formula *CfFormula
-			if f, ok := child.(*CfFormula); ok {
-				formula = f
-			} else if leaf, ok := child.(*openxml.LeafElementBase); ok {
-				formula = &CfFormula{LeafElementBase: leaf}
+			switch v := child.(type) {
+			case *CfFormula:
+				formula = v
+			case *openxml.LeafElementBase:
+				formula = &CfFormula{LeafElementBase: v}
 			}
 			if formula != nil && !yield(formula) {
 				return

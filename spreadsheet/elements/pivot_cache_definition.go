@@ -1059,10 +1059,11 @@ func (cf *CacheFields) CacheFields() iter.Seq[*CacheField] {
 				continue
 			}
 			var field *CacheField
-			if f, ok := child.(*CacheField); ok {
-				field = f
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				field = &CacheField{CompositeElementBase: comp}
+			switch v := child.(type) {
+			case *CacheField:
+				field = v
+			case *openxml.CompositeElementBase:
+				field = &CacheField{CompositeElementBase: v}
 			}
 			if field != nil && !yield(field) {
 				return
