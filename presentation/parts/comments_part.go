@@ -171,7 +171,7 @@ func newSlideCommentsPart(
 
 // initializeContent sets up minimal slide comments content.
 func (scp *SlideCommentsPart) initializeContent() {
-	pcl := elements.NewPresentationCommentList()
+	pcl := elements.NewCommentList()
 	scp.SetRootElement(pcl)
 }
 
@@ -183,12 +183,12 @@ func (*SlideCommentsPart) FixedContentType() string {
 }
 
 // Comments returns the root CommentList element.
-func (scp *SlideCommentsPart) Comments() *elements.PresentationCommentList {
+func (scp *SlideCommentsPart) Comments() *elements.CommentList {
 	root := scp.RootElement()
 	if root == nil {
 		return nil
 	}
-	if pcl, ok := root.(*elements.PresentationCommentList); ok {
+	if pcl, ok := root.(*elements.CommentList); ok {
 		return pcl
 	}
 
@@ -223,7 +223,7 @@ func SlideCommentsPartFactory(
 	)
 	partData.SetRootFactory(
 		func() openxml.PartRootElement {
-			return elements.NewPresentationCommentList()
+			return elements.NewCommentList()
 		},
 	)
 

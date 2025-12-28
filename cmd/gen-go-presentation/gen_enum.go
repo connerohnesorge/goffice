@@ -57,7 +57,7 @@ func generateEnumMarshaling(
 	)
 	safeFprintf(
 		f,
-		"\treturn xml.Attr{Name: name, Value: string(e)}, nil\n\n",
+		"\treturn xml.Attr{Name: name, Value: string(e)}, nil\n}\n\n",
 	)
 
 	safeFprintf(

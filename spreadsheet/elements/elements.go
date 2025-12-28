@@ -11272,9 +11272,9 @@ type RevisionCellChange struct {
 	OldPhoneticText *types.BooleanValue `xml:"oldPh,attr,omitempty"`
 	EndOfListFormulaUpdate *types.BooleanValue `xml:"endOfListFormulaUpdate,attr,omitempty"`
 	OldCell *OldCell `xml:"oc,omitempty"`
-	NewCell *RevisionNewCell `xml:"nc,omitempty"`
+	NewCell *OldCell `xml:"nc,omitempty"`
 	OldDifferentialFormat *OldDifferentialFormat `xml:"odxf,omitempty"`
-	NewDifferentialFormat *RevisionNewDifferentialFormat `xml:"ndxf,omitempty"`
+	NewDifferentialFormat *DifferentialFormat `xml:"ndxf,omitempty"`
 	ExtensionList *ExtensionList `xml:"extLst,omitempty"`
 }
 
@@ -11347,13 +11347,13 @@ func (m *RevisionCellChange) Clone() openxml.Element {
 		ret.OldCell = m.OldCell.Clone().(*OldCell)
 	}
 	if m.NewCell != nil {
-		ret.NewCell = m.NewCell.Clone().(*RevisionNewCell)
+		ret.NewCell = m.NewCell.Clone().(*OldCell)
 	}
 	if m.OldDifferentialFormat != nil {
 		ret.OldDifferentialFormat = m.OldDifferentialFormat.Clone().(*OldDifferentialFormat)
 	}
 	if m.NewDifferentialFormat != nil {
-		ret.NewDifferentialFormat = m.NewDifferentialFormat.Clone().(*RevisionNewDifferentialFormat)
+		ret.NewDifferentialFormat = m.NewDifferentialFormat.Clone().(*DifferentialFormat)
 	}
 	if m.ExtensionList != nil {
 		ret.ExtensionList = m.ExtensionList.Clone().(*ExtensionList)
@@ -12118,109 +12118,6 @@ func (m *OldDifferentialFormat) Clone() openxml.Element {
 }
 
 func (m *OldDifferentialFormat) Validate() error {
-	if m.NumberingFormat != nil {
-		if err := m.NumberingFormat.Validate(); err != nil {
-			return err
-		}
-	}
-	if m.ExtensionList != nil {
-		if err := m.ExtensionList.Validate(); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// New Cell Data.
-type RevisionNewCell struct {
-	*openxml.CompositeElementBase
-	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/spreadsheetml/2006/main nc"`
-	CellFormula *CellFormula `xml:"f,omitempty"`
-	CellValue *CellValue `xml:"v,omitempty"`
-	InlineString *InlineString `xml:"is,omitempty"`
-	ExtensionList *ExtensionList `xml:"extLst,omitempty"`
-}
-
-func NewRevisionNewCell() *RevisionNewCell {
-	ret := &RevisionNewCell{}
-	ns := openxml.NamespaceSpreadsheetML
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "nc", "x")
-	return ret
-}
-
-func (m *RevisionNewCell) Clone() openxml.Element {
-	ret := NewRevisionNewCell()
-	if m.CellFormula != nil {
-		ret.CellFormula = m.CellFormula.Clone().(*CellFormula)
-	}
-	if m.CellValue != nil {
-		ret.CellValue = m.CellValue.Clone().(*CellValue)
-	}
-	if m.InlineString != nil {
-		ret.InlineString = m.InlineString.Clone().(*InlineString)
-	}
-	if m.ExtensionList != nil {
-		ret.ExtensionList = m.ExtensionList.Clone().(*ExtensionList)
-	}
-	return ret
-}
-
-func (m *RevisionNewCell) Validate() error {
-	if m.ExtensionList != nil {
-		if err := m.ExtensionList.Validate(); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// New Formatting Information.
-type RevisionNewDifferentialFormat struct{
-	*openxml.CompositeElementBase
-	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/spreadsheetml/2006/main ndxf"`
-	Font *Font `xml:"font,omitempty"`
-	NumberingFormat *NumberingFormat `xml:"numFmt,omitempty"`
-	Fill *Fill `xml:"fill,omitempty"`
-	Alignment *Alignment `xml:"alignment,omitempty"`
-	Border *Border `xml:"border,omitempty"`
-	Protection *Protection `xml:"protection,omitempty"`
-	ExtensionList *ExtensionList `xml:"extLst,omitempty"`
-}
-
-func NewRevisionNewDifferentialFormat() *RevisionNewDifferentialFormat {
-	ret := &RevisionNewDifferentialFormat{}
-	ns := openxml.NamespaceSpreadsheetML
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "ndxf", "x")
-	return ret
-}
-
-func (m *RevisionNewDifferentialFormat) Clone() openxml.Element {
-	ret := NewRevisionNewDifferentialFormat()
-	if m.Font != nil {
-		ret.Font = m.Font.Clone().(*Font)
-	}
-	if m.NumberingFormat != nil {
-		ret.NumberingFormat = m.NumberingFormat.Clone().(*NumberingFormat)
-	}
-	if m.Fill != nil {
-		ret.Fill = m.Fill.Clone().(*Fill)
-	}
-	if m.Alignment != nil {
-		ret.Alignment = m.Alignment.Clone().(*Alignment)
-	}
-	if m.Border != nil {
-		ret.Border = m.Border.Clone().(*Border)
-	}
-	if m.Protection != nil {
-		ret.Protection = m.Protection.Clone().(*Protection)
-	}
-	if m.ExtensionList != nil {
-		ret.ExtensionList = m.ExtensionList.Clone().(*ExtensionList)
-	}
-	return ret
-}
-
-func (m *RevisionNewDifferentialFormat) Validate() error {
 	if m.NumberingFormat != nil {
 		if err := m.NumberingFormat.Validate(); err != nil {
 			return err

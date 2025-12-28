@@ -414,7 +414,7 @@ func Example_runFormatting() {
 	pb.AddRun(" This is italic.").Italic()
 
 	pb.AddRun(" Double underline.").
-		UnderlineStyle(elements.UnderlineDouble)
+		UnderlineStyle(elements.UnderlineValuesDouble)
 
 	pb.AddRun(" Tab character:").AddTab()
 	pb.AddRun("After tab.")
