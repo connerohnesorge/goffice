@@ -41,25 +41,25 @@ func newCommentAuthorsPart(
 	)
 	partData.SetRelationshipID(relID)
 
-	cap := &CommentAuthorsPart{
+	commentAuthorsPart := &CommentAuthorsPart{
 		OpenXmlPartData: partData,
 	}
 
 	// Initialize with minimal comment authors content
-	cap.initializeContent()
+	commentAuthorsPart.initializeContent()
 
 	// Add to presentation part's child parts
-	if err := presentationPart.AddPart(cap, relID); err != nil {
+	if err := presentationPart.AddPart(commentAuthorsPart, relID); err != nil {
 		return nil, err
 	}
 
-	return cap, nil
+	return commentAuthorsPart, nil
 }
 
 // initializeContent sets up minimal comment authors content.
-func (cap *CommentAuthorsPart) initializeContent() {
+func (commentAuthorsPart *CommentAuthorsPart) initializeContent() {
 	cal := elements.NewCommentAuthorList()
-	cap.SetRootElement(cal)
+	commentAuthorsPart.SetRootElement(cal)
 }
 
 // FixedContentType returns the content type for this part.
@@ -70,8 +70,8 @@ func (*CommentAuthorsPart) FixedContentType() string {
 }
 
 // CommentAuthors returns the root CommentAuthorList element.
-func (cap *CommentAuthorsPart) CommentAuthors() *elements.CommentAuthorList {
-	root := cap.RootElement()
+func (commentAuthorsPart *CommentAuthorsPart) CommentAuthors() *elements.CommentAuthorList {
+	root := commentAuthorsPart.RootElement()
 	if root == nil {
 		return nil
 	}
@@ -83,8 +83,8 @@ func (cap *CommentAuthorsPart) CommentAuthors() *elements.CommentAuthorList {
 }
 
 // GetStream returns a reader for the part content.
-func (cap *CommentAuthorsPart) GetStream() io.Reader {
-	return cap.OpenXmlPartData.GetStream()
+func (commentAuthorsPart *CommentAuthorsPart) GetStream() io.Reader {
+	return commentAuthorsPart.OpenXmlPartData.GetStream()
 }
 
 // Ensure CommentAuthorsPart implements OpenXmlPart.

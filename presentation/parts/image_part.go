@@ -12,6 +12,13 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+const (
+	// PNG image format constants.
+	imageFormatPng      = "png"
+	imageExtensionPng   = ".png"
+	imageContentTypePng = "image/png"
+)
+
 // ImageType represents the type of an image.
 type ImageType int
 
@@ -48,7 +55,7 @@ const (
 func (it ImageType) String() string {
 	switch it {
 	case ImageTypePng:
-		return "png"
+		return imageFormatPng
 	case ImageTypeJpeg:
 		return "jpeg"
 	case ImageTypeGif:
@@ -66,7 +73,7 @@ func (it ImageType) String() string {
 	case ImageTypeSvg:
 		return "svg"
 	default:
-		return "png"
+		return imageFormatPng
 	}
 }
 
@@ -74,7 +81,7 @@ func (it ImageType) String() string {
 func (it ImageType) Extension() string {
 	switch it {
 	case ImageTypePng:
-		return ".png"
+		return imageExtensionPng
 	case ImageTypeJpeg:
 		return ".jpeg"
 	case ImageTypeGif:
@@ -92,7 +99,7 @@ func (it ImageType) Extension() string {
 	case ImageTypeSvg:
 		return ".svg"
 	default:
-		return ".png"
+		return imageExtensionPng
 	}
 }
 
@@ -100,7 +107,7 @@ func (it ImageType) Extension() string {
 func (it ImageType) ContentType() string {
 	switch it {
 	case ImageTypePng:
-		return "image/png"
+		return imageContentTypePng
 	case ImageTypeJpeg:
 		return "image/jpeg"
 	case ImageTypeGif:
@@ -118,7 +125,7 @@ func (it ImageType) ContentType() string {
 	case ImageTypeSvg:
 		return "image/svg+xml"
 	default:
-		return "image/png"
+		return imageContentTypePng
 	}
 }
 
@@ -250,7 +257,7 @@ func imageTypeFromContentType(
 	contentType string,
 ) ImageType {
 	switch contentType {
-	case "image/png":
+	case imageContentTypePng:
 		return ImageTypePng
 	case "image/jpeg", "image/jpg":
 		return ImageTypeJpeg
@@ -282,7 +289,7 @@ func ImageTypeFromExtension(
 		normalizedExt = "." + normalizedExt
 	}
 	switch normalizedExt {
-	case ".png":
+	case imageExtensionPng:
 		return ImageTypePng
 	case ".jpg", ".jpeg":
 		return ImageTypeJpeg

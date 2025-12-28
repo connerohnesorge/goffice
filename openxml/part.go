@@ -176,10 +176,11 @@ func (p *OpenXmlPartData) loadChildPartsRecursive(
 		}
 
 		// Set relationship ID
-		if partData, ok := childPart.(*OpenXmlPartData); ok {
-			partData.SetRelationshipID(rel.ID())
-		} else if relPart, ok := childPart.(IRelationshipIDPart); ok {
-			relPart.SetRelationshipID(rel.ID())
+		switch cp := childPart.(type) {
+		case *OpenXmlPartData:
+			cp.SetRelationshipID(rel.ID())
+		case IRelationshipIDPart:
+			cp.SetRelationshipID(rel.ID())
 		}
 
 		p.childParts[rel.ID()] = childPart

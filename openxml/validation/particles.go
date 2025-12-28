@@ -116,9 +116,8 @@ func (p *ElementParticle) Validate(
 	ctx *ValidationContext,
 	children []ElementInfo,
 	path string,
-) ([]*ValidationError, int) {
-	var errors []*ValidationError
-	consumed := 0
+) (errors []*ValidationError, consumed int) {
+	errors = []*ValidationError{}
 
 	// Check version availability
 	if p.Matcher.Availability != nil &&
@@ -206,9 +205,8 @@ func (p *SequenceParticle) Validate(
 	ctx *ValidationContext,
 	children []ElementInfo,
 	path string,
-) ([]*ValidationError, int) {
-	var allErrors []*ValidationError
-	totalConsumed := 0
+) (allErrors []*ValidationError, totalConsumed int) {
+	allErrors = []*ValidationError{}
 	occurrences := 0
 
 	// Try to match the sequence multiple times up to maxOccurs
@@ -318,9 +316,8 @@ func (p *ChoiceParticle) Validate(
 	ctx *ValidationContext,
 	children []ElementInfo,
 	path string,
-) ([]*ValidationError, int) {
-	var errors []*ValidationError
-	totalConsumed := 0
+) (errors []*ValidationError, totalConsumed int) {
+	errors = []*ValidationError{}
 	occurrences := 0
 
 	// Try to match one of the choices multiple times up to maxOccurs

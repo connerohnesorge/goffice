@@ -5,6 +5,10 @@ import (
 	"testing"
 )
 
+const (
+	testRelationshipID = "rId2"
+)
+
 func TestNewWorksheetDrawing(t *testing.T) {
 	wd := NewWorksheetDrawing()
 
@@ -619,8 +623,8 @@ func TestBlip(t *testing.T) {
 	}
 
 	// Test Embed
-	blip.SetEmbed("rId2")
-	if blip.Embed() != "rId2" {
+	blip.SetEmbed(testRelationshipID)
+	if blip.Embed() != testRelationshipID {
 		t.Errorf(
 			"expected embed 'rId2', got '%s'",
 			blip.Embed(),

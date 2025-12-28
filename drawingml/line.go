@@ -331,9 +331,9 @@ func (l *LineProperties) CapType() LineCapValue {
 
 // SetCapType sets the line cap type.
 func (l *LineProperties) SetCapType(
-	cap LineCapValue,
+	capType LineCapValue,
 ) {
-	if cap == "" {
+	if capType == "" {
 		l.RemoveAttribute("cap", "")
 
 		return
@@ -343,7 +343,7 @@ func (l *LineProperties) SetCapType(
 			"",
 			"cap",
 			"",
-			string(cap),
+			string(capType),
 		),
 	)
 }

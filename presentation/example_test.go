@@ -157,7 +157,7 @@ func Example_textFormatting() {
 // Example_imageInsertion demonstrates adding an image to a slide.
 func Example_imageInsertion() {
 	// Create a dummy image file for demonstration
-	if errWrite := os.WriteFile("image.png", []byte("dummy image content"), 0644); errWrite != nil {
+	if errWrite := os.WriteFile("image.png", []byte("dummy image content"), 0o644); errWrite != nil {
 		log.Printf(
 			"failed to write dummy image: %v",
 			errWrite,

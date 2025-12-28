@@ -238,7 +238,7 @@ func toPascalCase(s string) string {
 	var result strings.Builder
 	caser := cases.Title(language.English)
 	for _, p := range parts {
-		if len(p) > 0 {
+		if p != "" {
 			result.WriteString(caser.String(p))
 		}
 	}

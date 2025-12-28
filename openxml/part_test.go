@@ -99,7 +99,7 @@ func TestNewOpenXmlPartData(t *testing.T) {
 // Test Part loading and content management
 
 func TestOpenXmlPartDataContent(t *testing.T) {
-	tmpPath := t.TempDir() + "/test.docx" //nolint:lll
+	tmpPath := t.TempDir() + "/test.docx" //nolint:gocritic // String concatenation is acceptable in test setup
 	pkg, err := packaging.Create(tmpPath)
 	if err != nil {
 		t.Fatalf(
@@ -154,7 +154,7 @@ func TestOpenXmlPartDataContent(t *testing.T) {
 
 	t.Run(
 		"GetStream",
-		func(t *testing.T) { //nolint:lll
+		func(t *testing.T) { //nolint:gocritic // Anonymous function declaration is standard test pattern
 			testData := []byte(
 				"<document>Stream test</document>",
 			)

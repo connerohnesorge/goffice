@@ -197,7 +197,7 @@ func (is *IconSet) SetReverse(value bool) {
 func (is *IconSet) Cfvos() iter.Seq[*Cfvo] {
 	return func(yield func(*Cfvo) bool) {
 		for child := range is.Children() {
-			if child.LocalName() != "cfvo" ||
+			if child.LocalName() != elemNameCfvo ||
 				child.NamespaceURI() != NamespaceSML {
 				continue
 			}

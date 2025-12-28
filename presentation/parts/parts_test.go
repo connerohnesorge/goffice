@@ -10,7 +10,7 @@ import (
 // createTestPresentationPart creates a test presentation part for testing.
 func createTestPresentationPart(
 	t *testing.T,
-) (*PresentationPart, func()) {
+) (part *PresentationPart, cleanup func()) {
 	t.Helper()
 	tempDir := t.TempDir()
 	path := filepath.Join(tempDir, "test.pptx")
@@ -39,7 +39,7 @@ func createTestPresentationPart(
 	presPart.InitializeContent()
 	pkg.SetMainPart(presPart)
 
-	cleanup := func() {
+	cleanup = func() {
 		_ = pkg.Close()
 	}
 

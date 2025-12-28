@@ -828,12 +828,12 @@ func (p *Path2D) AddCubicBezierTo(
 
 // AddClose adds a close command to the path.
 func (p *Path2D) AddClose() {
-	close := openxml.NewLeafElement(
+	closePath := openxml.NewLeafElement(
 		NamespaceMain,
 		"close",
 		PrefixMain,
 	)
-	p.AppendChild(close)
+	p.AppendChild(closePath)
 }
 
 // Clone creates a deep copy of this Path2D element.

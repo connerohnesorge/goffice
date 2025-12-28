@@ -5,10 +5,14 @@ import (
 	"testing"
 )
 
+const (
+	testColorRed = "FF0000"
+)
+
 func TestRgbColor(t *testing.T) {
 	t.Run("NewRgbColor", func(t *testing.T) {
-		color := NewRgbColor("FF0000")
-		if color.Value() != "FF0000" {
+		color := NewRgbColor(testColorRed)
+		if color.Value() != testColorRed {
 			t.Errorf(
 				"Expected FF0000, got %s",
 				color.Value(),
@@ -51,7 +55,7 @@ func TestRgbColor(t *testing.T) {
 	t.Run(
 		"AddTransformations",
 		func(t *testing.T) {
-			color := NewRgbColor("FF0000")
+			color := NewRgbColor(testColorRed)
 			color.AddTint(50000)
 			color.AddAlpha(75000)
 

@@ -146,7 +146,7 @@ func (f *Filters) SetCalendarType(
 func (f *Filters) GetFilters() iter.Seq[*Filter] {
 	return func(yield func(*Filter) bool) {
 		for child := range f.Children() {
-			if child.LocalName() != "filter" ||
+			if child.LocalName() != elemNameFilter ||
 				child.NamespaceURI() != NamespaceSML {
 				continue
 			}
@@ -182,7 +182,7 @@ func (f *Filters) AddFilter(
 	// Insert filters before dateGroupItem elements
 	var insertBefore openxml.Element
 	for child := range f.Children() {
-		if child.LocalName() == "dateGroupItem" &&
+		if child.LocalName() == elemNameDateGroupItem &&
 			child.NamespaceURI() == NamespaceSML {
 			insertBefore = child
 
@@ -226,7 +226,7 @@ func (f *Filters) HasFilter(value string) bool {
 func (f *Filters) GetDateGroupItems() iter.Seq[*DateGroupItem] {
 	return func(yield func(*DateGroupItem) bool) {
 		for child := range f.Children() {
-			if child.LocalName() != "dateGroupItem" ||
+			if child.LocalName() != elemNameDateGroupItem ||
 				child.NamespaceURI() != NamespaceSML {
 				continue
 			}
@@ -271,7 +271,7 @@ func (f *Filters) ClearAll() {
 	var toRemove []openxml.Element
 	for child := range f.Children() {
 		localName := child.LocalName()
-		if (localName == "filter" || localName == "dateGroupItem") &&
+		if (localName == elemNameFilter || localName == elemNameDateGroupItem) &&
 			child.NamespaceURI() == NamespaceSML {
 			toRemove = append(toRemove, child)
 		}
@@ -312,7 +312,7 @@ type Filter struct {
 func NewFilter() *Filter {
 	elem := openxml.NewLeafElement(
 		NamespaceSML,
-		"filter",
+		elemNameFilter,
 		PrefixDefault,
 	)
 

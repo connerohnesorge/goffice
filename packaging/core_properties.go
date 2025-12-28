@@ -264,10 +264,10 @@ func (cp *CoreProperties) SetLastPrinted(
 //
 //nolint:revive // Long URLs cannot be broken
 const (
-	nsCoreProperties = "http://schemas.openxmlformats.org/package/2006/metadata/core-properties" //nolint:unused
-	nsDublinCore     = "http://purl.org/dc/elements/1.1/"                                        //nolint:unused
-	nsDCTerms        = "http://purl.org/dc/terms/"                                               //nolint:unused
-	nsXSI            = "http://www.w3.org/2001/XMLSchema-instance"                               //nolint:unused
+	nsCoreProperties = "http://schemas.openxmlformats.org/package/2006/metadata/core-properties" //nolint:unused // XML namespace constant for documentation
+	nsDublinCore     = "http://purl.org/dc/elements/1.1/"                                        //nolint:unused // XML namespace constant for documentation
+	nsDCTerms        = "http://purl.org/dc/terms/"                                               //nolint:unused // XML namespace constant for documentation
+	nsXSI            = "http://www.w3.org/2001/XMLSchema-instance"                               //nolint:unused // XML namespace constant for documentation
 )
 
 // XML types for core properties serialization.

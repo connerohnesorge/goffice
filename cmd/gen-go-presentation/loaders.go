@@ -114,18 +114,18 @@ func collectTypes(path string) {
 		panic(fmt.Errorf(msg, path, errUnmarshal))
 	}
 
-	for _, t := range schema.Types {
-		t.TargetNamespace = schema.TargetNamespace
-		if t.ClassName != "" {
-			typeMap[t.Name] = TypeInfo{
-				ClassName: t.ClassName,
-				Namespace: t.TargetNamespace,
+	for i := range schema.Types {
+		schema.Types[i].TargetNamespace = schema.TargetNamespace
+		if schema.Types[i].ClassName != "" {
+			typeMap[schema.Types[i].Name] = TypeInfo{
+				ClassName: schema.Types[i].ClassName,
+				Namespace: schema.Types[i].TargetNamespace,
 			}
 		}
 	}
 
-	for _, e := range schema.Enums {
-		e.TargetNamespace = schema.TargetNamespace
-		enumMap[e.Name] = e
+	for i := range schema.Enums {
+		schema.Enums[i].TargetNamespace = schema.TargetNamespace
+		enumMap[schema.Enums[i].Name] = &schema.Enums[i]
 	}
 }

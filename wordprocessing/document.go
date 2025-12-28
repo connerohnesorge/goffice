@@ -34,6 +34,14 @@ const (
 	DocTypeMacroTemplate
 )
 
+// File extension constants
+const (
+	extensionDocx = ".docx"
+	extensionDotx = ".dotx"
+	extensionDocm = ".docm"
+	extensionDotm = ".dotm"
+)
+
 // String returns the string representation of the document type.
 func (dt DocType) String() string {
 	switch dt {
@@ -54,15 +62,15 @@ func (dt DocType) String() string {
 func (dt DocType) Extension() string {
 	switch dt {
 	case DocTypeDocument:
-		return ".docx"
+		return extensionDocx
 	case DocTypeTemplate:
-		return ".dotx"
+		return extensionDotx
 	case DocTypeMacroEnabled:
-		return ".docm"
+		return extensionDocm
 	case DocTypeMacroTemplate:
-		return ".dotm"
+		return extensionDotm
 	default:
-		return ".docx"
+		return extensionDocx
 	}
 }
 

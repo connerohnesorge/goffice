@@ -225,8 +225,9 @@ func (pp *ParagraphProperties) WidowControl() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0" &&
-		val != "off"
+	return val != attrValueFalse &&
+		val != attrValueZero &&
+		val != attrValueOff
 }
 
 // SetWidowControl sets whether widow/orphan control is enabled.
@@ -239,7 +240,7 @@ func (pp *ParagraphProperties) SetWidowControl(
 		) // true is default
 	} else {
 		elem := pp.getOrCreateElement("widowControl")
-		elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, "false"))
+		elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, attrValueFalse))
 	}
 }
 
@@ -516,8 +517,9 @@ func (pp *ParagraphProperties) SnapToGrid() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0" &&
-		val != "off"
+	return val != attrValueFalse &&
+		val != attrValueZero &&
+		val != attrValueOff
 }
 
 // SetSnapToGrid sets whether the paragraph snaps to the document grid.
@@ -530,7 +532,7 @@ func (pp *ParagraphProperties) SetSnapToGrid(
 		) // true is default
 	} else {
 		elem := pp.getOrCreateElement("snapToGrid")
-		elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, "false"))
+		elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, attrValueFalse))
 	}
 }
 
@@ -605,8 +607,9 @@ func (pp *ParagraphProperties) OverflowPunct() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0" &&
-		val != "off"
+	return val != attrValueFalse &&
+		val != attrValueZero &&
+		val != attrValueOff
 }
 
 // SetOverflowPunct sets whether punctuation is allowed to overflow the line.
@@ -619,7 +622,7 @@ func (pp *ParagraphProperties) SetOverflowPunct(
 		) // true is default
 	} else {
 		elem := pp.getOrCreateElement("overflowPunct")
-		elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, "false"))
+		elem.SetAttribute(openxml.NewAttribute(NamespaceWML, "val", PrefixW, attrValueFalse))
 	}
 }
 
@@ -639,8 +642,9 @@ func (pp *ParagraphProperties) hasOnOffElement(
 	if found {
 		val := attr.Value()
 
-		return val != "false" && val != "0" &&
-			val != "off"
+		return val != attrValueFalse &&
+			val != attrValueZero &&
+			val != attrValueOff
 	}
 
 	return true

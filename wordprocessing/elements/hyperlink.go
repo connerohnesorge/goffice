@@ -8,6 +8,7 @@ import (
 const (
 	// attrNameID is already defined in section_properties.go
 	attrNameAnchor = "anchor"
+	// attrValueFalse is already defined in section_properties.go
 )
 
 // Hyperlink represents a hyperlink element (w:hyperlink).
@@ -166,7 +167,7 @@ func (h *Hyperlink) History() bool {
 	}
 	val := attr.Value()
 
-	return val != "false" && val != "0"
+	return val != attrValueFalse && val != "0"
 }
 
 // SetHistory sets whether to add this link to history.

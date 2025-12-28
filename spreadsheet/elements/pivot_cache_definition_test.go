@@ -4,6 +4,11 @@ import (
 	"testing"
 )
 
+const (
+	testCategoryName = "Category"
+	testSheet1Name   = "Sheet1"
+)
+
 func TestNewPivotCacheDefinition(t *testing.T) {
 	pcd := NewPivotCacheDefinition()
 
@@ -194,14 +199,15 @@ func TestPivotCacheDefinitionCacheFields(
 	}
 
 	// Add a cache field using AddField
-	cf := cfs.AddField("Category")
+	cf := cfs.AddField(testCategoryName)
 	if cf == nil {
 		t.Fatal("AddField returned nil")
 	}
 
-	if cf.Name() != "Category" {
+	if cf.Name() != testCategoryName {
 		t.Errorf(
-			"Expected Name 'Category', got '%s'",
+			"Expected Name '%s', got '%s'",
+			testCategoryName,
 			cf.Name(),
 		)
 	}
@@ -286,10 +292,11 @@ func TestCacheSourceWorksheetSource(
 		)
 	}
 
-	ws.SetSheet("Sheet1")
-	if ws.Sheet() != "Sheet1" {
+	ws.SetSheet(testSheet1Name)
+	if ws.Sheet() != testSheet1Name {
 		t.Errorf(
-			"Expected Sheet 'Sheet1', got '%s'",
+			"Expected Sheet '%s', got '%s'",
+			testSheet1Name,
 			ws.Sheet(),
 		)
 	}

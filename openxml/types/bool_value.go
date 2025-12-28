@@ -13,6 +13,11 @@ const (
 	BooleanFormatTrueFalse BooleanOutputFormat = iota
 	// BooleanFormatOneZero serializes booleans as "1"/"0".
 	BooleanFormatOneZero
+
+	booleanStringFalse = "false"
+	booleanStringTrue  = "true"
+	booleanStringZero  = "0"
+	booleanStringOne   = "1"
 )
 
 // BooleanValue wraps a boolean value with optional nil/unset state.
@@ -94,16 +99,16 @@ func (bv *BooleanValue) InnerText() string {
 	switch bv.outputFormat {
 	case BooleanFormatOneZero:
 		if bv.value {
-			return "1"
+			return booleanStringOne
 		}
 
-		return "0"
+		return booleanStringZero
 	case BooleanFormatTrueFalse:
 		if bv.value {
-			return "true"
+			return booleanStringTrue
 		}
 
-		return "false"
+		return booleanStringFalse
 	}
 
 	// Unreachable with current enum values, but required for compilation.
@@ -126,12 +131,12 @@ func (bv *BooleanValue) SetInnerText(
 		strings.TrimSpace(text),
 	)
 	switch lower {
-	case "true", "1":
+	case booleanStringTrue, booleanStringOne:
 		bv.value = true
 		bv.hasValue = true
 
 		return nil
-	case "false", "0":
+	case booleanStringFalse, booleanStringZero:
 		bv.value = false
 		bv.hasValue = true
 

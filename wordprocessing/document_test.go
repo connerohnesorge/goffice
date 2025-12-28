@@ -433,7 +433,7 @@ func TestDocumentSaveToWriter_Reopen(
 		tmpDir,
 		"reopened.docx",
 	)
-	if err := os.WriteFile(reopenPath, buf, 0600); err != nil {
+	if err := os.WriteFile(reopenPath, buf, 0o600); err != nil {
 		t.Fatalf(
 			"WriteFile() error = %v",
 			err,

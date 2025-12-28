@@ -765,7 +765,7 @@ func (t *TransitionCut) ThroughBlack() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrValueTrue
 }
 
 // SetThroughBlack sets whether the cut goes through black.
@@ -873,7 +873,7 @@ func (t *TransitionFade) ThroughBlack() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrValueTrue
 }
 
 // SetThroughBlack sets whether the fade goes through black.

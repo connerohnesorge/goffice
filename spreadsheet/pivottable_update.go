@@ -28,10 +28,10 @@ func (p *PivotTable) updateFields() {
 }
 
 // buildFieldMap creates a map of unique field names to their indices.
-func (p *PivotTable) buildFieldMap() (map[string]int32, []string) {
-	fieldMap := make(map[string]int32)
+func (p *PivotTable) buildFieldMap() (fieldMap map[string]int32, allFields []string) {
+	fieldMap = make(map[string]int32)
 	fieldIndex := firstFieldIndex
-	allFields := make([]string, 0)
+	allFields = make([]string, 0)
 
 	addField := func(name string) {
 		if _, exists := fieldMap[name]; exists {

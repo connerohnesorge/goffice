@@ -477,7 +477,7 @@ func (g *GradientFill) RotateWithShape() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetRotateWithShape sets whether the gradient rotates with the shape.
@@ -793,7 +793,7 @@ func (b *BlipFill) RotateWithShape() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetRotateWithShape sets whether the fill rotates with the shape.

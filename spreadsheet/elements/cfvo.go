@@ -37,7 +37,7 @@ type Cfvo struct {
 func NewCfvo() *Cfvo {
 	elem := openxml.NewLeafElement(
 		NamespaceSML,
-		"cfvo",
+		elemNameCfvo,
 		PrefixDefault,
 	)
 

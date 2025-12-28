@@ -10,6 +10,10 @@ import (
 	"sync"
 )
 
+const (
+	targetModeExternal = "External"
+)
+
 // TargetMode specifies how a relationship target should be interpreted.
 type TargetMode int
 
@@ -26,7 +30,7 @@ func (tm TargetMode) String() string {
 	case TargetModeInternal:
 		return "Internal"
 	case TargetModeExternal:
-		return "External"
+		return targetModeExternal
 	default:
 		return "Internal"
 	}
@@ -259,7 +263,7 @@ func (rs *Relationships) MarshalToXML() ([]byte, error) {
 			Target: rel.target,
 		}
 		if rel.targetMode == TargetModeExternal {
-			xmlRel.TargetMode = "External"
+			xmlRel.TargetMode = targetModeExternal
 		}
 		xmlRels.Relationships = append(
 			xmlRels.Relationships,
@@ -298,7 +302,7 @@ func (rs *Relationships) UnmarshalFromXML(
 
 	for _, xmlRel := range xmlRels.Relationships {
 		mode := TargetModeInternal
-		if xmlRel.TargetMode == "External" {
+		if xmlRel.TargetMode == targetModeExternal {
 			mode = TargetModeExternal
 		}
 

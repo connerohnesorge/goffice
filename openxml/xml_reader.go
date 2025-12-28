@@ -121,17 +121,18 @@ func parseStartElement(
 	}
 
 	// Parse children
-	if comp, ok := elem.(CompositeElement); ok {
-		if err := parseChildren(decoder, comp, factory); err != nil {
+	switch e := elem.(type) {
+	case CompositeElement:
+		if err := parseChildren(decoder, e, factory); err != nil {
 			return nil, err
 		}
-	} else if leaf, ok := elem.(LeafElement); ok {
+	case LeafElement:
 		// For leaf elements, read text content until end element
 		text, err := readTextContent(decoder)
 		if err != nil {
 			return nil, err
 		}
-		leaf.SetInnerText(text)
+		e.SetInnerText(text)
 	}
 
 	return elem, nil
@@ -292,9 +293,9 @@ func getBaseElement(
 		return &e.BaseElement, true
 	case *PartRootElementBase:
 		return &e.BaseElement, true
-	default:
-		return nil, false
 	}
+
+	return nil, false
 }
 
 // SetOuterXml parses XML and replaces the element's content.

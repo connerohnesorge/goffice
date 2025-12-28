@@ -33,7 +33,7 @@ type SchemaValidator struct {
 	// Particle is the schema particle defining the allowed structure.
 	Particle Particle
 	// AllowedAttributes lists the allowed attributes.
-	AllowedAttributes []AttributeSchema
+	AllowedAttributes []*AttributeSchema
 	// RequiredAttributes lists attributes that must be present.
 	RequiredAttributes []string
 }
@@ -67,7 +67,7 @@ func NewSchemaValidator(
 	return &SchemaValidator{
 		Particle: particle,
 		AllowedAttributes: make(
-			[]AttributeSchema,
+			[]*AttributeSchema,
 			0,
 		),
 		RequiredAttributes: make([]string, 0),
@@ -76,7 +76,7 @@ func NewSchemaValidator(
 
 // WithAttribute adds an allowed attribute to the schema.
 func (v *SchemaValidator) WithAttribute(
-	attr AttributeSchema,
+	attr *AttributeSchema,
 ) *SchemaValidator {
 	v.AllowedAttributes = append(
 		v.AllowedAttributes,
@@ -210,12 +210,12 @@ func (v *SchemaValidator) validateAttributes(
 // AttributeValidator validates individual attribute values.
 type AttributeValidator struct {
 	// Schema is the attribute schema.
-	Schema AttributeSchema
+	Schema *AttributeSchema
 }
 
 // NewAttributeValidator creates a new attribute validator.
 func NewAttributeValidator(
-	schema AttributeSchema,
+	schema *AttributeSchema,
 ) *AttributeValidator {
 	return &AttributeValidator{Schema: schema}
 }

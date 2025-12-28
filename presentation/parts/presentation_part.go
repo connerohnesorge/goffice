@@ -239,8 +239,8 @@ func (pp *PresentationPart) AddCommentAuthorsPart() (*CommentAuthorsPart, error)
 // CommentAuthorsPart returns the comment authors part if present.
 func (pp *PresentationPart) CommentAuthorsPart() *CommentAuthorsPart {
 	for part := range pp.Parts() {
-		if cap, ok := part.(*CommentAuthorsPart); ok {
-			return cap
+		if commentAuthorsPart, ok := part.(*CommentAuthorsPart); ok {
+			return commentAuthorsPart
 		}
 	}
 

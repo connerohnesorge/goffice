@@ -4,6 +4,10 @@ import (
 	"testing"
 )
 
+const (
+	testRefA1D10 = "A1:D10"
+)
+
 func TestNewPivotTableDefinition(t *testing.T) {
 	pt := NewPivotTableDefinition()
 
@@ -705,7 +709,7 @@ func TestPivotTableDefinitionClone(t *testing.T) {
 
 func TestLocationClone(t *testing.T) {
 	loc := NewLocation()
-	loc.SetRef("A1:D10")
+	loc.SetRef(testRefA1D10)
 	loc.SetFirstDataRow(2)
 
 	clonedResult := loc.Clone()
@@ -723,9 +727,10 @@ func TestLocationClone(t *testing.T) {
 		)
 	}
 
-	if cloned.Ref() != "A1:D10" {
+	if cloned.Ref() != testRefA1D10 {
 		t.Errorf(
-			"Cloned Ref should be 'A1:D10', got '%s'",
+			"Cloned Ref should be '%s', got '%s'",
+			testRefA1D10,
 			cloned.Ref(),
 		)
 	}

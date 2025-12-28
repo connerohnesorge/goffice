@@ -5,6 +5,11 @@ import (
 	"testing"
 )
 
+const (
+	testAuthorJohnDoe   = "John Doe"
+	testAuthorJaneSmith = "Jane Smith"
+)
+
 func TestCommentsCreation(t *testing.T) {
 	c := NewComments()
 
@@ -113,19 +118,19 @@ func TestAuthorsAddAndGet(t *testing.T) {
 	a := NewAuthors()
 
 	// Add authors
-	author1 := a.AddAuthor("John Doe")
+	author1 := a.AddAuthor(testAuthorJohnDoe)
 	if author1 == nil {
 		t.Fatal("AddAuthor returned nil")
 	}
 
-	if author1.Name() != "John Doe" {
+	if author1.Name() != testAuthorJohnDoe {
 		t.Errorf(
 			"expected 'John Doe', got '%s'",
 			author1.Name(),
 		)
 	}
 
-	author2 := a.AddAuthor("Jane Smith")
+	author2 := a.AddAuthor(testAuthorJaneSmith)
 	if author2 == nil {
 		t.Fatal("AddAuthor returned nil")
 	}
@@ -139,24 +144,28 @@ func TestAuthorsAddAndGet(t *testing.T) {
 	}
 
 	// Get by index
-	if a.GetAuthor(0).Name() != "John Doe" {
+	if a.GetAuthor(0).
+		Name() !=
+		testAuthorJohnDoe {
 		t.Error("expected 'John Doe' at index 0")
 	}
 
-	if a.GetAuthor(1).Name() != "Jane Smith" {
+	if a.GetAuthor(1).
+		Name() !=
+		testAuthorJaneSmith {
 		t.Error(
 			"expected 'Jane Smith' at index 1",
 		)
 	}
 
 	// Get by name
-	if a.GetAuthorName(0) != "John Doe" {
+	if a.GetAuthorName(0) != testAuthorJohnDoe {
 		t.Error(
 			"expected GetAuthorName(0) to return 'John Doe'",
 		)
 	}
 
-	if a.GetAuthorName(1) != "Jane Smith" {
+	if a.GetAuthorName(1) != testAuthorJaneSmith {
 		t.Error(
 			"expected GetAuthorName(1) to return 'Jane Smith'",
 		)

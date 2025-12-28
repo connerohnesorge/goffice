@@ -167,7 +167,7 @@ func (uv *UInt64Value) SetInnerText(
 		return nil
 	}
 	// Check for negative values
-	if len(text) > 0 && text[0] == '-' {
+	if text[0] == '-' {
 		return fmt.Errorf(
 			"invalid uint64 value: negative values not allowed: %s",
 			text,

@@ -5,6 +5,13 @@ import (
 	"testing"
 )
 
+const (
+	testTextHello  = "Hello"
+	testColorRed   = "FF0000"
+	testFontArial  = "Arial"
+	testAuthorName = "Author"
+)
+
 func TestPackageExists(t *testing.T) {
 	// Simple test to verify test infrastructure works for elements package
 	t.Log(
@@ -104,10 +111,11 @@ func TestNewRun(t *testing.T) {
 	})
 
 	t.Run("run with text", func(t *testing.T) {
-		r := NewRun("Hello")
-		if r.InnerText() != "Hello" {
+		r := NewRun(testTextHello)
+		if r.InnerText() != testTextHello {
 			t.Errorf(
-				"Expected 'Hello', got %q",
+				"Expected %q, got %q",
+				testTextHello,
 				r.InnerText(),
 			)
 		}
@@ -115,7 +123,7 @@ func TestNewRun(t *testing.T) {
 }
 
 func TestNewText(t *testing.T) {
-	text := NewText("Hello")
+	text := NewText(testTextHello)
 	if text == nil {
 		t.Fatal("NewText returned nil")
 	}
@@ -125,9 +133,10 @@ func TestNewText(t *testing.T) {
 			text.LocalName(),
 		)
 	}
-	if text.InnerText() != "Hello" {
+	if text.InnerText() != testTextHello {
 		t.Errorf(
-			"Expected 'Hello', got %q",
+			"Expected %q, got %q",
+			testTextHello,
 			text.InnerText(),
 		)
 	}
@@ -137,7 +146,7 @@ func TestTextSpacePreservation(t *testing.T) {
 	t.Run(
 		"no space preserve for normal text",
 		func(t *testing.T) {
-			text := NewText("Hello")
+			text := NewText(testTextHello)
 			if text.Space() != "" {
 				t.Errorf(
 					"Expected no space attribute, got %q",
@@ -151,7 +160,9 @@ func TestTextSpacePreservation(t *testing.T) {
 		"space preserve for leading whitespace",
 		func(t *testing.T) {
 			text := NewText("  Hello")
-			if text.Space() != "preserve" {
+			if text.Space() != string(
+				SpaceProcessingModePreserve,
+			) {
 				t.Errorf(
 					"Expected space='preserve', got %q",
 					text.Space(),
@@ -164,7 +175,9 @@ func TestTextSpacePreservation(t *testing.T) {
 		"space preserve for trailing whitespace",
 		func(t *testing.T) {
 			text := NewText("Hello  ")
-			if text.Space() != "preserve" {
+			if text.Space() != string(
+				SpaceProcessingModePreserve,
+			) {
 				t.Errorf(
 					"Expected space='preserve', got %q",
 					text.Space(),
@@ -213,10 +226,11 @@ func TestRunProperties(t *testing.T) {
 
 	t.Run("color", func(t *testing.T) {
 		rp := NewRunProperties()
-		rp.SetColor("FF0000")
-		if rp.Color() != "FF0000" {
+		rp.SetColor(testColorRed)
+		if rp.Color() != testColorRed {
 			t.Errorf(
-				"Expected Color 'FF0000', got %q",
+				"Expected Color %q, got %q",
+				testColorRed,
 				rp.Color(),
 			)
 		}
@@ -357,9 +371,10 @@ func TestParagraphAppendRun(t *testing.T) {
 		t.Errorf("Expected 1 run, got %d", count)
 	}
 
-	if p.InnerText() != "Hello" {
+	if p.InnerText() != testTextHello {
 		t.Errorf(
-			"Expected 'Hello', got %q",
+			"Expected %q, got %q",
+			testTextHello,
 			p.InnerText(),
 		)
 	}
@@ -657,7 +672,7 @@ func TestRunConvenienceMethods(t *testing.T) {
 	r.SetBold(true).
 		SetItalic(true).
 		SetFontSize(28).
-		SetColor("FF0000")
+		SetColor(testColorRed)
 
 	props := r.Properties()
 	if props == nil {
@@ -676,9 +691,10 @@ func TestRunConvenienceMethods(t *testing.T) {
 			props.FontSize(),
 		)
 	}
-	if props.Color() != "FF0000" {
+	if props.Color() != testColorRed {
 		t.Errorf(
-			"Expected Color 'FF0000', got %q",
+			"Expected Color %q, got %q",
+			testColorRed,
 			props.Color(),
 		)
 	}

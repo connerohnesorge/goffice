@@ -9,6 +9,10 @@ import (
 	"github.com/connerohnesorge/goffice/openxml/features"
 )
 
+const (
+	constXmlns = "xmlns"
+)
+
 // childNode is a node in a doubly-linked list of children.
 type childNode struct {
 	element Element
@@ -408,14 +412,14 @@ func (c *CompositeElementBase) WriteXML(
 	// if it doesn't already have one and has a namespace URI.
 	if c.parent == nil && c.NamespaceURI() != "" {
 		found := false
-		xmlnsLocal := "xmlns"
+		xmlnsLocal := constXmlns
 		if c.prefix != "" {
 			xmlnsLocal = c.prefix
 		}
 
 		for _, attr := range c.attributes {
 			if attr.LocalName() == xmlnsLocal &&
-				(attr.Prefix() == "xmlns" || (c.prefix == "" && attr.Prefix() == "")) {
+				(attr.Prefix() == constXmlns || (c.prefix == "" && attr.Prefix() == "")) {
 				found = true
 
 				break
@@ -426,13 +430,13 @@ func (c *CompositeElementBase) WriteXML(
 				c.SetAttribute(
 					NewAttribute(
 						"http://www.w3.org/2000/xmlns/",
-						"xmlns",
+						constXmlns,
 						"",
 						c.NamespaceURI(),
 					),
 				)
 			} else {
-				c.SetAttribute(NewAttribute("http://www.w3.org/2000/xmlns/", c.prefix, "xmlns", c.NamespaceURI()))
+				c.SetAttribute(NewAttribute("http://www.w3.org/2000/xmlns/", c.prefix, constXmlns, c.NamespaceURI()))
 			}
 		}
 	}

@@ -39,26 +39,31 @@ func TestFontsAddAndGetFont(t *testing.T) {
 	}
 
 	// Add font by name
-	font := f.AddFontByName("Arial")
+	font := f.AddFontByName(testFontArial)
 	if font == nil {
 		t.Fatal("Expected font to be created")
 	}
 
-	if font.Name() != "Arial" {
+	if font.Name() != testFontArial {
 		t.Errorf(
-			"Expected font name 'Arial', got %q",
+			"Expected font name %q, got %q",
+			testFontArial,
 			font.Name(),
 		)
 	}
 
 	// Get font by name
-	found := f.GetFont("Arial")
+	found := f.GetFont(testFontArial)
 	if found == nil {
-		t.Fatal("Expected to find font 'Arial'")
+		t.Fatalf(
+			"Expected to find font %q",
+			testFontArial,
+		)
 	}
-	if found.Name() != "Arial" {
+	if found.Name() != testFontArial {
 		t.Errorf(
-			"Expected font name 'Arial', got %q",
+			"Expected font name %q, got %q",
+			testFontArial,
 			found.Name(),
 		)
 	}

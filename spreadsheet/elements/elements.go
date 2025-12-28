@@ -902,7 +902,7 @@ type OleItem struct {
 	Icon *types.BooleanValue `xml:"icon,attr,omitempty"`
 	Advise *types.BooleanValue `xml:"advise,attr,omitempty"`
 	PreferPicture *types.BooleanValue `xml:"preferPic,attr,omitempty"`
-	DdeValues *Values `xml:"values,omitempty"`
+	DdeValues *DdeValues `xml:"values,omitempty"`
 }
 
 func NewOleItem() *OleItem {
@@ -931,7 +931,7 @@ func (m *OleItem) Clone() openxml.Element {
 		ret.PreferPicture = &v
 	}
 	if m.DdeValues != nil {
-		ret.DdeValues = m.DdeValues.Clone().(*Values)
+		ret.DdeValues = m.DdeValues.Clone()
 	}
 	return ret
 }
@@ -11272,9 +11272,9 @@ type RevisionCellChange struct {
 	OldPhoneticText *types.BooleanValue `xml:"oldPh,attr,omitempty"`
 	EndOfListFormulaUpdate *types.BooleanValue `xml:"endOfListFormulaUpdate,attr,omitempty"`
 	OldCell *OldCell `xml:"oc,omitempty"`
-	NewCell *OldCell `xml:"nc,omitempty"`
+	NewCell *NewCell `xml:"nc,omitempty"`
 	OldDifferentialFormat *OldDifferentialFormat `xml:"odxf,omitempty"`
-	NewDifferentialFormat *DifferentialFormat `xml:"ndxf,omitempty"`
+	NewCellDifferentialFormat *NewCellDifferentialFormat `xml:"ndxf,omitempty"`
 	ExtensionList *ExtensionList `xml:"extLst,omitempty"`
 }
 
@@ -11347,13 +11347,13 @@ func (m *RevisionCellChange) Clone() openxml.Element {
 		ret.OldCell = m.OldCell.Clone().(*OldCell)
 	}
 	if m.NewCell != nil {
-		ret.NewCell = m.NewCell.Clone().(*OldCell)
+		ret.NewCell = m.NewCell.Clone().(*NewCell)
 	}
 	if m.OldDifferentialFormat != nil {
 		ret.OldDifferentialFormat = m.OldDifferentialFormat.Clone().(*OldDifferentialFormat)
 	}
-	if m.NewDifferentialFormat != nil {
-		ret.NewDifferentialFormat = m.NewDifferentialFormat.Clone().(*DifferentialFormat)
+	if m.NewCellDifferentialFormat != nil {
+		ret.NewCellDifferentialFormat = m.NewCellDifferentialFormat.Clone().(*NewCellDifferentialFormat)
 	}
 	if m.ExtensionList != nil {
 		ret.ExtensionList = m.ExtensionList.Clone().(*ExtensionList)
@@ -11377,8 +11377,8 @@ func (m *RevisionCellChange) Validate() error {
 			return err
 		}
 	}
-	if m.NewDifferentialFormat != nil {
-		if err := m.NewDifferentialFormat.Validate(); err != nil {
+	if m.NewCellDifferentialFormat != nil {
+		if err := m.NewCellDifferentialFormat.Validate(); err != nil {
 			return err
 		}
 	}
@@ -12071,6 +12071,49 @@ func (m *OldCell) Validate() error {
 	return nil
 }
 
+// New Cell Data.
+type NewCell struct {
+	*openxml.CompositeElementBase
+	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/spreadsheetml/2006/main nc"`
+	CellFormula *CellFormula `xml:"f,omitempty"`
+	CellValue *CellValue `xml:"v,omitempty"`
+	InlineString *InlineString `xml:"is,omitempty"`
+	ExtensionList *ExtensionList `xml:"extLst,omitempty"`
+}
+
+func NewNewCell() *NewCell {
+	ret := &NewCell{}
+	ns := openxml.NamespaceSpreadsheetML
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "nc", "x")
+	return ret
+}
+
+func (m *NewCell) Clone() openxml.Element {
+	ret := NewNewCell()
+	if m.CellFormula != nil {
+		ret.CellFormula = m.CellFormula.Clone().(*CellFormula)
+	}
+	if m.CellValue != nil {
+		ret.CellValue = m.CellValue.Clone().(*CellValue)
+	}
+	if m.InlineString != nil {
+		ret.InlineString = m.InlineString.Clone().(*InlineString)
+	}
+	if m.ExtensionList != nil {
+		ret.ExtensionList = m.ExtensionList.Clone().(*ExtensionList)
+	}
+	return ret
+}
+
+func (m *NewCell) Validate() error {
+	if m.ExtensionList != nil {
+		if err := m.ExtensionList.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Old Formatting Information.
 type OldDifferentialFormat struct {
 	*openxml.CompositeElementBase
@@ -12118,6 +12161,66 @@ func (m *OldDifferentialFormat) Clone() openxml.Element {
 }
 
 func (m *OldDifferentialFormat) Validate() error {
+	if m.NumberingFormat != nil {
+		if err := m.NumberingFormat.Validate(); err != nil {
+			return err
+		}
+	}
+	if m.ExtensionList != nil {
+		if err := m.ExtensionList.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// New Formatting Information.
+type NewCellDifferentialFormat struct {
+	*openxml.CompositeElementBase
+	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/spreadsheetml/2006/main ndxf"`
+	Font *Font `xml:"font,omitempty"`
+	NumberingFormat *NumberingFormat `xml:"numFmt,omitempty"`
+	Fill *Fill `xml:"fill,omitempty"`
+	Alignment *Alignment `xml:"alignment,omitempty"`
+	Border *Border `xml:"border,omitempty"`
+	Protection *Protection `xml:"protection,omitempty"`
+	ExtensionList *ExtensionList `xml:"extLst,omitempty"`
+}
+
+func NewNewCellDifferentialFormat() *NewCellDifferentialFormat {
+	ret := &NewCellDifferentialFormat{}
+	ns := openxml.NamespaceSpreadsheetML
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "ndxf", "x")
+	return ret
+}
+
+func (m *NewCellDifferentialFormat) Clone() openxml.Element {
+	ret := NewNewCellDifferentialFormat()
+	if m.Font != nil {
+		ret.Font = m.Font.Clone().(*Font)
+	}
+	if m.NumberingFormat != nil {
+		ret.NumberingFormat = m.NumberingFormat.Clone().(*NumberingFormat)
+	}
+	if m.Fill != nil {
+		ret.Fill = m.Fill.Clone().(*Fill)
+	}
+	if m.Alignment != nil {
+		ret.Alignment = m.Alignment.Clone().(*Alignment)
+	}
+	if m.Border != nil {
+		ret.Border = m.Border.Clone().(*Border)
+	}
+	if m.Protection != nil {
+		ret.Protection = m.Protection.Clone().(*Protection)
+	}
+	if m.ExtensionList != nil {
+		ret.ExtensionList = m.ExtensionList.Clone().(*ExtensionList)
+	}
+	return ret
+}
+
+func (m *NewCellDifferentialFormat) Validate() error {
 	if m.NumberingFormat != nil {
 		if err := m.NumberingFormat.Validate(); err != nil {
 			return err

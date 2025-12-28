@@ -72,10 +72,11 @@ func (af *AutoFilter) FilterColumns() iter.Seq[*FilterColumn] {
 				continue
 			}
 			var fc *FilterColumn
-			if f, ok := child.(*FilterColumn); ok {
-				fc = f
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				fc = &FilterColumn{CompositeElementBase: comp}
+			switch c := child.(type) {
+			case *FilterColumn:
+				fc = c
+			case *openxml.CompositeElementBase:
+				fc = &FilterColumn{CompositeElementBase: c}
 			}
 			if fc != nil && !yield(fc) {
 				return

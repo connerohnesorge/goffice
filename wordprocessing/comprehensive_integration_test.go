@@ -183,7 +183,7 @@ func TestComprehensiveRoundtrip(t *testing.T) {
 	testCases := []string{
 		"HelloWorld.docx",
 		"Plain.docx",
-		"SimpleSdt.docx",
+		"simpleSdt.docx",
 	}
 
 	for _, filename := range testCases {

@@ -973,7 +973,7 @@ func TestSchemaValidator(t *testing.T) {
 		"validates required attributes",
 		func(t *testing.T) {
 			validator := NewSchemaValidator(nil).
-				WithAttribute(AttributeSchema{
+				WithAttribute(&AttributeSchema{
 					LocalName: "required",
 					Required:  true,
 				})
@@ -1009,7 +1009,7 @@ func TestSchemaValidator(t *testing.T) {
 		"validates enumeration values",
 		func(t *testing.T) {
 			validator := NewSchemaValidator(nil).
-				WithAttribute(AttributeSchema{
+				WithAttribute(&AttributeSchema{
 					LocalName: "type",
 					Values: []string{
 						"a",

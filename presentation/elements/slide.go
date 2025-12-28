@@ -5,6 +5,11 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+const (
+	// attrValueTrue represents the string value "true" for XML attributes.
+	attrValueTrue = "true"
+)
+
 // Slide represents a slide element (p:sld).
 type Slide struct {
 	*openxml.PartRootElementBase
@@ -277,7 +282,7 @@ func (tr *SlideTransition) AdvanceOnClick() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrValueTrue
 }
 
 // SetAdvanceOnClick sets whether the slide advances on click.

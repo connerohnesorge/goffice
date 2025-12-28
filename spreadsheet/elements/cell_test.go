@@ -5,6 +5,12 @@ import (
 	"testing"
 )
 
+const (
+	testString    = "test"
+	helloWorld    = "Hello World"
+	relationIdOne = "rId1"
+)
+
 func TestSheetData(t *testing.T) {
 	t.Run("NewSheetData", func(t *testing.T) {
 		sd := NewSheetData()
@@ -463,13 +469,13 @@ func TestCell(t *testing.T) {
 		if cv == nil {
 			t.Fatal("expected non-nil CellValue")
 		}
-		cv.SetValue("test")
+		cv.SetValue(testString)
 
 		cv2 := cell.CellValue()
 		if cv2 == nil {
 			t.Fatal("expected non-nil CellValue")
 		}
-		if cv2.Value() != "test" {
+		if cv2.Value() != testString {
 			t.Errorf(
 				"expected value test, got %s",
 				cv2.Value(),
@@ -508,7 +514,7 @@ func TestCell(t *testing.T) {
 
 	t.Run("Clear", func(t *testing.T) {
 		cell := CreateCell()
-		cell.SetValue("test")
+		cell.SetValue(testString)
 		cell.SetFormula("=A1")
 
 		cell.Clear()
@@ -659,8 +665,8 @@ func TestInlineString(t *testing.T) {
 
 	t.Run("SetPlainText", func(t *testing.T) {
 		is := NewInlineString()
-		is.SetPlainText("Hello World")
-		if is.PlainText() != "Hello World" {
+		is.SetPlainText(helloWorld)
+		if is.PlainText() != helloWorld {
 			t.Errorf(
 				"expected text 'Hello World', got %s",
 				is.PlainText(),
@@ -1012,7 +1018,7 @@ func TestHyperlinks(t *testing.T) {
 
 	t.Run("AddHyperlink", func(t *testing.T) {
 		h := NewHyperlinks()
-		hl := h.AddHyperlink("A1", "rId1")
+		hl := h.AddHyperlink("A1", relationIdOne)
 		if hl == nil {
 			t.Fatal("expected non-nil Hyperlink")
 		}
@@ -1022,7 +1028,7 @@ func TestHyperlinks(t *testing.T) {
 				hl.Ref(),
 			)
 		}
-		if hl.RelationshipId() != "rId1" {
+		if hl.RelationshipId() != relationIdOne {
 			t.Errorf(
 				"expected r:id rId1, got %s",
 				hl.RelationshipId(),
@@ -1064,7 +1070,7 @@ func TestHyperlinks(t *testing.T) {
 
 	t.Run("HyperlinkCount", func(t *testing.T) {
 		h := NewHyperlinks()
-		h.AddHyperlink("A1", "rId1")
+		h.AddHyperlink("A1", relationIdOne)
 		h.AddHyperlink("B1", "rId2")
 		if h.HyperlinkCount() != 2 {
 			t.Errorf(
@@ -1098,7 +1104,7 @@ func TestHyperlinks(t *testing.T) {
 
 	t.Run("RemoveHyperlink", func(t *testing.T) {
 		h := NewHyperlinks()
-		h.AddHyperlink("A1", "rId1")
+		h.AddHyperlink("A1", relationIdOne)
 		h.AddHyperlink("B1", "rId2")
 
 		if !h.RemoveHyperlink("A1") {

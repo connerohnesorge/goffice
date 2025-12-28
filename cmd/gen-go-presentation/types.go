@@ -98,7 +98,7 @@ var (
 	// typeMap maps schema type names to their TypeInfo metadata.
 	typeMap = make(map[string]TypeInfo)
 	// enumMap maps enum names to their SchemaType definitions.
-	enumMap = make(map[string]SchemaType)
+	enumMap = make(map[string]*SchemaType)
 	// existingTypes tracks types already defined in manually written files.
 	existingTypes = make(map[string]bool)
 	// generatedTypes prevents duplicate generation of the same type.

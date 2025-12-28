@@ -232,10 +232,10 @@ func (c *Cell) GetString() string {
 
 	case elements.CellTypeBoolean:
 		if c.elemCell.Value() == "1" {
-			return "TRUE"
+			return booleanTrueString
 		}
 
-		return "FALSE"
+		return booleanFalseString
 
 	case elements.CellTypeDate:
 		// Date values are stored as strings in ISO 8601 format

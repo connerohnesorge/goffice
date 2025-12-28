@@ -7,6 +7,7 @@ import "github.com/connerohnesorge/goffice/openxml"
 const (
 	elemNameRef           = "ref"
 	elemNameDateGroupItem = "dateGroupItem"
+	elemNameFilter        = "filter"
 	elemNameIconSet       = "iconSet"
 	elemNameID            = "id"
 	elemNameCol           = "col"
@@ -20,6 +21,7 @@ const (
 	attrNameSaltValue     = "saltValue"
 	attrNameSpinCount     = "spinCount"
 	attrNameArray         = "array"
+	attrValueWorksheet    = "worksheet"
 	PrefixR               = "r"
 )
 

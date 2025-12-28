@@ -17,6 +17,7 @@ const (
 	attrNameName    = "name"
 
 	// Common attribute values
+	attrValueTrue  = "true"
 	attrValueFalse = "false"
 	attrValueZero  = "0"
 

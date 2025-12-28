@@ -13,6 +13,8 @@ import (
 type DataBarDirection string
 
 const (
+	elemNameCfvo = "cfvo"
+
 	// DataBarDirectionContext indicates direction based on context (default).
 	DataBarDirectionContext DataBarDirection = "context"
 	// DataBarDirectionLTR indicates left-to-right direction.
@@ -338,7 +340,7 @@ func (d *DataBar) SetAxisPosition(
 func (d *DataBar) Cfvos() iter.Seq[*Cfvo] {
 	return func(yield func(*Cfvo) bool) {
 		for child := range d.Children() {
-			if child.LocalName() != "cfvo" ||
+			if child.LocalName() != elemNameCfvo ||
 				child.NamespaceURI() != NamespaceSML {
 				continue
 			}

@@ -11,6 +11,8 @@ import (
 	"github.com/connerohnesorge/goffice/openxml/validation"
 )
 
+const minimalFixturePath = "../testdata/fixtures/minimal.xlsx"
+
 // BenchmarkWorkbookCreation benchmarks creating a new workbook.
 // Target: 10MB workbook in <1s
 func BenchmarkWorkbookCreation(b *testing.B) {
@@ -442,9 +444,7 @@ func BenchmarkSaveAs(b *testing.B) {
 
 // BenchmarkOpenFile benchmarks opening files.
 func BenchmarkOpenFile(b *testing.B) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
-
-	if _, err := os.Stat(fixturePath); os.IsNotExist(
+	if _, err := os.Stat(minimalFixturePath); os.IsNotExist(
 		err,
 	) {
 		b.Skip(
@@ -454,7 +454,10 @@ func BenchmarkOpenFile(b *testing.B) {
 
 	b.ResetTimer()
 	for range b.N {
-		doc, err := Open(fixturePath, false)
+		doc, err := Open(
+			minimalFixturePath,
+			false,
+		)
 		if err != nil {
 			b.Fatalf("Open() error = %v", err)
 		}
@@ -696,9 +699,7 @@ func BenchmarkDocumentTypes(b *testing.B) {
 
 // BenchmarkRoundtrip benchmarks the complete open-save-reopen cycle.
 func BenchmarkRoundtrip(b *testing.B) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
-
-	if _, err := os.Stat(fixturePath); os.IsNotExist(
+	if _, err := os.Stat(minimalFixturePath); os.IsNotExist(
 		err,
 	) {
 		b.Skip(
@@ -721,7 +722,7 @@ func BenchmarkRoundtrip(b *testing.B) {
 	b.ResetTimer()
 	for i := range b.N {
 		// Open
-		doc, err := Open(fixturePath, true)
+		doc, err := Open(minimalFixturePath, true)
 		if err != nil {
 			b.Fatalf("Open() error = %v", err)
 		}

@@ -37,7 +37,7 @@ func NewText(text string) *Text {
 
 // needsSpacePreserve checks if the text needs xml:space="preserve".
 func needsSpacePreserve(text string) bool {
-	if len(text) == 0 {
+	if text == "" {
 		return false
 	}
 	// Check for leading or trailing whitespace

@@ -410,26 +410,20 @@ func TestImageExtentFromPixels(t *testing.T) {
 		wantHeight EMU
 	}{
 		{
-			name:     "96 DPI default",
-			widthPx:  100,
-			heightPx: 100,
-			dpi:      96,
-			wantWidth: EMU(
-				952500,
-			), // 100 * 914400 / 96 = 952500
+			name:       "96 DPI default",
+			widthPx:    100,
+			heightPx:   100,
+			dpi:        96,
+			wantWidth:  EMU(952500),
 			wantHeight: EMU(952500),
 		},
 		{
-			name:     "72 DPI",
-			widthPx:  100,
-			heightPx: 200,
-			dpi:      72,
-			wantWidth: EMU(
-				1270000,
-			), // 100 * 914400 / 72 = 1270000
-			wantHeight: EMU(
-				2540000,
-			), // 200 * 914400 / 72 = 2540000
+			name:       "72 DPI",
+			widthPx:    100,
+			heightPx:   200,
+			dpi:        72,
+			wantWidth:  EMU(1270000),
+			wantHeight: EMU(2540000),
 		},
 		{
 			name:       "Zero DPI defaults to 96",

@@ -1978,7 +1978,9 @@ func (i *Item) SetN(name string) {
 func (i *Item) T() string {
 	attr, found := i.GetAttribute("t", "")
 	if !found {
-		return "data" // Default is data
+		return string(
+			PivotAreaValuesData,
+		) // Default is data
 	}
 
 	return attr.Value()
@@ -1988,7 +1990,8 @@ func (i *Item) T() string {
 // Valid values: data, default, sum, countA, avg, max, min, product, count,
 // stdDev, stdDevP, var, varP, grand, blank
 func (i *Item) SetT(t string) {
-	if t == "" || t == "data" {
+	if t == "" ||
+		t == string(PivotAreaValuesData) {
 		i.RemoveAttribute(
 			"t",
 			"",

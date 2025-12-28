@@ -8,6 +8,11 @@ import (
 	"github.com/connerohnesorge/goffice/packaging"
 )
 
+const (
+	testRelID       = "rId1"
+	testDocumentXML = "/word/document.xml"
+)
+
 // Test OpenXmlPackage initialization
 
 func TestNewOpenXmlPackage(t *testing.T) {
@@ -90,12 +95,12 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 		"AddPart with explicit ID",
 		func(t *testing.T) {
 			part := NewOpenXmlPartData(
-				"/word/document.xml",
+				testDocumentXML,
 				"application/xml",
 				nil,
 				oxPkg,
 			)
-			err := oxPkg.AddPart(part, "rId1")
+			err := oxPkg.AddPart(part, testRelID)
 			if err != nil {
 				t.Fatalf(
 					"AddPart() error = %v",
@@ -104,7 +109,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 			}
 
 			retrieved, err := oxPkg.GetPartById(
-				"rId1",
+				testRelID,
 			)
 			if err != nil {
 				t.Fatalf(
@@ -118,7 +123,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 				)
 			}
 
-			if part.RelationshipID() != "rId1" {
+			if part.RelationshipID() != testRelID {
 				t.Errorf(
 					"Part RelationshipID() = %q, want rId1",
 					part.RelationshipID(),
@@ -156,7 +161,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 		"AddPart duplicate URI fails",
 		func(t *testing.T) {
 			part := NewOpenXmlPartData(
-				"/word/document.xml",
+				testDocumentXML,
 				"application/xml",
 				nil,
 				oxPkg,
@@ -180,12 +185,12 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 			oxPkg2 := NewOpenXmlPackage(pkg2)
 
 			part := NewOpenXmlPartData(
-				"/word/document.xml",
+				testDocumentXML,
 				"application/xml",
 				nil,
 				oxPkg2,
 			)
-			_ = oxPkg2.AddPart(part, "rId1")
+			_ = oxPkg2.AddPart(part, testRelID)
 
 			if !oxPkg2.IsDirty() {
 				t.Error(
@@ -209,7 +214,7 @@ func TestOpenXmlPackageAddNewPart(t *testing.T) {
 		"AddNewPart creates part",
 		func(t *testing.T) {
 			part, err := oxPkg.AddNewPart(
-				"/word/document.xml",
+				testDocumentXML,
 				ContentTypeWordprocessingMLDocument,
 				RelationshipTypeOfficeDocument,
 			)
@@ -226,7 +231,7 @@ func TestOpenXmlPackageAddNewPart(t *testing.T) {
 				)
 			}
 
-			if part.URI() != "/word/document.xml" {
+			if part.URI() != testDocumentXML {
 				t.Errorf(
 					"Part URI() = %q",
 					part.URI(),
@@ -252,7 +257,7 @@ func TestOpenXmlPackageAddNewPart(t *testing.T) {
 		"AddNewPart duplicate fails",
 		func(t *testing.T) {
 			_, err := oxPkg.AddNewPart(
-				"/word/document.xml",
+				testDocumentXML,
 				"application/xml",
 				"",
 			)
@@ -276,7 +281,7 @@ func TestOpenXmlPackagePartLookup(t *testing.T) {
 	oxPkg := NewOpenXmlPackage(pkg)
 
 	part1 := NewOpenXmlPartData(
-		"/word/document.xml",
+		testDocumentXML,
 		ContentTypeWordprocessingMLDocument,
 		nil,
 		oxPkg,
@@ -294,7 +299,7 @@ func TestOpenXmlPackagePartLookup(t *testing.T) {
 		oxPkg,
 	)
 
-	_ = oxPkg.AddPart(part1, "rId1")
+	_ = oxPkg.AddPart(part1, testRelID)
 	_ = oxPkg.AddPart(part2, "rId2")
 	_ = oxPkg.AddPart(part3, "rId3")
 
@@ -399,7 +404,7 @@ func TestOpenXmlPackageDeletePart(t *testing.T) {
 	oxPkg := NewOpenXmlPackage(pkg)
 
 	part, _ := oxPkg.AddNewPart(
-		"/word/document.xml",
+		testDocumentXML,
 		"application/xml",
 		"",
 	)
@@ -432,7 +437,7 @@ func TestOpenXmlPackageDeletePart(t *testing.T) {
 			}
 
 			_, err = oxPkg.GetPartByURI(
-				"/word/document.xml",
+				testDocumentXML,
 			)
 			if err != ErrPartNotFound {
 				t.Errorf(
@@ -481,12 +486,12 @@ func TestOpenXmlPackageIsDirty(t *testing.T) {
 		"dirty after adding part",
 		func(t *testing.T) {
 			part := NewOpenXmlPartData(
-				"/word/document.xml",
+				testDocumentXML,
 				"application/xml",
 				nil,
 				oxPkg,
 			)
-			_ = oxPkg.AddPart(part, "rId1")
+			_ = oxPkg.AddPart(part, testRelID)
 
 			if !oxPkg.IsDirty() {
 				t.Error(
@@ -505,12 +510,12 @@ func TestOpenXmlPackageIsDirty(t *testing.T) {
 			oxPkg2 := NewOpenXmlPackage(pkg2)
 
 			part := NewOpenXmlPartData(
-				"/word/document.xml",
+				testDocumentXML,
 				"application/xml",
 				nil,
 				oxPkg2,
 			)
-			_ = oxPkg2.AddPart(part, "rId1")
+			_ = oxPkg2.AddPart(part, testRelID)
 
 			// Clear package dirty flag but mark part dirty
 			// This tests that IsDirty checks child parts
@@ -536,12 +541,12 @@ func TestOpenXmlPackageMainPart(t *testing.T) {
 
 	t.Run("SetMainPart", func(t *testing.T) {
 		part := NewOpenXmlPartData(
-			"/word/document.xml",
+			testDocumentXML,
 			"application/xml",
 			nil,
 			oxPkg,
 		)
-		_ = oxPkg.AddPart(part, "rId1")
+		_ = oxPkg.AddPart(part, testRelID)
 		oxPkg.SetMainPart(part)
 
 		if oxPkg.MainPart() != part {
@@ -604,7 +609,7 @@ func TestOpenXmlPackageSaveClose(t *testing.T) {
 		oxPkg := NewOpenXmlPackage(pkg)
 
 		part, _ := oxPkg.AddNewPart(
-			"/word/document.xml",
+			testDocumentXML,
 			"application/xml",
 			"",
 		)
@@ -637,7 +642,7 @@ func TestOpenXmlPackageSaveClose(t *testing.T) {
 		oxPkg := NewOpenXmlPackage(pkg)
 
 		part, _ := oxPkg.AddNewPart(
-			"/word/document.xml",
+			testDocumentXML,
 			"application/xml",
 			"",
 		)
@@ -733,12 +738,12 @@ func TestOpenXmlPackageFeatures(t *testing.T) {
 
 			// Add a part with content type
 			_, _ = pkg.CreatePart(
-				"/word/document.xml",
+				testDocumentXML,
 				"application/xml",
 			)
 
 			ct, err := ctFeat.GetContentType(
-				"/word/document.xml",
+				testDocumentXML,
 			)
 			if err != nil {
 				t.Fatalf(
@@ -805,13 +810,13 @@ func TestOpenXmlPackageHelpers(t *testing.T) {
 		// First create a package
 		pkg, _ := packaging.Create(tmpPath)
 		_, _ = pkg.CreatePart(
-			"/word/document.xml",
+			testDocumentXML,
 			"application/xml",
 		)
 		_, _ = pkg.CreateRelationship(
-			"/word/document.xml",
+			testDocumentXML,
 			RelationshipTypeOfficeDocument,
-			"rId1",
+			testRelID,
 		)
 		_ = pkg.Save()
 		_ = pkg.Close()
@@ -853,7 +858,7 @@ func TestOpenXmlPackageHelpers(t *testing.T) {
 			// Create a package
 			pkg, _ := packaging.Create(tmpPath)
 			_, _ = pkg.CreatePart(
-				"/word/document.xml",
+				testDocumentXML,
 				"application/xml",
 			)
 			_ = pkg.Save()
@@ -888,7 +893,7 @@ func TestOpenXmlPackageGetPackagingPart(
 	defer func() { _ = pkg.Close() }()
 
 	packPart, _ := pkg.CreatePart(
-		"/word/document.xml",
+		testDocumentXML,
 		"application/xml",
 	)
 
@@ -898,7 +903,7 @@ func TestOpenXmlPackageGetPackagingPart(
 		"GetPackagingPart found",
 		func(t *testing.T) {
 			retrieved := oxPkg.GetPackagingPart(
-				"/word/document.xml",
+				testDocumentXML,
 			)
 			if retrieved != packPart {
 				t.Error(
@@ -934,7 +939,7 @@ func TestOpenXmlPackageLoadParts(t *testing.T) {
 	// Create a package with relationships
 	pkg, _ := packaging.Create(tmpPath)
 	_, _ = pkg.CreatePart(
-		"/word/document.xml",
+		testDocumentXML,
 		ContentTypeWordprocessingMLDocument,
 	)
 	_, _ = pkg.CreatePart(
@@ -942,9 +947,9 @@ func TestOpenXmlPackageLoadParts(t *testing.T) {
 		ContentTypeStyles,
 	)
 	_, _ = pkg.CreateRelationship(
-		"/word/document.xml",
+		testDocumentXML,
 		RelationshipTypeOfficeDocument,
-		"rId1",
+		testRelID,
 	)
 	_, _ = pkg.CreateRelationship(
 		"/word/styles.xml",
@@ -991,7 +996,7 @@ func TestOpenXmlPackageLoadParts(t *testing.T) {
 	t.Run(
 		"parts accessible by ID",
 		func(t *testing.T) {
-			_, err := oxPkg.GetPartById("rId1")
+			_, err := oxPkg.GetPartById(testRelID)
 			if err != nil {
 				t.Errorf(
 					"GetPartById(rId1) error = %v",

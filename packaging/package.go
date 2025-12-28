@@ -238,20 +238,22 @@ func openFromBytes(
 // loadContentTypes loads [Content_Types].xml from the package.
 func (p *Package) loadContentTypes() error {
 	for _, f := range p.zipReader.File {
-		if strings.EqualFold(
+		if !strings.EqualFold(
 			f.Name,
 			"[Content_Types].xml",
 		) {
-			rc, err := f.Open()
-			if err != nil {
-				return err
-			}
-			defer func() { _ = rc.Close() }()
-
-			return p.contentTypes.UnmarshalFromXML(
-				rc,
-			)
+			continue
 		}
+
+		rc, err := f.Open()
+		if err != nil {
+			return err
+		}
+		// Close immediately after use to avoid defer in loop
+		err = p.contentTypes.UnmarshalFromXML(rc)
+		_ = rc.Close()
+
+		return err
 	}
 
 	return ErrInvalidPackage
@@ -341,20 +343,22 @@ func (p *Package) loadParts() error {
 // loadRelationships loads package-level relationships from _rels/.rels.
 func (p *Package) loadRelationships() error {
 	for _, f := range p.zipReader.File {
-		if strings.EqualFold(
+		if !strings.EqualFold(
 			f.Name,
 			"_rels/.rels",
 		) {
-			rc, err := f.Open()
-			if err != nil {
-				return err
-			}
-			defer func() { _ = rc.Close() }()
-
-			return p.relationships.UnmarshalFromXML(
-				rc,
-			)
+			continue
 		}
+
+		rc, err := f.Open()
+		if err != nil {
+			return err
+		}
+		// Close immediately after use to avoid defer in loop
+		err = p.relationships.UnmarshalFromXML(rc)
+		_ = rc.Close()
+
+		return err
 	}
 	// It's okay if there are no package-level relationships
 	return nil

@@ -236,10 +236,11 @@ func (tb *TextBody) Paragraphs() []*TextParagraph {
 	for child := range tb.Children() {
 		if child.LocalName() == "p" &&
 			child.NamespaceURI() == NamespaceMain {
-			if p, ok := child.(*TextParagraph); ok {
-				paragraphs = append(paragraphs, p)
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				paragraphs = append(paragraphs, &TextParagraph{CompositeElementBase: comp})
+			switch v := child.(type) {
+			case *TextParagraph:
+				paragraphs = append(paragraphs, v)
+			case *openxml.CompositeElementBase:
+				paragraphs = append(paragraphs, &TextParagraph{CompositeElementBase: v})
 			}
 		}
 	}
@@ -424,7 +425,7 @@ func (bp *TextBodyProperties) AnchorCenter() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetAnchorCenter sets whether the text is centered horizontally.
@@ -724,10 +725,11 @@ func (p *TextParagraph) Runs() []*TextRun {
 	for child := range p.Children() {
 		if child.LocalName() == "r" &&
 			child.NamespaceURI() == NamespaceMain {
-			if r, ok := child.(*TextRun); ok {
-				runs = append(runs, r)
-			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
-				runs = append(runs, &TextRun{CompositeElementBase: comp})
+			switch v := child.(type) {
+			case *TextRun:
+				runs = append(runs, v)
+			case *openxml.CompositeElementBase:
+				runs = append(runs, &TextRun{CompositeElementBase: v})
 			}
 		}
 	}
@@ -1010,7 +1012,7 @@ func (pp *TextParagraphProperties) RightToLeft() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetRightToLeft sets whether the paragraph is right-to-left.
@@ -1899,7 +1901,7 @@ func (rp *TextCharacterProperties) Bold() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetBold sets whether the text is bold.
@@ -1924,7 +1926,7 @@ func (rp *TextCharacterProperties) Italic() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetItalic sets whether the text is italic.
@@ -2011,9 +2013,9 @@ func (rp *TextCharacterProperties) Capitalization() CapValue {
 
 // SetCapitalization sets the capitalization style.
 func (rp *TextCharacterProperties) SetCapitalization(
-	cap CapValue,
+	capValue CapValue,
 ) {
-	if cap == "" || cap == CapNone {
+	if capValue == "" || capValue == CapNone {
 		rp.RemoveAttribute("cap", "")
 
 		return
@@ -2023,7 +2025,7 @@ func (rp *TextCharacterProperties) SetCapitalization(
 			"",
 			"cap",
 			"",
-			string(cap),
+			string(capValue),
 		),
 	)
 }
@@ -2166,7 +2168,7 @@ func (rp *TextCharacterProperties) Dirty() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetDirty sets the dirty flag.

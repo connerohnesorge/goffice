@@ -725,7 +725,7 @@ func NewCacheSource() *CacheSource {
 func (cs *CacheSource) Type() string {
 	attr, found := cs.GetAttribute("type", "")
 	if !found {
-		return "worksheet" // Default is worksheet
+		return attrValueWorksheet // Default is worksheet
 	}
 
 	return attr.Value()
@@ -736,7 +736,7 @@ func (cs *CacheSource) SetType(
 	sourceType string,
 ) {
 	if sourceType == "" ||
-		sourceType == "worksheet" {
+		sourceType == attrValueWorksheet {
 		cs.RemoveAttribute(
 			"type",
 			"",

@@ -49,7 +49,11 @@ func TestInsertedRun(t *testing.T) {
 }
 
 func TestInsertedRunWithContent(t *testing.T) {
-	ins := NewInsertedRun(1, "Author", time.Now())
+	ins := NewInsertedRun(
+		1,
+		testAuthorName,
+		time.Now(),
+	)
 
 	ins.AppendRun("Inserted text")
 
@@ -72,7 +76,11 @@ func TestInsertedRunWithContent(t *testing.T) {
 }
 
 func TestInsertedRunSetters(t *testing.T) {
-	ins := NewInsertedRun(1, "Author", time.Now())
+	ins := NewInsertedRun(
+		1,
+		testAuthorName,
+		time.Now(),
+	)
 
 	ins.SetId(5)
 	if ins.Id() != 5 {
@@ -153,7 +161,11 @@ func TestDeletedRun(t *testing.T) {
 }
 
 func TestDeletedRunWithContent(t *testing.T) {
-	del := NewDeletedRun(1, "Author", time.Now())
+	del := NewDeletedRun(
+		1,
+		testAuthorName,
+		time.Now(),
+	)
 
 	del.AppendDeletedRun("Deleted text")
 
@@ -208,13 +220,17 @@ func TestDeletedTextSpacePreserve(t *testing.T) {
 }
 
 func TestMoveFromRun(t *testing.T) {
-	mf := NewMoveFromRun(1, "Author", time.Now())
+	mf := NewMoveFromRun(
+		1,
+		testAuthorName,
+		time.Now(),
+	)
 
 	if mf.Id() != 1 {
 		t.Errorf("Expected ID 1, got %d", mf.Id())
 	}
 
-	if mf.Author() != "Author" {
+	if mf.Author() != testAuthorName {
 		t.Errorf(
 			"Expected author 'Author', got '%s'",
 			mf.Author(),
@@ -223,13 +239,17 @@ func TestMoveFromRun(t *testing.T) {
 }
 
 func TestMoveToRun(t *testing.T) {
-	mt := NewMoveToRun(1, "Author", time.Now())
+	mt := NewMoveToRun(
+		1,
+		testAuthorName,
+		time.Now(),
+	)
 
 	if mt.Id() != 1 {
 		t.Errorf("Expected ID 1, got %d", mt.Id())
 	}
 
-	if mt.Author() != "Author" {
+	if mt.Author() != testAuthorName {
 		t.Errorf(
 			"Expected author 'Author', got '%s'",
 			mt.Author(),
@@ -240,7 +260,7 @@ func TestMoveToRun(t *testing.T) {
 func TestRunPropertiesChange(t *testing.T) {
 	rpc := NewRunPropertiesChange(
 		1,
-		"Author",
+		testAuthorName,
 		time.Now(),
 	)
 
@@ -251,7 +271,7 @@ func TestRunPropertiesChange(t *testing.T) {
 		)
 	}
 
-	if rpc.Author() != "Author" {
+	if rpc.Author() != testAuthorName {
 		t.Errorf(
 			"Expected author 'Author', got '%s'",
 			rpc.Author(),
@@ -281,7 +301,7 @@ func TestRunPropertiesChange(t *testing.T) {
 func TestParagraphPropertiesChange(t *testing.T) {
 	ppc := NewParagraphPropertiesChange(
 		1,
-		"Author",
+		testAuthorName,
 		time.Now(),
 	)
 
@@ -292,7 +312,7 @@ func TestParagraphPropertiesChange(t *testing.T) {
 		)
 	}
 
-	if ppc.Author() != "Author" {
+	if ppc.Author() != testAuthorName {
 		t.Errorf(
 			"Expected author 'Author', got '%s'",
 			ppc.Author(),
@@ -320,7 +340,11 @@ func TestParagraphPropertiesChange(t *testing.T) {
 }
 
 func TestInsertedRunClone(t *testing.T) {
-	ins := NewInsertedRun(1, "Author", time.Now())
+	ins := NewInsertedRun(
+		1,
+		testAuthorName,
+		time.Now(),
+	)
 	ins.AppendRun("Text")
 
 	cloned := ins.Clone()
@@ -343,7 +367,11 @@ func TestInsertedRunClone(t *testing.T) {
 }
 
 func TestDeletedRunClone(t *testing.T) {
-	del := NewDeletedRun(1, "Author", time.Now())
+	del := NewDeletedRun(
+		1,
+		testAuthorName,
+		time.Now(),
+	)
 	del.AppendDeletedRun("Text")
 
 	cloned := del.Clone()

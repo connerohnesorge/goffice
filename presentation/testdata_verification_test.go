@@ -6,6 +6,12 @@ import (
 	"testing"
 )
 
+const (
+	// File extensions for PowerPoint files.
+	extPptx = ".pptx"
+	extPotx = ".potx"
+)
+
 // TestTestDataFilesExist verifies that all expected test data files are present
 func TestTestDataFilesExist(t *testing.T) {
 	testFiles := []string{
@@ -59,9 +65,9 @@ func TestTestDataDirectory(t *testing.T) {
 		}
 		ext := filepath.Ext(entry.Name())
 		switch ext {
-		case ".pptx":
+		case extPptx:
 			pptxCount++
-		case ".potx":
+		case extPotx:
 			potxCount++
 		}
 	}

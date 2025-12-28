@@ -41,6 +41,11 @@ const (
 	ImageTypeIcon
 )
 
+const (
+	pngExtension   = ".png"
+	pngContentType = "image/png"
+)
+
 // String returns the string representation of the image type.
 func (it ImageType) String() string {
 	switch it {
@@ -69,7 +74,7 @@ func (it ImageType) String() string {
 func (it ImageType) Extension() string {
 	switch it {
 	case ImageTypePng:
-		return ".png"
+		return pngExtension
 	case ImageTypeJpeg:
 		return ".jpeg"
 	case ImageTypeGif:
@@ -85,7 +90,7 @@ func (it ImageType) Extension() string {
 	case ImageTypeIcon:
 		return ".ico"
 	default:
-		return ".png"
+		return pngExtension
 	}
 }
 
@@ -93,7 +98,7 @@ func (it ImageType) Extension() string {
 func (it ImageType) ContentType() string {
 	switch it {
 	case ImageTypePng:
-		return "image/png"
+		return pngContentType
 	case ImageTypeJpeg:
 		return "image/jpeg"
 	case ImageTypeGif:
@@ -109,7 +114,7 @@ func (it ImageType) ContentType() string {
 	case ImageTypeIcon:
 		return "image/x-icon"
 	default:
-		return "image/png"
+		return pngContentType
 	}
 }
 
@@ -245,7 +250,7 @@ func imageTypeFromContentType(
 	contentType string,
 ) ImageType {
 	switch contentType {
-	case "image/png":
+	case pngContentType:
 		return ImageTypePng
 	case "image/jpeg", "image/jpg":
 		return ImageTypeJpeg
@@ -275,7 +280,7 @@ func ImageTypeFromExtension(
 		normalizedExt = "." + normalizedExt
 	}
 	switch normalizedExt {
-	case ".png":
+	case pngExtension:
 		return ImageTypePng
 	case ".jpg", ".jpeg":
 		return ImageTypeJpeg

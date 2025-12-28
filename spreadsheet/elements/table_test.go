@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+const testTableName = "Table1"
+
 func TestNewTable(t *testing.T) {
 	table := NewTable()
 
@@ -30,8 +32,8 @@ func TestNewTable(t *testing.T) {
 func TestNewTableWithDefaults(t *testing.T) {
 	table := NewTableWithDefaults(
 		1,
-		"Table1",
-		"Table1",
+		testTableName,
+		testTableName,
 		"A1:D10",
 	)
 
@@ -42,16 +44,18 @@ func TestNewTableWithDefaults(t *testing.T) {
 		)
 	}
 
-	if table.Name() != "Table1" {
+	if table.Name() != testTableName {
 		t.Errorf(
-			"Expected Name 'Table1', got '%s'",
+			"Expected Name '%s', got '%s'",
+			testTableName,
 			table.Name(),
 		)
 	}
 
-	if table.DisplayName() != "Table1" {
+	if table.DisplayName() != testTableName {
 		t.Errorf(
-			"Expected DisplayName 'Table1', got '%s'",
+			"Expected DisplayName '%s', got '%s'",
+			testTableName,
 			table.DisplayName(),
 		)
 	}
@@ -833,8 +837,8 @@ func TestTableColumnsContainer(t *testing.T) {
 func TestTableClone(t *testing.T) {
 	table := NewTableWithDefaults(
 		1,
-		"Table1",
-		"Table1",
+		testTableName,
+		testTableName,
 		"A1:D10",
 	)
 	table.AddColumn(1, "Product")
@@ -862,9 +866,10 @@ func TestTableClone(t *testing.T) {
 			cloned.Id(),
 		)
 	}
-	if cloned.Name() != "Table1" {
+	if cloned.Name() != testTableName {
 		t.Errorf(
-			"Cloned Name should be 'Table1', got '%s'",
+			"Cloned Name should be '%s', got '%s'",
+			testTableName,
 			cloned.Name(),
 		)
 	}

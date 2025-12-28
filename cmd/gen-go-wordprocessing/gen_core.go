@@ -55,8 +55,9 @@ import (
 	// revive:enable:line-length-limit
 	writeHeader(fEnums, header)
 
-	for _, t := range enumMap {
-		generateEnum(fEnums, t)
+	for name := range enumMap {
+		t := enumMap[name]
+		generateEnum(fEnums, &t)
 	}
 }
 

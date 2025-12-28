@@ -10,6 +10,14 @@ import (
 	"time"
 )
 
+// Test constants for repeated strings
+const (
+	testDocumentURI         = "/word/document.xml"
+	testDocumentContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
+	testApplicationXML      = "application/xml"
+	testRelID1              = "rId1"
+)
+
 // Test Package struct and capability
 
 func TestPackageCapability(t *testing.T) {
@@ -336,14 +344,14 @@ func TestCreatePart(t *testing.T) {
 		t.Fatalf("CreatePart() error = %v", err)
 	}
 
-	if part.URI() != "/word/document.xml" {
+	if part.URI() != testDocumentURI {
 		t.Errorf(
 			"URI() = %v, want /word/document.xml",
 			part.URI(),
 		)
 	}
 
-	if part.ContentType() != "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml" {
+	if part.ContentType() != testDocumentContentType {
 		t.Errorf(
 			"ContentType() = %v",
 			part.ContentType(),
@@ -686,7 +694,7 @@ func TestContentTypesDefaults(t *testing.T) {
 	ct := NewContentTypes()
 
 	// Check standard defaults
-	if got := ct.GetDefault("xml"); got != "application/xml" {
+	if got := ct.GetDefault("xml"); got != testApplicationXML {
 		t.Errorf(
 			"GetDefault(xml) = %q, want application/xml",
 			got,
@@ -833,7 +841,7 @@ func TestCreateRelationship(t *testing.T) {
 		t.Fatalf("Create() error = %v", err)
 	}
 
-	if rel.ID() != "rId1" {
+	if rel.ID() != testRelID1 {
 		t.Errorf("ID() = %q, want rId1", rel.ID())
 	}
 
@@ -1126,7 +1134,7 @@ func TestPackageCreateRelationship(t *testing.T) {
 		)
 	}
 
-	if rel.ID() != "rId1" {
+	if rel.ID() != testRelID1 {
 		t.Errorf("ID() = %q, want rId1", rel.ID())
 	}
 }
@@ -1191,7 +1199,7 @@ func TestPartRelationships(t *testing.T) {
 		)
 	}
 
-	if rel.ID() != "rId1" {
+	if rel.ID() != testRelID1 {
 		t.Errorf("ID() = %q, want rId1", rel.ID())
 	}
 

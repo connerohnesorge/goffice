@@ -694,7 +694,7 @@ func (s *OuterShadow) RotateWithShape() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetRotateWithShape sets whether the shadow rotates with the shape.
@@ -1779,7 +1779,7 @@ func (r *Reflection) RotateWithShape() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetRotateWithShape sets whether the reflection rotates with the shape.
@@ -1861,7 +1861,7 @@ func (b *Blur) Grow() bool {
 	}
 
 	return attr.Value() == "1" ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetGrow sets whether the blur grows the bounds.

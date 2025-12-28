@@ -18,7 +18,7 @@ type Row struct {
 func NewRow() *Row {
 	elem := openxml.NewCompositeElement(
 		NamespaceSML,
-		"row",
+		elemNameRow,
 		PrefixDefault,
 	)
 

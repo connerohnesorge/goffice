@@ -448,12 +448,13 @@ func (d *Document) detectDocumentType() {
 	}
 
 	// Wrap the main part as a PresentationPart if it's the right type
-	if presPart, ok := mainPart.(*parts.PresentationPart); ok {
-		d.presentationPart = presPart
-	} else if partData, ok := mainPart.(*openxml.OpenXmlPartData); ok {
+	switch mp := mainPart.(type) {
+	case *parts.PresentationPart:
+		d.presentationPart = mp
+	case *openxml.OpenXmlPartData:
 		// Wrap the existing part data as a PresentationPart
 		d.presentationPart = parts.NewPresentationPartFromData(
-			partData,
+			mp,
 			mainPart.ContentType(),
 		)
 	}
@@ -508,11 +509,12 @@ func (d *Document) PresentationPart() *parts.PresentationPart {
 	}
 
 	// Try to get an existing PresentationPart or wrap the main part
-	if presPart, ok := mainPart.(*parts.PresentationPart); ok {
-		d.presentationPart = presPart
-	} else if partData, ok := mainPart.(*openxml.OpenXmlPartData); ok {
+	switch mp := mainPart.(type) {
+	case *parts.PresentationPart:
+		d.presentationPart = mp
+	case *openxml.OpenXmlPartData:
 		d.presentationPart = parts.NewPresentationPartFromData(
-			partData,
+			mp,
 			mainPart.ContentType(),
 		)
 	}

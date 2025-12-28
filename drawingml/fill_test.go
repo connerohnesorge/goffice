@@ -17,14 +17,16 @@ func TestSolidFill(t *testing.T) {
 	t.Run(
 		"NewSolidFillWithRgb",
 		func(t *testing.T) {
-			fill := NewSolidFillWithRgb("FF0000")
+			fill := NewSolidFillWithRgb(
+				testColorRed,
+			)
 			rgb := fill.RgbColor()
 			if rgb == nil {
 				t.Fatal(
 					"Expected RGB color to be set",
 				)
 			}
-			if rgb.Value() != "FF0000" {
+			if rgb.Value() != testColorRed {
 				t.Errorf(
 					"Expected FF0000, got %s",
 					rgb.Value(),
@@ -192,7 +194,7 @@ func TestPatternFill(t *testing.T) {
 		fill := NewPatternFill(
 			PatternDiagonalCross,
 		)
-		fill.SetForegroundColor("FF0000")
+		fill.SetForegroundColor(testColorRed)
 		fill.SetBackgroundColor("FFFFFF")
 
 		xml := fill.OuterXml()

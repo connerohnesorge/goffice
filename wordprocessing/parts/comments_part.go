@@ -148,6 +148,11 @@ func CommentsPartFactory(
 		packPart,
 		container,
 	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewComments()
+		},
+	)
 
 	return &CommentsPart{
 		OpenXmlPartData: partData,

@@ -15,6 +15,13 @@ const (
 	OnOffFormatTrueFalse
 	// OnOffFormatOneZero serializes values as "1"/"0".
 	OnOffFormatOneZero
+
+	onOffStringOn    = "on"
+	onOffStringOff   = "off"
+	onOffStringTrue  = "true"
+	onOffStringFalse = "false"
+	onOffStringOne   = "1"
+	onOffStringZero  = "0"
 )
 
 // OnOffValue wraps a Word-style on/off boolean value with optional
@@ -97,29 +104,29 @@ func (ov *OnOffValue) InnerText() string {
 	switch ov.outputFormat {
 	case OnOffFormatOnOff:
 		if ov.value {
-			return "on"
+			return onOffStringOn
 		}
 
-		return "off"
+		return onOffStringOff
 	case OnOffFormatTrueFalse:
 		if ov.value {
-			return "true"
+			return onOffStringTrue
 		}
 
-		return "false"
+		return onOffStringFalse
 	case OnOffFormatOneZero:
 		if ov.value {
-			return "1"
+			return onOffStringOne
 		}
 
-		return "0"
+		return onOffStringZero
 	}
 	// Default fallback (should not be reached with valid OnOffOutputFormat)
 	if ov.value {
-		return "on"
+		return onOffStringOn
 	}
 
-	return "off"
+	return onOffStringOff
 }
 
 // SetInnerText parses the value from a string.
@@ -138,12 +145,16 @@ func (ov *OnOffValue) SetInnerText(
 		strings.TrimSpace(text),
 	)
 	switch lower {
-	case "on", "true", "1":
+	case onOffStringOn,
+		onOffStringTrue,
+		onOffStringOne:
 		ov.value = true
 		ov.hasValue = true
 
 		return nil
-	case "off", "false", "0":
+	case onOffStringOff,
+		onOffStringFalse,
+		onOffStringZero:
 		ov.value = false
 		ov.hasValue = true
 

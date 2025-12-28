@@ -63,7 +63,7 @@ func (t *Transform2D) FlipH() bool {
 	}
 
 	return attr.Value() == attrValueOne ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetFlipH sets whether the shape is flipped horizontally.
@@ -94,7 +94,7 @@ func (t *Transform2D) FlipV() bool {
 	}
 
 	return attr.Value() == attrValueOne ||
-		attr.Value() == "true"
+		attr.Value() == attrTrue
 }
 
 // SetFlipV sets whether the shape is flipped vertically.

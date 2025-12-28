@@ -36,9 +36,9 @@ func generateStruct(f *os.File, t SchemaType) {
 	generateChildren(f, t)
 	safeFprintf(f, "}\n\n")
 
-	generateConstructor(f, t, isPartRoot)
-	generateClone(f, t)
-	generateValidate(f, t)
+	generateConstructor(f, &t, isPartRoot)
+	generateClone(f, &t)
+	generateValidate(f, &t)
 }
 
 // generateEmbeddedBase writes the embedded base type for the struct.

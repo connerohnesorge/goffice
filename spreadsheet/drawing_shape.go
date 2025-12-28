@@ -32,10 +32,11 @@ func (s *Shape) SetText(text string) {
 	// Update the underlying shape element
 	// Find the shape element in either one-cell or two-cell anchor
 	var shapeElem *elements.Shape
-	if oneCellAnchor, ok := s.anchor.(*elements.OneCellAnchor); ok {
-		shapeElem = oneCellAnchor.Shape()
-	} else if twoCellAnchor, ok := s.anchor.(*elements.TwoCellAnchor); ok {
-		shapeElem = twoCellAnchor.Shape()
+	switch anchor := s.anchor.(type) {
+	case *elements.OneCellAnchor:
+		shapeElem = anchor.Shape()
+	case *elements.TwoCellAnchor:
+		shapeElem = anchor.Shape()
 	}
 
 	if shapeElem != nil {

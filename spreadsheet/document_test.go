@@ -132,7 +132,7 @@ func TestCreateDifferentTypes(t *testing.T) {
 
 // TestOpen tests opening an existing spreadsheet document.
 func TestOpen(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	// Check if fixture exists
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
@@ -177,7 +177,7 @@ func TestOpen(t *testing.T) {
 
 // TestOpenEditable tests opening a document for editing.
 func TestOpenEditable(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	// Check if fixture exists
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
@@ -232,7 +232,7 @@ func TestOpenNumbers(t *testing.T) {
 
 // TestSaveAs tests saving a document to a new location.
 func TestSaveAs(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	// Check if fixture exists
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
@@ -299,7 +299,7 @@ func TestSaveAs(t *testing.T) {
 
 // TestRoundtrip tests opening, saving, and reopening a document.
 func TestRoundtrip(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	// Check if fixture exists
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
@@ -383,7 +383,7 @@ func TestRoundtrip(t *testing.T) {
 
 // TestDocTypeDetection tests automatic document type detection.
 func TestDocTypeDetection(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	// Check if fixture exists
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
@@ -461,7 +461,7 @@ func TestChangeType(t *testing.T) {
 
 // TestReadOnlyOperations tests that read-only documents cannot be modified.
 func TestReadOnlyOperations(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	// Check if fixture exists
 	if _, err := os.Stat(fixturePath); os.IsNotExist(
@@ -788,7 +788,7 @@ func TestCloseIdempotent(t *testing.T) {
 
 // TestValidateWithRealFile tests validation on a real .xlsx file.
 func TestValidateWithRealFile(t *testing.T) {
-	fixturePath := "../testdata/fixtures/minimal.xlsx"
+	fixturePath := minimalFixturePath
 
 	// Check if fixture exists
 	if _, err := os.Stat(fixturePath); os.IsNotExist(

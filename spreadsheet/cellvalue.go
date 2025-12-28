@@ -81,6 +81,11 @@ const (
 	bitSize64 = 64
 )
 
+const (
+	booleanTrueString  = "TRUE"
+	booleanFalseString = "FALSE"
+)
+
 // IsErrorValue returns true if the string is a valid Excel error value.
 func IsErrorValue(s string) bool {
 	switch s {
@@ -219,7 +224,7 @@ func GetCellString(
 // Returns false and false if the cell doesn't contain a boolean.
 func GetCellBoolean(
 	cell *elements.Cell,
-) (bool, bool) {
+) (value, ok bool) {
 	if cell == nil {
 		return false, false
 	}
@@ -426,10 +431,10 @@ func FormatCellValue(
 	case CellValueBoolean:
 		if val, ok := GetCellBoolean(cell); ok {
 			if val {
-				return "TRUE"
+				return booleanTrueString
 			}
 
-			return "FALSE"
+			return booleanFalseString
 		}
 
 		return ""

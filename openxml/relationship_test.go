@@ -4,13 +4,17 @@ import (
 	"testing"
 )
 
+const (
+	testTargetModeInternal = "Internal"
+)
+
 // Test TargetMode
 
 func TestTargetMode(t *testing.T) {
 	t.Run(
 		"TargetModeInternal String",
 		func(t *testing.T) {
-			if TargetModeInternal.String() != "Internal" {
+			if TargetModeInternal.String() != testTargetModeInternal {
 				t.Errorf(
 					"TargetModeInternal.String() = %q, want Internal",
 					TargetModeInternal.String(),
@@ -70,8 +74,9 @@ func TestBaseRelationship(t *testing.T) {
 	t.Run("TargetMode", func(t *testing.T) {
 		if rel.TargetMode() != TargetModeInternal {
 			t.Errorf(
-				"TargetMode() = %v, want Internal",
+				"TargetMode() = %v, want %s",
 				rel.TargetMode(),
+				testTargetModeInternal,
 			)
 		}
 	})

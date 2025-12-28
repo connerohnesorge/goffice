@@ -6,6 +6,10 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+const (
+	elemNameColor = "color"
+)
+
 // ColorScale represents a color scale element (x:colorScale)
 // for conditional formatting.
 // A color scale applies a gradual color fill based on cell values.
@@ -29,7 +33,7 @@ func NewColorScale() *ColorScale {
 func (cs *ColorScale) Cfvos() iter.Seq[*Cfvo] {
 	return func(yield func(*Cfvo) bool) {
 		for child := range cs.Children() {
-			if child.LocalName() != "cfvo" ||
+			if child.LocalName() != elemNameCfvo ||
 				child.NamespaceURI() != NamespaceSML {
 				continue
 			}
@@ -62,7 +66,7 @@ func (cs *ColorScale) AddCfvo() *Cfvo {
 	// Insert before colors
 	var insertBefore openxml.Element
 	for child := range cs.Children() {
-		if child.LocalName() == "color" &&
+		if child.LocalName() == elemNameColor &&
 			child.NamespaceURI() == NamespaceSML {
 			insertBefore = child
 
@@ -82,7 +86,7 @@ func (cs *ColorScale) AddCfvo() *Cfvo {
 func (cs *ColorScale) Colors() iter.Seq[*Color] {
 	return func(yield func(*Color) bool) {
 		for child := range cs.Children() {
-			if child.LocalName() != "color" ||
+			if child.LocalName() != elemNameColor ||
 				child.NamespaceURI() != NamespaceSML {
 				continue
 			}

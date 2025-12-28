@@ -9,19 +9,25 @@ import (
 	"github.com/connerohnesorge/goffice/packaging"
 )
 
+const (
+	testExampleURL = "http://example.com"
+	testElement    = "element"
+	testValue      = "value"
+)
+
 func TestQualifiedName(t *testing.T) {
 	t.Run("NewQualifiedName", func(t *testing.T) {
 		qn := NewQualifiedName(
-			"http://example.com",
-			"element",
+			testExampleURL,
+			testElement,
 		)
-		if qn.NamespaceURI() != "http://example.com" {
+		if qn.NamespaceURI() != testExampleURL {
 			t.Errorf(
 				"expected namespace URI http://example.com, got %s",
 				qn.NamespaceURI(),
 			)
 		}
-		if qn.LocalName() != "element" {
+		if qn.LocalName() != testElement {
 			t.Errorf(
 				"expected local name element, got %s",
 				qn.LocalName(),
@@ -33,8 +39,8 @@ func TestQualifiedName(t *testing.T) {
 		"String with namespace",
 		func(t *testing.T) {
 			qn := NewQualifiedName(
-				"http://example.com",
-				"element",
+				testExampleURL,
+				testElement,
 			)
 			expected := "{http://example.com}element"
 			if qn.String() != expected {
@@ -50,8 +56,11 @@ func TestQualifiedName(t *testing.T) {
 	t.Run(
 		"String without namespace",
 		func(t *testing.T) {
-			qn := NewQualifiedName("", "element")
-			if qn.String() != "element" {
+			qn := NewQualifiedName(
+				"",
+				testElement,
+			)
+			if qn.String() != testElement {
 				t.Errorf(
 					"expected element, got %s",
 					qn.String(),
@@ -107,7 +116,7 @@ func TestAttribute(t *testing.T) {
 			"http://example.com",
 			"name",
 			"ex",
-			"value",
+			testValue,
 		)
 		if attr.LocalName() != "name" {
 			t.Errorf(
@@ -127,7 +136,7 @@ func TestAttribute(t *testing.T) {
 				attr.Prefix(),
 			)
 		}
-		if attr.Value() != "value" {
+		if attr.Value() != testValue {
 			t.Errorf(
 				"expected value 'value', got %s",
 				attr.Value(),
@@ -140,7 +149,7 @@ func TestAttribute(t *testing.T) {
 		func(t *testing.T) {
 			attr := NewSimpleAttribute(
 				"name",
-				"value",
+				testValue,
 			)
 			if attr.LocalName() != "name" {
 				t.Errorf(
@@ -154,7 +163,7 @@ func TestAttribute(t *testing.T) {
 					attr.NamespaceURI(),
 				)
 			}
-			if attr.Value() != "value" {
+			if attr.Value() != testValue {
 				t.Errorf(
 					"expected value 'value', got %s",
 					attr.Value(),
@@ -578,7 +587,7 @@ func TestAttributes(t *testing.T) {
 			)
 			attr := NewSimpleAttribute(
 				"name",
-				"value",
+				testValue,
 			)
 			elem.SetAttribute(attr)
 
@@ -591,7 +600,7 @@ func TestAttributes(t *testing.T) {
 					"expected to find attribute",
 				)
 			}
-			if got.Value() != "value" {
+			if got.Value() != testValue {
 				t.Errorf(
 					"expected value 'value', got %s",
 					got.Value(),
@@ -608,7 +617,7 @@ func TestAttributes(t *testing.T) {
 		)
 		attr := NewSimpleAttribute(
 			"name",
-			"value",
+			testValue,
 		)
 		elem.SetAttribute(attr)
 

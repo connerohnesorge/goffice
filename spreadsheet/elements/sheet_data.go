@@ -27,7 +27,7 @@ func NewSheetData() *SheetData {
 func (sd *SheetData) Rows() iter.Seq[*Row] {
 	return func(yield func(*Row) bool) {
 		for child := range sd.Children() {
-			if child.LocalName() != "row" ||
+			if child.LocalName() != elemNameRow ||
 				child.NamespaceURI() != NamespaceSML {
 				continue
 			}
@@ -94,7 +94,7 @@ func (sd *SheetData) AddRow(
 	// Find the correct position to insert the row
 	var insertBefore openxml.Element
 	for child := range sd.Children() {
-		if child.LocalName() != "row" ||
+		if child.LocalName() != elemNameRow ||
 			child.NamespaceURI() != NamespaceSML {
 			continue
 		}

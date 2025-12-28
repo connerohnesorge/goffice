@@ -5,10 +5,14 @@ import (
 	"testing"
 )
 
+const (
+	testRelID1 = "rId1"
+)
+
 func TestNewInlineDrawing(t *testing.T) {
 	width := int64(914400)  // 1 inch
 	height := int64(914400) // 1 inch
-	relId := "rId1"
+	relId := testRelID1
 
 	drawing := NewInlineDrawing(
 		width,
@@ -84,7 +88,7 @@ func TestNewInlineDrawing(t *testing.T) {
 func TestNewAnchorDrawing(t *testing.T) {
 	width := int64(914400)  // 1 inch
 	height := int64(457200) // 0.5 inch
-	relId := "rId2"
+	relId := "rId2"         // Different from testRelID1 for this specific test
 
 	drawing := NewAnchorDrawing(
 		width,
@@ -137,7 +141,7 @@ func TestAnchorDrawingWrapTypes(t *testing.T) {
 	drawing := NewAnchorDrawing(
 		914400,
 		914400,
-		"rId1",
+		testRelID1,
 	)
 	anchor := drawing.Anchor()
 
@@ -191,7 +195,7 @@ func TestAnchorDrawingProperties(t *testing.T) {
 	drawing := NewAnchorDrawing(
 		914400,
 		914400,
-		"rId1",
+		testRelID1,
 	)
 	anchor := drawing.Anchor()
 

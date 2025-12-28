@@ -100,7 +100,7 @@ func (c *Cell) GetNumber() (float64, bool) {
 	num, err := strconv.ParseFloat(
 		val,
 		64,
-	) //nolint:mnd
+	) //nolint:mnd // 64-bit is the standard float size for parsing
 	if err != nil {
 		return 0, false
 	}
@@ -112,7 +112,7 @@ func (c *Cell) GetNumber() (float64, bool) {
 // Returns false and false if the cell doesn't contain a boolean.
 //
 //nolint:revive // enforce-repeated-arg-type-style: named returns for clarity
-func (c *Cell) GetBoolean() (value bool, ok bool) {
+func (c *Cell) GetBoolean() (value, ok bool) {
 	if c.DataType() != CellTypeBoolean {
 		return false, false
 	}

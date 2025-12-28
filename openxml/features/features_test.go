@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+const (
+	testValueString = "test"
+)
+
 // testFeature is a simple feature for testing.
 type testFeature struct {
 	featureBase
@@ -54,7 +58,7 @@ func TestFeatureCollection(t *testing.T) {
 
 	t.Run("Set and Get", func(t *testing.T) {
 		fc := NewFeatureCollection()
-		f := &testFeature{value: "test"}
+		f := &testFeature{value: testValueString}
 
 		fc.SetByType(
 			reflect.TypeFor[*testFeature](),
@@ -65,7 +69,7 @@ func TestFeatureCollection(t *testing.T) {
 		if got == nil {
 			t.Fatal("expected to get feature")
 		}
-		if got.value != "test" {
+		if got.value != testValueString {
 			t.Errorf(
 				"expected value 'test', got '%s'",
 				got.value,
@@ -407,7 +411,7 @@ func TestFeatureCollectionMethods(t *testing.T) {
 func TestThreadSafety(t *testing.T) {
 	t.Run("Concurrent reads", func(t *testing.T) {
 		fc := NewFeatureCollection()
-		f := &testFeature{value: "test"}
+		f := &testFeature{value: testValueString}
 		fc.SetByType(
 			reflect.TypeFor[*testFeature](),
 			f,
@@ -420,7 +424,7 @@ func TestThreadSafety(t *testing.T) {
 				defer wg.Done()
 				got := Get[*testFeature](fc)
 				if got == nil ||
-					got.value != "test" {
+					got.value != testValueString {
 					t.Error(
 						"concurrent read failed",
 					)
@@ -505,14 +509,15 @@ func TestThreadSafety(t *testing.T) {
 func TestGetRequired(t *testing.T) {
 	t.Run("Feature exists", func(t *testing.T) {
 		fc := NewFeatureCollection()
-		f := &testFeature{value: "test"}
+		f := &testFeature{value: testValueString}
 		fc.SetByType(
 			reflect.TypeFor[*testFeature](),
 			f,
 		)
 
 		got := GetRequired[*testFeature](fc)
-		if got == nil || got.value != "test" {
+		if got == nil ||
+			got.value != testValueString {
 			t.Error("expected to get feature")
 		}
 	})

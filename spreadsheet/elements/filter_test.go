@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+const testRefA1D100 = "A1:D100"
+
 func TestNewAutoFilter(t *testing.T) {
 	af := NewAutoFilter()
 
@@ -27,9 +29,9 @@ func TestNewAutoFilter(t *testing.T) {
 }
 
 func TestNewAutoFilterWithRef(t *testing.T) {
-	af := NewAutoFilterWithRef("A1:D100")
+	af := NewAutoFilterWithRef(testRefA1D100)
 
-	if af.Ref() != "A1:D100" {
+	if af.Ref() != testRefA1D100 {
 		t.Errorf(
 			"expected ref 'A1:D100', got '%s'",
 			af.Ref(),
@@ -990,8 +992,8 @@ func TestNewSortState(t *testing.T) {
 func TestSortState_Ref(t *testing.T) {
 	ss := NewSortState()
 
-	ss.SetRef("A1:D100")
-	if ss.Ref() != "A1:D100" {
+	ss.SetRef(testRefA1D100)
+	if ss.Ref() != testRefA1D100 {
 		t.Errorf(
 			"expected ref 'A1:D100', got '%s'",
 			ss.Ref(),
@@ -1194,7 +1196,7 @@ func TestAutoFilter_XMLSerialization(
 	t *testing.T,
 ) {
 	af := NewAutoFilter()
-	af.SetRef("A1:D100")
+	af.SetRef(testRefA1D100)
 
 	fc := af.AddFilterColumn(0)
 	f := fc.GetOrCreateFilters()

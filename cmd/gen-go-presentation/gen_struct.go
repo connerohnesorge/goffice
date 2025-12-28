@@ -8,7 +8,7 @@ import (
 
 // generateStruct generates a Go struct for a schema element type.
 // It creates the struct definition, constructor, and methods.
-func generateStruct(f *os.File, t SchemaType) {
+func generateStruct(f *os.File, t *SchemaType) {
 	if existingTypes[t.ClassName] ||
 		generatedTypes[t.ClassName] {
 		return
@@ -45,7 +45,7 @@ func generateStruct(f *os.File, t SchemaType) {
 // It chooses between Leaf, PartRoot, or Composite base elements.
 func generateEmbeddedBase(
 	f *os.File,
-	t SchemaType,
+	t *SchemaType,
 	isPartRoot bool,
 ) {
 	switch {
@@ -71,7 +71,7 @@ func generateEmbeddedBase(
 // It maps schema types to Go types and generates appropriate XML tags.
 func generateAttributes(
 	f *os.File,
-	t SchemaType,
+	t *SchemaType,
 ) {
 	for _, attr := range t.Attributes {
 		goType := mapType(attr.Type)
@@ -93,7 +93,7 @@ func generateAttributes(
 
 // generateChildren writes the child element fields for the struct.
 // It handles optional children and maps them to appropriate Go types.
-func generateChildren(f *os.File, t SchemaType) {
+func generateChildren(f *os.File, t *SchemaType) {
 	for _, child := range t.Children {
 		info, ok := typeMap[child.Name]
 		if !ok {

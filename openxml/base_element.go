@@ -249,21 +249,27 @@ func (b *BaseElement) writeStartElement(
 
 	// Write attributes, collecting prefixed namespaces that need declaration
 	for _, attr := range b.attributes {
-		// Declare namespace for prefixed attributes that haven't been declared
-		if attr.Prefix() != "" &&
-			attr.NamespaceURI() != "" &&
-			!declaredPrefixes[attr.Prefix()] {
-			buf.WriteString(" xmlns:")
-			buf.WriteString(attr.Prefix())
-			buf.WriteString("=\"")
-			buf.WriteString(
-				escapeXmlAttr(
-					attr.NamespaceURI(),
-				),
-			)
-			buf.WriteByte('"')
-			declaredPrefixes[attr.Prefix()] = true
+		// Skip if attribute has no prefix or namespace
+		if attr.Prefix() == "" {
+			continue
 		}
+		if attr.NamespaceURI() == "" {
+			continue
+		}
+		// Skip if prefix already declared
+		if declaredPrefixes[attr.Prefix()] {
+			continue
+		}
+		buf.WriteString(" xmlns:")
+		buf.WriteString(attr.Prefix())
+		buf.WriteString("=\"")
+		buf.WriteString(
+			escapeXmlAttr(
+				attr.NamespaceURI(),
+			),
+		)
+		buf.WriteByte('"')
+		declaredPrefixes[attr.Prefix()] = true
 	}
 
 	// Write attribute values

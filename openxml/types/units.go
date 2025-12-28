@@ -461,8 +461,9 @@ func (ev *EmuValue) SetNil() {
 }
 
 // Ensure unit types implement SimpleValue and Resettable interfaces.
+// These are type assertions for compile-time validation
 //
-//nolint:gochecknoglobals
+//nolint:gochecknoglobals // nolint explanation: these global vars are compile-time type assertions, not mutable state
 var (
 	_ SimpleValue = (*TwipsValue)(nil)
 	_ Resettable  = (*TwipsValue)(nil)

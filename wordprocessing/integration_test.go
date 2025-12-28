@@ -10,6 +10,8 @@ import (
 	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 )
 
+const testMinimalDocxPath = "../testdata/fixtures/minimal.docx"
+
 func TestHeadersFootersIntegration(t *testing.T) {
 	tmpFile, err := os.CreateTemp(
 		"",
@@ -1192,7 +1194,7 @@ func TestIntegrationBuilderChaining(
 // This tests Task 5.31: Integration tests with real .docx files (Office 2016+).
 func TestIntegrationRealDocxFile(t *testing.T) {
 	// Path to the test fixture
-	fixturePath := "../testdata/fixtures/minimal.docx"
+	fixturePath := testMinimalDocxPath
 
 	// Open the real .docx file
 	doc, err := Open(fixturePath, false)
@@ -1242,7 +1244,7 @@ func TestIntegrationRealDocxRoundtrip(
 	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	// Path to the test fixture
-	fixturePath := "../testdata/fixtures/minimal.docx"
+	fixturePath := testMinimalDocxPath
 	outputPath := filepath.Join(
 		tmpDir,
 		"modified.docx",

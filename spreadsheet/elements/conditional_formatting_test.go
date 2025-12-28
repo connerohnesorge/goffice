@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+const testRangeA1A10 = "A1:A10"
+
 func TestNewColor(t *testing.T) {
 	color := NewColor()
 
@@ -644,7 +646,7 @@ func TestConditionalFormatting_AddRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddRule()
 	if rule == nil {
@@ -663,7 +665,7 @@ func TestConditionalFormatting_AddCellIsRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddCellIsRule(
 		CfRuleOperatorGreaterThan,
@@ -691,7 +693,7 @@ func TestConditionalFormatting_AddExpressionRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddExpressionRule(
 		"$A1>$B1",
@@ -717,7 +719,7 @@ func TestConditionalFormatting_AddColorScaleRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddColorScaleRule(1)
 
@@ -736,7 +738,7 @@ func TestConditionalFormatting_AddDataBarRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddDataBarRule(1)
 
@@ -755,7 +757,7 @@ func TestConditionalFormatting_AddIconSetRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddIconSetRule(1)
 
@@ -774,7 +776,7 @@ func TestConditionalFormatting_AddTop10Rule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddTop10Rule(
 		10,
@@ -802,7 +804,7 @@ func TestConditionalFormatting_AddDuplicateValuesRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddDuplicateValuesRule(0, 1)
 
@@ -818,7 +820,7 @@ func TestConditionalFormatting_AddContainsTextRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddContainsTextRule("error", 0, 1)
 
@@ -840,7 +842,7 @@ func TestConditionalFormatting_AddAboveAverageRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddAboveAverageRule(
 		true,
@@ -862,7 +864,7 @@ func TestConditionalFormatting_AddTimePeriodRule(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	rule := cf.AddTimePeriodRule(
 		TimePeriodToday,
@@ -888,7 +890,7 @@ func TestConditionalFormatting_XMLSerialization(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 
 	// Add a cell value rule
 	rule := cf.AddCellIsRule(
@@ -913,10 +915,10 @@ func TestConditionalFormatting_XMLSerialization(
 	}
 	if !strings.Contains(
 		xml,
-		"sqref=\"A1:A10\"",
+		"sqref=\""+testRangeA1A10+"\"",
 	) {
 		t.Error(
-			"expected 'sqref=\"A1:A10\"' in XML",
+			"expected 'sqref=\"" + testRangeA1A10 + "\"' in XML",
 		)
 	}
 	if !strings.Contains(xml, "cfRule") {
@@ -978,7 +980,7 @@ func TestConditionalFormatting_Clone(
 	t *testing.T,
 ) {
 	cf := NewConditionalFormatting()
-	cf.SetSqref("A1:A10")
+	cf.SetSqref(testRangeA1A10)
 	cf.AddCellIsRule(
 		CfRuleOperatorGreaterThan,
 		"100",
@@ -995,9 +997,10 @@ func TestConditionalFormatting_Clone(
 			cloned,
 		)
 	}
-	if clone.Sqref() != "A1:A10" {
+	if clone.Sqref() != testRangeA1A10 {
 		t.Errorf(
-			"expected sqref 'A1:A10', got '%s'",
+			"expected sqref '%s', got '%s'",
+			testRangeA1A10,
 			clone.Sqref(),
 		)
 	}
@@ -1010,7 +1013,7 @@ func TestConditionalFormatting_Clone(
 
 	// Modify original, verify clone is independent
 	cf.SetSqref("B1:B10")
-	if clone.Sqref() != "A1:A10" {
+	if clone.Sqref() != testRangeA1A10 {
 		t.Error(
 			"expected clone to remain unchanged after modifying original",
 		)
