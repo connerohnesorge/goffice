@@ -30,7 +30,7 @@ When delegating tasks from a change proposal to subagents:
 
 **Key Features:**
 - Word documents (.docx, .dotx, .docm, .dotm)
-- Excel spreadsheets (.xlsx)
+- Excel spreadsheets (.xlsx, .xltx, .xlsm, .xltm, .xlam)
 - PowerPoint presentations (.pptx, .potx, .ppsx)
 - PDF rendering with high fidelity
 - Full compliance with ECMA-376 and ISO/IEC 29500 standards
