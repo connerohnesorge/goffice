@@ -1614,6 +1614,7 @@ func NewTextElement(text string) *TextElement {
 		"t",
 		PrefixMain,
 	)
+	elem.SetInnerText(text)
 	tw := &textWrapper{
 		LeafElementBase: elem,
 		text:            text,
@@ -1630,6 +1631,7 @@ func (t *TextElement) Text() string {
 // SetText sets the text content.
 func (t *TextElement) SetText(text string) {
 	t.text = text
+	t.SetInnerText(text)
 }
 
 // Clone creates a deep copy of this TextElement.

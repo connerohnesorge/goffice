@@ -5,3 +5,8 @@ logs
 *.log
 .DS_Store
 *.out
+examples/ml_paper_example.go
+examples/ml_results_example.go
+
+# Stray example files
+examples/*.go

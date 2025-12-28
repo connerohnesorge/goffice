@@ -78,6 +78,9 @@ func (s *Sheet) Worksheet() *elements.Worksheet {
 	s.worksheet = elements.NewWorksheet()
 	s.worksheet.GetOrCreateSheetData()
 
+	// Set the worksheet as the root element on the part so it gets persisted
+	s.worksheetPart.SetRootElement(s.worksheet)
+
 	return s.worksheet
 }
 

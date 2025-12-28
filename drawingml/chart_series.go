@@ -289,6 +289,18 @@ func (s *LineChartSeries) SetSeriesText(
 	}
 }
 
+// SetShapeProperties sets the shape properties for the series.
+func (s *LineChartSeries) SetShapeProperties(
+	props *ChartShapeProperties,
+) {
+	if existing := s.GetElement("spPr", NamespaceChart); existing != nil {
+		s.RemoveChild(existing)
+	}
+	if props != nil {
+		s.AppendChild(props)
+	}
+}
+
 // SetMarker sets the marker for the series.
 func (s *LineChartSeries) SetMarker(
 	marker *Marker,

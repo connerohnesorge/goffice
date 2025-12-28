@@ -21,6 +21,8 @@ const (
 	elemPtCount = "ptCount"
 	// dataBase10 is the base used for integer to string conversion.
 	dataBase10 = 10
+	// floatBitSize64 is the bit size for 64-bit float formatting.
+	floatBitSize64 = 64
 )
 
 // CategoryAxisData represents the c:cat element for category data.
@@ -236,6 +238,18 @@ func NewStringReference(
 	return sr
 }
 
+// NewStringReferenceWithCache creates a new string reference with the given
+// formula and cached values.
+func NewStringReferenceWithCache(
+	formula string,
+	values []string,
+) *StringReference {
+	sr := NewStringReference(formula)
+	sr.SetCache(values)
+
+	return sr
+}
+
 // Formula returns the formula reference.
 func (s *StringReference) Formula() string {
 	elem := s.GetElement(elemF, NamespaceChart)
@@ -268,6 +282,28 @@ func (s *StringReference) SetFormula(
 		formula,
 	)
 	s.PrependChild(f)
+}
+
+// SetCache sets the cached string values for this reference.
+// This creates a c:strCache element with the provided values.
+func (s *StringReference) SetCache(
+	values []string,
+) {
+	// Remove existing cache if present
+	if existing := s.GetElement("strCache", NamespaceChart); existing != nil {
+		s.RemoveChild(existing)
+	}
+
+	// Create new cache
+	cache := NewStringCache()
+	cache.SetPointCount(uint32(len(values)))
+
+	// Add all points
+	for i, val := range values {
+		cache.AddPoint(uint32(i), val)
+	}
+
+	s.AppendChild(cache)
 }
 
 // Clone creates a deep copy of this StringReference.
@@ -311,6 +347,32 @@ func NewNumberReference(
 	return nr
 }
 
+// NewNumberReferenceWithCache creates a new number reference with the given
+// formula and cached values using "General" format.
+func NewNumberReferenceWithCache(
+	formula string,
+	values []float64,
+) *NumberReference {
+	return NewNumberReferenceWithCacheAndFormat(
+		formula,
+		values,
+		"General",
+	)
+}
+
+// NewNumberReferenceWithCacheAndFormat creates a new number reference with
+// the given formula, cached values, and format code.
+func NewNumberReferenceWithCacheAndFormat(
+	formula string,
+	values []float64,
+	formatCode string,
+) *NumberReference {
+	nr := NewNumberReference(formula)
+	nr.SetCacheWithFormat(values, formatCode)
+
+	return nr
+}
+
 // Formula returns the formula reference.
 func (n *NumberReference) Formula() string {
 	elem := n.GetElement(elemF, NamespaceChart)
@@ -343,6 +405,46 @@ func (n *NumberReference) SetFormula(
 		formula,
 	)
 	n.PrependChild(f)
+}
+
+// SetCache sets the cached numeric values for this reference using "General"
+// format code.
+func (n *NumberReference) SetCache(
+	values []float64,
+) {
+	n.SetCacheWithFormat(values, "General")
+}
+
+// SetCacheWithFormat sets the cached numeric values for this reference with
+// the specified format code.
+func (n *NumberReference) SetCacheWithFormat(
+	values []float64,
+	formatCode string,
+) {
+	// Remove existing cache if present
+	if existing := n.GetElement("numCache", NamespaceChart); existing != nil {
+		n.RemoveChild(existing)
+	}
+
+	// Create new cache
+	cache := NewNumberCache()
+	cache.SetFormatCode(formatCode)
+	cache.SetPointCount(uint32(len(values)))
+
+	// Add all points
+	for i, val := range values {
+		cache.AddPoint(
+			uint32(i),
+			strconv.FormatFloat(
+				val,
+				'g',
+				-1,
+				floatBitSize64,
+			),
+		)
+	}
+
+	n.AppendChild(cache)
 }
 
 // Clone creates a deep copy of this NumberReference.

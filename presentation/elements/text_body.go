@@ -3,6 +3,7 @@ package elements
 
 import (
 	"github.com/connerohnesorge/goffice/drawingml"
+	"github.com/connerohnesorge/goffice/openxml"
 )
 
 // Re-export DrawingML text types for convenience.
@@ -27,10 +28,24 @@ type TextParagraphProperties = drawingml.TextParagraphProperties
 // TextCharacterProperties is an alias for drawingml.TextCharacterProperties.
 type TextCharacterProperties = drawingml.TextCharacterProperties
 
-// NewTextBody creates a new text body element.
-// This is a convenience wrapper for drawingml.NewTextBody.
+// NewTextBody creates a new text body element for presentations.
+// Unlike drawingml.NewTextBody() which creates <a:txBody>, this creates
+// <p:txBody> with the PresentationML namespace as required by PowerPoint.
 func NewTextBody() *drawingml.TextBody {
-	return drawingml.NewTextBody()
+	elem := openxml.NewCompositeElement(
+		NamespacePresentationML,
+		"txBody",
+		PrefixP,
+	)
+	tb := &drawingml.TextBody{
+		CompositeElementBase: elem,
+	}
+	// Add default body properties (a:bodyPr)
+	tb.AppendChild(
+		drawingml.NewTextBodyProperties(),
+	)
+
+	return tb
 }
 
 // NewTextParagraph creates a new text paragraph element.

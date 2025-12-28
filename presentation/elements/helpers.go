@@ -9,10 +9,12 @@ const (
 	NamespacePresentationML   = openxml.NamespacePresentationML
 	NamespaceDrawingML        = openxml.NamespaceDrawingML
 	NamespaceDrawingMLPicture = openxml.NamespaceDrawingMLPicture
+	NamespaceDrawingMLChart   = openxml.NamespaceDrawingMLChart
 	NamespaceRelationships    = openxml.NamespaceRelationships
 	PrefixP                   = "p"
 	PrefixA                   = "a"
 	PrefixPic                 = "pic"
+	PrefixC                   = "c"
 	PrefixR                   = "r"
 )
 

@@ -18,6 +18,9 @@ const (
 	// NamespaceDrawingMLWordprocessing is the DrawingML for WordprocessingML namespace.
 	NamespaceDrawingMLWordprocessing = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
 
+	// NamespaceDrawingMLChart is the DrawingML chart namespace.
+	NamespaceDrawingMLChart = "http://schemas.openxmlformats.org/drawingml/2006/chart"
+
 	// NamespaceContentTypes is the content types namespace.
 	NamespaceContentTypes = "http://schemas.openxmlformats.org/package/2006/content-types"
 
@@ -221,6 +224,7 @@ var NamespacePrefixes = map[string]string{
 	NamespaceDrawingML:               "a",
 	NamespaceDrawingMLPicture:        "pic",
 	NamespaceDrawingMLWordprocessing: "wp",
+	NamespaceDrawingMLChart:          "c",
 	NamespaceMarkupCompatibility:     "mc",
 	NamespaceOfficeDocument:          "o",
 	NamespaceVML:                     "v",

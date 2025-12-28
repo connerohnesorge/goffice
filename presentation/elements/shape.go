@@ -26,8 +26,7 @@ func NewShape() *Shape {
 	sp.AppendChild(NewNonVisualShapeProperties())
 	// Add required shape properties (DrawingML)
 	sp.AppendChild(NewShapeProperties())
-	// Add text body
-	sp.AppendChild(drawingml.NewTextBody())
+	// Note: Text body is created lazily via GetOrCreateTextBody() when needed
 
 	return sp
 }
@@ -118,7 +117,7 @@ func (sp *Shape) GetOrCreateTextBody() *drawingml.TextBody {
 	if tb != nil {
 		return tb
 	}
-	tb = drawingml.NewTextBody()
+	tb = NewTextBody() // Use presentation NewTextBody() which creates <p:txBody>
 	sp.AppendChild(tb)
 
 	return tb

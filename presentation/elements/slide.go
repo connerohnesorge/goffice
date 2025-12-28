@@ -24,6 +24,27 @@ func NewSlide() *Slide {
 	)
 	s := &Slide{PartRootElementBase: elem}
 
+	// Add namespace declarations for all namespaces used in slides
+	// This is required for Office/LibreOffice to correctly parse the XML
+	s.SetAttribute(openxml.NewAttribute(
+		"",
+		PrefixA,
+		"xmlns",
+		NamespaceDrawingML,
+	))
+	s.SetAttribute(openxml.NewAttribute(
+		"",
+		PrefixR,
+		"xmlns",
+		NamespaceRelationships,
+	))
+	s.SetAttribute(openxml.NewAttribute(
+		"",
+		PrefixC,
+		"xmlns",
+		NamespaceDrawingMLChart,
+	))
+
 	// Add required common slide data
 	s.AppendChild(NewCommonSlideData())
 
