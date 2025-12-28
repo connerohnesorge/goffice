@@ -399,22 +399,31 @@ func CreateFromTemplate(
 
 // initializeDocument sets up the basic document structure for a new document.
 func (d *Document) initializeDocument() error {
-	// Create the main presentation part using the parts package
-	presPart, err := parts.NewPresentationPart(
+	// Create the main presentation part using AddNewPart to ensure it's registered
+	mainPart, err := d.pkg.AddNewPart(
 		"/ppt/presentation.xml",
 		d.docType.ContentType(),
-		d.pkg,
+		parts.RelationshipTypeOfficeDocument,
 	)
 	if err != nil {
 		return err
 	}
 
-	// Initialize with minimal presentation content
-	presPart.InitializeContent()
-
 	// Set as main part in the package
-	d.pkg.SetMainPart(presPart)
-	d.presentationPart = presPart
+	d.pkg.SetMainPart(mainPart)
+
+	// Wrap as PresentationPart if needed
+	switch mp := mainPart.(type) {
+	case *parts.PresentationPart:
+		d.presentationPart = mp
+	case *openxml.OpenXmlPartData:
+		d.presentationPart = parts.NewPresentationPartFromData(mp, d.docType.ContentType())
+	}
+
+	// Initialize with minimal presentation content
+	if d.presentationPart != nil {
+		d.presentationPart.InitializeContent()
+	}
 
 	return nil
 }

@@ -207,72 +207,83 @@ func (b *BaseElement) writeStartElement(
 	}
 	buf.WriteString(b.qname.LocalName())
 
-	// Track which namespace prefixes need declarations
+	// Track which namespace prefixes are already declared in attributes
 	declaredPrefixes := make(map[string]bool)
 
-	// Write default namespace declaration if this element uses the default
-	// namespace (no prefix) and has a namespace URI, and is a root element
+	// First pass: check which namespaces are already declared in attributes
+	// This prevents duplicate xmlns declarations
+	for _, attr := range b.attributes {
+		if attr.Prefix() == constXmlns {
+			// This is a namespace declaration attribute (xmlns:prefix="uri")
+			declaredPrefixes[attr.LocalName()] = true
+		} else if attr.Prefix() == "" && attr.LocalName() == constXmlns {
+			// This is a default namespace declaration (xmlns="uri")
+			declaredPrefixes[""] = true
+		}
+	}
+
+	// Write namespace declarations that aren't already in attributes
+	namespaceDeclsWritten := make(map[string]bool)
+
+	// Write default or prefixed namespace for the element itself (only for root elements)
 	if b.parent == nil &&
 		b.qname.NamespaceURI() != "" {
 		if b.prefix == "" {
-			buf.WriteString(" xmlns=\"")
-			buf.WriteString(
-				escapeXmlAttr(
-					b.qname.NamespaceURI(),
-				),
-			)
-			buf.WriteByte('"')
+			// Default namespace
+			if !declaredPrefixes[""] {
+				buf.WriteString(" xmlns=\"")
+				buf.WriteString(
+					escapeXmlAttr(
+						b.qname.NamespaceURI(),
+					),
+				)
+				buf.WriteByte('"')
+				namespaceDeclsWritten[""] = true
+			}
 		} else {
-			buf.WriteString(" xmlns:")
-			buf.WriteString(b.prefix)
-			buf.WriteString("=\"")
-			buf.WriteString(
-				escapeXmlAttr(b.qname.NamespaceURI()),
-			)
-			buf.WriteByte('"')
-			declaredPrefixes[b.prefix] = true
+			// Prefixed namespace
+			if !declaredPrefixes[b.prefix] {
+				buf.WriteString(" xmlns:")
+				buf.WriteString(b.prefix)
+				buf.WriteString("=\"")
+				buf.WriteString(escapeXmlAttr(b.qname.NamespaceURI()))
+				buf.WriteByte('"')
+				namespaceDeclsWritten[b.prefix] = true
+			}
 		}
 	}
 
-	// Write prefixed namespace declaration if element has a prefix and not already declared
-	if b.prefix != "" &&
-		b.qname.NamespaceURI() != "" && !declaredPrefixes[b.prefix] {
-		buf.WriteString(" xmlns:")
-		buf.WriteString(b.prefix)
-		buf.WriteString("=\"")
-		buf.WriteString(
-			escapeXmlAttr(b.qname.NamespaceURI()),
-		)
-		buf.WriteByte('"')
-		declaredPrefixes[b.prefix] = true
-	}
-
-	// Write attributes, collecting prefixed namespaces that need declaration
+	// Write namespace declarations for attribute prefixes
 	for _, attr := range b.attributes {
-		// Skip if attribute has no prefix or namespace
-		if attr.Prefix() == "" {
+		// Skip xmlns attributes - they'll be written in the attribute pass
+		if attr.Prefix() == constXmlns ||
+			(attr.Prefix() == "" && attr.LocalName() == constXmlns) {
 			continue
 		}
-		if attr.NamespaceURI() == "" {
+
+		// Skip attributes without prefixes or namespaces
+		if attr.Prefix() == "" ||
+			attr.NamespaceURI() == "" {
 			continue
 		}
-		// Skip if prefix already declared
-		if declaredPrefixes[attr.Prefix()] {
+
+		// Skip if already declared or written
+		if declaredPrefixes[attr.Prefix()] ||
+			namespaceDeclsWritten[attr.Prefix()] {
 			continue
 		}
+
 		buf.WriteString(" xmlns:")
 		buf.WriteString(attr.Prefix())
 		buf.WriteString("=\"")
 		buf.WriteString(
-			escapeXmlAttr(
-				attr.NamespaceURI(),
-			),
+			escapeXmlAttr(attr.NamespaceURI()),
 		)
 		buf.WriteByte('"')
-		declaredPrefixes[attr.Prefix()] = true
+		namespaceDeclsWritten[attr.Prefix()] = true
 	}
 
-	// Write attribute values
+	// Write all attribute values
 	for _, attr := range b.attributes {
 		buf.WriteByte(' ')
 		if attr.Prefix() != "" {

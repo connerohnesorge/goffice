@@ -119,3 +119,57 @@ func wrapLeafElement(
 
 	return nil
 }
+
+// LinkGraphicFrameToChart sets up a GraphicFrame to reference a chart part.
+// This creates the proper <a:graphic><a:graphicData> structure with a chart reference.
+func LinkGraphicFrameToChart(
+	gf *GraphicFrame,
+	chartRelID string,
+) {
+	if gf == nil || chartRelID == "" {
+		return
+	}
+
+	// Create the graphic element (a:graphic)
+	graphic := openxml.NewCompositeElement(
+		NamespaceDrawingML,
+		"graphic",
+		PrefixA,
+	)
+
+	// Create the graphic data element (a:graphicData)
+	// with the chart URI namespace
+	graphicData := openxml.NewCompositeElement(
+		NamespaceDrawingML,
+		"graphicData",
+		PrefixA,
+	)
+	graphicData.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"uri",
+			"",
+			"http://schemas.openxmlformats.org/drawingml/2006/chart",
+		),
+	)
+
+	// Create the chart reference element (c:chart)
+	chartRef := openxml.NewLeafElement(
+		"http://schemas.openxmlformats.org/drawingml/2006/chart",
+		"chart",
+		"c",
+	)
+	chartRef.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceRelationships,
+			"id",
+			PrefixR,
+			chartRelID,
+		),
+	)
+
+	// Build the structure: graphic > graphicData > chartRef
+	graphicData.AppendChild(chartRef)
+	graphic.AppendChild(graphicData)
+	gf.AppendChild(graphic)
+}

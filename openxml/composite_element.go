@@ -408,38 +408,8 @@ func (c *CompositeElementBase) InnerXml() string {
 func (c *CompositeElementBase) WriteXML(
 	w io.Writer,
 ) error {
-	// If it's a root element (no parent), ensure it has the xmlns attribute
-	// if it doesn't already have one and has a namespace URI.
-	if c.parent == nil && c.NamespaceURI() != "" {
-		found := false
-		xmlnsLocal := constXmlns
-		if c.prefix != "" {
-			xmlnsLocal = c.prefix
-		}
-
-		for _, attr := range c.attributes {
-			if attr.LocalName() == xmlnsLocal &&
-				(attr.Prefix() == constXmlns || (c.prefix == "" && attr.Prefix() == "")) {
-				found = true
-
-				break
-			}
-		}
-		if !found {
-			if c.prefix == "" {
-				c.SetAttribute(
-					NewAttribute(
-						"http://www.w3.org/2000/xmlns/",
-						constXmlns,
-						"",
-						c.NamespaceURI(),
-					),
-				)
-			} else {
-				c.SetAttribute(NewAttribute("http://www.w3.org/2000/xmlns/", c.prefix, constXmlns, c.NamespaceURI()))
-			}
-		}
-	}
+	// Note: namespace declarations are handled by writeStartElement in base_element.go
+	// We don't need to add xmlns attributes here as that would cause duplicates
 
 	if c.childCount == 0 {
 		return c.writeStartElement(w, true)

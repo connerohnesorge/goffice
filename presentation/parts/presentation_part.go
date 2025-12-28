@@ -107,6 +107,12 @@ var (
 	handoutCounter     uint64
 )
 
+// Counters for generating slide IDs (PowerPoint starts from 256)
+var (
+	slideIdCounter       uint32 = 255
+	slideMasterIdCounter uint32 = 2147483647 // PowerPoint convention for master IDs
+)
+
 // AddSlidePart adds a new slide part to this presentation.
 func (pp *PresentationPart) AddSlidePart() (*SlidePart, error) {
 	num := atomic.AddUint64(&slideCounter, 1)
@@ -115,7 +121,25 @@ func (pp *PresentationPart) AddSlidePart() (*SlidePart, error) {
 		num,
 	)
 
-	return newSlidePart(pp, uri)
+	slidePart, err := newSlidePart(pp, uri)
+	if err != nil {
+		return nil, err
+	}
+
+	// Register the slide in presentation.xml
+	slideID := atomic.AddUint32(
+		&slideIdCounter,
+		1,
+	)
+	pres := pp.Presentation()
+	if pres != nil {
+		pres.AddSlideId(
+			slideID,
+			slidePart.RelationshipID(),
+		)
+	}
+
+	return slidePart, nil
 }
 
 // SlideParts returns all slide parts.
@@ -141,7 +165,25 @@ func (pp *PresentationPart) AddSlideMasterPart() (*SlideMasterPart, error) {
 		num,
 	)
 
-	return newSlideMasterPart(pp, uri)
+	masterPart, err := newSlideMasterPart(pp, uri)
+	if err != nil {
+		return nil, err
+	}
+
+	// Register the slide master in presentation.xml
+	masterID := atomic.AddUint32(
+		&slideMasterIdCounter,
+		1,
+	)
+	pres := pp.Presentation()
+	if pres != nil {
+		pres.AddSlideMasterId(
+			masterID,
+			masterPart.RelationshipID(),
+		)
+	}
+
+	return masterPart, nil
 }
 
 // SlideMasterParts returns all slide master parts.

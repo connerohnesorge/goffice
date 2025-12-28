@@ -128,6 +128,23 @@ func (sp *SlidePart) ImageParts() []*ImagePart {
 	return images
 }
 
+// AddChartPart adds a chart part to this slide.
+func (sp *SlidePart) AddChartPart() (*ChartPart, error) {
+	return newChartPartForSlide(sp)
+}
+
+// ChartParts returns all chart parts.
+func (sp *SlidePart) ChartParts() []*ChartPart {
+	var charts []*ChartPart
+	for part := range sp.Parts() {
+		if cp, ok := part.(*ChartPart); ok {
+			charts = append(charts, cp)
+		}
+	}
+
+	return charts
+}
+
 // GetStream returns a reader for the part content.
 func (sp *SlidePart) GetStream() io.Reader {
 	return sp.OpenXmlPartData.GetStream()

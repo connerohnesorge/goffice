@@ -346,18 +346,35 @@ func (p *OpenXmlPartData) ClearDirty() {
 	p.isDirty = false
 }
 
-// Save serializes the root element to the part stream.
+// Save serializes the root element to the part stream and recursively saves all child parts.
 func (p *OpenXmlPartData) Save() error {
 	p.mu.Lock()
 	root := p.rootElement
+	childParts := make(
+		[]OpenXmlPart,
+		0,
+		len(p.childParts),
+	)
+	for _, child := range p.childParts {
+		childParts = append(childParts, child)
+	}
 	p.mu.Unlock()
 
-	if root == nil {
-		return nil
+	if root != nil {
+		if err := root.Save(); err != nil {
+			return err
+		}
 	}
 
-	if err := root.Save(); err != nil {
-		return err
+	// Recursively save all child parts
+	for _, child := range childParts {
+		if saveable, ok := child.(ISaveablePart); ok {
+			// Always save child parts, not just dirty ones, to ensure
+			// they are written to the package even on first save
+			if err := saveable.Save(); err != nil {
+				return err
+			}
+		}
 	}
 
 	p.ClearDirty()
