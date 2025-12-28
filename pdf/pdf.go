@@ -143,6 +143,18 @@ type RenderOptions struct {
 	// CompressContent enables content stream compression.
 	// Default is true.
 	CompressContent bool
+
+	// FontFallbacks defines custom font fallback chains.
+	// The map key is the font family name that should trigger the fallback,
+	// and the value is a list of fallback font families to try in order.
+	// Example:
+	//   FontFallbacks: map[string][]string{
+	//       "Calibri": {"Arial", "Liberation Sans", "FreeSans"},
+	//       "CustomFont": {"Arial", "Helvetica"},
+	//   }
+	// These rules are added to the fallback chain with higher priority than
+	// the built-in defaults.
+	FontFallbacks map[string][]string
 }
 
 const (
@@ -162,6 +174,9 @@ func DefaultRenderOptions() *RenderOptions {
 		TaggedPDF:       false,
 		Creator:         "goffice-pdf",
 		CompressContent: true,
+		FontFallbacks: make(
+			map[string][]string,
+		),
 	}
 }
 
@@ -240,6 +255,24 @@ func (o *RenderOptions) WithMetadata(
 	opts.Author = author
 	opts.Subject = subject
 	opts.Keywords = keywords
+
+	return &opts
+}
+
+// WithFontFallbacks returns a copy of the options with the specified
+// font fallback configuration.
+func (o *RenderOptions) WithFontFallbacks(
+	fallbacks map[string][]string,
+) *RenderOptions {
+	opts := *o
+	// Create a new map to avoid sharing the reference
+	opts.FontFallbacks = make(
+		map[string][]string,
+		len(fallbacks),
+	)
+	for k, v := range fallbacks {
+		opts.FontFallbacks[k] = v
+	}
 
 	return &opts
 }
@@ -323,6 +356,12 @@ func RenderWord(
 	if err := loadDefaultFonts(fontCache); err != nil {
 		return err
 	}
+
+	// Apply custom font fallbacks if specified
+	applyFontFallbacks(
+		fontCache,
+		opts.FontFallbacks,
+	)
 
 	// Create a text layout engine
 	engine := layout.NewTextLayoutEngine(
@@ -588,6 +627,50 @@ func RenderPresentationToFile(
 	return RenderPresentation(doc, f, options)
 }
 
+// FontEntry represents a discovered font on the system.
+// This is a simplified public API type that contains only the essential
+// information about a font.
+type FontEntry struct {
+	// Family is the font family name (e.g., "Arial", "Times New Roman")
+	Family string
+
+	// Style is the font style as a string (e.g., "Regular", "Bold", "Italic")
+	Style string
+}
+
+// DiscoverFonts returns a list of all fonts available on the system.
+// This scans system font directories and returns metadata about each
+// discovered font.
+//
+// Example:
+//
+//	fonts := pdf.DiscoverFonts()
+//	for _, font := range fonts {
+//	    fmt.Printf("%s (%s)\n", font.Family, font.Style)
+//	}
+func DiscoverFonts() []FontEntry {
+	// Get all system fonts using the internal font discovery API
+	fontInfos, err := font.ListSystemFonts()
+	if err != nil {
+		return []FontEntry{}
+	}
+
+	// Convert internal FontInfo to public FontEntry
+	entries := make(
+		[]FontEntry,
+		0,
+		len(fontInfos),
+	)
+	for _, info := range fontInfos {
+		entries = append(entries, FontEntry{
+			Family: info.Family,
+			Style:  info.Style.String(),
+		})
+	}
+
+	return entries
+}
+
 // loadDefaultFonts loads default fonts into the font cache.
 func loadDefaultFonts(
 	cache *font.FontCache,
@@ -597,4 +680,39 @@ func loadDefaultFonts(
 	// For now, we just ensure the cache is ready to use
 	// The actual font loading happens when the layout engine requests fonts
 	return nil
+}
+
+// applyFontFallbacks applies custom font fallback rules from RenderOptions to the font cache.
+// For each font family in the FontFallbacks map, it adds rules to the fallback chain
+// for each fallback font in the list (in order).
+func applyFontFallbacks(
+	cache *font.FontCache,
+	fallbacks map[string][]string,
+) {
+	if cache == nil || len(fallbacks) == 0 {
+		return
+	}
+
+	// Get or create the fallback chain
+	chain := cache.GetFallbackChain()
+	if chain == nil {
+		chain = font.NewFallbackChain()
+		cache.SetFallbackChain(chain)
+	}
+
+	// Add custom fallback rules with higher priority than defaults
+	// We iterate through the map and add rules for each primary font
+	for primaryFont, fallbackList := range fallbacks {
+		// For each fallback font in the list, add a rule
+		// The first fallback in the list gets highest priority
+		for i := len(fallbackList) - 1; i >= 0; i-- {
+			fallbackFont := fallbackList[i]
+			// Use -1 for style to inherit the original style
+			chain.AddRule(
+				primaryFont,
+				fallbackFont,
+				-1,
+			)
+		}
+	}
 }

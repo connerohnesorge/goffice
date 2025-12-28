@@ -42,6 +42,10 @@ type SpreadsheetRenderer struct {
 
 	// nextFontNumber tracks the next available font number for naming.
 	nextFontNumber int
+
+	// glyphsUsed tracks which glyphs are used per font for subsetting.
+	// Maps font family to a set of runes used.
+	glyphsUsed map[string]map[rune]bool
 }
 
 // RenderOptions configures spreadsheet rendering behavior.
@@ -108,6 +112,9 @@ func NewSpreadsheetRenderer(
 			map[*core.Page]map[string]string,
 		),
 		nextFontNumber: 1,
+		glyphsUsed: make(
+			map[string]map[rune]bool,
+		),
 	}, nil
 }
 
@@ -564,9 +571,35 @@ func (r *SpreadsheetRenderer) registerFont(
 	)
 	r.nextFontNumber++
 
-	// Register the font in the PDF page resources
-	// For now, using the family name as the base font (Type1 approximation)
-	// TODO: Implement proper TrueType font embedding for better fidelity
+	// Try to embed TrueType font if enabled
+	if r.options.EmbedFonts &&
+		fontObj.Data != nil &&
+		len(fontObj.Data) > 0 {
+		// Get the glyphs used for this font
+		glyphsUsed := r.glyphsUsed[fontFamily]
+		if glyphsUsed == nil {
+			glyphsUsed = make(map[rune]bool)
+		}
+
+		// Register using TrueType embedding
+		err := r.pdf.RegisterTrueTypeFont(
+			page,
+			"/"+resourceName,
+			fontObj.Data,
+			fontFamily,
+			glyphsUsed,
+		)
+
+		if err == nil {
+			// Successfully registered TrueType font
+			r.fontRegistry[page][fontFamily] = resourceName
+			return resourceName
+		}
+
+		// If TrueType registration failed, fall back to Type1
+	}
+
+	// Fall back to Type1 registration
 	page.RegisterFont(
 		"/"+resourceName,
 		fontFamily,
@@ -576,4 +609,21 @@ func (r *SpreadsheetRenderer) registerFont(
 	r.fontRegistry[page][fontFamily] = resourceName
 
 	return resourceName
+}
+
+// trackGlyphUsage tracks which glyphs are used for a given font family.
+// This is used for font subsetting when embedding TrueType fonts.
+func (r *SpreadsheetRenderer) trackGlyphUsage(
+	fontFamily string,
+	text string,
+) {
+	if r.glyphsUsed[fontFamily] == nil {
+		r.glyphsUsed[fontFamily] = make(
+			map[rune]bool,
+		)
+	}
+
+	for _, ch := range text {
+		r.glyphsUsed[fontFamily][ch] = true
+	}
 }

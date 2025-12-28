@@ -180,6 +180,133 @@ Recommended tools for visual comparison:
 - **Adobe Acrobat**: Compare documents feature
 - **PDFtk**: Extract and compare metadata
 - **pdfimages**: Extract and compare embedded images
+- **goffice-pdf/comparison**: Automated pixel-level comparison (see below)
+
+### Automated Visual Comparison
+
+The `pdf/comparison` package provides automated pixel-level visual comparison for PDF fidelity testing. This tool compares generated PDFs against baseline reference images to detect rendering differences.
+
+#### How It Works
+
+1. **PDF-to-PNG Conversion**: Converts both PDFs to PNG images using Ghostscript
+2. **Pixel-Level Comparison**: Compares images pixel-by-pixel using Euclidean color distance in RGB space
+3. **Tolerance Thresholds**: Applies two-level filtering to ignore minor rendering differences
+4. **Diff Visualization**: Generates annotated images highlighting differences in red
+
+#### Running Visual Comparison Tests
+
+The comparison capability is integrated into the fidelity test suite:
+
+```bash
+# Install Ghostscript (required dependency)
+# Ubuntu/Debian:
+sudo apt-get install ghostscript
+
+# macOS:
+brew install ghostscript
+
+# Run fidelity tests with visual comparison
+go test -run=TestFidelity ./...
+```
+
+Tests will automatically:
+- Generate PDF from your document
+- Convert to PNG images
+- Compare against baseline images
+- Report differences and generate annotated diff images
+
+#### Tolerance Thresholds
+
+The comparison uses two-level filtering to handle expected rendering variations:
+
+**Per-Pixel Tolerance**: `2.0` delta (Euclidean distance in RGB space)
+- **Range**: 0-441 (sqrt(255² + 255² + 255²))
+- **Purpose**: Ignore minor color variations from anti-aliasing, font hinting, and subpixel rendering
+- **Example**: A pixel differing by (1,1,1) in RGB has delta ≈1.73, which is within tolerance
+
+**Per-Image Threshold**: `0.5%` of pixels allowed to exceed per-pixel tolerance
+- **Purpose**: Ignore isolated pixel differences while catching systematic rendering errors
+- **Rationale**: Anti-aliasing edges, rounding differences, and platform-specific font rendering can affect <0.5% of pixels without visual impact
+- **Example**: On a 1275x1650 page (2.1M pixels), up to ~10,500 pixels can exceed tolerance before failing
+
+#### Why These Thresholds?
+
+These values were chosen through empirical testing of Office documents:
+
+1. **Anti-Aliasing**: Different PDF renderers (Office vs goffice-pdf) may use slightly different anti-aliasing algorithms, causing 1-2 pixel color variations along edges
+2. **Font Rendering**: Subpixel font rendering and hinting can cause minor color differences in text, especially at smaller sizes
+3. **Rounding**: Coordinate and color space conversions involve rounding that can differ by ±1 unit
+4. **Platform Differences**: System-specific rendering (Linux vs Windows vs macOS) can cause isolated pixel variations
+
+A threshold of 2.0 per-pixel and 0.5% per-image catches genuine rendering bugs while tolerating expected platform variations.
+
+#### When to Update Baselines
+
+Update baseline images when:
+
+1. **Intentional Rendering Changes**: You've improved rendering quality or fixed a bug
+2. **Font Changes**: System fonts or font embedding logic has changed
+3. **Layout Improvements**: Text layout, line breaking, or justification algorithms updated
+4. **Image Compression**: Image encoding or compression parameters changed
+
+**How to update baselines:**
+
+```bash
+# Generate new baseline from current PDF output
+go test -run=TestFidelity -update-baselines ./...
+
+# Or manually:
+# 1. Generate PDF from test document
+go test -run=TestFidelityWord/basic_text -args -save-pdf
+
+# 2. Convert PDF to PNG baseline
+gs -q -dNOPAUSE -dBATCH -dSAFER -sDEVICE=png16m -r150 \
+   -sOutputFile=testdata/fidelity/word/basic_text.docx.baseline.png \
+   testdata/fidelity/word/basic_text.pdf
+
+# 3. Commit the new baseline
+git add testdata/fidelity/word/basic_text.docx.baseline.png
+git commit -m "Update baseline for basic_text test"
+```
+
+**Important**: Always visually inspect the new baseline before committing! Compare side-by-side with Office output to ensure the change is acceptable.
+
+#### Interpreting Results
+
+**Test Pass**: Difference is within tolerance
+```
+Diff: 0.12% pixels differ, 0.03% exceed tolerance (max delta: 4.2, avg delta: 1.8)
+PASS: Visual comparison within tolerance
+```
+
+**Test Fail**: Too many pixels exceed tolerance
+```
+Diff: 2.34% pixels differ, 1.87% exceed tolerance (max delta: 45.6, avg delta: 12.3)
+FAIL: Visual comparison exceeds tolerance (0.5%)
+Diff image saved to: testdata/fidelity/word/basic_text.diff.png
+```
+
+Check the diff image to see what changed. Red highlights show pixels exceeding tolerance.
+
+#### Troubleshooting
+
+**Ghostscript not found:**
+```
+Ghostscript not found in PATH. Please install Ghostscript to enable visual comparison.
+```
+Install Ghostscript using your package manager (see installation instructions above).
+
+**Baseline image missing:**
+```
+Baseline image not found: testdata/fidelity/word/example.docx.baseline.png
+```
+Generate a baseline image for this test case (see "How to update baselines" above).
+
+**Image dimensions don't match:**
+```
+Image dimensions do not match: baseline 1275x1650, generated 1280x1650
+```
+This indicates a page size or scaling difference. Check your PDF generation settings and ensure they match the baseline.
 
 ## Reporting Fidelity Issues
 

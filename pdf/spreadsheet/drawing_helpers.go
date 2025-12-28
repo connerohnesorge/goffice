@@ -121,6 +121,14 @@ func drawText(
 		return nil
 	}
 
+	// Track glyph usage for font subsetting
+	if fontObj != nil && fontObj.Family != "" {
+		renderer.trackGlyphUsage(
+			fontObj.Family,
+			text,
+		)
+	}
+
 	// Register font in page resources and get the resource name
 	fontName := renderer.registerFont(
 		page,

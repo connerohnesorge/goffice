@@ -139,12 +139,19 @@ You can configure custom font fallback chains:
 
 ```go
 opts := pdf.DefaultRenderOptions()
-// TODO: Add font fallback configuration API
-// opts.FontFallbacks = map[string][]string{
-//     "Calibri": {"Arial", "Liberation Sans", "FreeSans"},
-//     "CustomFont": {"Arial", "Helvetica"},
-// }
+opts.FontFallbacks = map[string][]string{
+    "Calibri": {"Arial", "Liberation Sans", "FreeSans"},
+    "CustomFont": {"Arial", "Helvetica"},
+}
+
+// Or using the fluent API:
+opts = pdf.DefaultRenderOptions().WithFontFallbacks(map[string][]string{
+    "Calibri": {"Arial", "Liberation Sans", "FreeSans"},
+    "CustomFont": {"Arial", "Helvetica"},
+})
 ```
+
+The fallback rules are processed in order. If "Calibri" is requested but not available, the renderer will try "Arial" first, then "Liberation Sans", and finally "FreeSans". Custom fallback rules take priority over the built-in defaults.
 
 ## Font Embedding Modes
 
@@ -303,11 +310,10 @@ Clear cache between renders if memory is constrained.
 To check which fonts are available:
 
 ```go
-// TODO: Add font discovery API
-// fonts := pdf.DiscoverFonts()
-// for _, font := range fonts {
-//     fmt.Printf("%s (%s)\n", font.Family, font.Style)
-// }
+fonts := pdf.DiscoverFonts()
+for _, font := range fonts {
+    fmt.Printf("%s (%s)\n", font.Family, font.Style)
+}
 ```
 
 ## Best Practices

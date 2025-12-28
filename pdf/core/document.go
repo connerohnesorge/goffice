@@ -1095,6 +1095,221 @@ func (p *Page) RegisterFont(
 	p.fonts[name] = true
 }
 
+// RegisterTrueTypeFont registers a TrueType font with embedding in the page's resource dictionary.
+// This creates a Type0 composite font with CIDFont and embeds the font data.
+// The fontData parameter contains the parsed font information, and glyphsUsed maps the runes that are used.
+// This method is thread-safe and can be called concurrently for different pages.
+func (d *Document) RegisterTrueTypeFont(
+	page *Page,
+	name string,
+	fontData []byte,
+	fontFamily string,
+	glyphsUsed map[rune]bool,
+) error {
+	if page == nil {
+		return fmt.Errorf("page is nil")
+	}
+	if len(fontData) == 0 {
+		return fmt.Errorf("font data is empty")
+	}
+
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	page.mu.Lock()
+	defer page.mu.Unlock()
+
+	xRefTable := d.ctx.XRefTable
+
+	// Ensure /Font dictionary exists in page resources
+	if page.resources == nil {
+		page.resources = types.NewDict()
+	}
+
+	fontDict, hasFonts := page.resources["Font"]
+	if !hasFonts {
+		fontDict = types.NewDict()
+		page.resources["Font"] = fontDict
+	}
+
+	fontDictTyped, ok := fontDict.(types.Dict)
+	if !ok {
+		fontDictTyped = types.NewDict()
+		page.resources["Font"] = fontDictTyped
+	}
+
+	// Create the font stream object with the TrueType data
+	fontStreamDict := types.NewDict()
+	fontStreamDict.Insert(
+		"Length",
+		types.Integer(len(fontData)),
+	)
+	fontStreamDict.Insert(
+		"Length1",
+		types.Integer(len(fontData)),
+	)
+
+	fontStream := &types.StreamDict{
+		Dict:    fontStreamDict,
+		Content: fontData,
+		Raw:     fontData,
+	}
+
+	// Encode the stream
+	if err := fontStream.Encode(); err != nil {
+		return fmt.Errorf(
+			"failed to encode font stream: %w",
+			err,
+		)
+	}
+
+	// Create indirect reference for the font stream
+	fontStreamRef, err := xRefTable.IndRefForNewObject(
+		*fontStream,
+	)
+	if err != nil {
+		return fmt.Errorf(
+			"failed to create font stream reference: %w",
+			err,
+		)
+	}
+
+	// Create the FontDescriptor dictionary
+	fontDescriptor := types.NewDict()
+	fontDescriptor.Insert(
+		"Type",
+		types.Name("FontDescriptor"),
+	)
+	fontDescriptor.Insert(
+		"FontName",
+		types.Name(fontFamily),
+	)
+	fontDescriptor.Insert(
+		"Flags",
+		types.Integer(32),
+	) // Symbolic font
+	fontDescriptor.Insert(
+		"FontBBox",
+		types.NewIntegerArray(0, 0, 1000, 1000),
+	)
+	fontDescriptor.Insert(
+		"ItalicAngle",
+		types.Integer(0),
+	)
+	fontDescriptor.Insert(
+		"Ascent",
+		types.Integer(750),
+	)
+	fontDescriptor.Insert(
+		"Descent",
+		types.Integer(-250),
+	)
+	fontDescriptor.Insert(
+		"CapHeight",
+		types.Integer(700),
+	)
+	fontDescriptor.Insert(
+		"StemV",
+		types.Integer(80),
+	)
+	fontDescriptor.Insert(
+		"FontFile2",
+		*fontStreamRef,
+	)
+
+	// Create indirect reference for the font descriptor
+	fontDescriptorRef, err := xRefTable.IndRefForNewObject(
+		fontDescriptor,
+	)
+	if err != nil {
+		return fmt.Errorf(
+			"failed to create font descriptor reference: %w",
+			err,
+		)
+	}
+
+	// Build CIDToGIDMap (Identity mapping for simplicity)
+	// For a proper subset, we would map CID to actual glyph IDs
+	// For now, we use Identity-H encoding which assumes CID = GID
+
+	// Create the CIDFont dictionary (Type 2 for TrueType)
+	cidFont := types.NewDict()
+	cidFont.Insert("Type", types.Name("Font"))
+	cidFont.Insert(
+		"Subtype",
+		types.Name("CIDFontType2"),
+	)
+	cidFont.Insert(
+		"BaseFont",
+		types.Name(fontFamily),
+	)
+
+	// Create CIDSystemInfo
+	cidSystemInfo := types.NewDict()
+	cidSystemInfo.Insert(
+		"Registry",
+		types.StringLiteral("Adobe"),
+	)
+	cidSystemInfo.Insert(
+		"Ordering",
+		types.StringLiteral("Identity"),
+	)
+	cidSystemInfo.Insert(
+		"Supplement",
+		types.Integer(0),
+	)
+	cidFont.Insert("CIDSystemInfo", cidSystemInfo)
+
+	cidFont.Insert(
+		"FontDescriptor",
+		*fontDescriptorRef,
+	)
+	cidFont.Insert(
+		"DW",
+		types.Integer(1000),
+	) // Default width
+
+	// Create indirect reference for the CIDFont
+	cidFontRef, err := xRefTable.IndRefForNewObject(
+		cidFont,
+	)
+	if err != nil {
+		return fmt.Errorf(
+			"failed to create CIDFont reference: %w",
+			err,
+		)
+	}
+
+	// Create the Type0 composite font dictionary
+	type0Font := types.NewDict()
+	type0Font.Insert("Type", types.Name("Font"))
+	type0Font.Insert(
+		"Subtype",
+		types.Name("Type0"),
+	)
+	type0Font.Insert(
+		"BaseFont",
+		types.Name(fontFamily),
+	)
+	type0Font.Insert(
+		"Encoding",
+		types.Name("Identity-H"),
+	)
+
+	// DescendantFonts array
+	descendantFonts := types.Array{*cidFontRef}
+	type0Font.Insert(
+		"DescendantFonts",
+		descendantFonts,
+	)
+
+	// Add the font to the page's font dictionary
+	fontDictTyped[name] = type0Font
+	page.fonts[name] = true
+
+	return nil
+}
+
 // UserUnit returns the user space unit size in points (PDF 1.6+).
 // Default is 1.0 (1 user unit = 1 point).
 func (p *Page) UserUnit() float64 {

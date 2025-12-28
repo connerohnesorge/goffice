@@ -51,9 +51,9 @@
 ## 2. Testing
 
 ### 2.1 Unit Tests (pdf/comparison/comparison_test.go)
-- [ ] Test ConvertPDFToPNG with valid PDF input
+- [x] Test ConvertPDFToPNG with valid PDF input
 - [x] Test ConvertPDFToPNG with missing gs (graceful error)
-- [ ] Test ConvertPDFToPNG output validation
+- [x] Test ConvertPDFToPNG output validation
 - [x] Test CompareImages with identical images (0% diff)
 - [x] Test CompareImages with slightly different images (within tolerance)
 - [x] Test CompareImages with very different images (exceeds tolerance)
@@ -89,9 +89,9 @@
 - [x] Add troubleshooting guide (gs not found, image format issues, etc.)
 
 ### 3.3 Design Documentation
-- [ ] Update pdf/FIDELITY.md to reference automated comparison capability
-- [ ] Document tolerance thresholds and why they were chosen
-- [ ] Provide guidance on when to update baselines
+- [x] Update pdf/FIDELITY.md to reference automated comparison capability
+- [x] Document tolerance thresholds and why they were chosen
+- [x] Provide guidance on when to update baselines
 
 ## 4. Deliverables
 
