@@ -133,8 +133,10 @@ func (p *OpenXmlPackage) loadParts() {
 		p.partsByURI[targetURI] = part
 
 		// Check if this is the main document part
+		// Support both Microsoft namespace and PURL namespace variants
 		if rel.Type() == RelationshipTypeOfficeDocument ||
-			rel.Type() == RelationshipTypeDocument {
+			rel.Type() == RelationshipTypeDocument ||
+			rel.Type() == RelationshipTypePURLOfficeDocument {
 			p.mainPart = part
 		}
 	}

@@ -90,13 +90,9 @@ func ChartPartFactory(
 	uri string,
 	container openxml.OpenXmlPartContainer,
 ) openxml.OpenXmlPart {
-	pkg := container.Package()
-	if pkg == nil {
-		return nil
-	}
-
-	packPart, err := pkg.Part(uri)
-	if err != nil {
+	// Use GetPackagingPart which is safe during initialization (no locks)
+	packPart := container.GetPackagingPart(uri)
+	if packPart == nil {
 		return nil
 	}
 

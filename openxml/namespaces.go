@@ -110,6 +110,57 @@ const (
 
 	// RelationshipTypeAttachedTemplate is the attached template relationship type.
 	RelationshipTypeAttachedTemplate = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate"
+
+	// PURL namespace relationship types (alternative namespace used by some tools)
+	// These are functionally equivalent to the Microsoft namespace versions above.
+
+	// RelationshipTypePURLOfficeDocument is the PURL namespace variant for main document.
+	RelationshipTypePURLOfficeDocument = "http://purl.oclc.org/ooxml/officeDocument/relationships/officeDocument"
+
+	// RelationshipTypePURLExtendedProperties is the PURL namespace variant for extended properties.
+	RelationshipTypePURLExtendedProperties = "http://purl.oclc.org/ooxml/officeDocument/relationships/extendedProperties"
+
+	// RelationshipTypePURLStyles is the PURL namespace variant for styles.
+	RelationshipTypePURLStyles = "http://purl.oclc.org/ooxml/officeDocument/relationships/styles"
+
+	// RelationshipTypePURLNumbering is the PURL namespace variant for numbering.
+	RelationshipTypePURLNumbering = "http://purl.oclc.org/ooxml/officeDocument/relationships/numbering"
+
+	// RelationshipTypePURLSettings is the PURL namespace variant for settings.
+	RelationshipTypePURLSettings = "http://purl.oclc.org/ooxml/officeDocument/relationships/settings"
+
+	// RelationshipTypePURLFontTable is the PURL namespace variant for font table.
+	RelationshipTypePURLFontTable = "http://purl.oclc.org/ooxml/officeDocument/relationships/fontTable"
+
+	// RelationshipTypePURLWebSettings is the PURL namespace variant for web settings.
+	RelationshipTypePURLWebSettings = "http://purl.oclc.org/ooxml/officeDocument/relationships/webSettings"
+
+	// RelationshipTypePURLTheme is the PURL namespace variant for theme.
+	RelationshipTypePURLTheme = "http://purl.oclc.org/ooxml/officeDocument/relationships/theme"
+
+	// RelationshipTypePURLImage is the PURL namespace variant for image.
+	RelationshipTypePURLImage = "http://purl.oclc.org/ooxml/officeDocument/relationships/image"
+
+	// RelationshipTypePURLHyperlink is the PURL namespace variant for hyperlink.
+	RelationshipTypePURLHyperlink = "http://purl.oclc.org/ooxml/officeDocument/relationships/hyperlink"
+
+	// RelationshipTypePURLHeader is the PURL namespace variant for header.
+	RelationshipTypePURLHeader = "http://purl.oclc.org/ooxml/officeDocument/relationships/header"
+
+	// RelationshipTypePURLFooter is the PURL namespace variant for footer.
+	RelationshipTypePURLFooter = "http://purl.oclc.org/ooxml/officeDocument/relationships/footer"
+
+	// RelationshipTypePURLFootnotes is the PURL namespace variant for footnotes.
+	RelationshipTypePURLFootnotes = "http://purl.oclc.org/ooxml/officeDocument/relationships/footnotes"
+
+	// RelationshipTypePURLEndnotes is the PURL namespace variant for endnotes.
+	RelationshipTypePURLEndnotes = "http://purl.oclc.org/ooxml/officeDocument/relationships/endnotes"
+
+	// RelationshipTypePURLComments is the PURL namespace variant for comments.
+	RelationshipTypePURLComments = "http://purl.oclc.org/ooxml/officeDocument/relationships/comments"
+
+	// RelationshipTypePURLAttachedTemplate is the PURL namespace variant for attached template.
+	RelationshipTypePURLAttachedTemplate = "http://purl.oclc.org/ooxml/officeDocument/relationships/attachedTemplate"
 )
 
 // Content types for common parts.

@@ -70,6 +70,9 @@ const (
 	RelationshipTypeDialogsheet    = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/dialogsheet"
 	RelationshipTypeMacrosheet     = "http://schemas.microsoft.com/office/2006/relationships/xlMacrosheet"
 
+	// PURL namespace variant for officeDocument (used by some tools)
+	RelationshipTypePURLOfficeDocument = "http://purl.oclc.org/ooxml/officeDocument/relationships/officeDocument"
+
 	// Data relationships
 	RelationshipTypeSharedStrings = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings"
 	RelationshipTypeStyles        = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"

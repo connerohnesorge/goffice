@@ -373,5 +373,16 @@ func init() {
 				IsFixedContentType: false, // Content type varies by workbook type
 			},
 		)
+
+		// Also register PURL namespace variant for compatibility
+		openxml.RegisterPartType(
+			&openxml.PartTypeInfo{
+				ContentType:        ct,
+				RelationshipType:   RelationshipTypePURLOfficeDocument,
+				Factory:            WorkbookPartFactory,
+				DefaultURI:         "/xl/workbook.xml",
+				IsFixedContentType: false, // Content type varies by workbook type
+			},
+		)
 	}
 }
