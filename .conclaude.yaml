@@ -57,7 +57,7 @@ subagentStop:
 # Pre-tool-use hook - file protection and tool validation
 preToolUse:
   # Prevent files at repository root
-  preventRootAdditions: true
+  preventRootAdditions: false
 
   # Protected files (glob patterns)
   uneditableFiles:

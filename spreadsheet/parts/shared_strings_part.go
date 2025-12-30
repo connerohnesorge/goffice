@@ -71,6 +71,10 @@ func (ssp *SharedStringTablePart) initializeContent() {
 			elements.NamespaceSML,
 		),
 	)
+
+	// Register the shared string table as the root element
+	// so it gets serialized when Save() is called
+	ssp.SetRootElement(ssp.sst)
 }
 
 // FixedContentType returns the content type for this part.
