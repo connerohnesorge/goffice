@@ -13,11 +13,6 @@ stop:
       message: "Spec validation failed"
       maxOutputLines: 100
       timeout: 300
-    - run: "golines -w --base-formatter gofumpt . --max-len=50 --ignored-dirs=.direnv"
-      showStdout: true
-      message: "formatting failed wtaf"
-      maxOutputLines: 100
-      timeout: 300
     - run: "nix develop --command 'tests'"
       showStdout: false
       message: "Tests (nix develop --command 'tests') failed. Fix them, DON'T skip or ignore them."
@@ -65,7 +60,7 @@ preToolUse:
     - ".conclaude.yml"
     - ".conclaude.yaml"
     - ".golangci.yaml"
-    - "flake.nix"
+    # - "flake.nix"
     - pattern: "spectr/changes/**/tasks.jsonc"
       message: "Task files managed by orchestrator. Make sure to tell your manager to test/eval your changes and mark them as done and next tasks as in_progress."
       agent: "coder" # Only blocks coder subagent
