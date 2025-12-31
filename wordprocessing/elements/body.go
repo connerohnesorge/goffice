@@ -43,13 +43,14 @@ func (b *Body) Paragraphs() iter.Seq[*Paragraph] {
 	}
 }
 
+const tableLocalName = "tbl"
+
 // Tables returns an iterator over all Table elements in the body.
 func (b *Body) Tables() iter.Seq[*Table] {
 	return func(yield func(*Table) bool) {
 		for child := range b.Children() {
-			if child.LocalName() != string(
-				PlaceholderValuesTbl,
-			) ||
+			// TODO: Re-enable PlaceholderValuesTbl when enum is regenerated
+			if child.LocalName() != tableLocalName ||
 				child.NamespaceURI() != NamespaceWML {
 				continue
 			}

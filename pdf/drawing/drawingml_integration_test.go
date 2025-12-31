@@ -1,0 +1,403 @@
+// Package drawing provides integration tests for complete DrawingML rendering.
+package drawing
+
+import (
+	"testing"
+
+	"github.com/connerohnesorge/goffice-pdf/core"
+	"github.com/connerohnesorge/goffice/drawingml"
+)
+
+// TestCompleteShapeRendering tests rendering a shape with all properties.
+func TestCompleteShapeRendering(t *testing.T) {
+	mockPage := core.NewMockPage()
+	ctx := core.NewRenderingContext(
+		core.PageSizeLetter.Width,
+		core.PageSizeLetter.Height,
+	).WithPage(mockPage)
+
+	t.Run(
+		"Shape with solid fill and stroke",
+		func(t *testing.T) {
+			sp := drawingml.NewShapeProperties()
+			sp.SetTransformValues(
+				drawingml.PointsToEmu(100),
+				drawingml.PointsToEmu(100),
+				drawingml.PointsToEmu(200),
+				drawingml.PointsToEmu(150),
+			)
+			sp.SetPresetShape(
+				drawingml.ShapeTypeRoundRectangle,
+			)
+			sp.SetSolidFillColor(
+				"4472C4",
+			) // Blue
+			sp.SetOutlineColor(
+				"000000",
+				drawingml.PointsToEmu(2),
+			) // Black outline
+
+			shapeRenderer := NewShapeRenderer(ctx)
+			fillRenderer := CreateFillRenderer(sp)
+			strokeRenderer := CreateStrokeRenderer(
+				sp,
+			)
+
+			err := shapeRenderer.RenderShapeWithFill(
+				sp,
+				fillRenderer,
+				strokeRenderer,
+			)
+			if err != nil {
+				t.Errorf(
+					"Failed to render complete shape: %v",
+					err,
+				)
+			}
+		},
+	)
+
+	t.Run(
+		"Shape with gradient fill",
+		func(t *testing.T) {
+			sp := drawingml.NewShapeProperties()
+			sp.SetTransformValues(
+				drawingml.PointsToEmu(320),
+				drawingml.PointsToEmu(100),
+				drawingml.PointsToEmu(150),
+				drawingml.PointsToEmu(150),
+			)
+			sp.SetPresetShape(
+				drawingml.ShapeTypeEllipse,
+			)
+
+			// Add gradient fill
+			gradFill := drawingml.NewLinearGradientFill(
+				90,
+			) // 90 degree angle
+			gradFill.AddRgbStop(
+				0,
+				"FF0000",
+			) // Red
+			gradFill.AddRgbStop(
+				50000,
+				"FFFF00",
+			) // Yellow
+			gradFill.AddRgbStop(
+				100000,
+				"00FF00",
+			) // Green
+			sp.AppendChild(gradFill)
+
+			shapeRenderer := NewShapeRenderer(ctx)
+			fillRenderer := CreateFillRenderer(sp)
+
+			err := shapeRenderer.RenderShapeWithFill(
+				sp,
+				fillRenderer,
+				nil,
+			)
+			if err != nil {
+				t.Errorf(
+					"Failed to render gradient shape: %v",
+					err,
+				)
+			}
+		},
+	)
+}
+
+// TestTextInShapeIntegration tests rendering text within shapes.
+func TestTextInShapeIntegration(t *testing.T) {
+	mockPage := core.NewMockPage()
+	ctx := core.NewRenderingContext(
+		core.PageSizeLetter.Width,
+		core.PageSizeLetter.Height,
+	).WithPage(mockPage)
+
+	textRenderer := NewTextInShapeRenderer(ctx)
+
+	t.Run(
+		"Simple text in rectangle",
+		func(t *testing.T) {
+			txBody := drawingml.NewTextBody()
+			para := txBody.AddParagraph(
+				"Hello, World!",
+			)
+			para.SetAlignment(
+				drawingml.TextAlignCenter,
+			)
+
+			run := para.Runs()[0]
+			run.SetFontSizePoints(16)
+			run.SetBold(true)
+			run.SetColor("FF0000")
+
+			err := textRenderer.RenderTextInShape(
+				txBody,
+				100,
+				300,
+				200,
+				100,
+			)
+			if err != nil {
+				t.Errorf(
+					"Failed to render text in shape: %v",
+					err,
+				)
+			}
+		},
+	)
+
+	t.Run(
+		"Multi-paragraph text",
+		func(t *testing.T) {
+			txBody := drawingml.NewTextBody()
+
+			para1 := txBody.AddParagraph(
+				"First Paragraph",
+			)
+			para1.SetAlignment(
+				drawingml.TextAlignLeft,
+			)
+
+			para2 := txBody.AddParagraph(
+				"Second Paragraph",
+			)
+			para2.SetAlignment(
+				drawingml.TextAlignCenter,
+			)
+
+			para3 := txBody.AddParagraph(
+				"Third Paragraph",
+			)
+			para3.SetAlignment(
+				drawingml.TextAlignRight,
+			)
+
+			err := textRenderer.RenderTextInShape(
+				txBody,
+				320,
+				300,
+				250,
+				150,
+			)
+			if err != nil {
+				t.Errorf(
+					"Failed to render multi-paragraph text: %v",
+					err,
+				)
+			}
+		},
+	)
+}
+
+// TestEffectsIntegration tests visual effects rendering.
+func TestEffectsIntegration(t *testing.T) {
+	mockPage := core.NewMockPage()
+	ctx := core.NewRenderingContext(
+		core.PageSizeLetter.Width,
+		core.PageSizeLetter.Height,
+	).WithPage(mockPage)
+
+	effectsRenderer := NewEffectsRenderer(ctx)
+	path := NewPathBuilder()
+	path.Rectangle(100, 500, 150, 100)
+
+	t.Run("Drop shadow", func(t *testing.T) {
+		err := effectsRenderer.RenderDropShadow(
+			path, 5, 5, 3, NewRGB(0, 0, 0), 0.5,
+		)
+		if err != nil {
+			t.Errorf(
+				"Failed to render drop shadow: %v",
+				err,
+			)
+		}
+	})
+
+	t.Run("Outer glow", func(t *testing.T) {
+		err := effectsRenderer.RenderOuterGlow(
+			path, 5, NewRGB(1, 1, 0), 0.6,
+		)
+		if err != nil {
+			t.Errorf(
+				"Failed to render outer glow: %v",
+				err,
+			)
+		}
+	})
+}
+
+// TestCompleteDocument tests rendering a complete document with multiple elements.
+func TestCompleteDocument(t *testing.T) {
+	mockPage := core.NewMockPage()
+	ctx := core.NewRenderingContext(
+		core.PageSizeLetter.Width,
+		core.PageSizeLetter.Height,
+	).WithPage(mockPage)
+
+	// Render multiple shapes
+	shapes := []struct {
+		x, y, w, h float64
+		shapeType  drawingml.ShapeTypeValue
+		color      string
+	}{
+		{
+			50,
+			50,
+			100,
+			100,
+			drawingml.ShapeTypeRectangle,
+			"FF0000",
+		},
+		{
+			170,
+			50,
+			100,
+			100,
+			drawingml.ShapeTypeEllipse,
+			"00FF00",
+		},
+		{
+			290,
+			50,
+			100,
+			100,
+			drawingml.ShapeTypeTriangle,
+			"0000FF",
+		},
+		{
+			410,
+			50,
+			100,
+			100,
+			drawingml.ShapeTypeStar5,
+			"FFFF00",
+		},
+		{
+			50,
+			170,
+			100,
+			100,
+			drawingml.ShapeTypeDiamond,
+			"FF00FF",
+		},
+		{
+			170,
+			170,
+			100,
+			100,
+			drawingml.ShapeTypeHexagon,
+			"00FFFF",
+		},
+	}
+
+	shapeRenderer := NewShapeRenderer(ctx)
+
+	for _, s := range shapes {
+		sp := drawingml.NewShapeProperties()
+		sp.SetTransformValues(
+			drawingml.PointsToEmu(s.x),
+			drawingml.PointsToEmu(s.y),
+			drawingml.PointsToEmu(s.w),
+			drawingml.PointsToEmu(s.h),
+		)
+		sp.SetPresetShape(s.shapeType)
+		sp.SetSolidFillColor(s.color)
+		sp.SetOutlineColor(
+			"000000",
+			drawingml.PointsToEmu(1),
+		)
+
+		fillRenderer := CreateFillRenderer(sp)
+		strokeRenderer := CreateStrokeRenderer(sp)
+
+		err := shapeRenderer.RenderShapeWithFill(
+			sp,
+			fillRenderer,
+			strokeRenderer,
+		)
+		if err != nil {
+			t.Errorf(
+				"Failed to render shape %v: %v",
+				s.shapeType,
+				err,
+			)
+		}
+	}
+
+	// Render a chart
+	chartRenderer := NewChartRenderer(ctx)
+	chartData := ChartData{
+		Categories: []string{
+			"Jan",
+			"Feb",
+			"Mar",
+			"Apr",
+		},
+		Series: []ChartSeries{
+			{
+				Name: "Sales",
+				Values: []float64{
+					100,
+					120,
+					110,
+					140,
+				},
+				Color: NewRGB(0.2, 0.4, 0.8),
+			},
+		},
+	}
+
+	err := chartRenderer.RenderBarChart(
+		50,
+		300,
+		350,
+		250,
+		chartData,
+		false,
+	)
+	if err != nil {
+		t.Errorf(
+			"Failed to render chart: %v",
+			err,
+		)
+	}
+
+	// This test validates that all components work together
+	// In a full implementation, we would save the PDF and verify it
+}
+
+// BenchmarkShapeRendering benchmarks shape rendering performance.
+func BenchmarkShapeRendering(b *testing.B) {
+	mockPage := core.NewMockPage()
+	ctx := core.NewRenderingContext(
+		core.PageSizeLetter.Width,
+		core.PageSizeLetter.Height,
+	).WithPage(mockPage)
+
+	sp := drawingml.NewShapeProperties()
+	sp.SetTransformValues(
+		drawingml.PointsToEmu(100),
+		drawingml.PointsToEmu(100),
+		drawingml.PointsToEmu(200),
+		drawingml.PointsToEmu(150),
+	)
+	sp.SetPresetShape(
+		drawingml.ShapeTypeRectangle,
+	)
+	sp.SetSolidFillColor("4472C4")
+
+	shapeRenderer := NewShapeRenderer(ctx)
+	fillRenderer := CreateFillRenderer(sp)
+
+	b.ResetTimer()
+	for range b.N {
+		_ = shapeRenderer.RenderShapeWithFill(
+			sp,
+			fillRenderer,
+			nil,
+		)
+	}
+}

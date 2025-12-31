@@ -136,7 +136,7 @@ func (s *Sheet) Range(ref string) *Range {
 		return nil
 	}
 
-	return newRange(s, rangeRef)
+	return newRange(s, &rangeRef)
 }
 
 // Row returns a Row wrapper for the row at the given index (1-based).
@@ -513,11 +513,11 @@ type Range struct {
 // newRange creates a new Range wrapper.
 func newRange(
 	sheet *Sheet,
-	rangeRef RangeRef,
+	rangeRef *RangeRef,
 ) *Range {
 	return &Range{
 		sheet:    sheet,
-		rangeRef: rangeRef,
+		rangeRef: *rangeRef,
 	}
 }
 

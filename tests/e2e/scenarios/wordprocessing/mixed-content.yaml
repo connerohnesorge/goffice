@@ -1,0 +1,29 @@
+name: mixed-content
+description: Document with paragraphs and table mixed
+document_type: wordprocessing
+category: basic
+tags: [paragraph, table, mixed]
+
+operations:
+  - action: create_document
+    doc_type: document
+  - action: add_paragraph
+    text: "Introduction paragraph before the table."
+  - action: add_table
+    rows: 2
+    cols: 2
+    cells:
+      - row: 0
+        col: 0
+        text: "A"
+      - row: 0
+        col: 1
+        text: "B"
+      - row: 1
+        col: 0
+        text: "C"
+      - row: 1
+        col: 1
+        text: "D"
+  - action: add_paragraph
+    text: "Conclusion paragraph after the table."

@@ -1,0 +1,98 @@
+{
+  "id": "chart_line_smooth_01",
+  "name": "Basic Smooth Line Chart",
+  "description": "Tests smooth line chart rendering with 6 data points and 2 series",
+  "category": "chart",
+  "tags": ["line", "smooth", "basic"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "chart",
+            "position": {
+              "x": 914400,
+              "y": 914400
+            },
+            "size": {
+              "width": 6858000,
+              "height": 4572000
+            },
+            "z_index": 1,
+            "chart": {
+              "type": "line_smooth",
+              "title": "Temperature Trends",
+              "legend": {
+                "position": "top_right",
+                "show_legend": true
+              },
+              "data": {
+                "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                "series": [
+                  {
+                    "name": "2023",
+                    "values": [15, 18, 22, 28, 35, 38],
+                    "color": "4472C4",
+                    "smooth": true
+                  },
+                  {
+                    "name": "2024",
+                    "values": [12, 16, 24, 30, 33, 40],
+                    "color": "ED7D31",
+                    "smooth": true
+                  }
+                ]
+              },
+              "style": {
+                "color_palette": ["4472C4", "ED7D31"],
+                "font_size": 11,
+                "font_family": "Calibri",
+                "show_data_labels": false,
+                "grid_lines": {
+                  "major_horizontal": true,
+                  "minor_horizontal": false,
+                  "major_vertical": false,
+                  "minor_vertical": false
+                }
+              },
+              "axes": {
+                "category": {
+                  "title": "Month"
+                },
+                "value": {
+                  "title": "Temperature (°C)"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "low",
+    "expected_duration": "fast"
+  }
+}

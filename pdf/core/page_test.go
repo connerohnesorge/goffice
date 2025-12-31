@@ -1118,3 +1118,47 @@ func TestAllStandardPageSizes(t *testing.T) {
 		})
 	}
 }
+
+// TestLineCap verifies the LineCap constants have correct values.
+func TestLineCap(t *testing.T) {
+	if LineCapButt != 0 {
+		t.Errorf(
+			"LineCapButt = %d, want 0",
+			LineCapButt,
+		)
+	}
+	if LineCapRound != 1 {
+		t.Errorf(
+			"LineCapRound = %d, want 1",
+			LineCapRound,
+		)
+	}
+	if LineCapSquare != 2 {
+		t.Errorf(
+			"LineCapSquare = %d, want 2",
+			LineCapSquare,
+		)
+	}
+}
+
+// TestLineJoin verifies the LineJoin constants have correct values.
+func TestLineJoin(t *testing.T) {
+	if LineJoinMiter != 0 {
+		t.Errorf(
+			"LineJoinMiter = %d, want 0",
+			LineJoinMiter,
+		)
+	}
+	if LineJoinRound != 1 {
+		t.Errorf(
+			"LineJoinRound = %d, want 1",
+			LineJoinRound,
+		)
+	}
+	if LineJoinBevel != 2 {
+		t.Errorf(
+			"LineJoinBevel = %d, want 2",
+			LineJoinBevel,
+		)
+	}
+}

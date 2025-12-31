@@ -83,10 +83,6 @@ nix fmt
         ];
 
       scripts = {
-        dx = {
-          exec = rooted ''$EDITOR "$REPO_ROOT"/flake.nix'';
-          description = "Edit flake.nix";
-        };
         lint = {
           exec = ''
             golangci-lint run --fix
@@ -151,6 +147,12 @@ nix fmt
             graphviz
             goreleaser
             gofumpt
+
+            # E2E Visual Testing Dependencies
+            dotnet-sdk_9 # .NET SDK 9.0 for C# generator
+            libreoffice # LibreOffice 7.6+ for PPTX → PDF rendering
+            imagemagick # ImageMagick 7.x for image comparison
+            poppler_utils # pdftoppm for PDF → PNG conversion
           ]
           ++ builtins.attrValues scriptPackages;
       };

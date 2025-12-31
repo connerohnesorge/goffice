@@ -1,4 +1,6 @@
 // Package spreadsheet provides SpreadsheetML support for Excel documents.
+//
+//nolint:revive // file-length-limit: cell reference logic is cohesive
 package spreadsheet
 
 import (
@@ -26,8 +28,9 @@ const (
 	alphabetSize = 26
 )
 
-// CellRef represents an Excel cell reference in A1 notation.
-// It supports both relative (A1) and absolute ($A$1) references.
+// CellRef represents an Excel cell reference in A1 or R1C1 notation.
+// It supports both relative (A1) and absolute ($A$1) references,
+// as well as cross-sheet references (Sheet2!A1) and R1C1 notation.
 type CellRef struct {
 	// Col is the 1-based column number (A=1, B=2, ..., XFD=16384).
 	Col int
@@ -40,6 +43,18 @@ type CellRef struct {
 
 	// AbsRow indicates whether the row reference is absolute ($1).
 	AbsRow bool
+
+	// Sheet is the sheet name for cross-sheet references (empty if same sheet).
+	Sheet string
+
+	// IsR1C1 indicates whether this reference uses R1C1 notation.
+	IsR1C1 bool
+
+	// R1C1RelCol is the R1C1 relative column offset (only if IsR1C1).
+	R1C1RelCol int
+
+	// R1C1RelRow is the R1C1 relative row offset (only if IsR1C1).
+	R1C1RelRow int
 }
 
 // ErrInvalidCellRef is returned when a cell reference string is invalid.
@@ -57,8 +72,9 @@ var ErrRowOutOfRange = errors.New(
 	"row number out of range (1-1048576)",
 )
 
-// ParseCellRef parses an A1-style cell reference string.
-// It accepts references like "A1", "$A$1", "A$1", "$A1", "XFD1048576", etc.
+// ParseCellRef parses a cell reference string in A1 or R1C1 notation.
+// It accepts references like "A1", "$A$1", "Sheet2!A1", "'Sheet Name'!A1",
+// "R1C1", "R[-1]C[2]", etc.
 //
 //nolint:revive // function-length: parsing logic is cohesive
 func ParseCellRef(s string) (CellRef, error) {
@@ -67,6 +83,61 @@ func ParseCellRef(s string) (CellRef, error) {
 	}
 
 	var ref CellRef
+
+	// Check for sheet name (cross-sheet reference)
+	var bangIdx int
+	if s[0] == '\'' {
+		// Quoted sheet name
+		endQuote := strings.Index(s[1:], "'")
+		if endQuote == -1 {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		endQuote++ // Adjust for slice offset
+		if endQuote+1 >= len(s) ||
+			s[endQuote+1] != '!' {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		ref.Sheet = s[1:endQuote]
+		bangIdx = endQuote + 1
+	} else {
+		// Unquoted sheet name or no sheet name
+		bangIdx = strings.Index(s, "!")
+		if bangIdx != -1 {
+			ref.Sheet = s[:bangIdx]
+		}
+	}
+
+	// Extract the cell reference part (after sheet name if present)
+	cellPart := s
+	if bangIdx != -1 {
+		cellPart = s[bangIdx+1:]
+	}
+
+	// Check if this is R1C1 notation (must be "R" followed by digit or '[')
+	if cellPart != "" &&
+		(cellPart[0] == 'R' || cellPart[0] == 'r') {
+		// Only treat as R1C1 if followed by digit or '['
+		if len(cellPart) > 1 &&
+			(cellPart[1] == '[' || (cellPart[1] >= '0' && cellPart[1] <= '9')) {
+			return parseR1C1Ref(
+				cellPart,
+				ref.Sheet,
+			)
+		}
+	}
+
+	// Parse A1 notation
+	return parseA1Ref(cellPart, ref.Sheet)
+}
+
+// parseA1Ref parses A1-style notation
+//
+//nolint:revive // function-length: parsing logic is cohesive
+func parseA1Ref(
+	s, sheet string,
+) (CellRef, error) {
+	var ref CellRef
+	ref.Sheet = sheet
 	pos := 0
 
 	// Check for absolute column marker
@@ -125,6 +196,99 @@ func ParseCellRef(s string) (CellRef, error) {
 	return ref, nil
 }
 
+// parseR1C1Ref parses R1C1-style notation
+//
+//nolint:revive // function-length: parsing logic is cohesive
+func parseR1C1Ref(
+	s, sheet string,
+) (CellRef, error) {
+	var ref CellRef
+	ref.Sheet = sheet
+	ref.IsR1C1 = true
+
+	if s == "" || (s[0] != 'R' && s[0] != 'r') {
+		return CellRef{}, ErrInvalidCellRef
+	}
+
+	pos := 1
+
+	// Parse row part
+	if pos < len(s) && s[pos] == '[' {
+		// Relative row: R[-1]
+		endBracket := strings.Index(s[pos:], "]")
+		if endBracket == -1 {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		offsetStr := s[pos+1 : pos+endBracket]
+		offset, err := strconv.Atoi(offsetStr)
+		if err != nil {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		ref.R1C1RelRow = offset
+		pos += endBracket + 1
+	} else {
+		// Absolute row: R5
+		rowStart := pos
+		for pos < len(s) && s[pos] >= '0' && s[pos] <= '9' {
+			pos++
+		}
+		if rowStart == pos {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		row, err := strconv.Atoi(s[rowStart:pos])
+		if err != nil || row < MinRow || row > MaxRow {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		ref.Row = row
+		ref.AbsRow = true
+	}
+
+	// Check for column part
+	if pos >= len(s) ||
+		(s[pos] != 'C' && s[pos] != 'c') {
+		return CellRef{}, ErrInvalidCellRef
+	}
+	pos++
+
+	// Parse column part
+	if pos < len(s) && s[pos] == '[' {
+		// Relative column: C[-1]
+		endBracket := strings.Index(s[pos:], "]")
+		if endBracket == -1 {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		offsetStr := s[pos+1 : pos+endBracket]
+		offset, err := strconv.Atoi(offsetStr)
+		if err != nil {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		ref.R1C1RelCol = offset
+		pos += endBracket + 1
+	} else {
+		// Absolute column: C10
+		colStart := pos
+		for pos < len(s) && s[pos] >= '0' && s[pos] <= '9' {
+			pos++
+		}
+		if colStart == pos {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		col, err := strconv.Atoi(s[colStart:pos])
+		if err != nil || col < MinColumn || col > MaxColumn {
+			return CellRef{}, ErrInvalidCellRef
+		}
+		ref.Col = col
+		ref.AbsCol = true
+	}
+
+	// Ensure we've consumed the entire string
+	if pos != len(s) {
+		return CellRef{}, ErrInvalidCellRef
+	}
+
+	return ref, nil
+}
+
 // MustParseCellRef parses an A1-style cell reference string.
 // It panics if the reference is invalid.
 // This is useful for tests and initialization code.
@@ -160,12 +324,51 @@ func NewAbsCellRef(col, row int) CellRef {
 	}
 }
 
-// String returns the A1-style string representation of the cell reference.
+// String returns the string representation of the cell reference.
+// Returns A1-style notation by default, or R1C1 notation if IsR1C1 is true.
 // For example, CellRef{Col: 1, Row: 1, AbsCol: true, AbsRow: true}
-// returns "$A$1".
+// returns "$A$1" or "Sheet2!$A$1" for cross-sheet references.
+//
+//nolint:revive // function-length: string building logic is cohesive
 func (c CellRef) String() string {
 	var sb strings.Builder
 
+	// Add sheet name if present
+	if c.Sheet != "" {
+		// Quote sheet name if it contains special characters
+		if needsQuoting(c.Sheet) {
+			sb.WriteByte('\'')
+			sb.WriteString(c.Sheet)
+			sb.WriteByte('\'')
+		} else {
+			sb.WriteString(c.Sheet)
+		}
+		sb.WriteByte('!')
+	}
+
+	// Output R1C1 notation if requested
+	if c.IsR1C1 {
+		sb.WriteByte('R')
+		if c.AbsRow {
+			sb.WriteString(strconv.Itoa(c.Row))
+		} else {
+			sb.WriteByte('[')
+			sb.WriteString(strconv.Itoa(c.R1C1RelRow))
+			sb.WriteByte(']')
+		}
+		sb.WriteByte('C')
+		if c.AbsCol {
+			sb.WriteString(strconv.Itoa(c.Col))
+		} else {
+			sb.WriteByte('[')
+			sb.WriteString(strconv.Itoa(c.R1C1RelCol))
+			sb.WriteByte(']')
+		}
+
+		return sb.String()
+	}
+
+	// Output A1 notation
 	if c.AbsCol {
 		sb.WriteByte('$')
 	}
@@ -177,6 +380,23 @@ func (c CellRef) String() string {
 	sb.WriteString(strconv.Itoa(c.Row))
 
 	return sb.String()
+}
+
+// needsQuoting returns true if a sheet name needs to be quoted
+func needsQuoting(name string) bool {
+	// Sheet names need quoting if they contain spaces or special characters
+	for _, r := range name {
+		if r == ' ' || r == '\'' || r == '!' ||
+			r == '(' ||
+			r == ')' ||
+			r == '[' ||
+			r == ']' ||
+			r == ':' {
+			return true
+		}
+	}
+
+	return false
 }
 
 // R1C1 returns the R1C1-style string representation of the cell reference.

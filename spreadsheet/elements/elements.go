@@ -931,17 +931,14 @@ func (m *OleItem) Clone() openxml.Element {
 		ret.PreferPicture = &v
 	}
 	if m.DdeValues != nil {
-		ret.DdeValues = m.DdeValues.Clone()
+		v := *m.DdeValues
+		ret.DdeValues = &v
 	}
 	return ret
 }
 
 func (m *OleItem) Validate() error {
-	if m.DdeValues != nil {
-		if err := m.DdeValues.Validate(); err != nil {
-			return err
-		}
-	}
+	// DdeValues is an enum type and doesn't need validation
 	return nil
 }
 

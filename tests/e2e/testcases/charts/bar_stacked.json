@@ -1,0 +1,93 @@
+{
+  "id": "chart_bar_stacked_01",
+  "name": "Stacked Bar Chart",
+  "description": "Tests stacked bar chart rendering with 4 categories and 3 series, includes legend and data labels",
+  "category": "chart",
+  "tags": ["bar", "stacked", "legend", "labels"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "chart",
+            "position": {
+              "x": 914400,
+              "y": 914400
+            },
+            "size": {
+              "width": 6858000,
+              "height": 4572000
+            },
+            "z_index": 1,
+            "chart": {
+              "type": "bar_stacked",
+              "title": "Revenue Breakdown by Quarter",
+              "legend": {
+                "position": "right",
+                "show_legend": true
+              },
+              "data": {
+                "categories": ["Q1", "Q2", "Q3", "Q4"],
+                "series": [
+                  {
+                    "name": "Product A",
+                    "values": [50, 60, 55, 70],
+                    "color": "5B9BD5"
+                  },
+                  {
+                    "name": "Product B",
+                    "values": [40, 45, 50, 48],
+                    "color": "ED7D31"
+                  },
+                  {
+                    "name": "Product C",
+                    "values": [30, 35, 40, 45],
+                    "color": "A5A5A5"
+                  }
+                ]
+              },
+              "style": {
+                "color_palette": ["5B9BD5", "ED7D31", "A5A5A5"],
+                "font_size": 11,
+                "font_family": "Calibri",
+                "show_data_labels": true,
+                "grid_lines": {
+                  "major_horizontal": true,
+                  "minor_horizontal": false,
+                  "major_vertical": false,
+                  "minor_vertical": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "medium",
+    "expected_duration": "fast"
+  }
+}

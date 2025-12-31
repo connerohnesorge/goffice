@@ -217,7 +217,7 @@ func NewDocumentWithOptions(
 	// Set version
 	v := effectiveOpts.Version.toPdfcpuVersion()
 	ctx.HeaderVersion = &v
-	ctx.XRefTable.HeaderVersion = &v
+	ctx.HeaderVersion = &v
 
 	doc := &Document{
 		ctx:      ctx,

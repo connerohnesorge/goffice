@@ -205,7 +205,7 @@ func (r *WordRenderer) calculateColumnWidths(
 
 	// Distribute remaining width to auto-width columns
 	autoCount := 0
-	for i := 0; i < colCount; i++ {
+	for i := range colCount {
 		if !explicitWidths[i] {
 			autoCount++
 		}
@@ -217,7 +217,7 @@ func (r *WordRenderer) calculateColumnWidths(
 			autoWidth := remainingWidth / float64(
 				autoCount,
 			)
-			for i := 0; i < colCount; i++ {
+			for i := range colCount {
 				if !explicitWidths[i] {
 					tl.ColumnWidths[i] = autoWidth
 				}

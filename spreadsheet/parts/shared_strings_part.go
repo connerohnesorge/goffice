@@ -39,6 +39,11 @@ func newSharedStringTablePart(
 		workbookPart,
 	)
 	partData.SetRelationshipID(relID)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewSharedStringTable()
+		},
+	)
 
 	ssp := &SharedStringTablePart{
 		OpenXmlPartData: partData,
@@ -87,8 +92,17 @@ func (*SharedStringTablePart) FixedContentType() string {
 // SharedStringTable returns the root SharedStringTable element.
 func (ssp *SharedStringTablePart) SharedStringTable() *elements.SharedStringTable {
 	if ssp.sst == nil {
+		// Try to get from root element
+		if root := ssp.RootElement(); root != nil {
+			if sst, ok := root.(*elements.SharedStringTable); ok {
+				ssp.sst = sst
+
+				return ssp.sst
+			}
+		}
 		// Create a new shared string table
 		ssp.sst = elements.NewSharedStringTable()
+		ssp.SetRootElement(ssp.sst)
 	}
 
 	return ssp.sst
@@ -156,6 +170,11 @@ func SharedStringTablePartFactory(
 		ContentTypeSharedStrings,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewSharedStringTable()
+		},
 	)
 
 	return &SharedStringTablePart{

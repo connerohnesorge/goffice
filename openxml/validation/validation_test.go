@@ -10,8 +10,8 @@ type mockElement struct {
 	localName    string
 	namespaceURI string
 	attributes   map[string]string
-	children     []*mockElement
-	parent       *mockElement
+	children     []any
+	parent       any
 }
 
 func (e *mockElement) LocalName() string { return e.localName }
@@ -22,7 +22,7 @@ func (e *mockElement) Parent() any { return e.parent }
 
 func (e *mockElement) Attributes() []mockAttribute { return mapToAttrs(e.attributes) }
 
-func (e *mockElement) Children() []any { return elementsToInterfaces(e.children) }
+func (e *mockElement) Children() []any { return e.children }
 
 type mockAttribute struct {
 	name  string
@@ -47,24 +47,13 @@ func mapToAttrs(
 	return attrs
 }
 
-func elementsToInterfaces(
-	elements []*mockElement,
-) []any {
-	result := make([]any, len(elements))
-	for i, e := range elements {
-		result[i] = e
-	}
-
-	return result
-}
-
 func newMockElement(
 	localName string,
 ) *mockElement {
 	return &mockElement{
 		localName:  localName,
 		attributes: make(map[string]string),
-		children:   make([]*mockElement, 0),
+		children:   make([]any, 0),
 	}
 }
 
@@ -85,9 +74,12 @@ func (e *mockElement) withAttr(
 }
 
 func (e *mockElement) withChild(
-	child *mockElement,
+	child any,
 ) *mockElement {
-	child.parent = e
+	// Set parent based on child type
+	if mockChild, ok := child.(*mockElement); ok {
+		mockChild.parent = e
+	}
 	e.children = append(e.children, child)
 
 	return e

@@ -901,3 +901,205 @@ func BenchmarkRangeRefCells(b *testing.B) {
 		}
 	}
 }
+
+// TestParseCrossSheetRange tests parsing of cross-sheet range references
+func TestParseCrossSheetRange(t *testing.T) {
+	tests := []struct {
+		input     string
+		wantSheet string
+		startCol  int
+		startRow  int
+		endCol    int
+		endRow    int
+		wantErr   bool
+	}{
+		// Unquoted sheet names
+		{
+			"Sheet2!A1:C3",
+			"Sheet2",
+			1,
+			1,
+			3,
+			3,
+			false,
+		},
+		{
+			"Data!A1:Z100",
+			"Data",
+			1,
+			1,
+			26,
+			100,
+			false,
+		},
+		{
+			"Summary!B2:D4",
+			"Summary",
+			2,
+			2,
+			4,
+			4,
+			false,
+		},
+
+		// Quoted sheet names
+		{
+			"'My Sheet'!A1:C3",
+			"My Sheet",
+			1,
+			1,
+			3,
+			3,
+			false,
+		},
+		{
+			"'Sheet (2024)'!A1:D10",
+			"Sheet (2024)",
+			1,
+			1,
+			4,
+			10,
+			false,
+		},
+		{
+			"'Data:Summary'!B2:E5",
+			"Data:Summary",
+			2,
+			2,
+			5,
+			5,
+			false,
+		},
+
+		// Single cell with sheet
+		{
+			"Sheet2!A1",
+			"Sheet2",
+			1,
+			1,
+			1,
+			1,
+			false,
+		},
+		{
+			"'My Sheet'!B2",
+			"My Sheet",
+			2,
+			2,
+			2,
+			2,
+			false,
+		},
+
+		// Invalid
+		{"'Unclosed!A1:C3", "", 0, 0, 0, 0, true},
+		{"Sheet!:C3", "", 0, 0, 0, 0, true},
+	}
+
+	for _, tt := range tests {
+		ref, err := ParseRangeRef(tt.input)
+		if tt.wantErr {
+			if err == nil {
+				t.Errorf(
+					"ParseRangeRef(%q) expected error, got nil",
+					tt.input,
+				)
+			}
+
+			continue
+		}
+
+		if err != nil {
+			t.Errorf(
+				"ParseRangeRef(%q) unexpected error: %v",
+				tt.input,
+				err,
+			)
+
+			continue
+		}
+
+		if ref.Start.Sheet != tt.wantSheet {
+			t.Errorf(
+				"ParseRangeRef(%q).Start.Sheet = %q, want %q",
+				tt.input,
+				ref.Start.Sheet,
+				tt.wantSheet,
+			)
+		}
+		if ref.End.Sheet != tt.wantSheet {
+			t.Errorf(
+				"ParseRangeRef(%q).End.Sheet = %q, want %q",
+				tt.input,
+				ref.End.Sheet,
+				tt.wantSheet,
+			)
+		}
+
+		if ref.Start.Col != tt.startCol {
+			t.Errorf(
+				"ParseRangeRef(%q).Start.Col = %d, want %d",
+				tt.input,
+				ref.Start.Col,
+				tt.startCol,
+			)
+		}
+		if ref.Start.Row != tt.startRow {
+			t.Errorf(
+				"ParseRangeRef(%q).Start.Row = %d, want %d",
+				tt.input,
+				ref.Start.Row,
+				tt.startRow,
+			)
+		}
+		if ref.End.Col != tt.endCol {
+			t.Errorf(
+				"ParseRangeRef(%q).End.Col = %d, want %d",
+				tt.input,
+				ref.End.Col,
+				tt.endCol,
+			)
+		}
+		if ref.End.Row != tt.endRow {
+			t.Errorf(
+				"ParseRangeRef(%q).End.Row = %d, want %d",
+				tt.input,
+				ref.End.Row,
+				tt.endRow,
+			)
+		}
+	}
+}
+
+// TestCrossSheetRangeRoundtrip tests roundtrip of cross-sheet range references
+func TestCrossSheetRangeRoundtrip(t *testing.T) {
+	testCases := []string{
+		"Sheet2!A1:C3",
+		"Sheet2!$A$1:$C$3",
+		"'My Sheet'!A1:D10",
+		"'Sheet (2024)'!B2:E5",
+		"'Data:Summary'!AA1:ZZ100",
+	}
+
+	for _, input := range testCases {
+		ref, err := ParseRangeRef(input)
+		if err != nil {
+			t.Errorf(
+				"ParseRangeRef(%q) failed: %v",
+				input,
+				err,
+			)
+
+			continue
+		}
+
+		result := ref.String()
+		if result != input {
+			t.Errorf(
+				"Roundtrip failed: %q -> %q",
+				input,
+				result,
+			)
+		}
+	}
+}

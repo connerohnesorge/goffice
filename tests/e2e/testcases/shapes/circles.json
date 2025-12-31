@@ -1,0 +1,147 @@
+{
+  "id": "shape_circles_01",
+  "name": "Circles and Ellipses",
+  "description": "Tests circle and ellipse shapes with solid fill and gradient fill",
+  "category": "shape",
+  "tags": ["circle", "ellipse", "gradient"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "shape",
+            "position": {
+              "x": 1371600,
+              "y": 914400
+            },
+            "size": {
+              "width": 1828800,
+              "height": 1828800
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "ellipse",
+              "fill": {
+                "type": "solid",
+                "color": "70AD47"
+              },
+              "stroke": {
+                "width": 19050,
+                "color": "548235",
+                "dash_style": "solid",
+                "cap": "round",
+                "join": "round"
+              },
+              "effects": []
+            }
+          },
+          {
+            "type": "shape",
+            "position": {
+              "x": 3657600,
+              "y": 685800
+            },
+            "size": {
+              "width": 2286000,
+              "height": 2286000
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "ellipse",
+              "fill": {
+                "type": "gradient",
+                "gradient": {
+                  "type": "linear",
+                  "angle": 45,
+                  "stops": [
+                    {
+                      "position": 0.0,
+                      "color": "4472C4"
+                    },
+                    {
+                      "position": 1.0,
+                      "color": "ED7D31"
+                    }
+                  ]
+                }
+              },
+              "stroke": {
+                "width": 12700,
+                "color": "000000",
+                "dash_style": "solid",
+                "cap": "round",
+                "join": "round"
+              },
+              "effects": []
+            }
+          },
+          {
+            "type": "shape",
+            "position": {
+              "x": 6400800,
+              "y": 1143000
+            },
+            "size": {
+              "width": 2286000,
+              "height": 1371600
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "ellipse",
+              "fill": {
+                "type": "gradient",
+                "gradient": {
+                  "type": "radial",
+                  "stops": [
+                    {
+                      "position": 0.0,
+                      "color": "FFC000"
+                    },
+                    {
+                      "position": 1.0,
+                      "color": "C65911"
+                    }
+                  ]
+                }
+              },
+              "stroke": {
+                "width": 12700,
+                "color": "000000",
+                "dash_style": "solid",
+                "cap": "round",
+                "join": "round"
+              },
+              "effects": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "medium",
+    "expected_duration": "fast"
+  }
+}

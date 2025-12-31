@@ -144,13 +144,20 @@ type IElementMetadata interface {
 	NamespaceURI() string
 
 	// Availability returns the Office versions that support this element.
+	// This is a bitflag-based version set (deprecated in favor of AvailableInVersion).
 	Availability() OfficeVersion
+
+	// AvailableInVersion returns the first Office version where this element
+	// was introduced. This provides more precise version tracking than the
+	// bitflag-based Availability() method.
+	AvailableInVersion() FileFormatVersion
 
 	// Validators returns the schema validators for this element type.
 	Validators() []Validator
 }
 
 // OfficeVersion represents which Office versions support an element.
+// This is a bitflag-based version set (deprecated in favor of FileFormatVersion).
 type OfficeVersion int
 
 const (
@@ -170,6 +177,191 @@ const (
 	OfficeAll = Office2007 | Office2010 | Office2013 |
 		Office2016 | Office2019 | Office2021
 )
+
+// FileFormatVersion represents the Office version that introduced a feature.
+// This is used to track which Office version first introduced an element,
+// attribute, or other feature. It's a sequential enumeration for clear
+// version ordering and comparison.
+type FileFormatVersion int
+
+const (
+	// Office2007Format represents Microsoft Office 2007 (ECMA-376 1st edition).
+	// This is the initial Open XML standard.
+	Office2007Format FileFormatVersion = iota
+
+	// Office2010Format represents Microsoft Office 2010 (ISO/IEC 29500:2008).
+	// Introduces extensions like content controls, drawing canvas.
+	Office2010Format
+
+	// Office2013Format represents Microsoft Office 2013.
+	// Introduces features like timeline slicers, webextensions.
+	Office2013Format
+
+	// Office2016Format represents Microsoft Office 2016.
+	// Introduces modern animations, improved collaboration features.
+	Office2016Format
+
+	// Office2019Format represents Microsoft Office 2019.
+	// Introduces new chart types, improved inking.
+	Office2019Format
+
+	// Office2021Format represents Microsoft Office 2021.
+	// Introduces dynamic arrays (Excel), improved accessibility.
+	Office2021Format
+
+	// Office2022Format represents features specific to Office 2022.
+	Office2022Format
+
+	// Office2023Format represents features specific to Office 2023.
+	Office2023Format
+
+	// Office2024Format represents features specific to Office 2024.
+	Office2024Format
+
+	// Office2025Format represents features specific to Office 2025.
+	Office2025Format
+
+	// Microsoft365Format represents features exclusive to Microsoft 365
+	// (formerly Office 365). This is a continuously updated version.
+	Microsoft365Format
+)
+
+// String returns the human-readable name of the Office version.
+func (v FileFormatVersion) String() string {
+	switch v {
+	case Office2007Format:
+		return "Office 2007"
+	case Office2010Format:
+		return "Office 2010"
+	case Office2013Format:
+		return "Office 2013"
+	case Office2016Format:
+		return "Office 2016"
+	case Office2019Format:
+		return "Office 2019"
+	case Office2021Format:
+		return "Office 2021"
+	case Office2022Format:
+		return "Office 2022"
+	case Office2023Format:
+		return "Office 2023"
+	case Office2024Format:
+		return "Office 2024"
+	case Office2025Format:
+		return "Office 2025"
+	case Microsoft365Format:
+		return "Microsoft 365"
+	default:
+		return "Unknown"
+	}
+}
+
+// Description returns a detailed description of the Office version.
+func (v FileFormatVersion) Description() string {
+	switch v {
+	case Office2007Format:
+		return "Microsoft Office 2007 (ECMA-376 1st Edition)"
+	case Office2010Format:
+		return "Microsoft Office 2010 (ISO/IEC 29500:2008)"
+	case Office2013Format:
+		return "Microsoft Office 2013"
+	case Office2016Format:
+		return "Microsoft Office 2016"
+	case Office2019Format:
+		return "Microsoft Office 2019"
+	case Office2021Format:
+		return "Microsoft Office 2021"
+	case Office2022Format:
+		return "Microsoft Office 2022"
+	case Office2023Format:
+		return "Microsoft Office 2023"
+	case Office2024Format:
+		return "Microsoft Office 2024"
+	case Office2025Format:
+		return "Microsoft Office 2025"
+	case Microsoft365Format:
+		return "Microsoft 365 (continuously updated)"
+	default:
+		return "Unknown Office Version"
+	}
+}
+
+// Year returns the release year of the Office version (approximate).
+// Returns 0 for Microsoft365Format as it's continuously updated.
+//
+//nolint:revive // Years are self-documenting literal values
+func (v FileFormatVersion) Year() int {
+	switch v {
+	case Office2007Format:
+		return 2007
+	case Office2010Format:
+		return 2010
+	case Office2013Format:
+		return 2013
+	case Office2016Format:
+		return 2016
+	case Office2019Format:
+		return 2019
+	case Office2021Format:
+		return 2021
+	case Office2022Format:
+		return 2022
+	case Office2023Format:
+		return 2023
+	case Office2024Format:
+		return 2024
+	case Office2025Format:
+		return 2025
+	case Microsoft365Format:
+		return 0 // Continuously updated, no fixed year
+	default:
+		return 0
+	}
+}
+
+// AtLeast returns true if this version is at least the given version.
+// Higher versions include features from lower versions.
+func (v FileFormatVersion) AtLeast(
+	other FileFormatVersion,
+) bool {
+	return v >= other
+}
+
+// AtMost returns true if this version is at most the given version.
+func (v FileFormatVersion) AtMost(
+	other FileFormatVersion,
+) bool {
+	return v <= other
+}
+
+// IsNewerThan returns true if this version is newer than the given version.
+func (v FileFormatVersion) IsNewerThan(
+	other FileFormatVersion,
+) bool {
+	return v > other
+}
+
+// IsOlderThan returns true if this version is older than the given version.
+func (v FileFormatVersion) IsOlderThan(
+	other FileFormatVersion,
+) bool {
+	return v < other
+}
+
+// AllFileFormatVersions returns all defined Office versions in chronological order.
+var AllFileFormatVersions = []FileFormatVersion{
+	Office2007Format,
+	Office2010Format,
+	Office2013Format,
+	Office2016Format,
+	Office2019Format,
+	Office2021Format,
+	Office2022Format,
+	Office2023Format,
+	Office2024Format,
+	Office2025Format,
+	Microsoft365Format,
+}
 
 // Validator is an interface for element validators.
 type Validator interface {

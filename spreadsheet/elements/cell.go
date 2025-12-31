@@ -231,6 +231,8 @@ func (c *Cell) SetShowPhonetic(value bool) {
 }
 
 // CellValue returns the cell value element (x:v), or nil if not present.
+//
+//nolint:revive // cognitive-complexity: necessary complexity for XML reload handling
 func (c *Cell) CellValue() *CellValue {
 	elem := c.GetElement("v", NamespaceSML)
 	if elem == nil {
@@ -241,6 +243,32 @@ func (c *Cell) CellValue() *CellValue {
 	}
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
 		return &CellValue{LeafElementBase: leaf}
+	}
+	// Handle generic elements created during XML reload
+	// Convert CompositeElement to CellValue if it matches
+	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
+		if comp.LocalName() == "v" &&
+			comp.NamespaceURI() == NamespaceSML {
+			// Create a proper CellValue element from the CompositeElement
+			// Get the inner text content from the special #text child node
+			innerText := ""
+			if comp.FirstChild() != nil {
+				// Check if it's a text node (local name "#text")
+				//nolint:revive // max-control-nesting: necessary for XML reload fix
+				if comp.FirstChild().
+					LocalName() ==
+					"#text" {
+					if leafChild, ok := comp.FirstChild().(openxml.LeafElement); ok {
+						innerText = leafChild.InnerText()
+					}
+				}
+			}
+			// Create new CellValue element and replace the old one
+			cv := NewCellValueWithText(innerText)
+			c.ReplaceChild(cv, comp)
+
+			return cv
+		}
 	}
 
 	return nil

@@ -31,6 +31,8 @@ func NewSharedStringItem() *SharedStringItem {
 // Text returns the simple text element (x:t), or nil if not present.
 // If the string item contains rich text runs instead of simple text,
 // this returns nil.
+//
+//nolint:revive // cognitive-complexity: necessary complexity for XML reload handling
 func (si *SharedStringItem) Text() *Text {
 	elem := si.GetElement("t", NamespaceSML)
 	if elem == nil {
@@ -41,6 +43,32 @@ func (si *SharedStringItem) Text() *Text {
 	}
 	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
 		return &Text{LeafElementBase: leaf}
+	}
+	// Handle generic elements created during XML reload
+	// Convert CompositeElement to Text if it matches
+	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
+		if comp.LocalName() == "t" &&
+			comp.NamespaceURI() == NamespaceSML {
+			// Create a proper Text element from the CompositeElement
+			// Get the inner text content from the special #text child node
+			innerText := ""
+			if comp.FirstChild() != nil {
+				// Check if it's a text node (local name "#text")
+				//nolint:revive // max-control-nesting: necessary for XML reload fix
+				if comp.FirstChild().
+					LocalName() ==
+					"#text" {
+					if leafChild, ok := comp.FirstChild().(openxml.LeafElement); ok {
+						innerText = leafChild.InnerText()
+					}
+				}
+			}
+			// Create new Text element and replace the old one
+			text := NewTextWithContent(innerText)
+			si.ReplaceChild(text, comp)
+
+			return text
+		}
 	}
 
 	return nil

@@ -1,0 +1,30 @@
+name: formatted-text
+description: Paragraph with bold, italic, and colored text
+document_type: wordprocessing
+category: basic
+tags: [text-formatting, runs, properties]
+
+tolerance:
+  visual_pixel_tolerance: 2.0
+  visual_diff_threshold: 0.005
+
+operations:
+  - action: create_document
+    doc_type: document
+  - action: add_paragraph
+    operations:
+      - action: add_run
+        text: "Normal text "
+      - action: add_run
+        text: "bold text "
+        properties:
+          bold: true
+      - action: add_run
+        text: "italic text "
+        properties:
+          italic: true
+      - action: add_run
+        text: "colored"
+        properties:
+          color: "FF0000"
+          bold: true

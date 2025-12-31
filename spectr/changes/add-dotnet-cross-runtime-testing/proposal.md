@@ -30,10 +30,16 @@ This system will:
 
 ## What Changes
 
+**Related Documents**:
+- Detailed implementation: See `design.md`
+- Task breakdown: See `tasks.md`
+- E2E testing specification: See `specs/e2e-testing/spec.md`
+- Nix environment specification: See `specs/nix-environment/spec.md`
+
 ### 1. New E2E Test Infrastructure (`tests/e2e/`)
 - **Location**: New top-level `tests/e2e/` directory (user-requested)
-- **Test matrix framework**: Go + C# document generation with comparison
-- **Test scenario definitions**: JSON/YAML definitions of documents to create
+- **Test matrix framework**: Go + C# bridge document generation with comparison
+- **Test scenario definitions**: YAML definitions of documents to create
 - **Visual assertion engine**: Extended `pdf/comparison` for cross-runtime use
 - **Diff reporting**: HTML/PDF reports showing Go vs. .NET differences
 - **Fixture management**: Automated baseline generation and update workflow
@@ -50,10 +56,10 @@ This system will:
 - **Reproducibility**: Pin .NET SDK version in flake.lock for consistency
 
 ### 3. Cross-Runtime Test Harness
-- **Scenario executor**: Runs identical test scenarios in both Go and C#
+- **Scenario executor**: Runs identical test scenarios in both Go and C# bridge
 - **Document generator bridges**:
   - Go bridge: Uses goffice API to create documents
-  - C# bridge: Uses Open-XML-SDK to create documents
+  - C# bridge (csharp): Uses Open-XML-SDK to create documents
 - **Comparison pipeline**:
   - **Level 1**: XML structure comparison (elements, attributes, namespaces)
   - **Level 2**: Binary content comparison (relationships, content types, images)
@@ -74,33 +80,49 @@ This system will:
   - Edge cases (boundaries, limits, unusual combinations)
   - Regression tests (historical bugs)
 
-### 5. Visual Comparison Extensions
-- **Extend `pdf/comparison`** to support:
+### 5. Visual Comparison Infrastructure
+- **Reuse existing `pdf/comparison` package**:
+  - CompareImages() - Pixel-level diff with tolerance
+  - ConvertPDFToPNG() - PDF to PNG conversion via Ghostscript
+  - No modifications to pdf/comparison needed
+- **New E2E-specific features** (in `tests/e2e/comparison/`):
+  - Office→PDF conversion via LibreOffice headless
   - Side-by-side document rendering (Go vs .NET)
   - Multi-page diff reports with thumbnails
   - Diff statistics (% match, pixel deltas, region highlighting)
+- **HTML reporting** (in `tests/e2e/framework/`):
   - Interactive HTML reports (zoom, toggle overlay)
-- **Support Office-native rendering** (optional):
-  - LibreOffice headless conversion as fallback
-  - Direct OOXML rendering via system Office (if available)
+  - Embedded diff images and statistics
+- **Why LibreOffice instead of goffice PDF renderer**:
+  - Avoids circular testing (using goffice to test goffice)
+  - LibreOffice provides neutral third-party rendering
+  - Same conversion process for both Go and .NET documents
+  - Validates that both implementations produce Office-compatible documents
 
 ### 6. CI/CD Integration
-- **GitHub Actions workflow** (or equivalent):
-  - Runs on PR and main branch commits
-  - Executes full E2E test suite
-  - Uploads diff artifacts for failed tests
-  - Comments on PRs with comparison results
-- **Baseline management**:
-  - Store baseline documents in git (or LFS for large files)
-  - Automated baseline update PRs when .NET SDK updates
-  - Approval workflow for baseline changes
+- **GitHub Actions workflow** (`.github/workflows/e2e-tests.yml`):
+  - **Triggers**: Pull requests (all branches) + push to main
+  - **Jobs**:
+    1. nix-setup (install Nix with determinate-systems/nix-installer-action)
+    2. build-bridges (dotnet build C# bridge, verify Go bridge compiles)
+    3. run-e2e (nix develop --command test-e2e)
+    4. upload-artifacts (diff images, HTML reports for failed tests)
+  - **Timeout**: 15 minutes maximum
+  - **Artifacts**: Stored for 7 days, downloadable from PR page
+- **PR Comments** (via GitHub Actions bot):
+  - **Format**: Pass/fail summary table + artifact download links
+  - **Implementation**: actions/github-script or gh CLI
+  - **Example**: "5/10 passed, 3 failed (see artifacts), 2 skipped"
+- **Baseline Updates**:
+  - **Trigger**: Manual dispatch workflow OR weekly cron (Monday 00:00 UTC)
+  - **Process**: Run update-baselines script → create PR → assign for manual review
+  - **Requires**: Human approval before merge (prevents accidental regressions)
 
 ## Impact
 
 ### Affected Specs
 - **NEW: `e2e-testing`** - Cross-runtime end-to-end testing framework
 - **NEW: `nix-environment`** - Multi-language Nix development environment
-- **MODIFIED: `pdf-testing`** - Enhanced visual comparison for cross-runtime use
 
 ### Affected Code
 - **NEW: `tests/e2e/`** - Complete E2E test infrastructure
@@ -112,7 +134,7 @@ This system will:
   - `tests/e2e/comparison/` - Extended comparison logic
   - `tests/e2e/reports/` - HTML/PDF diff report generation
 - **MODIFIED: `flake.nix`** - Add .NET SDK and E2E test scripts
-- **MODIFIED: `pdf/comparison/`** - Extend for cross-runtime use (generalize APIs)
+- **REUSED: `pdf/comparison/`** - Existing visual comparison utilities (no modifications needed)
 - **NEW: `tests/e2e/README.md`** - Complete E2E test documentation
 
 ### Breaking Changes
@@ -152,11 +174,14 @@ tests/e2e/
 ├── bridges/
 │   ├── go/                # Go document generator
 │   └── csharp/            # C# document generator
-├── scenarios/             # Test definitions (YAML/JSON)
+├── scenarios/             # Test definitions (YAML)
 │   ├── wordprocessing/
 │   ├── spreadsheet/
 │   └── presentation/
 ├── baselines/             # Reference documents from .NET SDK
+│   ├── wordprocessing/
+│   ├── spreadsheet/
+│   └── presentation/
 ├── comparison/            # Comparison logic
 ├── reports/               # Generated diff reports
 └── Makefile or flake.nix  # Test runner
@@ -285,6 +310,23 @@ operations:
 - External storage: Complexity, versioning issues
 - No baselines: Can't detect regressions
 
+### 7. Test Data Privacy and Security
+**Decision**: All test scenarios use synthetic, public-safe data only
+
+**Rationale**:
+- Test baselines committed to git (public repository)
+- No real user data, no copyrighted content
+- Scenarios use Lorem Ipsum text, geometric shapes, synthetic numbers
+- Compliance with open-source project security best practices
+
+**Guidelines for scenario authors**:
+- **Text**: Use "Sample text", "Test document", placeholder names (e.g., "Jane Doe")
+- **Numbers**: Use obviously fake data (Phone: "555-1234", SSN: "000-00-0000")
+- **Images**: Simple geometric shapes or public domain images only
+- **Dates**: Use clearly fictional dates (e.g., "2099-01-01")
+- **Addresses**: Use "123 Test St, Example City, EX 12345"
+- **No embedded files** from real Office documents or proprietary sources
+
 ## Implementation Scope
 
 ### Phase 1: Foundation (MVP for Word documents)
@@ -322,40 +364,56 @@ operations:
 
 ## Success Metrics
 
-1. **Coverage**: 50+ test scenarios across Word/Excel/PowerPoint
-2. **Pass Rate**: >95% XML structure match between Go and .NET
-3. **Visual Fidelity**: >99% pixel match for rendering (Level 3)
-4. **Performance**: E2E test suite completes in <10 minutes
-5. **Developer Experience**: `nix develop` + `test-e2e` just works
-6. **Regression Detection**: Catch API divergence within 1 commit
+1. **Coverage**: 40+ test scenarios across Word/Excel/PowerPoint (5 basic Word, 10 advanced Word, 10 Excel, 10 PowerPoint, 5 edge cases)
+2. **Pass Rate**: >95% of scenarios have zero XML structure differences
+3. **Visual Fidelity**: >99.5% pixel match for passing scenarios (0.5% diff threshold, avg across all tests)
+4. **Performance**: E2E test suite completes in <10 minutes (wall-clock time, measured in CI)
+   - **Expected baseline**: ~5-15 seconds per scenario (includes Go generation, C# generation, 3-level comparison)
+   - **Phase 1 (5 scenarios)**: ~1 minute total
+   - **Phase 3 (40+ scenarios)**: ~5-10 minutes total
+   - **If exceeding 10 minutes**: Implement parallel execution or optimize bottlenecks
+5. **Developer Experience**: `nix develop` + `test-e2e` succeeds on fresh clone
+6. **Regression Detection**: Catch API divergence within 1 commit (via bisection when bugs found)
 7. **CI Integration**: Runs on every PR, reports results automatically
 
-## Open Questions (To Be Resolved During Implementation)
+## Resolved Design Decisions
 
-1. **Scenario format**: YAML, JSON, or custom DSL? (Recommend YAML)
-2. **Baseline size**: Store in git or git-lfs? (Depends on document size)
-3. **Test data generation**: Manual or property-based? (Start manual)
-4. **Office version targeting**: Office 2016, 2019, 365? (Start with 2016)
-5. **Parallel execution**: Run tests in parallel? (Yes, for speed)
-6. **Tolerance configuration**: Per-scenario tolerances? (Yes, some documents naturally differ)
+1. **Scenario format**: YAML (human-readable, language-agnostic, extensive tooling support)
+2. **Baseline storage**: Git for Phase 1-3 (small documents <5MB total), evaluate git-lfs in Phase 4 if total size >50MB
+3. **Test data generation**: Manual scenarios for MVP (Phase 1-3), property-based testing deferred to future work
+4. **Office version compatibility**: OOXML standard compliance (ECMA-376) ensures compatibility across Office 2016/2019/365
+5. **Parallel execution**: Sequential in Phase 1-2 (simpler implementation), add parallel execution in Phase 4 if needed for performance
+6. **Tolerance configuration**: Per-scenario overrides supported via YAML (defaults: VisualPixelTolerance=2.0, VisualDiffThreshold=0.005)
+7. **C# bridge naming**: Named "DocxBridge" in Phase 1 for Word documents; rename to "OfficeBridge" in Phase 3 when adding Excel/PowerPoint support (breaking change acceptable since internal testing tool)
 
 ## Dependencies
 
-- **.NET SDK 9**: Available in nixpkgs as `dotnet-sdk_9`
-- **Ghostscript**: Available in nixpkgs as `ghostscript`
-- **Open-XML-SDK submodule**: Already present at `Open-XML-SDK/`
-- **pdf/comparison package**: Already exists and working
+**NOTE**: All versions listed below must match exactly across all documents (proposal.md, design.md, tasks.md). When updating a version, update ALL references.
+
+- **.NET SDK 9.0.x**: Available in nixpkgs as `dotnet-sdk_9` (latest 9.0 patch version, pinned in flake.lock)
+- **LibreOffice**: Available in nixpkgs as `libreoffice` (version pinned in flake.lock for reproducible Office→PDF conversion)
+- **Ghostscript**: Available in nixpkgs as `ghostscript` (version pinned in flake.lock for PDF→PNG conversion)
+- **Go 1.25**: Already specified in flake.nix and flake.lock
+- **Open-XML-SDK submodule**: Already present at `Open-XML-SDK/` (commit hash in git submodule)
+- **Go dependencies** (for tests/e2e/go.mod):
+  - `gopkg.in/yaml.v3 v3.0.1` - YAML parsing for test scenarios
+  - `github.com/connerohnesorge/goffice` - Via replace directive for local development
+- **C# dependencies** (NuGet packages in DocxBridge.csproj):
+  - `DocumentFormat.OpenXml 3.2.0` - Open-XML-SDK for .NET
+  - `YamlDotNet 16.2.1` - YAML parsing for C#
+  - `System.CommandLine 2.0.0-beta4.22272.1` - CLI argument parsing
+- **pdf/comparison package**: Already exists in goffice codebase (no external dependency)
 
 ## Risks and Mitigations
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
 | .NET SDK API mismatch | Can't create equivalent documents | Research .NET SDK patterns first (DONE) |
-| Visual comparison flakiness | False positives on diffs | Configurable tolerances, baseline management |
-| Test suite too slow | Developers skip tests | Parallel execution, pyramid approach (fast XML first) |
-| Baseline drift | Baselines out of date | Automated update workflow, CI checks |
-| Nix complexity | Hard to setup | Good documentation, direnv auto-activation |
-| Large diff reports | Storage/git bloat | git-lfs for large files, HTML over binary |
+| Visual comparison flakiness | False positives on diffs | 1. Per-scenario tolerance tuning (pixel threshold + diff percentage)<br>2. Baseline regeneration workflow (update when .NET SDK changes)<br>3. Deterministic rendering (LibreOffice headless with fixed fonts)<br>4. Diff percentage threshold (ignore <0.5% differences) |
+| Test suite too slow | Developers skip tests | 1. Pyramid approach: Fast XML tests fail first (seconds)<br>2. Parallel execution in Phase 4 if needed<br>3. Performance budget: <10 minutes for 40+ scenarios<br>4. CI timeout enforcement prevents runaway tests |
+| Baseline drift | Baselines out of date | 1. Automated weekly check for .NET SDK updates<br>2. CI flags when baselines haven't updated in >90 days<br>3. Update script with git diff preview before commit |
+| Nix complexity | Hard to setup | 1. direnv auto-activation (one-time `direnv allow`)<br>2. Comprehensive README with troubleshooting<br>3. CI validates Nix environment on every PR |
+| Large diff reports | Storage/git bloat | 1. git for Phase 1-3 (baselines <5MB)<br>2. Evaluate git-lfs if total >50MB<br>3. HTML reports (text) preferred over binary screenshots |
 
 ## Next Steps
 

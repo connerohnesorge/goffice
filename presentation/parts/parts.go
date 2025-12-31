@@ -39,6 +39,12 @@ const (
 	ContentTypeDrawing = "application/vnd.openxmlformats-officedocument.drawing+xml"
 	ContentTypeChart   = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml"
 
+	// Diagram content types (SmartArt)
+	ContentTypeDiagramData      = "application/vnd.openxmlformats-officedocument.drawingml.diagramData+xml"
+	ContentTypeDiagramLayoutDef = "application/vnd.openxmlformats-officedocument.drawingml.diagramLayout+xml"
+	ContentTypeDiagramStyle     = "application/vnd.openxmlformats-officedocument.drawingml.diagramStyle+xml"
+	ContentTypeDiagramColors    = "application/vnd.openxmlformats-officedocument.drawingml.diagramColors+xml"
+
 	// VBA content types
 	ContentTypeVbaProject = "application/vnd.ms-office.vbaProject"
 
@@ -81,6 +87,13 @@ const (
 	RelationshipTypeDrawing = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"
 	RelationshipTypeChart   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
 	RelationshipTypeImage   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+
+	// Diagram relationships (SmartArt)
+	RelationshipTypeDiagramData       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramData"
+	RelationshipTypeDiagramLayout     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramLayout"
+	RelationshipTypeDiagramStyle      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramStyle"
+	RelationshipTypeDiagramColors     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramColors"
+	RelationshipTypeDiagramQuickStyle = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramQuickStyle"
 
 	// VBA relationships
 	RelationshipTypeVbaProject = "http://schemas.microsoft.com/office/2006/relationships/vbaProject"

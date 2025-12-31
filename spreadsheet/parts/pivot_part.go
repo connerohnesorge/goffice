@@ -37,6 +37,11 @@ func newPivotTablePart(
 		worksheetPart,
 	)
 	partData.SetRelationshipID(relID)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewPivotTableDefinition()
+		},
+	)
 
 	pp := &PivotTablePart{
 		OpenXmlPartData: partData,
@@ -155,6 +160,11 @@ func newPivotTableCacheDefinitionPart(
 		pivotTablePart,
 	)
 	partData.SetRelationshipID(relID)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewPivotCacheDefinition()
+		},
+	)
 
 	pcp := &PivotTableCacheDefinitionPart{
 		OpenXmlPartData: partData,
@@ -277,6 +287,11 @@ func newPivotTableCacheRecordsPart(
 		cachePart,
 	)
 	partData.SetRelationshipID(relID)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewPivotCacheRecords()
+		},
+	)
 
 	prp := &PivotTableCacheRecordsPart{
 		OpenXmlPartData: partData,

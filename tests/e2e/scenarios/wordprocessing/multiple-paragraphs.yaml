@@ -1,0 +1,21 @@
+name: multiple-paragraphs
+description: Multiple paragraphs with different alignments and spacing
+document_type: wordprocessing
+category: basic
+tags: [paragraph, alignment, spacing]
+
+operations:
+  - action: create_document
+    doc_type: document
+  - action: add_paragraph
+    text: "Left aligned paragraph"
+    properties:
+      alignment: left
+  - action: add_paragraph
+    text: "Center aligned paragraph"
+    properties:
+      alignment: center
+  - action: add_paragraph
+    text: "Right aligned paragraph"
+    properties:
+      alignment: right

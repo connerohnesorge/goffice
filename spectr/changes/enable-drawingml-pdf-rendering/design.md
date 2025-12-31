@@ -107,54 +107,103 @@ PDF Output
 ```go
 type Page interface {
     // === Drawing Primitives ===
-    // DrawRectangle draws a filled/stroked rectangle
-    DrawRectangle(x, y, width, height float64)
-    
-    // DrawEllipse draws a filled/stroked ellipse
-    DrawEllipse(cx, cy, rx, ry float64)
-    
-    // DrawPath renders an arbitrary path
+    // DrawRectangle draws a rectangle with optional fill and stroke
+    // Parameters: x, y (top-left corner), width, height, fill (bool), stroke (bool)
+    DrawRectangle(x, y, width, height float64, fill, stroke bool)
+
+    // DrawCircle draws a circle with optional fill and stroke
+    // Parameters: cx, cy (center), radius, fill (bool), stroke (bool)
+    DrawCircle(cx, cy, radius float64, fill, stroke bool)
+
+    // DrawEllipse draws an ellipse with optional fill and stroke
+    // Parameters: cx, cy (center), rx (x-radius), ry (y-radius), fill (bool), stroke (bool)
+    DrawEllipse(cx, cy, rx, ry float64, fill, stroke bool)
+
+    // DrawPath renders an arbitrary path (builder generates PDF operators)
     DrawPath(path *PathBuilder)
-    
+
     // === State Management ===
     // SetFillColor sets the fill color for subsequent shapes
-    SetFillColor(color Color)
-    
+    // Parameters: r, g, b in range [0.0, 1.0]
+    SetFillColor(r, g, b float64)
+
     // SetStrokeColor sets the stroke color
-    SetStrokeColor(color Color)
-    
+    // Parameters: r, g, b in range [0.0, 1.0]
+    SetStrokeColor(r, g, b float64)
+
     // SetLineWidth sets stroke width in points
     SetLineWidth(width float64)
-    
+
     // SetLineDashPattern sets dash pattern (empty = solid)
+    // Parameters: pattern (on/off lengths), phase (offset)
     SetLineDashPattern(pattern []float64, phase float64)
-    
+
+    // SetLineCap sets line cap style (butt=0, round=1, square=2)
+    SetLineCap(cap LineCap)
+
+    // SetLineJoin sets line join style (miter=0, round=1, bevel=2)
+    SetLineJoin(join LineJoin)
+
     // === Graphics State Stack ===
-    // PushState saves current graphics state
-    PushState()
-    
-    // PopState restores previous graphics state
-    PopState()
-    
+    // SaveGraphicsState saves current graphics state (PDF 'q' operator)
+    SaveGraphicsState()
+
+    // RestoreGraphicsState restores previous graphics state (PDF 'Q' operator)
+    RestoreGraphicsState()
+
     // Transform applies transformation matrix to CTM
     Transform(matrix Matrix)
-    
+
     // === Content Embedding ===
     // AddImage embeds and draws an image
     AddImage(img Image, x, y, width, height float64)
-    
-    // DrawText renders text at position
-    DrawText(text string, x, y float64, font Font, size float64)
+
+    // DrawText renders text at position using current font
+    // Call SetFont() before DrawText()
+    DrawText(text string, x, y float64)
+
+    // SetFont sets the font for subsequent DrawText calls
+    // Parameters: name (e.g., "Helvetica", "Times-Roman"), size (in points)
+    SetFont(name string, size float64)
+
+    // === Low-Level Access ===
+    // WriteContent writes raw PDF content stream operators
+    // Used for complex paths that PathBuilder generates
+    // Example: WriteContent(path.Stroke()) or WriteContent(path.Fill())
+    WriteContent(content string)
 }
 ```
 
-### Not Included (Deferred)
-- Clipping paths (future enhancement)
-- Blend modes beyond normal (future)
-- Gradients as first-class (renderers compose from primitives)
-- Patterns as first-class (renderers use repeated drawing)
+### Design Rationale for Method Signatures
 
-**Rationale**: Start minimal, expand based on real needs. Most DrawingML features can be built by composing primitives.
+**DrawRectangle/DrawCircle/DrawEllipse with fill/stroke bools**:
+- Actual usage in .wip files: `page.DrawRectangle(x, y, w, h, true, true)` for filled+stroked
+- Alternative considered: separate FillRectangle/StrokeRectangle methods
+- Chosen approach reduces method count, matches PDF semantics (f/S/B operators)
+
+**SetFillColor/SetStrokeColor with RGB floats**:
+- Actual usage: `page.SetFillColor(0.5, 0.5, 0.5)` not `SetFillColor(Color{...})`
+- Avoids allocation overhead for color structs
+- Matches PDF operator format: `0.5 0.5 0.5 rg`
+
+**SaveGraphicsState/RestoreGraphicsState naming**:
+- Matches PDF terminology (q/Q operators)
+- More explicit than PushState/PopState
+- Consistent with graphics programming conventions
+
+**WriteContent() as escape hatch**:
+- Used in .wip files: `page.WriteContent(path.Stroke())`
+- PathBuilder generates PDF operators as strings
+- High-level methods handle common cases, WriteContent handles complex paths
+- This is intentional "leaky abstraction" for performance/flexibility
+
+### Not Included (Deferred)
+- Clipping paths (W/W* operators - future enhancement)
+- Blend modes beyond normal (future)
+- Gradients as first-class API (renderers compose from primitives or use WriteContent)
+- Patterns as first-class API (renderers use repeated drawing)
+
+**Rationale**: Start with proven needs from .wip files, expand based on real usage. Most DrawingML features can be built by composing primitives or using WriteContent().
 
 ## pdfcpu Integration Details
 
@@ -195,45 +244,86 @@ Page tracks current state to avoid redundant operators (optimization).
 
 ## Renderer Integration
 
-### Chart Renderer Example
+### Chart Renderer Example (Actual from .wip files)
 ```go
-func (r *ChartRenderer) Render(ctx *core.RenderingContext, chart *Chart) error {
-    page := ctx.Page  // Access Page from context
-    
-    // Render chart background
-    page.SetFillColor(chart.BackgroundColor)
-    page.DrawRectangle(chart.X, chart.Y, chart.Width, chart.Height)
-    
-    // Render series bars
-    for _, series := range chart.Series {
-        page.SetFillColor(series.Color)
-        for i, value := range series.Values {
-            barX, barY, barW, barH := r.calculateBarGeometry(i, value)
-            page.DrawRectangle(barX, barY, barW, barH)
+func (r *ChartRenderer) RenderBarChart(x, y, width, height float64, data ChartData, horizontal bool) error {
+    page := r.ctx.Page  // Access Page from context
+
+    // Set fill color and draw bars
+    for seriesIdx, series := range data.Series {
+        page.SetFillColor(series.Color.R, series.Color.G, series.Color.B)
+
+        for catIdx, val := range series.Values {
+            barX, barY, barW, barH := calculateBarGeometry(...)
+
+            // Draw filled and stroked rectangle
+            page.DrawRectangle(barX, barY, barW, barH, true, true)
         }
     }
-    
+
+    // Draw legend background
+    page.SetFillColor(1, 1, 1)
+    page.SetStrokeColor(0, 0, 0)
+    page.DrawRectangle(legendX, legendY, legendWidth, legendHeight, true, true)
+
+    // Draw legend text
+    page.SetFont("Helvetica", 10)
+    page.SetFillColor(0, 0, 0)
+    page.DrawText(series.Name, textX, textY)
+
     return nil
 }
 ```
 
-### Fill Renderer Example
+### Fill Renderer Example (Actual from .wip files)
 ```go
-func (r *FillRenderer) RenderGradient(ctx *core.RenderingContext, gradient *Gradient, bounds Rect) error {
+func (r *SolidFillRenderer) Apply(ctx *core.RenderingContext, path *PathBuilder) error {
     page := ctx.Page
-    
-    // PDF gradients require shading patterns - decompose into steps
-    steps := r.approximateGradient(gradient, 10) // 10 color stops
-    
-    for i, step := range steps {
-        page.SetFillColor(step.Color)
-        stepRect := r.calculateStepRect(bounds, i, len(steps), gradient.Angle)
-        page.DrawRectangle(stepRect.X, stepRect.Y, stepRect.W, stepRect.H)
-    }
-    
+
+    // Get color from DrawingML element
+    color := parseColor(r.fill)
+
+    // Set fill color (RGB floats)
+    page.SetFillColor(color.R, color.G, color.B)
+
+    // Write path fill operation
+    page.WriteContent(path.Fill())  // Uses low-level content stream access
+
     return nil
 }
 ```
+
+### Shape Renderer Example (Actual from .wip files)
+```go
+func (r *ShapeRenderer) RenderShapeWithFill(sp *ShapeProperties, fill FillRenderer, stroke StrokeRenderer) error {
+    // Save graphics state
+    r.ctx.Page.SaveGraphicsState()
+    defer r.ctx.Page.RestoreGraphicsState()
+
+    // Create the shape path
+    path := NewPathBuilder()
+    createShapePath(sp, path)  // Builds complex bezier path
+
+    // Apply fill
+    if fill != nil {
+        fill.Apply(r.ctx, path)  // Calls SetFillColor + WriteContent
+    }
+
+    // Apply stroke
+    if stroke != nil {
+        stroke.Apply(r.ctx, path)  // Calls SetStrokeColor + WriteContent
+    }
+
+    return nil
+}
+```
+
+Note: These examples show the actual API usage from the .wip renderer files, including:
+- RGB float parameters for SetFillColor/SetStrokeColor
+- Boolean fill/stroke parameters for DrawRectangle
+- SaveGraphicsState/RestoreGraphicsState for state isolation
+- WriteContent() for complex path operations
+- SetFont before DrawText
 
 ## Testing Strategy
 

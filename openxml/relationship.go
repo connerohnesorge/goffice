@@ -51,6 +51,22 @@ type OpenXmlRelationship interface {
 	Container() OpenXmlPartContainer
 }
 
+// Compile-time checks to ensure types implement OpenXmlRelationship.
+var (
+	_ OpenXmlRelationship = (*PartRelationship)(
+		nil,
+	)
+	_ OpenXmlRelationship = (*ExternalRelationship)(
+		nil,
+	)
+	_ OpenXmlRelationship = (*HyperlinkRelationship)(
+		nil,
+	)
+	_ OpenXmlRelationship = (*DataPartReferenceRelationship)(
+		nil,
+	)
+)
+
 // baseRelationship provides the common implementation for relationships.
 type baseRelationship struct {
 	id         string

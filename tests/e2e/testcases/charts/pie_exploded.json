@@ -1,0 +1,83 @@
+{
+  "id": "chart_pie_exploded_01",
+  "name": "Exploded Pie Chart",
+  "description": "Tests exploded pie chart with 6 slices, first slice separated",
+  "category": "chart",
+  "tags": ["pie", "exploded"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "chart",
+            "position": {
+              "x": 1828800,
+              "y": 914400
+            },
+            "size": {
+              "width": 5486400,
+              "height": 4572000
+            },
+            "z_index": 1,
+            "chart": {
+              "type": "pie",
+              "title": "Budget Allocation",
+              "legend": {
+                "position": "bottom",
+                "show_legend": true
+              },
+              "data": {
+                "categories": ["Marketing", "R&D", "Operations", "Sales", "HR", "IT"],
+                "series": [
+                  {
+                    "name": "Budget %",
+                    "values": [30, 25, 20, 15, 6, 4],
+                    "color": ""
+                  }
+                ]
+              },
+              "style": {
+                "color_palette": ["5B9BD5", "ED7D31", "A5A5A5", "FFC000", "4472C4", "70AD47"],
+                "font_size": 10,
+                "font_family": "Calibri",
+                "show_data_labels": true,
+                "grid_lines": {
+                  "major_horizontal": false,
+                  "minor_horizontal": false,
+                  "major_vertical": false,
+                  "minor_vertical": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "medium",
+    "expected_duration": "fast"
+  }
+}

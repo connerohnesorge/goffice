@@ -65,15 +65,6 @@ import (
 // It reads schema definitions from the Open-XML-SDK data directory.
 func generateElementsFile() {
 	schemasDir := "Open-XML-SDK/data/schemas"
-	files, err := os.ReadDir(schemasDir)
-	if err != nil {
-		panic(
-			fmt.Errorf(
-				"failed to read schemas dir: %w",
-				err,
-			),
-		)
-	}
 
 	fElems, err := os.Create(
 		"wordprocessing/elements/elements.go",
@@ -111,11 +102,76 @@ import (
 	// revive:enable:line-length-limit
 	writeHeader(fElems, header)
 
-	processSchemaFiles(fElems, schemasDir, files)
+	processAllSchemaFiles(fElems, schemasDir)
+}
+
+// processAllSchemaFiles iterates through schema files and triggers generation.
+// It processes all Word and Drawing schemas using the new metadata-based approach.
+func processAllSchemaFiles(
+	f *os.File,
+	schemasDir string,
+) {
+	files, err := os.ReadDir(schemasDir)
+	if err != nil {
+		panic(
+			fmt.Errorf(
+				"failed to read schemas dir: %w",
+				err,
+			),
+		)
+	}
+
+	// Collect schemas with metadata
+	var schemas []*SchemaFileMetadata
+	for _, file := range files {
+		name := file.Name()
+
+		// Filter for Word and Drawing schemas
+		if isWordProcessingSchema(name) ||
+			isDrawingSchema(name) {
+			path := filepath.Join(
+				schemasDir,
+				name,
+			)
+			metadata, parseErr := parseSchemaFile(
+				path,
+			)
+			if parseErr != nil {
+				fmt.Printf(
+					"Warning: failed to parse schema %s: %v\n",
+					name,
+					parseErr,
+				)
+
+				continue
+			}
+			schemas = append(schemas, metadata)
+		}
+	}
+
+	// Sort schemas: main schemas first (Office2007), then by version
+	sortSchemas(schemas)
+
+	// Process each schema
+	fmt.Printf(
+		"Processing %d schemas for element generation\n",
+		len(schemas),
+	)
+	for i, schema := range schemas {
+		fmt.Printf(
+			"  [%d/%d] Processing %s\n",
+			i+1,
+			len(schemas),
+			filepath.Base(schema.Path),
+		)
+		processSchemaFile(f, schema.Path)
+	}
+	fmt.Println("Element generation complete")
 }
 
 // processSchemaFiles iterates through schema files and triggers generation.
 // It filters for WordprocessingML schema files.
+// Deprecated: Use processAllSchemaFiles instead.
 func processSchemaFiles(
 	f *os.File,
 	schemasDir string,

@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/connerohnesorge/goffice-pdf/core"
+	"github.com/connerohnesorge/goffice-pdf/drawing"
 	"github.com/connerohnesorge/goffice/spreadsheet/elements"
 )
 
@@ -43,6 +44,7 @@ func (r *SpreadsheetRenderer) renderPages(
 			return err
 		}
 		r.currentPageNumber++
+
 		return nil
 	}
 
@@ -130,6 +132,7 @@ func (r *SpreadsheetRenderer) calculatePageLayout(
 		for rowEnd <= layout.VisibleRange.EndRow {
 			if layout.HiddenRows[rowEnd] {
 				rowEnd++
+
 				continue
 			}
 
@@ -154,6 +157,7 @@ func (r *SpreadsheetRenderer) calculatePageLayout(
 		for colEnd <= layout.VisibleRange.EndCol {
 			if layout.HiddenColumns[colEnd] {
 				colEnd++
+
 				continue
 			}
 
@@ -285,6 +289,7 @@ func (r *SpreadsheetRenderer) getPrintTitles(
 				ref,
 				sheetName,
 			)
+
 			break
 		}
 	}
@@ -430,6 +435,14 @@ func (r *SpreadsheetRenderer) renderPage(
 	// Render gridlines if enabled
 	if r.options.GridLines {
 		r.renderGridlines(page, layout, pageInfo)
+	}
+
+	// Render charts and drawings
+	if err := r.renderCharts(page, worksheet, pageInfo, pageSize, margins); err != nil {
+		return fmt.Errorf(
+			"failed to render charts: %w",
+			err,
+		)
 	}
 
 	// Render headers and footers
@@ -671,14 +684,17 @@ func parseHeaderFooterContent(
 			case 'L':
 				currentSection = &left
 				i += 2
+
 				continue
 			case 'C':
 				currentSection = &center
 				i += 2
+
 				continue
 			case 'R':
 				currentSection = &right
 				i += 2
+
 				continue
 			case 'P':
 				*currentSection += fmt.Sprintf(
@@ -686,14 +702,17 @@ func parseHeaderFooterContent(
 					pageInfo.Number,
 				)
 				i += 2
+
 				continue
 			case 'D':
 				*currentSection += "01/01/2024"
 				i += 2
+
 				continue
 			case 'T':
 				*currentSection += "12:00:00"
 				i += 2
+
 				continue
 			}
 		}
@@ -911,6 +930,7 @@ func (r *SpreadsheetRenderer) renderRepeatColumns(
 					// Log error but continue rendering
 					continue
 				}
+
 				break
 			}
 
@@ -924,4 +944,198 @@ func (r *SpreadsheetRenderer) renderRepeatColumns(
 	}
 
 	return totalWidth
+}
+
+// renderCharts renders charts and drawings on the worksheet page.
+func (r *SpreadsheetRenderer) renderCharts(
+	page *core.Page,
+	worksheet *elements.Worksheet,
+	pageInfo *PageInfo,
+	pageSize core.PageSize,
+	margins core.Margins,
+) error {
+	// Get the worksheet part to access drawings
+	if r.currentSheet == nil {
+		return nil
+	}
+
+	worksheetPart := r.currentSheet.WorksheetPart()
+	if worksheetPart == nil {
+		return nil
+	}
+
+	// Get the drawings part (contains chart references)
+	drawingsPart := worksheetPart.DrawingsPart()
+	if drawingsPart == nil {
+		// No drawings on this worksheet
+		return nil
+	}
+
+	// Get the drawing root element
+	drawingRoot := drawingsPart.RootElement()
+	if drawingRoot == nil {
+		return nil
+	}
+
+	// Type assert to the WorksheetDrawing element
+	drawingElem, ok := drawingRoot.(*elements.WorksheetDrawing)
+	if !ok {
+		return nil
+	}
+
+	// Create a PageImpl for the chart renderer to use
+	pageImpl := core.NewPageImpl(
+		pageSize.Width,
+		pageSize.Height,
+	)
+
+	// Create rendering context with the page
+	ctx := core.NewRenderingContextFromPageOptions(
+		&core.PageOptions{
+			Size:    pageSize,
+			Margins: margins,
+		},
+	)
+	ctx.SetPage(pageImpl)
+
+	// Create chart renderer
+	chartRenderer := drawing.NewChartRenderer(ctx)
+
+	// Iterate through all anchors (chart positions)
+	// Each anchor can contain a chart reference
+	twoCellAnchors := drawingElem.TwoCellAnchors()
+	for _, anchor := range twoCellAnchors {
+		// Get the graphic frame which contains chart reference
+		graphicFrame := anchor.GraphicFrame()
+		if graphicFrame == nil {
+			continue
+		}
+
+		// Get chart position from anchor markers
+		fromMarker := anchor.From()
+		toMarker := anchor.To()
+		if fromMarker == nil || toMarker == nil {
+			continue
+		}
+
+		// Calculate chart position in PDF coordinates
+		x, y, width, height := r.calculateChartBounds(
+			fromMarker,
+			toMarker,
+			pageInfo,
+			margins,
+		)
+
+		// For now, render a placeholder chart with sample data
+		// TODO: Extract actual chart data from the chart part
+		chartData := drawing.ChartData{
+			Categories: []string{
+				"Q1",
+				"Q2",
+				"Q3",
+				"Q4",
+			},
+			Series: []drawing.ChartSeries{
+				{
+					Name: "Sales",
+					Values: []float64{
+						100,
+						150,
+						120,
+						180,
+					},
+					Color: drawing.NewRGB(
+						0.2,
+						0.4,
+						0.8,
+					),
+				},
+				{
+					Name: "Revenue",
+					Values: []float64{
+						80,
+						120,
+						100,
+						150,
+					},
+					Color: drawing.NewRGB(
+						0.8,
+						0.3,
+						0.3,
+					),
+				},
+			},
+		}
+
+		// Render a column chart (most common type)
+		// TODO: Determine actual chart type from chart element
+		if err := chartRenderer.RenderBarChart(
+			x,
+			y,
+			width,
+			height,
+			chartData,
+			false, // false = vertical columns, true = horizontal bars
+		); err != nil {
+			// Log error but continue with other charts
+			continue
+		}
+	}
+
+	// Write the accumulated PDF content to the actual page
+	if pageImpl.GetContent() != "" {
+		_, _ = page.WriteContentString(
+			pageImpl.GetContent(),
+		)
+	}
+
+	return nil
+}
+
+// calculateChartBounds calculates the PDF coordinates for a chart from Excel anchor markers.
+func (r *SpreadsheetRenderer) calculateChartBounds(
+	fromMarker, toMarker interface {
+		Col() int
+		Row() int
+	},
+	pageInfo *PageInfo,
+	margins core.Margins,
+) (x, y, width, height float64) {
+	// Get starting position (top-left of chart)
+	fromCol := fromMarker.Col()
+	fromRow := fromMarker.Row()
+
+	// Get ending position (bottom-right of chart)
+	toCol := toMarker.Col()
+	toRow := toMarker.Row()
+
+	// Calculate X position (sum of column widths)
+	x = margins.Left
+	for col := pageInfo.ColStart; col < fromCol && col <= pageInfo.ColEnd; col++ {
+		// This is a simplified calculation
+		// TODO: Use actual column widths from layout
+		x += 72.0 // Default column width in points
+	}
+
+	// Calculate Y position (sum of row heights)
+	y = margins.Top
+	for row := pageInfo.RowStart; row < fromRow && row <= pageInfo.RowEnd; row++ {
+		// This is a simplified calculation
+		// TODO: Use actual row heights from layout
+		y += 15.0 // Default row height in points
+	}
+
+	// Calculate width (sum of column widths from fromCol to toCol)
+	width = 0.0
+	for col := fromCol; col < toCol; col++ {
+		width += 72.0 // Default column width
+	}
+
+	// Calculate height (sum of row heights from fromRow to toRow)
+	height = 0.0
+	for row := fromRow; row < toRow; row++ {
+		height += 15.0 // Default row height
+	}
+
+	return x, y, width, height
 }

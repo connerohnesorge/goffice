@@ -1,0 +1,106 @@
+{
+  "id": "chart_line_markers_01",
+  "name": "Line Chart with Markers",
+  "description": "Tests line chart with different marker styles: circle, square, triangle",
+  "category": "chart",
+  "tags": ["line", "markers", "symbols"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "chart",
+            "position": {
+              "x": 914400,
+              "y": 914400
+            },
+            "size": {
+              "width": 6858000,
+              "height": 4572000
+            },
+            "z_index": 1,
+            "chart": {
+              "type": "line_markers",
+              "title": "Performance Metrics",
+              "legend": {
+                "position": "right",
+                "show_legend": true
+              },
+              "data": {
+                "categories": ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7", "Week 8"],
+                "series": [
+                  {
+                    "name": "Metric A",
+                    "values": [85, 88, 82, 90, 87, 92, 89, 94],
+                    "color": "5B9BD5",
+                    "marker_style": "circle"
+                  },
+                  {
+                    "name": "Metric B",
+                    "values": [75, 80, 78, 85, 83, 88, 86, 91],
+                    "color": "70AD47",
+                    "marker_style": "square"
+                  },
+                  {
+                    "name": "Metric C",
+                    "values": [70, 72, 75, 77, 80, 82, 84, 87],
+                    "color": "FFC000",
+                    "marker_style": "triangle"
+                  }
+                ]
+              },
+              "style": {
+                "color_palette": ["5B9BD5", "70AD47", "FFC000"],
+                "font_size": 11,
+                "font_family": "Calibri",
+                "show_data_labels": false,
+                "grid_lines": {
+                  "major_horizontal": true,
+                  "minor_horizontal": false,
+                  "major_vertical": false,
+                  "minor_vertical": false
+                }
+              },
+              "axes": {
+                "category": {
+                  "title": "Time Period"
+                },
+                "value": {
+                  "title": "Score",
+                  "min": 60,
+                  "max": 100
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "medium",
+    "expected_duration": "fast"
+  }
+}

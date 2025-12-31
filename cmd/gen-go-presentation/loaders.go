@@ -99,33 +99,58 @@ func loadNamespaces() {
 	}
 }
 
-// collectTypes extracts type metadata from a schema main.json file.
-// It handles both complex types and enumeration definitions.
-func collectTypes(path string) {
-	data, errRead := os.ReadFile(path)
+// collectTypesWithVersion extracts type metadata from a schema file with version information.
+// It handles both complex types and enumeration definitions, storing version metadata.
+func collectTypesWithVersion(
+	metadata *SchemaFileMetadata,
+) {
+	data, errRead := os.ReadFile(metadata.Path)
 	if errRead != nil {
 		msg := "failed to read schema file %s: %w"
-		panic(fmt.Errorf(msg, path, errRead))
+		panic(
+			fmt.Errorf(
+				msg,
+				metadata.Path,
+				errRead,
+			),
+		)
 	}
 
 	var schema SchemaFile
 	if errUnmarshal := json.Unmarshal(data, &schema); errUnmarshal != nil {
 		msg := "failed to unmarshal schema %s: %w"
-		panic(fmt.Errorf(msg, path, errUnmarshal))
+		panic(
+			fmt.Errorf(
+				msg,
+				metadata.Path,
+				errUnmarshal,
+			),
+		)
 	}
 
+	// Register namespace in global namespace map
+	if metadata.NamespacePrefix != "" &&
+		metadata.Namespace != "" {
+		namespaceMap[metadata.NamespacePrefix] = metadata.Namespace
+	}
+
+	// Collect types with version metadata
 	for i := range schema.Types {
-		schema.Types[i].TargetNamespace = schema.TargetNamespace
-		if schema.Types[i].ClassName != "" {
-			typeMap[schema.Types[i].Name] = TypeInfo{
-				ClassName: schema.Types[i].ClassName,
-				Namespace: schema.Types[i].TargetNamespace,
+		t := &schema.Types[i]
+		t.TargetNamespace = schema.TargetNamespace
+		if t.ClassName != "" {
+			typeMap[t.Name] = TypeInfo{
+				ClassName: t.ClassName,
+				Namespace: t.TargetNamespace,
+				Version:   metadata.Version,
 			}
 		}
 	}
 
+	// Collect enums with version metadata
 	for i := range schema.Enums {
-		schema.Enums[i].TargetNamespace = schema.TargetNamespace
-		enumMap[schema.Enums[i].Name] = &schema.Enums[i]
+		e := &schema.Enums[i]
+		e.TargetNamespace = schema.TargetNamespace
+		enumMap[e.Name] = e
 	}
 }

@@ -205,6 +205,7 @@ func (r *SpreadsheetRenderer) calculateTotalWidth(
 		}
 		total += width
 	}
+
 	return total
 }
 
@@ -225,6 +226,7 @@ func (r *SpreadsheetRenderer) calculateTotalHeight(
 		}
 		total += height
 	}
+
 	return total
 }
 
@@ -323,6 +325,7 @@ func (r *SpreadsheetRenderer) getCellSize(
 				width = 0
 				height = 0
 			}
+
 			break
 		}
 	}
@@ -343,6 +346,7 @@ func (r *SpreadsheetRenderer) isCellMerged(
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -357,5 +361,6 @@ func (r *SpreadsheetRenderer) isTopLeftOfMerge(
 			return true
 		}
 	}
+
 	return false
 }

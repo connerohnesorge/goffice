@@ -338,14 +338,16 @@ func (rp *RunProperties) VerticalTextAlignment() VerticalAlignValue {
 		NamespaceWML,
 	)
 	if elem == nil {
-		return VerticalAlignBaseline
+		// TODO: Re-enable VerticalAlignBaseline when enum constant is regenerated
+		return VerticalAlignValue("baseline")
 	}
 	attr, found := elem.GetAttribute(
 		"val",
 		NamespaceWML,
 	)
 	if !found {
-		return VerticalAlignBaseline
+		// TODO: Re-enable VerticalAlignBaseline when enum constant is regenerated
+		return VerticalAlignValue("baseline")
 	}
 
 	return VerticalAlignValue(attr.Value())
@@ -355,7 +357,8 @@ func (rp *RunProperties) VerticalTextAlignment() VerticalAlignValue {
 func (rp *RunProperties) SetVerticalTextAlignment(
 	v VerticalAlignValue,
 ) {
-	if v == VerticalAlignBaseline {
+	// TODO: Re-enable VerticalAlignBaseline when enum constant is regenerated
+	if v == VerticalAlignValue("baseline") {
 		rp.removeElement("vertAlign")
 
 		return

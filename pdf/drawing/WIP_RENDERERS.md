@@ -1,44 +1,57 @@
-# Work-in-Progress Renderer Files
+# DrawingML Renderer Files - ENABLED
 
-The following renderer files have been temporarily disabled (renamed to `.wip` extension) because they reference an incomplete API:
+All renderer files have been successfully re-enabled as part of the `enable-drawingml-pdf-rendering` change proposal.
 
-## Disabled Files
+## Status: COMPLETE
 
-### Source Files
-- `chart_renderer.go.wip` - Chart rendering functionality
-- `effects_renderer.go.wip` - Visual effects (shadows, glows, etc.)
-- `fill_renderer.go.wip` - Fill rendering (solid, gradient, pattern)
-- `image_renderer.go.wip` - Image/picture rendering
-- `shape_renderer.go.wip` - Shape rendering with geometry
-- `stroke_renderer.go.wip` - Stroke/line rendering
-- `text_in_shape.go.wip` - Text rendering within shapes
-- `transform_renderer.go.wip` - Transformation rendering
+All 8 source files and 4 test files have been re-enabled and are fully functional.
 
-### Test Files
-- `chart_renderer_test.go.wip` - Tests for chart renderer
-- `fill_renderer_test.go.wip` - Tests for fill renderer
-- `shape_renderer_test.go.wip` - Tests for shape renderer
-- `drawingml_integration_test.go.wip` - Integration tests for DrawingML rendering
+### Source Files (All Enabled)
+- `chart_renderer.go` - Chart rendering (bar, line, pie charts)
+- `effects_renderer.go` - Visual effects (shadows, glows, reflections)
+- `fill_renderer.go` - Fill rendering (solid, gradient, pattern, image)
+- `image_renderer.go` - Image/picture rendering
+- `shape_renderer.go` - Shape rendering with preset geometries
+- `stroke_renderer.go` - Stroke/line rendering with dash patterns
+- `text_in_shape.go` - Text rendering within shapes
+- `transform_renderer.go` - Transformation rendering (rotation, scale, flip)
 
-## Issues
+### Test Files (All Enabled)
+- `chart_renderer_test.go` - Tests for chart renderer
+- `fill_renderer_test.go` - Tests for fill renderer
+- `shape_renderer_test.go` - Tests for shape renderer
+- `drawingml_integration_test.go` - Integration tests for DrawingML rendering
 
-These files were attempting to use `core.RenderContext` (which should be `core.RenderingContext`) and more critically, they reference a `Page` field on the rendering context that doesn't exist.
+## Implementation Details
 
-The files also use methods like:
-- `ctx.Page.SetFillColor()`
-- `ctx.Page.DrawRectangle()`
-- `ctx.Page.WriteContent()`
-- `ctx.Page.SaveGraphicsState()`
+### Core Infrastructure Added
+The following infrastructure was added to `pdf/core/` to enable these renderers:
 
-However, `core.RenderingContext` doesn't have a `Page` field. This API needs to be designed and implemented before these renderer files can be completed.
+1. **PageDrawer Interface** (`page.go`) - Drawing primitives interface:
+   - `DrawRectangle()`, `DrawCircle()`, `DrawEllipse()`
+   - `SetFillColor()`, `SetStrokeColor()`, `SetLineWidth()`
+   - `SetLineDashPattern()`, `SetLineCap()`, `SetLineJoin()`
+   - `SaveGraphicsState()`, `RestoreGraphicsState()`, `Transform()`
+   - `AddImage()`, `DrawText()`, `SetFont()`
+   - `WriteContent()` for raw PDF operators
 
-## Fixes Applied
+2. **PageImpl** (`page_impl.go`) - Concrete implementation generating PDF content streams
 
-1. Changed `core.RenderContext` to `core.RenderingContext` throughout
-2. Changed `*Path` to `*PathBuilder` to match the actual type
-3. Changed `path.Fill()` to `ctx.Page.WriteContent(path.Fill())` (where appropriate)
-4. Changed `path.Close()` to `path.ClosePath()` to match the correct method name
+3. **RenderingContext.Page** (`render_context.go`) - Page field added for renderer access
 
-## To Re-enable
+4. **MockPage** (`page_mock.go`) - Test implementation for unit testing renderers
 
-Once the core rendering API is properly defined with a Page abstraction, rename these files back to `.go` extension and they should work (modulo any additional API changes needed).
+### API Usage
+All renderers now use the standardized API:
+```go
+ctx.Page.SetFillColor(r, g, b)
+ctx.Page.DrawRectangle(x, y, w, h, fill, stroke)
+ctx.Page.WriteContent(path.Stroke())
+ctx.Page.SaveGraphicsState()
+ctx.Page.RestoreGraphicsState()
+```
+
+## Verification
+- All files compile without errors
+- All tests pass
+- No `.wip` files remain in this directory

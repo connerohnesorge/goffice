@@ -37,6 +37,11 @@ func newWorksheetPart(
 		workbookPart,
 	)
 	partData.SetRelationshipID(relID)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewWorksheet()
+		},
+	)
 
 	wsp := &WorksheetPart{
 		OpenXmlPartData: partData,

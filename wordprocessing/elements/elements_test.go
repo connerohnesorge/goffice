@@ -12,13 +12,6 @@ const (
 	testAuthorName = "Author"
 )
 
-func TestPackageExists(t *testing.T) {
-	// Simple test to verify test infrastructure works for elements package
-	t.Log(
-		"elements package test infrastructure is working",
-	)
-}
-
 func TestNewDocument(t *testing.T) {
 	doc := NewDocument()
 

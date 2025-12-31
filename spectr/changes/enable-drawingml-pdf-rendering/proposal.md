@@ -67,32 +67,39 @@ Current state documented in `pdf/drawing/WIP_RENDERERS.md`.
 ## Key Design Decisions
 
 ### 1. Page Interface Design
-Minimal interface covering essential drawing operations:
+Interface covering essential drawing operations based on actual renderer requirements:
 ```go
 type Page interface {
     // Drawing primitives
-    DrawRectangle(x, y, width, height float64)
-    DrawEllipse(cx, cy, rx, ry float64)  
+    DrawRectangle(x, y, width, height float64, fill, stroke bool)
+    DrawCircle(cx, cy, radius float64, fill, stroke bool)
+    DrawEllipse(cx, cy, rx, ry float64, fill, stroke bool)
     DrawPath(path *PathBuilder)
-    
+
     // State management
-    SetFillColor(color Color)
-    SetStrokeColor(color Color)
+    SetFillColor(r, g, b float64)
+    SetStrokeColor(r, g, b float64)
     SetLineWidth(width float64)
     SetLineDashPattern(pattern []float64, phase float64)
-    
-    // Graphics state
-    PushState()
-    PopState()
+    SetLineCap(cap LineCap)
+    SetLineJoin(join LineJoin)
+
+    // Graphics state stack
+    SaveGraphicsState()
+    RestoreGraphicsState()
     Transform(matrix Matrix)
-    
+
     // Content
     AddImage(img Image, x, y, width, height float64)
-    DrawText(text string, x, y float64, font Font, size float64)
+    DrawText(text string, x, y float64)
+    SetFont(name string, size float64)
+
+    // Low-level content stream access (for complex paths)
+    WriteContent(content string)
 }
 ```
 
-**Rationale**: Minimal API surface matching PDF capabilities, not DrawingML complexity. Higher-level renderers (chart, shape, fill, etc.) consume this interface.
+**Rationale**: API designed from actual .wip renderer usage patterns. Includes both high-level primitives (DrawRectangle) and low-level access (WriteContent) for complex path operations. RGB parameters avoid allocation overhead. SaveGraphicsState/RestoreGraphicsState match PDF terminology.
 
 ### 2. pdfcpu Integration Strategy
 Wrap pdfcpu's content stream API rather than reimplementing PDF generation.
@@ -106,16 +113,21 @@ Wrap pdfcpu's content stream API rather than reimplementing PDF generation.
 
 **Rationale**: Keeps DrawingML renderers in native units, isolates coordinate conversion to Page implementation. Clear separation of concerns.
 
-### 4. Defer Advanced Features
+### 4. Leaky Abstraction (WriteContent)
+Page interface intentionally exposes WriteContent() for direct PDF content stream access alongside high-level primitives.
+
+**Rationale**: Complex path operations (bezier curves, arcs with specific control points) are easier to express as PDF operators than to abstract. PathBuilder generates PDF operators, WriteContent() writes them directly. This is a pragmatic escape hatch for renderer complexity, not a design flaw. High-level methods (DrawRectangle, DrawCircle) handle 80% of cases; WriteContent() handles the remaining 20%.
+
+### 5. Defer Advanced Features
 Phase 1 focuses on basic shapes/charts. Defer to future:
-- Clipping paths
+- Clipping paths (W/W* operators)
 - Blend modes beyond normal
 - Advanced gradients (mesh/coons)
 - Soft masks for transparency
 
 **Rationale**: 80% of use cases covered by solid fills, linear gradients, basic shapes. Advanced features can be added incrementally without API changes.
 
-### 5. Mock Testing Strategy
+### 6. Mock Testing Strategy
 Page interface enables unit testing renderers without actual PDF generation using mock implementation.
 
 **Rationale**: Fast, isolated tests for renderer logic. Integration tests cover end-to-end with real PDFs.

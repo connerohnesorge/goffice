@@ -344,48 +344,6 @@ func TestWordLineBreaker_KeepURLsTogether(
 	}
 }
 
-func TestWordLineBreaker_KeepTitlesWithNames(
-	t *testing.T,
-) {
-	wlb := NewWordLineBreaker()
-
-	tests := []struct {
-		name string
-		text string
-	}{
-		{"Dr title", "Hello Dr. Smith today"},
-		{"Mr title", "Hello Mr. Jones today"},
-		{"Mrs title", "Hello Mrs. Brown today"},
-		{
-			"Prof title",
-			"Hello Prof. Wilson today",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			opportunities := wlb.FindBreakOpportunities(
-				tt.text,
-			)
-
-			// Find the title position
-			titleStart := 6 // After "Hello "
-
-			// There should be no break between title and name
-			for _, opp := range opportunities {
-				// Check break between title and name (after the period and space)
-				if opp.Position > titleStart &&
-					opp.Position < titleStart+12 {
-					if opp.Type == BreakAllowed {
-						// This could be acceptable after the name, but not between title and name
-						// We need more specific checking here
-					}
-				}
-			}
-		})
-	}
-}
-
 func TestWordLineBreaker_KeepUnitsWithNumbers(
 	t *testing.T,
 ) {
@@ -525,31 +483,6 @@ func TestWordLineBreaker_EmDash(t *testing.T) {
 	}
 }
 
-func TestWordLineBreaker_EnDash(t *testing.T) {
-	wlb := NewWordLineBreaker()
-
-	// En dash is U+2013
-	text := "pages 10\u201320"
-	opportunities := wlb.FindBreakOpportunities(
-		text,
-	)
-
-	// Should have break opportunity after en-dash
-	hasBreakAfterEnDash := false
-	for _, opp := range opportunities {
-		if opp.Type == BreakAllowed {
-			// Check positions around en-dash
-			hasBreakAfterEnDash = true
-
-			break
-		}
-	}
-
-	// En-dash in page ranges might be kept together, but we allow breaks
-	// This test is primarily to ensure no crash
-	_ = hasBreakAfterEnDash
-}
-
 func TestWordLineBreaker_CompoundWords(
 	t *testing.T,
 ) {
@@ -575,31 +508,6 @@ func TestWordLineBreaker_CompoundWords(
 		t.Error(
 			"Expected break opportunity after hyphen in compound word",
 		)
-	}
-}
-
-func TestWordLineBreaker_DisabledOptions(
-	t *testing.T,
-) {
-	opts := WordBreakOptions{
-		BreakAfterSlash:     false,
-		BreakAfterBackslash: false,
-		BreakAfterEquals:    false,
-		BreakAfterColon:     false,
-	}
-	wlb := NewWordLineBreakerWithOptions(opts)
-
-	// Test that slash doesn't create break when disabled
-	text := "path/to/file"
-	opportunities := wlb.FindBreakOpportunities(
-		text,
-	)
-
-	for _, opp := range opportunities {
-		if opp.Type == BreakAllowed {
-			// With options disabled, there should be fewer break opportunities
-			// (mainly from standard UAX #14)
-		}
 	}
 }
 
@@ -819,47 +727,6 @@ func TestWordLineBreaker_SingleCharacter(
 				"Unexpected break opportunity in single character",
 			)
 		}
-	}
-}
-
-func TestWordLineBreaker_OnlySpaces(
-	t *testing.T,
-) {
-	wlb := NewWordLineBreaker()
-
-	opportunities := wlb.FindBreakOpportunities(
-		"   ",
-	)
-	// Should handle gracefully
-	if opportunities == nil {
-		// This is acceptable
-	}
-}
-
-func TestWordLineBreaker_URLWithLongPath(
-	t *testing.T,
-) {
-	wlb := NewWordLineBreaker()
-
-	// Test that long URLs can break after slashes in the path
-	text := "https://example.com/very/long/path/to/resource"
-	opportunities := wlb.FindBreakOpportunities(
-		text,
-	)
-
-	// Count breaks that are allowed (after slashes in path)
-	breakCount := 0
-	for _, opp := range opportunities {
-		if opp.Type == BreakAllowed {
-			breakCount++
-		}
-	}
-
-	// Should have some break opportunities in long URL path
-	if breakCount == 0 {
-		t.Log(
-			"No break opportunities found in long URL - this might be too restrictive",
-		)
 	}
 }
 

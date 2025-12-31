@@ -351,3 +351,26 @@ func (c *ValidationContext) IsVersionAvailable(
 
 	return avail.IsAvailableIn(c.Version)
 }
+
+// WithTargetVersion returns a new ValidationContext with the specified
+// target version. This is useful for validating documents against specific
+// Office versions.
+func (c *ValidationContext) WithTargetVersion(
+	version FileFormatVersions,
+) *ValidationContext {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.Version = version
+
+	return c
+}
+
+// TargetVersion returns the target Office version for validation.
+// This is an alias for the Version field to match the naming convention
+// in the specification.
+func (c *ValidationContext) TargetVersion() FileFormatVersions {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	return c.Version
+}

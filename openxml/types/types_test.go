@@ -6,13 +6,6 @@ import (
 	"time"
 )
 
-func TestPackageExists(t *testing.T) {
-	// Simple test to verify test infrastructure works for types package
-	t.Log(
-		"types package test infrastructure is working",
-	)
-}
-
 // TestStringValue tests the StringValue type.
 func TestStringValue(t *testing.T) {
 	t.Run("NewStringValue", func(t *testing.T) {

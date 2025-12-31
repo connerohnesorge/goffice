@@ -84,6 +84,9 @@ type OpenXmlPartData struct {
 
 	// Track modifications
 	isDirty bool
+
+	// Track if we're currently loading children to prevent infinite recursion
+	loadingChildren bool
 }
 
 // NewOpenXmlPartData creates a new part data structure.
@@ -130,6 +133,22 @@ func (p *OpenXmlPartData) loadChildPartsRecursive(
 	if depth > maxPartRecursionDepth {
 		return
 	}
+
+	// Check if we're already loading children to prevent infinite recursion
+	p.mu.Lock()
+	if p.loadingChildren {
+		p.mu.Unlock()
+
+		return
+	}
+	p.loadingChildren = true
+	p.mu.Unlock()
+
+	defer func() {
+		p.mu.Lock()
+		p.loadingChildren = false
+		p.mu.Unlock()
+	}()
 
 	if p.packagingPart == nil {
 		return
@@ -186,13 +205,36 @@ func (p *OpenXmlPartData) loadChildPartsRecursive(
 		p.childParts[rel.ID()] = childPart
 
 		// Recursively load child parts
+		// Get the underlying *OpenXmlPartData regardless of wrapping type
+		var partData *OpenXmlPartData
 		if cp, ok := childPart.(*OpenXmlPartData); ok {
-			cp.loadChildPartsRecursive(depth + 1)
+			partData = cp
+		} else {
+			// Use reflection to access embedded *OpenXmlPartData field
+			v := reflect.ValueOf(childPart)
+			if v.Kind() == reflect.Ptr {
+				v = v.Elem()
+			}
+			if v.Kind() == reflect.Struct {
+				// Look for an embedded *OpenXmlPartData field
+				for i := range v.NumField() {
+					field := v.Field(i)
+					if field.Type() == reflect.TypeOf((*OpenXmlPartData)(nil)) {
+						if pd, ok := field.Interface().(*OpenXmlPartData); ok && pd != nil {
+							partData = pd
+
+							break
+						}
+					}
+				}
+			}
 		}
 
-		// Reload root element to ensure it's populated from XML if it was just loaded
-		if root := childPart.RootElement(); root != nil {
-			_ = root.Reload()
+		// Load child parts only once for the underlying partData
+		if partData != nil {
+			partData.loadChildPartsRecursive(
+				depth + 1,
+			)
 		}
 	}
 }
@@ -282,15 +324,21 @@ func (p *OpenXmlPartData) GetData() []byte {
 // The element is lazy-loaded on first access.
 func (p *OpenXmlPartData) RootElement() PartRootElement {
 	p.mu.Lock()
-	defer p.mu.Unlock()
-
 	if !p.rootLoaded && p.rootFactory != nil {
 		p.rootElement = p.rootFactory()
 		if p.rootElement != nil {
 			p.rootElement.SetPart(p)
+			// Unlock before calling Reload to avoid deadlock
+			p.rootLoaded = true
+			p.mu.Unlock()
+			// Reload the element from the part's data if present
+			_ = p.rootElement.Reload()
+
+			return p.rootElement
 		}
 		p.rootLoaded = true
 	}
+	p.mu.Unlock()
 
 	return p.rootElement
 }

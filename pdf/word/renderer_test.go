@@ -71,6 +71,7 @@ func TestWordRenderer_ParagraphStyles(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -162,6 +163,7 @@ func TestWordRenderer_RunStyles(t *testing.T) {
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -220,6 +222,7 @@ func TestWordRenderer_SubscriptSuperscript(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -293,6 +296,7 @@ func TestWordRenderer_TextHighlight(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -367,6 +371,7 @@ func TestWordRenderer_UnderlineStyles(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -435,6 +440,7 @@ func TestWordRenderer_FontSizes(t *testing.T) {
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -504,6 +510,7 @@ func TestWordRenderer_CombinedStyles(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -597,6 +604,7 @@ func TestWordRenderer_SimpleTable(t *testing.T) {
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -615,8 +623,8 @@ func TestWordRenderer_SimpleTable(t *testing.T) {
 	) // 250 points
 
 	// Fill cells with content
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
+	for i := range 3 {
+		for j := range 3 {
 			tbl.SetCellText(
 				i,
 				j,
@@ -673,6 +681,7 @@ func TestWordRenderer_TableWithBorders(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -743,6 +752,7 @@ func TestWordRenderer_TableWithShading(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -763,8 +773,8 @@ func TestWordRenderer_TableWithShading(
 		"FFCCFF",
 		"CCFFFF",
 	}
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
+	for i := range 3 {
+		for j := range 3 {
 			idx := (i*3 + j) % len(colors)
 			cell := tbl.GetCell(i, j)
 			if cell != nil {
@@ -823,6 +833,7 @@ func TestWordRenderer_TableWithMergedCells(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -917,6 +928,7 @@ func TestWordRenderer_TableWithCellBorders(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -1040,6 +1052,7 @@ func TestWordRenderer_ComplexTable(t *testing.T) {
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -1061,7 +1074,7 @@ func TestWordRenderer_ComplexTable(t *testing.T) {
 	)
 
 	// Header row with shading
-	for j := 0; j < 4; j++ {
+	for j := range 4 {
 		cell := tbl.GetCell(0, j)
 		if cell != nil {
 			cell.SetShading("4472C4")
@@ -1081,7 +1094,7 @@ func TestWordRenderer_ComplexTable(t *testing.T) {
 		if i%2 == 0 {
 			rowColor = "F2F2F2"
 		}
-		for j := 0; j < 4; j++ {
+		for j := range 4 {
 			cell := tbl.GetCell(i, j)
 			if cell != nil {
 				cell.SetShading(rowColor)
@@ -1142,6 +1155,7 @@ func TestWordRenderer_PageBreakBefore(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -1207,6 +1221,7 @@ func TestWordRenderer_KeepWithNext(t *testing.T) {
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -1216,7 +1231,7 @@ func TestWordRenderer_KeepWithNext(t *testing.T) {
 	}
 
 	// Fill first page
-	for i := 0; i < 40; i++ {
+	for i := range 40 {
 		body.AppendParagraph(
 			fmt.Sprintf(
 				"Filler paragraph %d",
@@ -1282,6 +1297,7 @@ func TestWordRenderer_KeepLinesTogether(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -1291,7 +1307,7 @@ func TestWordRenderer_KeepLinesTogether(
 	}
 
 	// Fill most of first page
-	for i := 0; i < 38; i++ {
+	for i := range 38 {
 		body.AppendParagraph(
 			fmt.Sprintf("Filler line %d", i+1),
 		)
@@ -1299,7 +1315,7 @@ func TestWordRenderer_KeepLinesTogether(
 
 	// Add long paragraph that should stay together
 	longText := "This is a long paragraph with multiple lines. "
-	for i := 0; i < 20; i++ {
+	for range 20 {
 		longText += "This paragraph has keep-lines-together enabled. "
 	}
 	p := body.AppendParagraph(longText)
@@ -1351,6 +1367,7 @@ func TestWordRenderer_WidowOrphanControl(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -1360,7 +1377,7 @@ func TestWordRenderer_WidowOrphanControl(
 	}
 
 	// Fill most of first page
-	for i := 0; i < 39; i++ {
+	for i := range 39 {
 		body.AppendParagraph(
 			fmt.Sprintf("Line %d", i+1),
 		)
@@ -1368,7 +1385,7 @@ func TestWordRenderer_WidowOrphanControl(
 
 	// Add paragraph that would create widow/orphan without control
 	longText := ""
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		longText += fmt.Sprintf(
 			"Line %d of multi-line paragraph. ",
 			i+1,
@@ -1421,6 +1438,7 @@ func TestWordRenderer_SectionBreak(t *testing.T) {
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -1493,6 +1511,7 @@ func TestWordRenderer_MixedPaginationFeatures(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -1509,7 +1528,7 @@ func TestWordRenderer_MixedPaginationFeatures(
 	p2.SetPageBreakBefore(true)
 
 	// Add some filler
-	for i := 0; i < 30; i++ {
+	for i := range 30 {
 		body.AppendParagraph(
 			fmt.Sprintf("Filler %d", i+1),
 		)
@@ -1526,7 +1545,7 @@ func TestWordRenderer_MixedPaginationFeatures(
 
 	// Add long paragraph with keep-lines-together
 	longText := ""
-	for i := 0; i < 15; i++ {
+	for range 15 {
 		longText += "This paragraph should stay together on one page. "
 	}
 	pLong := body.AppendParagraph(longText)

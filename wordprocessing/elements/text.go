@@ -11,6 +11,10 @@ const (
 	PrefixW = "w"
 	// NamespaceXML is the XML namespace URI.
 	NamespaceXML = "http://www.w3.org/XML/1998/namespace"
+	// NamespaceW15 is the Word 2013 extension namespace (w15).
+	NamespaceW15 = openxml.NamespaceWord2013
+	// PrefixW15 is the standard prefix for Word 2013 extension elements.
+	PrefixW15 = "w15"
 )
 
 // Text represents a text content element (w:t).

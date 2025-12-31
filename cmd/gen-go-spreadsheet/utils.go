@@ -159,17 +159,19 @@ func mapNumericType(schemaType string) string {
 	}
 }
 
+const booleanValueType = "*types.BooleanValue"
+
 // mapBooleanType maps schema boolean-like types to Go types.
 func mapBooleanType(schemaType string) string {
 	switch schemaType {
 	case "BooleanValue":
-		return "*types.BooleanValue"
+		return booleanValueType
 	case "OnOffValue":
 		return "*types.OnOffValue"
 	case "TrueFalseValue":
-		return "*types.TrueFalseValue"
+		return booleanValueType
 	case "TrueFalseBlankValue":
-		return "*types.TrueFalseBlankValue"
+		return booleanValueType
 	default:
 		return ""
 	}

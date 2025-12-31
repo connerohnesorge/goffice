@@ -90,6 +90,8 @@ type TypeInfo struct {
 	ClassName string
 	// Namespace is the XML namespace URI.
 	Namespace string
+	// Version is the Office version this type was introduced in.
+	Version FileFormatVersion
 }
 
 var (

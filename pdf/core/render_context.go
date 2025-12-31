@@ -34,6 +34,11 @@ type RenderingContext struct {
 
 	// coordTransformer handles the base coordinate transformation.
 	coordTransformer *CoordTransformer
+
+	// Page provides drawing operations for the current PDF page.
+	// This field must be set before rendering DrawingML elements.
+	// It can be set via WithPage() or SetPage() after construction.
+	Page PageDrawer
 }
 
 // Point represents a 2D point with X and Y coordinates.
@@ -185,6 +190,30 @@ func (rc *RenderingContext) SetMargins(
 			URY: rc.pageHeight - margins.Top,
 		}
 	}
+}
+
+// SetPage sets the Page field for drawing operations.
+// This must be called before rendering DrawingML elements.
+func (rc *RenderingContext) SetPage(
+	page PageDrawer,
+) {
+	rc.Page = page
+}
+
+// WithPage sets the Page field and returns the context for method chaining.
+// This allows fluent initialization: ctx := NewRenderingContext(...).WithPage(page)
+func (rc *RenderingContext) WithPage(
+	page PageDrawer,
+) *RenderingContext {
+	rc.Page = page
+
+	return rc
+}
+
+// HasPage returns true if the Page field has been set.
+// Use this to check if the context is ready for DrawingML rendering.
+func (rc *RenderingContext) HasPage() bool {
+	return rc.Page != nil
 }
 
 // PushOrigin pushes a new origin offset onto the stack.

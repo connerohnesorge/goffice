@@ -585,7 +585,7 @@ func BenchmarkSpreadsheetRenderer_SmallWorkbook(
 	// Benchmark rendering
 	b.ResetTimer()
 
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		doc2, _ := spreadsheet.Open(
 			xlsxPath,
 			false,

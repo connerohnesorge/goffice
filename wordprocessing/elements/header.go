@@ -48,9 +48,8 @@ func (h *Header) Paragraphs() iter.Seq[*Paragraph] {
 func (h *Header) Tables() iter.Seq[*Table] {
 	return func(yield func(*Table) bool) {
 		for child := range h.Children() {
-			if child.LocalName() != string(
-				PlaceholderValuesTbl,
-			) ||
+			// TODO: Re-enable PlaceholderValuesTbl when enum is regenerated
+			if child.LocalName() != tableLocalName ||
 				child.NamespaceURI() != NamespaceWML {
 				continue
 			}

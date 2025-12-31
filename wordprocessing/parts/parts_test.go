@@ -7,13 +7,6 @@ import (
 	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 )
 
-func TestPackageExists(t *testing.T) {
-	// Simple test to verify test infrastructure works for parts package
-	t.Log(
-		"parts package test infrastructure is working",
-	)
-}
-
 func TestImageTypeString(t *testing.T) {
 	tests := []struct {
 		imageType ImageType

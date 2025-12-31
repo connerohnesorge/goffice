@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/connerohnesorge/goffice-pdf/core"
+	"github.com/connerohnesorge/goffice-pdf/drawing"
 	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/presentation"
@@ -14,10 +15,12 @@ import (
 // SlideRenderer renders a single slide to a PDF page.
 // It handles master slide inheritance, backgrounds, and shape rendering.
 type SlideRenderer struct {
-	doc       *presentation.Document
-	slidePart *parts.SlidePart
-	page      *core.Page
-	pageSize  core.PageSize
+	doc           *presentation.Document
+	slidePart     *parts.SlidePart
+	page          *core.Page
+	pageSize      core.PageSize
+	renderContext *core.RenderingContext
+	shapeRenderer *drawing.ShapeRenderer
 }
 
 // NewSlideRenderer creates a new slide renderer.
@@ -27,11 +30,31 @@ func NewSlideRenderer(
 	page *core.Page,
 	pageSize core.PageSize,
 ) *SlideRenderer {
+	// Create PageImpl from Page for DrawingML rendering
+	pageImpl := core.NewPageImpl(
+		pageSize.Width,
+		pageSize.Height,
+	)
+
+	// Create rendering context with the PageImpl
+	renderContext := core.NewRenderingContext(
+		pageSize.Width,
+		pageSize.Height,
+	)
+	renderContext.SetPage(pageImpl)
+
+	// Create shape renderer
+	shapeRenderer := drawing.NewShapeRenderer(
+		renderContext,
+	)
+
 	return &SlideRenderer{
-		doc:       doc,
-		slidePart: slidePart,
-		page:      page,
-		pageSize:  pageSize,
+		doc:           doc,
+		slidePart:     slidePart,
+		page:          page,
+		pageSize:      pageSize,
+		renderContext: renderContext,
+		shapeRenderer: shapeRenderer,
 	}
 }
 
@@ -532,6 +555,145 @@ func (sr *SlideRenderer) renderShape(
 		return nil // No visual properties, skip
 	}
 
+	// Convert elements.ShapeProperties to drawingml.ShapeProperties
+	// The shape properties element should already be a DrawingML ShapeProperties
+	dmlSpPr, ok := interface{}(spPr).(*drawingml.ShapeProperties)
+	if !ok {
+		// Fall back to basic rendering if not DrawingML properties
+		return sr.renderShapeBasic(
+			shape,
+			isMaster,
+		)
+	}
+
+	// Create fill and stroke renderers from the shape properties
+	fillRenderer := drawing.CreateFillRenderer(
+		dmlSpPr,
+	)
+	strokeRenderer := drawing.CreateStrokeRenderer(
+		dmlSpPr,
+	)
+
+	// Render the shape using the ShapeRenderer
+	if err := sr.shapeRenderer.RenderShapeWithFill(
+		dmlSpPr,
+		fillRenderer,
+		strokeRenderer,
+	); err != nil {
+		return fmt.Errorf(
+			"failed to render shape: %w",
+			err,
+		)
+	}
+
+	// Write the accumulated content from PageImpl to the actual page
+	if pageImpl, ok := sr.renderContext.Page.(*core.PageImpl); ok {
+		content := pageImpl.GetContent()
+		if content != "" {
+			if _, err := sr.page.WriteContentString(content); err != nil {
+				return fmt.Errorf(
+					"failed to write shape content: %w",
+					err,
+				)
+			}
+			// Clear the content buffer for next shape
+			pageImpl.Reset()
+		}
+	}
+
+	// Render text body if present
+	textBody := shape.TextBody()
+	if textBody != nil {
+		// Get transform for text positioning
+		xfrm := findChild(
+			spPr,
+			"xfrm",
+			drawingml.NamespaceMain,
+		)
+		if xfrm != nil {
+			var x, y, cx, cy int64
+			off := findChild(
+				xfrm,
+				"off",
+				drawingml.NamespaceMain,
+			)
+			if off != nil {
+				if xAttr, found := off.GetAttribute("x", ""); found {
+					fmt.Sscanf(
+						xAttr.Value(),
+						"%d",
+						&x,
+					)
+				}
+				if yAttr, found := off.GetAttribute("y", ""); found {
+					fmt.Sscanf(
+						yAttr.Value(),
+						"%d",
+						&y,
+					)
+				}
+			}
+			ext := findChild(
+				xfrm,
+				"ext",
+				drawingml.NamespaceMain,
+			)
+			if ext != nil {
+				if cxAttr, found := ext.GetAttribute("cx", ""); found {
+					fmt.Sscanf(
+						cxAttr.Value(),
+						"%d",
+						&cx,
+					)
+				}
+				if cyAttr, found := ext.GetAttribute("cy", ""); found {
+					fmt.Sscanf(
+						cyAttr.Value(),
+						"%d",
+						&cy,
+					)
+				}
+			}
+
+			xPt := drawingml.EmuToPoints(
+				drawingml.EMU(x),
+			)
+			yPt := drawingml.EmuToPoints(
+				drawingml.EMU(y),
+			)
+			widthPt := drawingml.EmuToPoints(
+				drawingml.EMU(cx),
+			)
+			heightPt := drawingml.EmuToPoints(
+				drawingml.EMU(cy),
+			)
+			yPdfPt := sr.pageSize.Height - yPt - heightPt
+
+			sr.renderTextBody(
+				textBody,
+				xPt,
+				yPdfPt,
+				widthPt,
+				heightPt,
+			)
+		}
+	}
+
+	return nil
+}
+
+// renderShapeBasic renders a shape using the basic (legacy) method.
+// This is a fallback for when the shape properties are not DrawingML.
+func (sr *SlideRenderer) renderShapeBasic(
+	shape *elements.Shape,
+	isMaster bool,
+) error {
+	// Get shape properties
+	spPr := shape.ShapeProperties()
+	if spPr == nil {
+		return nil
+	}
+
 	// Get transform (position and size)
 	xfrm := findChild(
 		spPr,
@@ -539,7 +701,7 @@ func (sr *SlideRenderer) renderShape(
 		drawingml.NamespaceMain,
 	)
 	if xfrm == nil {
-		return nil // No transform, can't position shape
+		return nil
 	}
 
 	// Extract position from a:off element

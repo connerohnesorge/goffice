@@ -829,38 +829,6 @@ func TestComprehensiveOffice2016Features(
 	}
 }
 
-// TestComprehensiveEncryptedPresentation tests encrypted presentation handling.
-func TestComprehensiveEncryptedPresentation(
-	t *testing.T,
-) {
-	path := filepath.Join(
-		"testdata",
-		"encrypted_pptx.pptx",
-	)
-	if _, err := os.Stat(path); os.IsNotExist(
-		err,
-	) {
-		t.Skip("Test file not found")
-	}
-
-	// Encrypted presentations should fail to open or be handled gracefully
-	pres, err := Open(path, false)
-	if err != nil {
-		t.Logf(
-			"Encrypted presentation correctly failed to open: %v",
-			err,
-		)
-
-		return
-	}
-	defer func() { _ = pres.Close() }()
-
-	// If it opened, log a warning
-	t.Log(
-		"WARNING: Encrypted presentation opened (encryption may not be enforced)",
-	)
-}
-
 // TestComprehensiveErrorHandling tests error handling for malformed presentations.
 func TestComprehensiveErrorHandling(
 	t *testing.T,

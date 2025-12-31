@@ -98,10 +98,22 @@ func (c *CompositeElementBase) LastChild() Element {
 func (c *CompositeElementBase) GetElement(
 	localName, namespaceURI string,
 ) Element {
+	// First try exact namespace match
 	for node := c.firstChild; node != nil; node = node.next {
 		if node.element.LocalName() == localName &&
 			node.element.NamespaceURI() == namespaceURI {
 			return node.element
+		}
+	}
+
+	// If not found and namespace is non-empty, also try with empty namespace
+	// This handles documents where child elements don't properly inherit namespace
+	if namespaceURI != "" {
+		for node := c.firstChild; node != nil; node = node.next {
+			if node.element.LocalName() == localName &&
+				node.element.NamespaceURI() == "" {
+				return node.element
+			}
 		}
 	}
 

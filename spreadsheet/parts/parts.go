@@ -40,6 +40,12 @@ const (
 	ContentTypeChart   = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml"
 	ContentTypeVml     = "application/vnd.openxmlformats-officedocument.vmlDrawing"
 
+	// Diagram content types (SmartArt)
+	ContentTypeDiagramData      = "application/vnd.openxmlformats-officedocument.drawingml.diagramData+xml"
+	ContentTypeDiagramLayoutDef = "application/vnd.openxmlformats-officedocument.drawingml.diagramLayout+xml"
+	ContentTypeDiagramStyle     = "application/vnd.openxmlformats-officedocument.drawingml.diagramStyle+xml"
+	ContentTypeDiagramColors    = "application/vnd.openxmlformats-officedocument.drawingml.diagramColors+xml"
+
 	// Comment parts
 	ContentTypeComments = "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml"
 
@@ -93,6 +99,13 @@ const (
 	RelationshipTypeChart   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
 	RelationshipTypeVml     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"
 	RelationshipTypeImage   = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
+
+	// Diagram relationships (SmartArt)
+	RelationshipTypeDiagramData       = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramData"
+	RelationshipTypeDiagramLayout     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramLayout"
+	RelationshipTypeDiagramStyle      = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramStyle"
+	RelationshipTypeDiagramColors     = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramColors"
+	RelationshipTypeDiagramQuickStyle = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/diagramQuickStyle"
 
 	// Comment relationships
 	RelationshipTypeComments = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments"

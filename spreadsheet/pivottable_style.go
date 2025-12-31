@@ -62,8 +62,9 @@ func (p *PivotTable) SetShowColumnStripes(
 	}
 }
 
-// Refresh refreshes the pivot table data.
-func (p *PivotTable) Refresh() error {
+// MarkForRefresh marks the pivot table cache as invalid, which will trigger
+// a refresh when the document is opened in Excel.
+func (p *PivotTable) MarkForRefresh() error {
 	// Mark the cache as needing refresh
 	cacheDef := p.pivotPart.PivotTableCacheDefinitionPart()
 	if cacheDef != nil {

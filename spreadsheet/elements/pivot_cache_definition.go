@@ -823,6 +823,17 @@ func (cs *CacheSource) GetOrCreateWorksheetSource() *WorksheetSource {
 	if ws != nil {
 		return ws
 	}
+
+	// Remove any existing worksheetSource element (even if untyped)
+	// This handles cases where XML parsing created a generic element
+	existingElem := cs.GetElement(
+		"worksheetSource",
+		NamespaceSML,
+	)
+	if existingElem != nil {
+		cs.RemoveChild(existingElem)
+	}
+
 	ws = NewWorksheetSource()
 	cs.AppendChild(ws)
 

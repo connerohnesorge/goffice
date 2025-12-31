@@ -1,0 +1,100 @@
+{
+  "id": "chart_bar_percent_stacked_01",
+  "name": "100% Stacked Bar Chart",
+  "description": "Tests 100% stacked bar chart rendering with 5 categories and 2 series",
+  "category": "chart",
+  "tags": ["bar", "percent-stacked", "percentage"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "chart",
+            "position": {
+              "x": 914400,
+              "y": 914400
+            },
+            "size": {
+              "width": 6858000,
+              "height": 4572000
+            },
+            "z_index": 1,
+            "chart": {
+              "type": "bar_percent_stacked",
+              "title": "Market Share by Region",
+              "legend": {
+                "position": "bottom",
+                "show_legend": true
+              },
+              "data": {
+                "categories": ["North", "South", "East", "West", "Central"],
+                "series": [
+                  {
+                    "name": "Our Company",
+                    "values": [45, 52, 48, 60, 55],
+                    "color": "70AD47"
+                  },
+                  {
+                    "name": "Competitors",
+                    "values": [55, 48, 52, 40, 45],
+                    "color": "FFC000"
+                  }
+                ]
+              },
+              "style": {
+                "color_palette": ["70AD47", "FFC000"],
+                "font_size": 12,
+                "font_family": "Calibri",
+                "show_data_labels": false,
+                "grid_lines": {
+                  "major_horizontal": true,
+                  "minor_horizontal": false,
+                  "major_vertical": false,
+                  "minor_vertical": false
+                }
+              },
+              "axes": {
+                "category": {
+                  "title": "Region"
+                },
+                "value": {
+                  "title": "Percentage",
+                  "min": 0,
+                  "max": 100,
+                  "major_unit": 20,
+                  "number_format": "0%"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "medium",
+    "expected_duration": "fast"
+  }
+}

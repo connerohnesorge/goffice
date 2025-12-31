@@ -1,0 +1,269 @@
+{
+  "id": "text_alignment_01",
+  "name": "Text Alignment Variations",
+  "description": "Tests text alignment options: left, center, right, and justify",
+  "category": "text",
+  "tags": ["text", "alignment", "justify"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "shape",
+            "position": {
+              "x": 914400,
+              "y": 457200
+            },
+            "size": {
+              "width": 7315200,
+              "height": 914400
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "rect",
+              "fill": {
+                "type": "solid",
+                "color": "E7E6E6"
+              },
+              "stroke": {
+                "width": 6350,
+                "color": "BFBFBF",
+                "dash_style": "solid",
+                "cap": "flat",
+                "join": "miter"
+              },
+              "effects": [],
+              "text": {
+                "content": "",
+                "paragraphs": [
+                  {
+                    "runs": [
+                      {
+                        "text": "Left Aligned Text",
+                        "font_family": "Calibri",
+                        "font_size": 24,
+                        "color": "000000",
+                        "bold": false,
+                        "italic": false,
+                        "underline": "none",
+                        "strikethrough": false
+                      }
+                    ],
+                    "alignment": "left"
+                  }
+                ],
+                "default_run": {
+                  "text": "",
+                  "font_family": "Calibri",
+                  "font_size": 24,
+                  "color": "000000",
+                  "bold": false,
+                  "italic": false,
+                  "underline": "none",
+                  "strikethrough": false
+                }
+              }
+            }
+          },
+          {
+            "type": "shape",
+            "position": {
+              "x": 914400,
+              "y": 1600200
+            },
+            "size": {
+              "width": 7315200,
+              "height": 914400
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "rect",
+              "fill": {
+                "type": "solid",
+                "color": "E7E6E6"
+              },
+              "stroke": {
+                "width": 6350,
+                "color": "BFBFBF",
+                "dash_style": "solid",
+                "cap": "flat",
+                "join": "miter"
+              },
+              "effects": [],
+              "text": {
+                "content": "",
+                "paragraphs": [
+                  {
+                    "runs": [
+                      {
+                        "text": "Center Aligned Text",
+                        "font_family": "Calibri",
+                        "font_size": 24,
+                        "color": "4472C4",
+                        "bold": false,
+                        "italic": false,
+                        "underline": "none",
+                        "strikethrough": false
+                      }
+                    ],
+                    "alignment": "center"
+                  }
+                ],
+                "default_run": {
+                  "text": "",
+                  "font_family": "Calibri",
+                  "font_size": 24,
+                  "color": "000000",
+                  "bold": false,
+                  "italic": false,
+                  "underline": "none",
+                  "strikethrough": false
+                }
+              }
+            }
+          },
+          {
+            "type": "shape",
+            "position": {
+              "x": 914400,
+              "y": 2743200
+            },
+            "size": {
+              "width": 7315200,
+              "height": 914400
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "rect",
+              "fill": {
+                "type": "solid",
+                "color": "E7E6E6"
+              },
+              "stroke": {
+                "width": 6350,
+                "color": "BFBFBF",
+                "dash_style": "solid",
+                "cap": "flat",
+                "join": "miter"
+              },
+              "effects": [],
+              "text": {
+                "content": "",
+                "paragraphs": [
+                  {
+                    "runs": [
+                      {
+                        "text": "Right Aligned Text",
+                        "font_family": "Calibri",
+                        "font_size": 24,
+                        "color": "ED7D31",
+                        "bold": false,
+                        "italic": false,
+                        "underline": "none",
+                        "strikethrough": false
+                      }
+                    ],
+                    "alignment": "right"
+                  }
+                ],
+                "default_run": {
+                  "text": "",
+                  "font_family": "Calibri",
+                  "font_size": 24,
+                  "color": "000000",
+                  "bold": false,
+                  "italic": false,
+                  "underline": "none",
+                  "strikethrough": false
+                }
+              }
+            }
+          },
+          {
+            "type": "shape",
+            "position": {
+              "x": 914400,
+              "y": 3886200
+            },
+            "size": {
+              "width": 7315200,
+              "height": 914400
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "rect",
+              "fill": {
+                "type": "solid",
+                "color": "E7E6E6"
+              },
+              "stroke": {
+                "width": 6350,
+                "color": "BFBFBF",
+                "dash_style": "solid",
+                "cap": "flat",
+                "join": "miter"
+              },
+              "effects": [],
+              "text": {
+                "content": "",
+                "paragraphs": [
+                  {
+                    "runs": [
+                      {
+                        "text": "This is justified text that will spread across the entire width of the text box to demonstrate full justification alignment.",
+                        "font_family": "Calibri",
+                        "font_size": 18,
+                        "color": "70AD47",
+                        "bold": false,
+                        "italic": false,
+                        "underline": "none",
+                        "strikethrough": false
+                      }
+                    ],
+                    "alignment": "justify"
+                  }
+                ],
+                "default_run": {
+                  "text": "",
+                  "font_family": "Calibri",
+                  "font_size": 18,
+                  "color": "000000",
+                  "bold": false,
+                  "italic": false,
+                  "underline": "none",
+                  "strikethrough": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "medium",
+    "expected_duration": "fast"
+  }
+}

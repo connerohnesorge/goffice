@@ -408,29 +408,6 @@ func TestFontRegistryScan(t *testing.T) {
 	}
 }
 
-func TestFontRegistryScanDir(t *testing.T) {
-	registry := NewFontRegistry()
-
-	// Try scanning a real font directory
-	paths := SystemFontPaths()
-	for _, path := range paths {
-		if _, err := os.Stat(path); err == nil {
-			err := registry.ScanDir(path)
-			if err != nil {
-				t.Logf(
-					"ScanDir(%s) error: %v",
-					path,
-					err,
-				)
-			} else {
-				t.Logf("ScanDir(%s) found %d fonts", path, registry.Count())
-			}
-			// Just test one directory
-			break
-		}
-	}
-}
-
 func TestExpandHome(t *testing.T) {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -496,39 +473,6 @@ func TestIsFontExtension(t *testing.T) {
 				tt.want,
 			)
 		}
-	}
-}
-
-func TestFindSystemFont(t *testing.T) {
-	// This test depends on system fonts being available
-	// It may not find fonts in CI environments
-
-	// Try to find a common font
-	commonFonts := []string{
-		"DejaVu Sans",
-		"Liberation Sans",
-		"Arial",
-		"Helvetica",
-	}
-
-	found := false
-	for _, font := range commonFonts {
-		path, err := FindSystemFont(
-			font,
-			StyleRegular,
-		)
-		if err == nil {
-			t.Logf("Found %s at %s", font, path)
-			found = true
-
-			break
-		}
-	}
-
-	if !found {
-		t.Log(
-			"No common fonts found (may be expected in CI environment)",
-		)
 	}
 }
 

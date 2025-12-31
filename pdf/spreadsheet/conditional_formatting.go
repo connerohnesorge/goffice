@@ -183,6 +183,7 @@ func (r *SpreadsheetRenderer) evaluateCellIsRule(
 	var compareValue string
 	for formula := range rule.Formulas() {
 		compareValue = formula.Formula()
+
 		break
 	}
 
@@ -230,6 +231,7 @@ func (r *SpreadsheetRenderer) evaluateCellIsRule(
 		for formula := range rule.Formulas() {
 			if idx == 1 {
 				compareValue2 = formula.Formula()
+
 				break
 			}
 			idx++
@@ -307,13 +309,14 @@ func (r *SpreadsheetRenderer) evaluateDataBarRule(
 
 	idx := 0
 	for cfvo := range dataBar.Cfvos() {
-		if idx == 0 {
+		switch idx {
+		case 0:
 			minVal = r.evaluateCfvo(
 				cfvo,
 				worksheet,
 				cellRef,
 			)
-		} else if idx == 1 {
+		case 1:
 			maxVal = r.evaluateCfvo(
 				cfvo,
 				worksheet,
@@ -520,12 +523,14 @@ func (r *SpreadsheetRenderer) evaluateCfvo(
 		// Direct number value
 		val := cfvo.Val()
 		num, _ := strconv.ParseFloat(val, 64)
+
 		return num
 
 	case elements.CfvoTypePercent:
 		// Percentage of range
 		val := cfvo.Val()
 		percent, _ := strconv.ParseFloat(val, 64)
+
 		return percent
 
 	case elements.CfvoTypePercentile:

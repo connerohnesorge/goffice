@@ -41,6 +41,7 @@ func TestNumberingState_BulletList(t *testing.T) {
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -148,6 +149,7 @@ func TestNumberingState_DecimalList(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -257,6 +259,7 @@ func TestNumberingState_MultiLevelList(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -375,6 +378,7 @@ func TestNumberingState_AlphabeticList(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -486,6 +490,7 @@ func TestNumberingState_RomanNumeralList(
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}

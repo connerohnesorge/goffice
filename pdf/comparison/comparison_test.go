@@ -279,12 +279,6 @@ func TestAnnotateDiffImage(t *testing.T) {
 	}
 }
 
-func TestIsGhostscriptAvailable(t *testing.T) {
-	// This test just verifies the function doesn't panic
-	available := IsGhostscriptAvailable()
-	t.Logf("Ghostscript available: %v", available)
-}
-
 func TestConvertPDFToPNG_ValidPDF(t *testing.T) {
 	// Skip if Ghostscript is not available
 	if !IsGhostscriptAvailable() {

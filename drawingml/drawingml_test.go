@@ -5,13 +5,6 @@ import (
 	"testing"
 )
 
-func TestPackageExists(t *testing.T) {
-	// Simple test to verify test infrastructure works for drawingml package
-	t.Log(
-		"drawingml package test infrastructure is working",
-	)
-}
-
 // TestEMUConversions tests EMU unit conversions.
 func TestEMUConversions(t *testing.T) {
 	t.Run("InchesToEmu", func(t *testing.T) {

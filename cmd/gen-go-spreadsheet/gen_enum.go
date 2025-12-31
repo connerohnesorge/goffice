@@ -6,6 +6,8 @@ import (
 	"unicode"
 )
 
+const valueSuffix = "Value"
+
 // generateEnum generates a Go string-based enumeration for a schema type.
 // It includes XML attribute marshaling and unmarshaling implementations.
 func generateEnum(f *os.File, t *SchemaType) {
@@ -34,6 +36,22 @@ func generateEnum(f *os.File, t *SchemaType) {
 		if unicode.IsDigit(rune(name[0])) {
 			name = t.Name + name
 		}
+
+		// Check if the constant name would conflict with a type name
+		constName := t.Name + name
+		_, exists := typeMap["/"+constName]
+		if exists {
+			// Add "Value" suffix to avoid conflict
+			name += valueSuffix
+		}
+		_, exists = typeMap["/x:"+constName]
+		if exists {
+			name += valueSuffix
+		}
+		if generatedTypes[constName] {
+			name += valueSuffix
+		}
+
 		safeFprintf(f, "\t%s%s %s = \"%s\"\n",
 			t.Name, name, t.Name, facet.Value)
 	}

@@ -1,6 +1,7 @@
 // Package spreadsheet provides SpreadsheetML support for Excel documents.
 //
 //nolint:revive // file-length-limit: range reference logic is cohesive
+//nolint:gocritic // hugeParam: RangeRef uses value receivers for API consistency
 package spreadsheet
 
 import (
@@ -26,18 +27,45 @@ type RangeRef struct {
 	End CellRef
 }
 
-// ParseRangeRef parses an A1-style range reference string.
-// It accepts references like "A1", "A1:C10", "$A$1:$C$10", etc.
+// ParseRangeRef parses a range reference string in A1 or R1C1 notation.
+// It accepts references like "A1", "A1:C10", "$A$1:$C$10", "Sheet2!A1:C10", etc.
+// For cross-sheet ranges, the sheet name appears only once before the range.
 func ParseRangeRef(s string) (RangeRef, error) {
 	if s == "" {
 		return RangeRef{}, ErrInvalidRangeRef
 	}
 
+	// Extract sheet name if present (handles both quoted and unquoted)
+	sheetName := ""
+	cellPart := s
+	if s[0] == '\'' {
+		// Quoted sheet name
+		endQuote := strings.Index(s[1:], "'")
+		if endQuote == -1 {
+			return RangeRef{}, ErrInvalidRangeRef
+		}
+		endQuote++ // Adjust for slice offset
+		if endQuote+1 >= len(s) ||
+			s[endQuote+1] != '!' {
+			return RangeRef{}, ErrInvalidRangeRef
+		}
+		sheetName = s[1:endQuote]
+		cellPart = s[endQuote+2:]
+	} else {
+		bangIdx := strings.Index(s, "!")
+		if bangIdx != -1 {
+			sheetName = s[:bangIdx]
+			cellPart = s[bangIdx+1:]
+		}
+	}
+
 	// Check if this is a range (contains ':')
-	colonIdx := strings.Index(s, ":")
+	colonIdx := strings.Index(cellPart, ":")
 	if colonIdx == -1 {
 		// Single cell reference
-		start, err := ParseCellRef(s)
+		start, err := ParseCellRef(
+			s,
+		) // Parse full string (includes sheet)
 		if err != nil {
 			return RangeRef{}, fmt.Errorf(
 				"%w: %v",
@@ -52,9 +80,18 @@ func ParseRangeRef(s string) (RangeRef, error) {
 		}, nil
 	}
 
-	// Range reference
-	startStr := s[:colonIdx]
-	endStr := s[colonIdx+1:]
+	// Range reference - parse start and end parts
+	startStr := cellPart[:colonIdx]
+	endStr := cellPart[colonIdx+1:]
+
+	// For start, parse with sheet name if present
+	if sheetName != "" {
+		if needsQuoting(sheetName) {
+			startStr = "'" + sheetName + "'!" + startStr
+		} else {
+			startStr = sheetName + "!" + startStr
+		}
+	}
 
 	start, err := ParseCellRef(startStr)
 	if err != nil {
@@ -63,6 +100,15 @@ func ParseRangeRef(s string) (RangeRef, error) {
 			ErrInvalidRangeRef,
 			err,
 		)
+	}
+
+	// For end, parse with sheet name if present (same sheet as start)
+	if sheetName != "" {
+		if needsQuoting(sheetName) {
+			endStr = "'" + sheetName + "'!" + endStr
+		} else {
+			endStr = sheetName + "!" + endStr
+		}
 	}
 
 	end, err := ParseCellRef(endStr)
@@ -112,18 +158,39 @@ func NewSingleCellRange(cell CellRef) RangeRef {
 	return RangeRef{Start: cell, End: cell}
 }
 
-// String returns the A1-style string representation of the range reference.
-// For a single cell, returns just the cell reference (e.g., "A1").
-// For a range, returns "start:end" (e.g., "A1:C10", "$A$1:$C$10").
+// String returns the string representation of the range reference.
+// For a single cell, returns just the cell reference (e.g., "A1", "Sheet2!A1").
+// For a range, returns "start:end" (e.g., "A1:C10", "Sheet2!A1:C10").
+// For cross-sheet ranges, the sheet name appears only once before the range.
 func (r RangeRef) String() string {
 	if r.IsSingleCell() {
 		return r.Start.String()
 	}
 
+	// Check if both cells have the same sheet name
+	if r.Start.Sheet != "" &&
+		r.Start.Sheet == r.End.Sheet {
+		// Output sheet name once, then the range without sheet names
+		startCopy := r.Start
+		endCopy := r.End
+		startCopy.Sheet = ""
+		endCopy.Sheet = ""
+
+		sheetPart := r.Start.Sheet
+		if needsQuoting(sheetPart) {
+			sheetPart = "'" + sheetPart + "'"
+		}
+
+		return sheetPart + "!" + startCopy.String() + ":" + endCopy.String()
+	}
+
+	// Different sheets or no sheet - output each cell's full reference
 	return r.Start.String() + ":" + r.End.String()
 }
 
 // IsSingleCell returns true if the range represents a single cell.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) IsSingleCell() bool {
 	return r.Start.Col == r.End.Col &&
 		r.Start.Row == r.End.Row
@@ -131,6 +198,8 @@ func (r RangeRef) IsSingleCell() bool {
 
 // Normalize returns a new RangeRef where Start is the top-left cell
 // and End is the bottom-right cell.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Normalize() RangeRef {
 	minCol := r.Start.Col
 	maxCol := r.End.Col
@@ -146,21 +215,31 @@ func (r RangeRef) Normalize() RangeRef {
 
 	return RangeRef{
 		Start: CellRef{
-			Col:    minCol,
-			Row:    minRow,
-			AbsCol: r.Start.AbsCol,
-			AbsRow: r.Start.AbsRow,
+			Col:        minCol,
+			Row:        minRow,
+			AbsCol:     r.Start.AbsCol,
+			AbsRow:     r.Start.AbsRow,
+			Sheet:      r.Start.Sheet,
+			IsR1C1:     r.Start.IsR1C1,
+			R1C1RelCol: r.Start.R1C1RelCol,
+			R1C1RelRow: r.Start.R1C1RelRow,
 		},
 		End: CellRef{
-			Col:    maxCol,
-			Row:    maxRow,
-			AbsCol: r.End.AbsCol,
-			AbsRow: r.End.AbsRow,
+			Col:        maxCol,
+			Row:        maxRow,
+			AbsCol:     r.End.AbsCol,
+			AbsRow:     r.End.AbsRow,
+			Sheet:      r.End.Sheet,
+			IsR1C1:     r.End.IsR1C1,
+			R1C1RelCol: r.End.R1C1RelCol,
+			R1C1RelRow: r.End.R1C1RelRow,
 		},
 	}
 }
 
 // Contains returns true if the given cell reference is within this range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Contains(ref CellRef) bool {
 	return ref.Col >= r.Start.Col &&
 		ref.Col <= r.End.Col &&
@@ -169,8 +248,10 @@ func (r RangeRef) Contains(ref CellRef) bool {
 }
 
 // Intersects returns true if this range overlaps with another range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Intersects(
-	other RangeRef,
+	other RangeRef, //nolint:gocritic // hugeParam: maintains API consistency
 ) bool {
 	return r.Start.Col <= other.End.Col &&
 		r.End.Col >= other.Start.Col &&
@@ -180,8 +261,10 @@ func (r RangeRef) Intersects(
 
 // Intersection returns the intersection of two ranges,
 // or an error if they don't intersect.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Intersection(
-	other RangeRef,
+	other RangeRef, //nolint:gocritic // hugeParam: maintains API consistency
 ) (RangeRef, error) {
 	if !r.Intersects(other) {
 		return RangeRef{}, errors.New(
@@ -208,22 +291,30 @@ func (r RangeRef) Intersection(
 }
 
 // Width returns the number of columns in the range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Width() int {
 	return r.End.Col - r.Start.Col + 1
 }
 
 // Height returns the number of rows in the range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Height() int {
 	return r.End.Row - r.Start.Row + 1
 }
 
 // Size returns the total number of cells in the range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Size() int {
 	return r.Width() * r.Height()
 }
 
 // Cells returns an iterator over all cell references in the range.
 // Cells are yielded row by row, from left to right, top to bottom.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Cells() iter.Seq[CellRef] {
 	return func(yield func(CellRef) bool) {
 		for row := r.Start.Row; row <= r.End.Row; row++ {
@@ -242,6 +333,8 @@ func (r RangeRef) Cells() iter.Seq[CellRef] {
 
 // Rows returns an iterator over each row in the range.
 // Each yielded value is itself an iterator over cells in that row.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Rows() iter.Seq2[int, iter.Seq[CellRef]] {
 	return func(yield func(int, iter.Seq[CellRef]) bool) {
 		for row := r.Start.Row; row <= r.End.Row; row++ {
@@ -265,6 +358,8 @@ func (r RangeRef) Rows() iter.Seq2[int, iter.Seq[CellRef]] {
 
 // Columns returns an iterator over each column in the range.
 // Each yielded value is itself an iterator over cells in that column.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Columns() iter.Seq2[int, iter.Seq[CellRef]] {
 	return func(yield func(int, iter.Seq[CellRef]) bool) {
 		for col := r.Start.Col; col <= r.End.Col; col++ {
@@ -287,6 +382,8 @@ func (r RangeRef) Columns() iter.Seq2[int, iter.Seq[CellRef]] {
 }
 
 // TopRow returns a RangeRef representing just the top row of this range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) TopRow() RangeRef {
 	return RangeRef{
 		Start: r.Start,
@@ -300,6 +397,8 @@ func (r RangeRef) TopRow() RangeRef {
 }
 
 // BottomRow returns a RangeRef representing just the bottom row of this range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) BottomRow() RangeRef {
 	return RangeRef{
 		Start: CellRef{
@@ -314,6 +413,8 @@ func (r RangeRef) BottomRow() RangeRef {
 
 // LeftColumn returns a RangeRef representing
 // just the left column of this range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) LeftColumn() RangeRef {
 	return RangeRef{
 		Start: r.Start,
@@ -328,6 +429,8 @@ func (r RangeRef) LeftColumn() RangeRef {
 
 // RightColumn returns a RangeRef representing just the right column
 // of this range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) RightColumn() RangeRef {
 	return RangeRef{
 		Start: CellRef{
@@ -342,6 +445,8 @@ func (r RangeRef) RightColumn() RangeRef {
 
 // Offset returns a new RangeRef offset by the given column and row amounts.
 // Returns an error if the result would be out of range.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Offset(
 	colOffset, rowOffset int,
 ) (RangeRef, error) {
@@ -365,6 +470,8 @@ func (r RangeRef) Offset(
 // in each direction.
 // Negative values shrink the range.
 // Returns error if result would be out of range or have zero/negative size.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) Expand(
 	left, right, top, bottom int,
 ) (RangeRef, error) {
@@ -405,6 +512,8 @@ func (r RangeRef) Expand(
 }
 
 // IsValid returns true if the range is within Excel's valid bounds.
+//
+//nolint:gocritic // hugeParam: value receiver maintains API consistency
 func (r RangeRef) IsValid() bool {
 	return r.Start.IsValid() && r.End.IsValid()
 }

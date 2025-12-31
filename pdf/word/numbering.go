@@ -87,6 +87,7 @@ func (ns *NumberingState) GetNumberingText(
 					startVal-1,
 				)
 			}
+
 			break
 		}
 	}
@@ -368,6 +369,7 @@ func (ns *NumberingState) getCounter(
 
 	// Get the start value from the level definition
 	start := ns.getStartValue(numId, level)
+
 	return start
 }
 
@@ -469,7 +471,7 @@ func toRomanUpper(num int) string {
 	}
 
 	var result strings.Builder
-	for i := 0; i < len(values); i++ {
+	for i := range len(values) {
 		for num >= values[i] {
 			result.WriteString(symbols[i])
 			num -= values[i]

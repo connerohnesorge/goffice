@@ -83,6 +83,95 @@ func (c *Comments) SetNextID(id int) {
 	c.nextID = id
 }
 
+// RemoveComment removes the comment with the specified ID from the collection.
+// Returns true if the comment was found and removed, false if not found.
+func (c *Comments) RemoveComment(id int) bool {
+	comment := c.GetComment(id)
+	if comment == nil {
+		return false
+	}
+	c.RemoveChild(comment)
+
+	return true
+}
+
+// ByAuthor returns all comments by the specified author (case-sensitive).
+// Returns an empty slice if no matching comments are found.
+func (c *Comments) ByAuthor(
+	author string,
+) []*Comment {
+	result := make([]*Comment, 0)
+	for comment := range c.Comments() {
+		if comment.Author() == author {
+			result = append(result, comment)
+		}
+	}
+
+	return result
+}
+
+// ByDateRange returns all comments within the specified date range (inclusive).
+// If from is zero, no lower bound is applied. If to is zero, no upper bound is applied.
+// Returns an empty slice if no matching comments are found.
+func (c *Comments) ByDateRange(
+	from, to time.Time,
+) []*Comment {
+	result := make([]*Comment, 0)
+	for comment := range c.Comments() {
+		date := comment.Date()
+		// Skip zero dates
+		if date.IsZero() {
+			continue
+		}
+
+		// Apply lower bound if from is not zero
+		if !from.IsZero() && date.Before(from) {
+			continue
+		}
+
+		// Apply upper bound if to is not zero
+		if !to.IsZero() && date.After(to) {
+			continue
+		}
+
+		result = append(result, comment)
+	}
+
+	return result
+}
+
+// Count returns the total number of comments.
+func (c *Comments) Count() int {
+	count := 0
+	for range c.Comments() {
+		count++
+	}
+
+	return count
+}
+
+// AddW15Namespace ensures the w15 namespace is declared on this Comments element.
+// This is required when using Word 2013+ features like the done attribute.
+func (c *Comments) AddW15Namespace() {
+	// Check if the namespace is already declared by looking for the xmlns:w15 attribute
+	_, found := c.GetAttribute(
+		"w15",
+		"http://www.w3.org/2000/xmlns/",
+	)
+	if found {
+		return
+	}
+	// Add the namespace declaration as an attribute
+	c.SetAttribute(
+		openxml.NewAttribute(
+			"http://www.w3.org/2000/xmlns/",
+			"w15",
+			"xmlns",
+			NamespaceW15,
+		),
+	)
+}
+
 // Clone creates a deep copy of this Comments element.
 func (c *Comments) Clone() openxml.Element {
 	return &Comments{
@@ -234,6 +323,76 @@ func (c *Comment) SetInitials(initials string) {
 		)
 	} else {
 		c.SetAttribute(openxml.NewAttribute(NamespaceWML, "initials", PrefixW, initials))
+	}
+}
+
+// Done returns whether the comment is marked as done/resolved (w15:done attribute).
+// Returns true if the attribute is set to "1" or "true", false otherwise.
+func (c *Comment) Done() bool {
+	attr, found := c.GetAttribute(
+		"done",
+		NamespaceW15,
+	)
+	if !found {
+		return false
+	}
+	val := attr.Value()
+
+	return val == "1" ||
+		val == string(BooleanTrue)
+}
+
+// SetDone sets the comment's done/resolved status (w15:done attribute).
+// When set to true, adds w15:done="1". When set to false, removes the attribute.
+// This requires the w15 namespace to be declared on the comments root element.
+func (c *Comment) SetDone(done bool) {
+	if done {
+		c.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceW15,
+				"done",
+				PrefixW15,
+				"1",
+			),
+		)
+		// Ensure w15 namespace is declared on the root element
+		c.ensureW15Namespace()
+	} else {
+		c.RemoveAttribute(
+			"done",
+			NamespaceW15,
+		)
+	}
+}
+
+// ensureW15Namespace ensures the w15 namespace is declared on the Comments root element.
+func (c *Comment) ensureW15Namespace() {
+	// Walk up to find the root Comments element
+	current := c.Parent()
+	for current != nil {
+		// Check if this is the Comments root element by name and namespace
+		if current.LocalName() == "comments" &&
+			current.NamespaceURI() == NamespaceWML {
+			// The parent is the Comments element, but we get it as the embedded base type
+			// We need to add the w15 namespace attribute directly to this element
+			_, found := current.GetAttribute(
+				"w15",
+				"http://www.w3.org/2000/xmlns/",
+			)
+			if !found {
+				current.SetAttribute(
+					openxml.NewAttribute(
+						"http://www.w3.org/2000/xmlns/",
+						"w15",
+						"xmlns",
+						NamespaceW15,
+					),
+				)
+			}
+
+			return
+		}
+		current = current.Parent()
 	}
 }
 

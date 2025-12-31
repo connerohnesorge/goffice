@@ -1,0 +1,195 @@
+{
+  "id": "text_fonts_01",
+  "name": "Font Family Variations",
+  "description": "Tests different font families including Arial, Times New Roman, and Calibri with various weights",
+  "category": "text",
+  "tags": ["text", "fonts", "typography"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "text",
+            "position": {
+              "x": 914400,
+              "y": 457200
+            },
+            "size": {
+              "width": 7315200,
+              "height": 4114800
+            },
+            "z_index": 1,
+            "text": {
+              "content": "",
+              "paragraphs": [
+                {
+                  "runs": [
+                    {
+                      "text": "Calibri Regular",
+                      "font_family": "Calibri",
+                      "font_size": 32,
+                      "color": "000000",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "space_after": 228600
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Calibri Bold",
+                      "font_family": "Calibri",
+                      "font_size": 32,
+                      "color": "4472C4",
+                      "bold": true,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "space_after": 228600
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Calibri Italic",
+                      "font_family": "Calibri",
+                      "font_size": 32,
+                      "color": "ED7D31",
+                      "bold": false,
+                      "italic": true,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "space_after": 457200
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Arial Regular",
+                      "font_family": "Arial",
+                      "font_size": 32,
+                      "color": "000000",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "space_after": 228600
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Arial Bold",
+                      "font_family": "Arial",
+                      "font_size": 32,
+                      "color": "70AD47",
+                      "bold": true,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "space_after": 457200
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Times New Roman Regular",
+                      "font_family": "Times New Roman",
+                      "font_size": 32,
+                      "color": "000000",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "space_after": 228600
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Times New Roman Bold",
+                      "font_family": "Times New Roman",
+                      "font_size": 32,
+                      "color": "FFC000",
+                      "bold": true,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "space_after": 228600
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Times New Roman Italic",
+                      "font_family": "Times New Roman",
+                      "font_size": 32,
+                      "color": "C00000",
+                      "bold": false,
+                      "italic": true,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left"
+                }
+              ],
+              "default_run": {
+                "text": "",
+                "font_family": "Calibri",
+                "font_size": 18,
+                "color": "000000",
+                "bold": false,
+                "italic": false,
+                "underline": "none",
+                "strikethrough": false
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "low",
+    "expected_duration": "fast"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "id": "shape_rectangles_01",
+  "name": "Various Rectangle Shapes",
+  "description": "Tests rectangle, rounded rectangle, and snip corner shapes with different fills and outlines",
+  "category": "shape",
+  "tags": ["rectangle", "rounded", "basic"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "shape",
+            "position": {
+              "x": 914400,
+              "y": 914400
+            },
+            "size": {
+              "width": 2286000,
+              "height": 1524000
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "rect",
+              "fill": {
+                "type": "solid",
+                "color": "4472C4"
+              },
+              "stroke": {
+                "width": 12700,
+                "color": "2E5597",
+                "dash_style": "solid",
+                "cap": "flat",
+                "join": "miter"
+              },
+              "effects": []
+            }
+          },
+          {
+            "type": "shape",
+            "position": {
+              "x": 3657600,
+              "y": 914400
+            },
+            "size": {
+              "width": 2286000,
+              "height": 1524000
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "roundRect",
+              "fill": {
+                "type": "solid",
+                "color": "ED7D31"
+              },
+              "stroke": {
+                "width": 12700,
+                "color": "C65911",
+                "dash_style": "solid",
+                "cap": "round",
+                "join": "round"
+              },
+              "effects": []
+            }
+          },
+          {
+            "type": "shape",
+            "position": {
+              "x": 6400800,
+              "y": 914400
+            },
+            "size": {
+              "width": 2286000,
+              "height": 1524000
+            },
+            "z_index": 1,
+            "shape": {
+              "type": "rect",
+              "fill": {
+                "type": "solid",
+                "color": "A5A5A5"
+              },
+              "stroke": {
+                "width": 25400,
+                "color": "7F7F7F",
+                "dash_style": "dash",
+                "cap": "flat",
+                "join": "bevel"
+              },
+              "effects": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "low",
+    "expected_duration": "fast"
+  }
+}

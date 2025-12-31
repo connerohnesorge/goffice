@@ -787,13 +787,10 @@ func (d *Document) Save() error {
 
 	// Ensure all parts are saved before saving package
 	if wp := d.WorkbookPart(); wp != nil {
+		// Use the recursive save method built into OpenXmlPartData
+		// This will save the workbook part and all its descendants
 		if saveable, ok := any(wp).(openxml.ISaveablePart); ok {
 			_ = saveable.Save()
-		}
-		for child := range wp.Parts() {
-			if saveable, ok := any(child).(openxml.ISaveablePart); ok {
-				_ = saveable.Save()
-			}
 		}
 	}
 
@@ -804,13 +801,10 @@ func (d *Document) Save() error {
 func (d *Document) SaveAs(path string) error {
 	// Ensure all parts are saved before saving package
 	if wp := d.WorkbookPart(); wp != nil {
+		// Use the recursive save method built into OpenXmlPartData
+		// This will save the workbook part and all its descendants
 		if saveable, ok := any(wp).(openxml.ISaveablePart); ok {
 			_ = saveable.Save()
-		}
-		for child := range wp.Parts() {
-			if saveable, ok := any(child).(openxml.ISaveablePart); ok {
-				_ = saveable.Save()
-			}
 		}
 	}
 

@@ -1,0 +1,11 @@
+name: basic-paragraph
+description: Single paragraph with plain text
+document_type: wordprocessing
+category: basic
+tags: [text, paragraph]
+
+operations:
+  - action: create_document
+    doc_type: document
+  - action: add_paragraph
+    text: "Hello, World!"

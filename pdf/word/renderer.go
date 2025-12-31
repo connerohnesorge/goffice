@@ -12,11 +12,18 @@ import (
 	"github.com/connerohnesorge/goffice-pdf/drawing"
 	"github.com/connerohnesorge/goffice-pdf/font"
 	"github.com/connerohnesorge/goffice-pdf/layout"
+	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/wordprocessing"
 	"github.com/connerohnesorge/goffice/wordprocessing/elements"
 	"github.com/connerohnesorge/goffice/wordprocessing/parts"
 )
+
+// DrawingInfo contains information about an inline drawing to be rendered.
+type DrawingInfo struct {
+	Drawing *elements.Drawing
+	X, Y    float64
+}
 
 // WordRenderer handles the conversion of a WordprocessingML document to PDF.
 type WordRenderer struct {
@@ -60,6 +67,12 @@ type WordRenderer struct {
 
 	// fontCounter generates unique font resource names
 	fontCounter int
+
+	// pendingDrawings collects inline drawings to render in current paragraph
+	pendingDrawings []DrawingInfo
+
+	// currentPage tracks the current page being rendered
+	currentPage *core.Page
 }
 
 // BookmarkPosition tracks the position of a bookmark in the document.
@@ -150,7 +163,9 @@ func NewWordRenderer(
 			fontRegistry: make(
 				map[string]string,
 			),
-			fontCounter: 0,
+			fontCounter:     0,
+			pendingDrawings: []DrawingInfo{},
+			currentPage:     nil,
 		},
 		nil
 }
@@ -583,6 +598,7 @@ func (r *WordRenderer) collectSections() []Section {
 			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
 				body = &elements.Body{CompositeElementBase: comp}
 			}
+
 			break
 		}
 	}
@@ -684,6 +700,124 @@ func (r *WordRenderer) calculateParagraphHeight(
 	)
 }
 
+// renderInlineDrawing renders an inline drawing (image) at the specified position.
+func (r *WordRenderer) renderInlineDrawing(
+	page *core.Page,
+	drw *elements.Drawing,
+	x, y float64,
+) error {
+	// Get the inline drawing element
+	inline := drw.Inline()
+	if inline == nil {
+		// Try anchor drawing
+		// For now, we'll skip anchor drawings (floating images)
+		return nil
+	}
+
+	// Get dimensions in EMUs
+	width := inline.Width()
+	height := inline.Height()
+
+	// Convert EMUs to PDF points (1 EMU = 1/914400 inch, 1 point = 1/72 inch)
+	widthPt := float64(width) / 914400.0 * 72.0
+	heightPt := float64(height) / 914400.0 * 72.0
+
+	// Get the graphic element
+	graphic := inline.Graphic()
+	if graphic == nil {
+		return nil
+	}
+
+	// Get the graphic data
+	graphicData := graphic.GraphicData()
+	if graphicData == nil {
+		return nil
+	}
+
+	// Get the picture
+	picture := graphicData.Picture()
+	if picture == nil {
+		return nil
+	}
+
+	// Get the blip fill
+	blipFill := picture.BlipFill()
+	if blipFill == nil {
+		return nil
+	}
+
+	// Create a rendering context for the image
+	pageSize := core.PageSize{
+		Width:  page.Width(),
+		Height: page.Height(),
+	}
+	ctx := core.NewRenderingContextFromPageSize(
+		pageSize,
+	)
+
+	// Create a PageImpl adapter for the page
+	pageImpl := core.NewPageImpl(
+		page.Width(),
+		page.Height(),
+	)
+	ctx.SetPage(pageImpl)
+
+	// Create an image renderer
+	imageRenderer := drawing.NewImageRenderer(ctx)
+
+	// Create render bounds
+	bounds := drawing.RenderBounds{
+		X:      x,
+		Y:      y - heightPt, // Adjust Y since we're working with PDF coordinates
+		Width:  widthPt,
+		Height: heightPt,
+	}
+
+	// Get the blip element
+	blip := blipFill.Blip()
+	if blip == nil {
+		return nil
+	}
+
+	// Get the embed relationship ID
+	embedID := blip.Embed()
+	if embedID == "" {
+		return nil
+	}
+
+	// Create a DrawingML BlipFill from the embedded ID
+	// The wordprocessing BlipFill and drawingml.BlipFill have the same structure,
+	// but we need to create a drawingml instance for the renderer
+	drawingMLBlipFill := drawingml.NewBlipFillWithEmbed(
+		embedID,
+	)
+
+	// Render the picture using the image renderer
+	err := imageRenderer.RenderPicture(
+		drawingMLBlipFill,
+		bounds,
+	)
+	if err != nil {
+		// If rendering fails, draw a placeholder rectangle using PageImpl
+		pageImpl.SetFillColor(0.9, 0.9, 1.0)
+		pageImpl.DrawRectangle(
+			x,
+			y-heightPt,
+			widthPt,
+			heightPt,
+			true,
+			false,
+		)
+	}
+
+	// Write the accumulated content to the actual page
+	page.WriteContent(
+		[]byte(pageImpl.GetContent()),
+	)
+
+	return nil
+}
+
 // renderParagraph layouts and draws a single paragraph.
 
 func (r *WordRenderer) renderParagraph(
@@ -761,6 +895,37 @@ func (r *WordRenderer) renderParagraph(
 			currentY,
 		)
 
+	}
+
+	// 5. Render any pending inline drawings (images)
+	if len(r.pendingDrawings) > 0 {
+		// Render each drawing at the current position
+		// For now, we'll render them after the paragraph text
+		drawingY := currentY - spacingAfter
+		for _, drawingInfo := range r.pendingDrawings {
+			// Render the drawing at the paragraph position
+			err := r.renderInlineDrawing(
+				page,
+				drawingInfo.Drawing,
+				startX,
+				drawingY,
+			)
+			if err != nil {
+				return currentY - spacingAfter, err
+			}
+
+			// Get the height of the drawing to adjust position for next one
+			if inline := drawingInfo.Drawing.Inline(); inline != nil {
+				heightEMU := inline.Height()
+				heightPt := float64(
+					heightEMU,
+				) / 914400.0 * 72.0
+				drawingY -= heightPt
+			}
+		}
+
+		// Clear pending drawings after rendering
+		r.pendingDrawings = nil
 	}
 
 	return currentY - spacingAfter, nil
@@ -1052,6 +1217,34 @@ func (r *WordRenderer) processRun(
 
 	for child := range run.Children() {
 		switch child.LocalName() {
+		case "drawing":
+			// Handle inline drawings (images)
+			// Cast to Drawing element
+			var drw *elements.Drawing
+			if d, ok := child.(*elements.Drawing); ok {
+				drw = d
+			} else if comp, ok := child.(*openxml.CompositeElementBase); ok {
+				drw = &elements.Drawing{CompositeElementBase: comp}
+			}
+
+			if drw != nil {
+				// Store the drawing to be rendered later
+				// We'll render it when we render the paragraph
+				// For now, collect it with X,Y coordinates to be determined during rendering
+				r.pendingDrawings = append(
+					r.pendingDrawings,
+					DrawingInfo{
+						Drawing: drw,
+						X:       0, // Will be set during paragraph rendering
+						Y:       0, // Will be set during paragraph rendering
+					},
+				)
+			}
+
+			// For now, we skip adding text for images
+			// TODO: Implement proper image placeholder in text flow
+			return
+
 		case "footnoteReference":
 			// Footnote reference
 			if fr, ok := child.(*elements.FootnoteReference); ok {
@@ -1151,9 +1344,10 @@ func (r *WordRenderer) processRun(
 
 		lr.Strike = rPr.Strike()
 		if va := rPr.VerticalTextAlignment(); va != elements.VerticalAlignBaseline {
-			if va == elements.VerticalAlignSubscript {
+			switch va {
+			case elements.VerticalAlignmentRunValuesSubscript:
 				lr.Subscript = true
-			} else if va == elements.VerticalAlignSuperscript {
+			case elements.VerticalAlignmentRunValuesSuperscript:
 				lr.Superscript = true
 			}
 		}
@@ -1616,7 +1810,7 @@ func (r *WordRenderer) renderHeader(
 	// Check for first page different
 	if isFirstPage && section.Props.TitlePage() {
 		headerRef = section.Props.GetHeaderReference(
-			elements.HeaderFooterFirst,
+			elements.HeaderFooterValuesFirst,
 		)
 	}
 
@@ -1625,7 +1819,7 @@ func (r *WordRenderer) renderHeader(
 		// Even page - check if we have evenAndOddHeaders setting
 		// For now, we'll just use the even header if it exists
 		headerRef = section.Props.GetHeaderReference(
-			elements.HeaderFooterEven,
+			elements.HeaderFooterValuesEven,
 		)
 	}
 
@@ -1709,14 +1903,14 @@ func (r *WordRenderer) renderFooter(
 	// Check for first page different
 	if isFirstPage && section.Props.TitlePage() {
 		footerRef = section.Props.GetFooterReference(
-			elements.HeaderFooterFirst,
+			elements.HeaderFooterValuesFirst,
 		)
 	}
 
 	// Check for odd/even different
 	if footerRef == nil && pageNum%2 == 0 {
 		footerRef = section.Props.GetFooterReference(
-			elements.HeaderFooterEven,
+			elements.HeaderFooterValuesEven,
 		)
 	}
 
@@ -1809,6 +2003,7 @@ func (r *WordRenderer) evaluateFieldCode(
 		if r.totalPages > 0 {
 			return fmt.Sprintf("%d", r.totalPages)
 		}
+
 		return "0"
 	}
 
@@ -1820,6 +2015,7 @@ func (r *WordRenderer) evaluateFieldCode(
 		// For simplicity, return current date
 		// In a full implementation, we would parse the format from the field code
 		now := time.Now()
+
 		return now.Format("1/2/2006")
 	}
 
@@ -1830,6 +2026,7 @@ func (r *WordRenderer) evaluateFieldCode(
 	) {
 		// For simplicity, return current time
 		now := time.Now()
+
 		return now.Format("3:04 PM")
 	}
 

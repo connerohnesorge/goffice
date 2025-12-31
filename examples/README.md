@@ -112,3 +112,34 @@ To extend this example with additional features:
 - Create custom styles
 - Add table of contents
 - Include comments and tracked changes
+
+---
+
+## DrawingML PDF Rendering Examples
+
+The `pdf-rendering/` directory contains examples demonstrating the DrawingML to PDF rendering capabilities.
+
+See `pdf-rendering/README.md` for full documentation.
+
+### Quick Start
+
+```bash
+cd pdf-rendering
+
+# Word images to PDF
+cd word-images && go run main.go && cd ..
+
+# Excel charts to PDF
+cd excel-charts && go run main.go && cd ..
+
+# PowerPoint shapes to PDF
+cd powerpoint-shapes && go run main.go && cd ..
+```
+
+### What's Demonstrated
+
+- **Word Images**: Inline image rendering with various sizes
+- **Excel Charts**: Data foundation and chart rendering
+- **PowerPoint Shapes**: Vector shapes, fills, and text rendering
+
+These examples showcase the high-fidelity DrawingML to PDF rendering system in the `pdf/drawing/` package.

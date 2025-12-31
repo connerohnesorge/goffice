@@ -1,0 +1,31 @@
+name: simple-table
+description: Simple 2x3 table with text content
+document_type: wordprocessing
+category: basic
+tags: [table]
+
+operations:
+  - action: create_document
+    doc_type: document
+  - action: add_table
+    rows: 2
+    cols: 3
+    cells:
+      - row: 0
+        col: 0
+        text: "Header 1"
+      - row: 0
+        col: 1
+        text: "Header 2"
+      - row: 0
+        col: 2
+        text: "Header 3"
+      - row: 1
+        col: 0
+        text: "Data 1"
+      - row: 1
+        col: 1
+        text: "Data 2"
+      - row: 1
+        col: 2
+        text: "Data 3"

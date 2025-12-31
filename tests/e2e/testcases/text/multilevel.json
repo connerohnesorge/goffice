@@ -1,0 +1,211 @@
+{
+  "id": "text_multilevel_01",
+  "name": "Multi-level Bullets and Numbering",
+  "description": "Tests multi-level bulleted and numbered lists with different indentation levels",
+  "category": "text",
+  "tags": ["text", "bullets", "numbering", "lists"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "text",
+            "position": {
+              "x": 914400,
+              "y": 457200
+            },
+            "size": {
+              "width": 3657600,
+              "height": 4114800
+            },
+            "z_index": 1,
+            "text": {
+              "content": "",
+              "paragraphs": [
+                {
+                  "runs": [
+                    {
+                      "text": "Level 1 Bullet",
+                      "font_family": "Calibri",
+                      "font_size": 20,
+                      "color": "000000",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "indent": 0,
+                  "bullet_char": "•",
+                  "space_after": 152400
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Level 2 Bullet",
+                      "font_family": "Calibri",
+                      "font_size": 18,
+                      "color": "000000",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "indent": 457200,
+                  "bullet_char": "◦",
+                  "space_after": 152400
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Level 3 Bullet",
+                      "font_family": "Calibri",
+                      "font_size": 16,
+                      "color": "000000",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "indent": 914400,
+                  "bullet_char": "▪",
+                  "space_after": 152400
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Back to Level 1",
+                      "font_family": "Calibri",
+                      "font_size": 20,
+                      "color": "000000",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "indent": 0,
+                  "bullet_char": "•",
+                  "space_after": 304800
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Numbered Item 1",
+                      "font_family": "Calibri",
+                      "font_size": 20,
+                      "color": "4472C4",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "indent": 0,
+                  "bullet_char": "1.",
+                  "space_after": 152400
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Numbered Sub-item 1.1",
+                      "font_family": "Calibri",
+                      "font_size": 18,
+                      "color": "4472C4",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "indent": 457200,
+                  "bullet_char": "a.",
+                  "space_after": 152400
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Numbered Sub-item 1.2",
+                      "font_family": "Calibri",
+                      "font_size": 18,
+                      "color": "4472C4",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "indent": 457200,
+                  "bullet_char": "b.",
+                  "space_after": 152400
+                },
+                {
+                  "runs": [
+                    {
+                      "text": "Numbered Item 2",
+                      "font_family": "Calibri",
+                      "font_size": 20,
+                      "color": "4472C4",
+                      "bold": false,
+                      "italic": false,
+                      "underline": "none",
+                      "strikethrough": false
+                    }
+                  ],
+                  "alignment": "left",
+                  "indent": 0,
+                  "bullet_char": "2."
+                }
+              ],
+              "default_run": {
+                "text": "",
+                "font_family": "Calibri",
+                "font_size": 18,
+                "color": "000000",
+                "bold": false,
+                "italic": false,
+                "underline": "none",
+                "strikethrough": false
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "medium",
+    "expected_duration": "fast"
+  }
+}

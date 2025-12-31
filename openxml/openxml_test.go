@@ -81,7 +81,7 @@ func TestQualifiedName(t *testing.T) {
 					qn.NamespaceURI(),
 				)
 			}
-			if qn.LocalName() != "element" {
+			if qn.LocalName() != testElement {
 				t.Errorf(
 					"expected local name element, got %s",
 					qn.LocalName(),
@@ -93,14 +93,14 @@ func TestQualifiedName(t *testing.T) {
 	t.Run(
 		"ParseQualifiedName without namespace",
 		func(t *testing.T) {
-			qn := ParseQualifiedName("element")
+			qn := ParseQualifiedName(testElement)
 			if qn.NamespaceURI() != "" {
 				t.Errorf(
 					"expected empty namespace URI, got %s",
 					qn.NamespaceURI(),
 				)
 			}
-			if qn.LocalName() != "element" {
+			if qn.LocalName() != testElement {
 				t.Errorf(
 					"expected local name element, got %s",
 					qn.LocalName(),
@@ -1133,9 +1133,11 @@ func TestXmlParsing(t *testing.T) {
 			for range Descendants(elem.(CompositeElement)) {
 				count++
 			}
-			if count != 2 {
+			// Expected: <b>, <c>, and #text node (3 total)
+			// The #text node is added to preserve text content in CompositeElements
+			if count != 3 {
 				t.Errorf(
-					"expected 2 descendants, got %d",
+					"expected 3 descendants (including #text node), got %d",
 					count,
 				)
 			}

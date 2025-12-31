@@ -39,6 +39,9 @@ const (
 	// NamespacePresentationML is the main PresentationML namespace.
 	NamespacePresentationML = "http://schemas.openxmlformats.org/presentationml/2006/main"
 
+	// NamespaceDiagram is the main Diagram namespace for SmartArt.
+	NamespaceDiagram = "http://schemas.openxmlformats.org/drawingml/2006/diagram"
+
 	// NamespaceDublinCore is the Dublin Core namespace for core properties.
 	NamespaceDublinCore = "http://purl.org/dc/elements/1.1/"
 
@@ -59,6 +62,109 @@ const (
 
 	// NamespaceXMLSchemaInstance is the XML Schema Instance namespace.
 	NamespaceXMLSchemaInstance = "http://www.w3.org/2001/XMLSchema-instance"
+)
+
+// Word extension namespaces (Office 2010-2024).
+const (
+	// NamespaceWord2010 is the Word 2010 extension namespace (w14).
+	NamespaceWord2010 = "http://schemas.microsoft.com/office/word/2010/wordml"
+
+	// NamespaceWord2010WordprocessingDrawing is the Word 2010 WordprocessingDrawing extension namespace (wp14).
+	NamespaceWord2010WordprocessingDrawing = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
+
+	// NamespaceWord2010WordprocessingCanvas is the Word 2010 WordprocessingCanvas extension namespace (wpc).
+	NamespaceWord2010WordprocessingCanvas = "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"
+
+	// NamespaceWord2010WordprocessingGroup is the Word 2010 WordprocessingGroup extension namespace (wpg).
+	NamespaceWord2010WordprocessingGroup = "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"
+
+	// NamespaceWord2010WordprocessingShape is the Word 2010 WordprocessingShape extension namespace (wps).
+	NamespaceWord2010WordprocessingShape = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
+
+	// NamespaceWord2013 is the Word 2013 extension namespace (w15).
+	NamespaceWord2013 = "http://schemas.microsoft.com/office/word/2012/wordml"
+
+	// NamespaceWord2016 is the Word 2016 extension namespace (w16).
+	NamespaceWord2016 = "http://schemas.microsoft.com/office/word/2015/wordml"
+
+	// NamespaceWord2019 is the Word 2019 extension namespace (w19).
+	NamespaceWord2019 = "http://schemas.microsoft.com/office/word/2018/wordml"
+)
+
+// Excel extension namespaces (Office 2010-2024).
+const (
+	// NamespaceExcel2009 is the Excel 2010 extension namespace (x14).
+	// Note: Uses 2009 URL for historical reasons, corresponds to Office 2010.
+	NamespaceExcel2009 = "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main"
+
+	// NamespaceExcel2009AC is the Excel 2010 AlternateContent extension namespace (x14ac).
+	NamespaceExcel2009AC = "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac"
+
+	// NamespaceExcel2013 is the Excel 2013 extension namespace (x15).
+	NamespaceExcel2013 = "http://schemas.microsoft.com/office/spreadsheetml/2010/11/main"
+
+	// NamespaceExcel2013AC is the Excel 2013 AlternateContent extension namespace (x15ac).
+	NamespaceExcel2013AC = "http://schemas.microsoft.com/office/spreadsheetml/2010/11/ac"
+
+	// NamespaceExcel2016 is the Excel 2016 extension namespace (x16).
+	NamespaceExcel2016 = "http://schemas.microsoft.com/office/spreadsheetml/2014/11/main"
+
+	// NamespaceExcel2016Revision is the Excel 2016 Revision extension namespace (x16r2).
+	NamespaceExcel2016Revision = "http://schemas.microsoft.com/office/spreadsheetml/2015/02/main"
+
+	// NamespaceExcel2019 is the Excel 2019 extension namespace (x19).
+	NamespaceExcel2019 = "http://schemas.microsoft.com/office/spreadsheetml/2018/9/main"
+
+	// NamespaceExcel2021 is the Excel 2021 extension namespace (x21).
+	NamespaceExcel2021 = "http://schemas.microsoft.com/office/spreadsheetml/2020/10/main"
+
+	// NamespaceExcel2024 is the Excel 2024 extension namespace (x24).
+	NamespaceExcel2024 = "http://schemas.microsoft.com/office/spreadsheetml/2023/7/main"
+
+	// NamespaceExcel2025 is the Excel 2025 extension namespace (x25).
+	NamespaceExcel2025 = "http://schemas.microsoft.com/office/spreadsheetml/2024/8/main"
+)
+
+// PowerPoint extension namespaces (Office 2010-2024).
+const (
+	// NamespacePowerPoint2010 is the PowerPoint 2010 extension namespace (p14).
+	NamespacePowerPoint2010 = "http://schemas.microsoft.com/office/powerpoint/2010/main"
+
+	// NamespacePowerPoint2012 is the PowerPoint 2012 extension namespace (p15).
+	NamespacePowerPoint2012 = "http://schemas.microsoft.com/office/powerpoint/2012/main"
+
+	// NamespacePowerPoint2016 is the PowerPoint 2016 extension namespace (p16).
+	NamespacePowerPoint2016 = "http://schemas.microsoft.com/office/powerpoint/2015/main"
+
+	// NamespacePowerPoint2021 is the PowerPoint 2021 extension namespace (p21).
+	NamespacePowerPoint2021 = "http://schemas.microsoft.com/office/powerpoint/2020/main"
+)
+
+// DrawingML extension namespaces (shared across Word, Excel, PowerPoint).
+const (
+	// NamespaceDrawing2010 is the DrawingML 2010 extension namespace (a14).
+	NamespaceDrawing2010 = "http://schemas.microsoft.com/office/drawing/2010/main"
+
+	// NamespaceDrawing2012 is the DrawingML 2012 extension namespace (a15).
+	NamespaceDrawing2012 = "http://schemas.microsoft.com/office/drawing/2012/main"
+
+	// NamespaceDrawing2014 is the DrawingML 2014 extension namespace (a16).
+	NamespaceDrawing2014 = "http://schemas.microsoft.com/office/drawing/2014/main"
+
+	// NamespaceDrawing2016SVG is the DrawingML 2016 SVG extension namespace (asvg).
+	NamespaceDrawing2016SVG = "http://schemas.microsoft.com/office/drawing/2016/SVG/main"
+
+	// NamespaceDrawing2016Ink is the DrawingML 2016 Ink extension namespace (aink).
+	NamespaceDrawing2016Ink = "http://schemas.microsoft.com/office/drawing/2016/ink"
+
+	// NamespaceChart2014 is the Chart 2014 extension namespace (c15).
+	NamespaceChart2014 = "http://schemas.microsoft.com/office/drawing/2012/chart"
+
+	// NamespaceChart2016 is the Chart 2016 extension namespace (c16).
+	NamespaceChart2016 = "http://schemas.microsoft.com/office/drawing/2014/chart"
+
+	// NamespaceChart2016r3 is the Chart 2016 R3 extension namespace (c16r3).
+	NamespaceChart2016r3 = "http://schemas.microsoft.com/office/drawing/2017/03/chart"
 )
 
 // Common relationship types.
@@ -219,6 +325,7 @@ const (
 
 // NamespacePrefixes maps namespace URIs to their conventional prefixes.
 var NamespacePrefixes = map[string]string{
+	// Main namespaces
 	NamespaceWordprocessingML:        "w",
 	NamespaceRelationships:           "r",
 	NamespaceDrawingML:               "a",
@@ -230,11 +337,67 @@ var NamespacePrefixes = map[string]string{
 	NamespaceVML:                     "v",
 	NamespaceSpreadsheetML:           "x",
 	NamespacePresentationML:          "p",
+	NamespaceDiagram:                 "dgm",
 	NamespaceDublinCore:              "dc",
 	NamespaceDublinCoreTerms:         "dcterms",
 	NamespaceCoreProperties:          "cp",
 	NamespaceExtendedProperties:      "ep",
 	NamespaceXMLSchemaInstance:       "xsi",
+
+	// Word extension namespaces
+	NamespaceWord2010:                      "w14",
+	NamespaceWord2010WordprocessingDrawing: "wp14",
+	NamespaceWord2010WordprocessingCanvas:  "wpc",
+	NamespaceWord2010WordprocessingGroup:   "wpg",
+	NamespaceWord2010WordprocessingShape:   "wps",
+	NamespaceWord2013:                      "w15",
+	NamespaceWord2016:                      "w16",
+	NamespaceWord2019:                      "w19",
+
+	// Excel extension namespaces
+	NamespaceExcel2009:         "x14",
+	NamespaceExcel2009AC:       "x14ac",
+	NamespaceExcel2013:         "x15",
+	NamespaceExcel2013AC:       "x15ac",
+	NamespaceExcel2016:         "x16",
+	NamespaceExcel2016Revision: "x16r2",
+	NamespaceExcel2019:         "x19",
+	NamespaceExcel2021:         "x21",
+	NamespaceExcel2024:         "x24",
+	NamespaceExcel2025:         "x25",
+
+	// PowerPoint extension namespaces
+	NamespacePowerPoint2010: "p14",
+	NamespacePowerPoint2012: "p15",
+	NamespacePowerPoint2016: "p16",
+	NamespacePowerPoint2021: "p21",
+
+	// DrawingML extension namespaces
+	NamespaceDrawing2010:    "a14",
+	NamespaceDrawing2012:    "a15",
+	NamespaceDrawing2014:    "a16",
+	NamespaceDrawing2016SVG: "asvg",
+	NamespaceDrawing2016Ink: "aink",
+	NamespaceChart2014:      "c15",
+	NamespaceChart2016:      "c16",
+	NamespaceChart2016r3:    "c16r3",
+}
+
+// PrefixNamespaces maps conventional prefixes to their namespace URIs.
+// This is the inverse of NamespacePrefixes for quick prefix lookups.
+var PrefixNamespaces map[string]string
+
+func init() {
+	// Build reverse map from NamespacePrefixes
+	PrefixNamespaces = make(
+		map[string]string,
+		len(NamespacePrefixes),
+	)
+	for ns, prefix := range NamespacePrefixes {
+		// For duplicate prefixes (like x14), the last one wins
+		// This is acceptable as they should be compatible
+		PrefixNamespaces[prefix] = ns
+	}
 }
 
 // GetPrefixForNamespace returns the conventional prefix for a namespace URI.
@@ -246,4 +409,23 @@ func GetPrefixForNamespace(
 	}
 
 	return ""
+}
+
+// GetNamespaceForPrefix returns the namespace URI for a given prefix.
+// Returns an empty string if the prefix is not recognized.
+func GetNamespaceForPrefix(prefix string) string {
+	if ns, ok := PrefixNamespaces[prefix]; ok {
+		return ns
+	}
+
+	return ""
+}
+
+// RegisterNamespace adds or updates a namespace URI to prefix mapping.
+// This can be used to register custom or future extension namespaces at runtime.
+func RegisterNamespace(
+	namespaceURI, prefix string,
+) {
+	NamespacePrefixes[namespaceURI] = prefix
+	PrefixNamespaces[prefix] = namespaceURI
 }

@@ -178,7 +178,7 @@ func drawText(
 func escapeTextForPDF(text string) string {
 	result := make([]byte, 0, len(text))
 
-	for i := 0; i < len(text); i++ {
+	for i := range len(text) {
 		ch := text[i]
 		switch ch {
 		case '(':

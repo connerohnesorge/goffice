@@ -9,6 +9,10 @@ import (
 	"golang.org/x/text/language"
 )
 
+const (
+	booleanValueType = "*types.BooleanValue"
+)
+
 // isStructValueType returns true if the type should be handled as a struct.
 // It is used for types like Offset or Point2D that are typically values.
 func isStructValueType(name string) bool {
@@ -163,13 +167,13 @@ func mapNumericType(schemaType string) string {
 func mapBooleanType(schemaType string) string {
 	switch schemaType {
 	case "BooleanValue":
-		return "*types.BooleanValue"
+		return booleanValueType
 	case "OnOffValue":
 		return "*types.OnOffValue"
 	case "TrueFalseValue":
-		return "*types.TrueFalseValue"
+		return booleanValueType
 	case "TrueFalseBlankValue":
-		return "*types.TrueFalseBlankValue"
+		return booleanValueType
 	default:
 		return ""
 	}

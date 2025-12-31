@@ -158,6 +158,7 @@ func (r *SpreadsheetRenderer) getCellStyle(
 	for xf := range cellXfs.Xfs() {
 		if idx == int(styleIdx) {
 			cellXf = xf
+
 			break
 		}
 		idx++
@@ -624,6 +625,7 @@ func (r *SpreadsheetRenderer) getCellContent(
 		if is := cell.InlineString(); is != nil {
 			return is.PlainText()
 		}
+
 		return cellValue
 
 	case elements.CellTypeBoolean:
@@ -631,6 +633,7 @@ func (r *SpreadsheetRenderer) getCellContent(
 			cellValue == "true" {
 			return "TRUE"
 		}
+
 		return "FALSE"
 
 	case elements.CellTypeError:
@@ -671,6 +674,7 @@ func (r *SpreadsheetRenderer) getSharedString(
 
 	// Get the string from shared strings table
 	str := sharedStringsPart.GetString(index)
+
 	return str
 }
 
@@ -703,6 +707,7 @@ func applyNumberFormat(
 		if value == float64(int64(value)) {
 			return fmt.Sprintf("%d", int64(value))
 		}
+
 		return fmt.Sprintf("%g", value)
 	}
 
@@ -757,6 +762,7 @@ func isDateFormat(format string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 

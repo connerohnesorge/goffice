@@ -105,7 +105,10 @@ func parseStartElement(
 	// Set attributes (skip xmlns namespace declarations)
 	for _, attr := range start.Attr {
 		// Skip namespace declarations (xmlns and xmlns:prefix)
+		// Note: Go's XML decoder returns Space="xmlns" for xmlns:prefix attributes
+		// and Space="" with Local="xmlns" for default namespace declarations
 		if attr.Name.Space == "http://www.w3.org/2000/xmlns/" ||
+			attr.Name.Space == "xmlns" ||
 			attr.Name.Local == "xmlns" {
 			continue
 		}
@@ -181,6 +184,9 @@ func parseChildren(
 }
 
 // setLeafInnerText sets the inner text on a leaf element if applicable.
+// Also handles CompositeElements that have text content but no children
+// (which happens when XML elements with simple text content are incorrectly
+// created as CompositeElements during generic parsing).
 func setLeafInnerText(
 	parent CompositeElement,
 	textBuilder *strings.Builder,
@@ -188,13 +194,39 @@ func setLeafInnerText(
 	if textBuilder.Len() == 0 {
 		return
 	}
-	leaf, ok := parent.(LeafElement)
-	if !ok {
+
+	// Try as LeafElement first
+	if leaf, ok := parent.(LeafElement); ok {
+		leaf.SetInnerText(
+			strings.TrimSpace(
+				textBuilder.String(),
+			),
+		)
+
 		return
 	}
-	leaf.SetInnerText(
-		strings.TrimSpace(textBuilder.String()),
-	)
+
+	// Handle CompositeElements with text content but no children
+	// This happens when generic factories create CompositeElements for leaf elements
+	//nolint:revive // early-return: nested structure is clearer for this special case
+	if parent.ChildCount() == 0 {
+		// Create a text child node to hold the text content
+		// We'll add it as a raw text node by creating a leaf element
+		text := strings.TrimSpace(
+			textBuilder.String(),
+		)
+		if text != "" {
+			// Store the text by creating a temporary text-only leaf child
+			// The parent can later extract this when needed
+			textNode := NewLeafElementWithText(
+				"",
+				"#text",
+				"",
+				text,
+			)
+			parent.AppendChild(textNode)
+		}
+	}
 }
 
 // readTextContent reads text content until the end element is reached.

@@ -7,13 +7,6 @@ import (
 	"testing"
 )
 
-func TestPackageExists(t *testing.T) {
-	// Simple test to verify test infrastructure works for wordprocessing package
-	t.Log(
-		"wordprocessing package test infrastructure is working",
-	)
-}
-
 func TestDocTypeString(t *testing.T) {
 	tests := []struct {
 		docType  DocType

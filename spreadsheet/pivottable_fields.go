@@ -152,3 +152,88 @@ func (p *PivotTable) RemovePageField(
 
 	return false
 }
+
+// TryAddRowField adds a field to the row area after validation.
+// Returns an error if the field doesn't exist in the source data or is already assigned to an axis.
+func (p *PivotTable) TryAddRowField(
+	name string,
+) (*PivotTable, error) {
+	// Validate that the field exists in the source data
+	if err := p.validateFieldName(name); err != nil {
+		return nil, err
+	}
+
+	// Check if the field is already assigned to an axis
+	if p.containsField(name) {
+		return nil, ErrDuplicateField
+	}
+
+	// Field is valid and not a duplicate, add it
+	p.AddRowField(name)
+
+	return p, nil
+}
+
+// TryAddColumnField adds a field to the column area after validation.
+// Returns an error if the field doesn't exist in the source data or is already assigned to an axis.
+func (p *PivotTable) TryAddColumnField(
+	name string,
+) (*PivotTable, error) {
+	// Validate that the field exists in the source data
+	if err := p.validateFieldName(name); err != nil {
+		return nil, err
+	}
+
+	// Check if the field is already assigned to an axis
+	if p.containsField(name) {
+		return nil, ErrDuplicateField
+	}
+
+	// Field is valid and not a duplicate, add it
+	p.AddColumnField(name)
+
+	return p, nil
+}
+
+// TryAddDataField adds a field to the data area with an aggregation function after validation.
+// Returns an error if the field doesn't exist in the source data or is already assigned to an axis.
+func (p *PivotTable) TryAddDataField(
+	name string,
+	aggregate AggregateFunction,
+) (*PivotTable, error) {
+	// Validate that the field exists in the source data
+	if err := p.validateFieldName(name); err != nil {
+		return nil, err
+	}
+
+	// Check if the field is already assigned to an axis
+	if p.containsField(name) {
+		return nil, ErrDuplicateField
+	}
+
+	// Field is valid and not a duplicate, add it
+	p.AddDataField(name, aggregate)
+
+	return p, nil
+}
+
+// TryAddPageField adds a field to the page (filter) area after validation.
+// Returns an error if the field doesn't exist in the source data or is already assigned to an axis.
+func (p *PivotTable) TryAddPageField(
+	name string,
+) (*PivotTable, error) {
+	// Validate that the field exists in the source data
+	if err := p.validateFieldName(name); err != nil {
+		return nil, err
+	}
+
+	// Check if the field is already assigned to an axis
+	if p.containsField(name) {
+		return nil, ErrDuplicateField
+	}
+
+	// Field is valid and not a duplicate, add it
+	p.AddPageField(name)
+
+	return p, nil
+}

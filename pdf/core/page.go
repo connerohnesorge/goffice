@@ -730,3 +730,307 @@ func (cs *CoordinateSystem) ScaleFromUserUnits(
 ) float64 {
 	return value * cs.UserUnit
 }
+
+// LineCap specifies the shape of the endpoints for an open path.
+// This controls how line ends are rendered when stroking paths.
+// The cap style affects only the endpoints of open subpaths and does not
+// affect the joins between connected segments or the shape of closed subpaths.
+type LineCap int
+
+const (
+	// LineCapButt truncates the line exactly at the endpoint.
+	// The stroke is squared off at the endpoint of the path with no projection.
+	LineCapButt LineCap = 0
+	// LineCapRound rounds the endpoint with a semicircular arc.
+	// A semicircular arc with diameter equal to the line width is drawn around
+	// the endpoint and filled in.
+	LineCapRound LineCap = 1
+	// LineCapSquare extends the line with a square projection.
+	// The stroke continues beyond the endpoint by half the line width and is
+	// squared off.
+	LineCapSquare LineCap = 2
+)
+
+// LineJoin specifies the shape at the corners of stroked paths.
+// This controls how the junction of two line segments is rendered when stroking paths.
+type LineJoin int
+
+const (
+	// LineJoinMiter creates pointed corners.
+	// The outer edges of the strokes extend until they meet at an angle.
+	// If the angle is too sharp (exceeds the miter limit), a bevel join is used instead.
+	LineJoinMiter LineJoin = 0
+	// LineJoinRound creates rounded corners.
+	// A circular arc with diameter equal to the line width is drawn around
+	// the point where the segments meet.
+	LineJoinRound LineJoin = 1
+	// LineJoinBevel creates beveled corners.
+	// The two segments are finished with butt caps and the notch between them
+	// is filled with a triangle.
+	LineJoinBevel LineJoin = 2
+)
+
+// PageImage represents an image resource that can be added to a page.
+// Implementations provide access to image dimensions and raw data for embedding
+// into PDF documents.
+//
+// The image data format depends on the specific implementation but typically
+// includes formats like JPEG, PNG, or raw pixel data.
+type PageImage interface {
+	// Width returns the image width in pixels.
+	Width() int
+	// Height returns the image height in pixels.
+	Height() int
+	// Data returns the raw image data in the implementation-specific format.
+	// For JPEG images this would be the JPEG-encoded data,
+	// for PNG this would be the PNG-encoded data, etc.
+	Data() []byte
+}
+
+// PageDrawer defines the drawing API for PDF pages.
+// It provides methods for drawing shapes, setting colors, managing graphics state,
+// and rendering text and images. The interface abstracts PDF page content stream
+// operations, allowing for both actual PDF generation and testing with mock implementations.
+//
+// Coordinate System:
+// By default, PDF uses a bottom-left origin coordinate system where:
+//   - X increases to the right
+//   - Y increases upward
+//   - Units are in points (1/72 inch)
+//
+// Use CoordinateSystem and Transform methods to work with different coordinate systems
+// (e.g., top-left origin for OOXML compatibility).
+//
+// Graphics State:
+// Drawing operations are affected by the current graphics state, which includes:
+//   - Fill and stroke colors
+//   - Line width, dash pattern, cap, and join styles
+//   - Current transformation matrix
+//   - Font and font size
+//
+// Use SaveGraphicsState and RestoreGraphicsState to preserve and restore state
+// when making temporary changes.
+//
+// Common Usage Pattern:
+//
+//	page := doc.AddPage(core.PageSizeA4)
+//	page.SetFillColor(0, 0, 0)        // Black fill
+//	page.SetStrokeColor(1, 0, 0)      // Red stroke
+//	page.SetLineWidth(2)
+//	page.DrawRectangle(100, 100, 200, 150, true, true)  // Filled and stroked
+//
+// Implementations:
+//   - PageImpl: Actual PDF page generation
+//   - MockPage: Testing without PDF generation
+type PageDrawer interface {
+	// DrawRectangle draws a rectangle at the specified position.
+	// Parameters x and y define the bottom-left corner of the rectangle in user space units.
+	// The width and height define the rectangle dimensions.
+	// If fill is true, the rectangle is filled using the current fill color.
+	// If stroke is true, the rectangle outline is drawn using the current stroke color and line width.
+	// Both fill and stroke can be true to create a filled rectangle with an outline.
+	//
+	// Example:
+	//   page.SetFillColor(0.9, 0.9, 0.9)  // Light gray
+	//   page.SetStrokeColor(0, 0, 0)      // Black
+	//   page.SetLineWidth(1)
+	//   page.DrawRectangle(50, 50, 100, 75, true, true)  // Gray rectangle with black border
+	DrawRectangle(
+		x, y, width, height float64,
+		fill, stroke bool,
+	)
+
+	// DrawCircle draws a circle at the specified center point.
+	// Parameters cx and cy define the center of the circle in user space units.
+	// The radius defines the circle size.
+	// If fill is true, the circle is filled using the current fill color.
+	// If stroke is true, the circle outline is drawn using the current stroke color and line width.
+	//
+	// The circle is approximated using Bézier curves as PDF does not have a native circle primitive.
+	//
+	// Example:
+	//   page.SetFillColor(1, 0, 0)  // Red
+	//   page.DrawCircle(200, 200, 50, true, false)  // Filled red circle, no outline
+	DrawCircle(
+		cx, cy, radius float64,
+		fill, stroke bool,
+	)
+
+	// DrawEllipse draws an ellipse at the specified center point.
+	// Parameters cx and cy define the center of the ellipse in user space units.
+	// The rx and ry parameters define the horizontal and vertical radii respectively.
+	// If fill is true, the ellipse is filled using the current fill color.
+	// If stroke is true, the ellipse outline is drawn using the current stroke color and line width.
+	//
+	// The ellipse is approximated using Bézier curves as PDF does not have a native ellipse primitive.
+	//
+	// Example:
+	//   page.SetFillColor(0, 0, 1)  // Blue
+	//   page.DrawEllipse(300, 300, 80, 40, true, true)  // Blue ellipse with outline
+	DrawEllipse(
+		cx, cy, rx, ry float64,
+		fill, stroke bool,
+	)
+
+	// SetFillColor sets the color used for fill operations.
+	// Parameters r, g, b are red, green, blue components in the range [0, 1].
+	// This affects DrawRectangle, DrawCircle, DrawEllipse when fill is true,
+	// as well as filled text rendering.
+	//
+	// Example:
+	//   page.SetFillColor(1, 0, 0)     // Pure red
+	//   page.SetFillColor(0.5, 0.5, 0.5)  // Medium gray
+	//   page.SetFillColor(0, 0, 0)     // Black
+	SetFillColor(r, g, b float64)
+
+	// SetStrokeColor sets the color used for stroke (outline) operations.
+	// Parameters r, g, b are red, green, blue components in the range [0, 1].
+	// This affects DrawRectangle, DrawCircle, DrawEllipse when stroke is true,
+	// as well as line and path stroking operations.
+	//
+	// Example:
+	//   page.SetStrokeColor(0, 0, 1)  // Blue outlines
+	SetStrokeColor(r, g, b float64)
+
+	// SetLineWidth sets the width of stroked lines in user space units.
+	// This affects all subsequent stroke operations including shape outlines.
+	// The default line width is typically 1 point.
+	//
+	// Example:
+	//   page.SetLineWidth(0.5)   // Thin line
+	//   page.SetLineWidth(3)     // Thick line
+	SetLineWidth(width float64)
+
+	// SetLineDashPattern sets the dash pattern for stroked lines.
+	// The pattern parameter is an array of dash and gap lengths.
+	// The phase parameter specifies the offset into the pattern at which to start.
+	//
+	// An empty pattern array creates a solid line.
+	// Even-indexed entries are dash lengths, odd-indexed entries are gap lengths.
+	//
+	// Examples:
+	//   page.SetLineDashPattern([]float64{3, 1}, 0)        // 3 on, 1 off
+	//   page.SetLineDashPattern([]float64{5, 2, 1, 2}, 0)  // 5 on, 2 off, 1 on, 2 off
+	//   page.SetLineDashPattern([]float64{}, 0)            // Solid line
+	//   page.SetLineDashPattern([]float64{3, 1}, 1.5)      // Same pattern, offset by 1.5
+	SetLineDashPattern(
+		pattern []float64,
+		phase float64,
+	)
+
+	// SetLineCap sets the line cap style for the endpoints of stroked paths.
+	// See LineCap constants for available styles (Butt, Round, Square).
+	// The default is typically LineCapButt.
+	//
+	// Example:
+	//   page.SetLineCap(core.LineCapRound)  // Rounded line ends
+	SetLineCap(lineCap LineCap)
+
+	// SetLineJoin sets the line join style for corners in stroked paths.
+	// See LineJoin constants for available styles (Miter, Round, Bevel).
+	// The default is typically LineJoinMiter.
+	//
+	// Example:
+	//   page.SetLineJoin(core.LineJoinRound)  // Rounded corners
+	SetLineJoin(lineJoin LineJoin)
+
+	// SaveGraphicsState saves the current graphics state on the PDF graphics state stack.
+	// This includes all current color, line, font, and transformation settings.
+	// Use RestoreGraphicsState to return to this state later.
+	//
+	// Graphics state saves/restores must be balanced (each save must have a corresponding restore).
+	// This is commonly used to make temporary changes without affecting the surrounding context.
+	//
+	// Example:
+	//   page.SaveGraphicsState()
+	//   page.SetFillColor(1, 0, 0)      // Red, temporarily
+	//   page.DrawRectangle(x, y, w, h, true, false)
+	//   page.RestoreGraphicsState()     // Back to previous fill color
+	SaveGraphicsState()
+
+	// RestoreGraphicsState restores the graphics state to the most recently saved state.
+	// This pops the graphics state stack and restores all settings (colors, line styles,
+	// transformation matrix, etc.) to their saved values.
+	//
+	// Must be paired with a previous SaveGraphicsState call.
+	RestoreGraphicsState()
+
+	// Transform applies a transformation matrix to the current transformation matrix.
+	// The matrix parameter is a 6-element array [a b c d e f] representing:
+	//   x' = a*x + c*y + e
+	//   y' = b*x + d*y + f
+	//
+	// Common transformations:
+	//   Translation:  [1 0 0 1 tx ty]
+	//   Scaling:      [sx 0 0 sy 0 0]
+	//   Rotation:     [cos(θ) sin(θ) -sin(θ) cos(θ) 0 0]
+	//
+	// Transformations are cumulative and affect all subsequent drawing operations
+	// until restored via RestoreGraphicsState.
+	//
+	// Example:
+	//   page.SaveGraphicsState()
+	//   page.Transform(PDFMatrix{1, 0, 0, 1, 100, 200})  // Translate by (100, 200)
+	//   // Draw operations here are offset by (100, 200)
+	//   page.RestoreGraphicsState()
+	Transform(matrix PDFMatrix)
+
+	// AddImage adds an image to the page at the specified position and size.
+	// The img parameter provides the image data and dimensions.
+	// Parameters x and y specify the bottom-left corner of the image in user space units.
+	// Parameters width and height specify the rendered size of the image.
+	//
+	// The image is scaled to fit the specified dimensions.
+	// Aspect ratio is not automatically preserved - specify width and height accordingly.
+	//
+	// Example:
+	//   img := loadImage("logo.png")  // Returns a PageImage
+	//   page.AddImage(img, 50, 700, 100, 50)  // Place at (50, 700), size 100x50 points
+	AddImage(
+		img PageImage,
+		x, y, width, height float64,
+	)
+
+	// DrawText draws text at the specified position.
+	// Parameters x and y specify the baseline start position in user space units.
+	// The text parameter is the string to render.
+	//
+	// The current font and font size (set via SetFont) determine the text appearance.
+	// The current fill color determines the text color.
+	//
+	// Note: This is a simple text drawing method. For complex text layout with
+	// line breaking, alignment, and formatting, use the text layout engine in pdf/layout.
+	//
+	// Example:
+	//   page.SetFont("Helvetica", 12)
+	//   page.SetFillColor(0, 0, 0)  // Black
+	//   page.DrawText(100, 500, "Hello, World!")
+	DrawText(x, y float64, text string)
+
+	// SetFont sets the current font and size for text drawing.
+	// The name parameter is the font name (e.g., "Helvetica", "Times-Roman", "Courier").
+	// The size parameter is the font size in points.
+	//
+	// Standard PDF fonts (always available):
+	//   - Helvetica, Helvetica-Bold, Helvetica-Oblique, Helvetica-BoldOblique
+	//   - Times-Roman, Times-Bold, Times-Italic, Times-BoldItalic
+	//   - Courier, Courier-Bold, Courier-Oblique, Courier-BoldOblique
+	//   - Symbol, ZapfDingbats
+	//
+	// Example:
+	//   page.SetFont("Helvetica-Bold", 14)
+	//   page.SetFont("Times-Roman", 12)
+	SetFont(name string, size float64)
+
+	// WriteContent writes raw PDF content stream operators directly to the page.
+	// This is a low-level method for advanced use cases where the high-level
+	// drawing methods are insufficient.
+	//
+	// The content parameter should be valid PDF content stream syntax.
+	// Use with caution as invalid content can corrupt the PDF.
+	//
+	// Example:
+	//   page.WriteContent("0.5 g")  // Set gray fill color to 50%
+	//   page.WriteContent("100 200 m 200 200 l S")  // Draw a line
+	WriteContent(content string)
+}

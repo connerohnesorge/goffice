@@ -712,3 +712,637 @@ func BenchmarkCellRefString(b *testing.B) {
 		_ = ref.String()
 	}
 }
+
+// TestParseCrossSheetRef tests parsing of cross-sheet references
+func TestParseCrossSheetRef(t *testing.T) {
+	tests := []struct {
+		input     string
+		wantSheet string
+		wantCol   int
+		wantRow   int
+		absCol    bool
+		absRow    bool
+		wantErr   bool
+	}{
+		// Unquoted sheet names
+		{
+			"Sheet2!A1",
+			"Sheet2",
+			1,
+			1,
+			false,
+			false,
+			false,
+		},
+		{
+			"Sheet2!$A$1",
+			"Sheet2",
+			1,
+			1,
+			true,
+			true,
+			false,
+		},
+		{
+			"Data!Z100",
+			"Data",
+			26,
+			100,
+			false,
+			false,
+			false,
+		},
+		{
+			"Summary!XFD1048576",
+			"Summary",
+			16384,
+			1048576,
+			false,
+			false,
+			false,
+		},
+
+		// Quoted sheet names
+		{
+			"'Sheet Name'!A1",
+			"Sheet Name",
+			1,
+			1,
+			false,
+			false,
+			false,
+		},
+		{
+			"'My Sheet'!B2",
+			"My Sheet",
+			2,
+			2,
+			false,
+			false,
+			false,
+		},
+		{
+			"'Sheet (2024)'!C3",
+			"Sheet (2024)",
+			3,
+			3,
+			false,
+			false,
+			false,
+		},
+		{
+			"'Data:Summary'!D4",
+			"Data:Summary",
+			4,
+			4,
+			false,
+			false,
+			false,
+		},
+		{
+			"'Sheet[1]'!E5",
+			"Sheet[1]",
+			5,
+			5,
+			false,
+			false,
+			false,
+		},
+
+		// Quoted sheet names with absolute references
+		{
+			"'Sheet Name'!$A$1",
+			"Sheet Name",
+			1,
+			1,
+			true,
+			true,
+			false,
+		},
+		{
+			"'My Data'!$A1",
+			"My Data",
+			1,
+			1,
+			true,
+			false,
+			false,
+		},
+		{
+			"'Summary (Q1)'!A$1",
+			"Summary (Q1)",
+			1,
+			1,
+			false,
+			true,
+			false,
+		},
+
+		// Invalid cases
+		{
+			"'Unclosed",
+			"",
+			0,
+			0,
+			false,
+			false,
+			true,
+		},
+		{
+			"'Sheet'A1",
+			"",
+			0,
+			0,
+			false,
+			false,
+			true,
+		},
+		{"Sheet!", "", 0, 0, false, false, true},
+		{
+			"'Sheet'!",
+			"",
+			0,
+			0,
+			false,
+			false,
+			true,
+		},
+	}
+
+	for _, tt := range tests {
+		ref, err := ParseCellRef(tt.input)
+		if tt.wantErr {
+			if err == nil {
+				t.Errorf(
+					"ParseCellRef(%q) expected error, got nil",
+					tt.input,
+				)
+			}
+
+			continue
+		}
+
+		if err != nil {
+			t.Errorf(
+				"ParseCellRef(%q) unexpected error: %v",
+				tt.input,
+				err,
+			)
+
+			continue
+		}
+
+		if ref.Sheet != tt.wantSheet {
+			t.Errorf(
+				"ParseCellRef(%q).Sheet = %q, want %q",
+				tt.input,
+				ref.Sheet,
+				tt.wantSheet,
+			)
+		}
+		if ref.Col != tt.wantCol {
+			t.Errorf(
+				"ParseCellRef(%q).Col = %d, want %d",
+				tt.input,
+				ref.Col,
+				tt.wantCol,
+			)
+		}
+		if ref.Row != tt.wantRow {
+			t.Errorf(
+				"ParseCellRef(%q).Row = %d, want %d",
+				tt.input,
+				ref.Row,
+				tt.wantRow,
+			)
+		}
+		if ref.AbsCol != tt.absCol {
+			t.Errorf(
+				"ParseCellRef(%q).AbsCol = %v, want %v",
+				tt.input,
+				ref.AbsCol,
+				tt.absCol,
+			)
+		}
+		if ref.AbsRow != tt.absRow {
+			t.Errorf(
+				"ParseCellRef(%q).AbsRow = %v, want %v",
+				tt.input,
+				ref.AbsRow,
+				tt.absRow,
+			)
+		}
+	}
+}
+
+// TestParseR1C1Ref tests parsing of R1C1 notation
+func TestParseR1C1Ref(t *testing.T) {
+	tests := []struct {
+		input      string
+		wantCol    int
+		wantRow    int
+		absCol     bool
+		absRow     bool
+		r1c1RelCol int
+		r1c1RelRow int
+		wantErr    bool
+	}{
+		// Absolute R1C1
+		{"R1C1", 1, 1, true, true, 0, 0, false},
+		{"R5C10", 10, 5, true, true, 0, 0, false},
+		{
+			"R1048576C16384",
+			16384,
+			1048576,
+			true,
+			true,
+			0,
+			0,
+			false,
+		},
+
+		// Relative R1C1
+		{
+			"R[1]C[2]",
+			0,
+			0,
+			false,
+			false,
+			2,
+			1,
+			false,
+		},
+		{
+			"R[-1]C[-2]",
+			0,
+			0,
+			false,
+			false,
+			-2,
+			-1,
+			false,
+		},
+		{
+			"R[10]C[5]",
+			0,
+			0,
+			false,
+			false,
+			5,
+			10,
+			false,
+		},
+		{
+			"R[0]C[0]",
+			0,
+			0,
+			false,
+			false,
+			0,
+			0,
+			false,
+		},
+
+		// Mixed absolute/relative
+		{
+			"R5C[2]",
+			0,
+			5,
+			false,
+			true,
+			2,
+			0,
+			false,
+		},
+		{
+			"R[-1]C10",
+			10,
+			0,
+			true,
+			false,
+			0,
+			-1,
+			false,
+		},
+		{
+			"R[3]C1",
+			1,
+			0,
+			true,
+			false,
+			0,
+			3,
+			false,
+		},
+		{
+			"R100C[-5]",
+			0,
+			100,
+			false,
+			true,
+			-5,
+			0,
+			false,
+		},
+
+		// Case insensitive
+		{"r1c1", 1, 1, true, true, 0, 0, false},
+		{"R1c1", 1, 1, true, true, 0, 0, false},
+		{"r1C1", 1, 1, true, true, 0, 0, false},
+
+		// Invalid cases
+		{"R", 0, 0, false, false, 0, 0, true},
+		// Note: "C", "C1", "R1" are valid A1 notation, not invalid R1C1
+		{"R[1", 0, 0, false, false, 0, 0, true},
+		{"R1C[2", 0, 0, false, false, 0, 0, true},
+		{
+			"R1C1C1",
+			0,
+			0,
+			false,
+			false,
+			0,
+			0,
+			true,
+		},
+		{
+			"RA1CB1",
+			0,
+			0,
+			false,
+			false,
+			0,
+			0,
+			true,
+		},
+		{
+			"R0C1",
+			0,
+			0,
+			false,
+			false,
+			0,
+			0,
+			true,
+		}, // Row 0 invalid
+		{
+			"R1C0",
+			0,
+			0,
+			false,
+			false,
+			0,
+			0,
+			true,
+		}, // Col 0 invalid
+		{
+			"R1048577C1",
+			0,
+			0,
+			false,
+			false,
+			0,
+			0,
+			true,
+		}, // Row too high
+		{
+			"R1C16385",
+			0,
+			0,
+			false,
+			false,
+			0,
+			0,
+			true,
+		}, // Col too high
+	}
+
+	for _, tt := range tests {
+		ref, err := ParseCellRef(tt.input)
+		if tt.wantErr {
+			if err == nil {
+				t.Errorf(
+					"ParseCellRef(%q) expected error, got nil",
+					tt.input,
+				)
+			}
+
+			continue
+		}
+
+		if err != nil {
+			t.Errorf(
+				"ParseCellRef(%q) unexpected error: %v",
+				tt.input,
+				err,
+			)
+
+			continue
+		}
+
+		if !ref.IsR1C1 {
+			t.Errorf(
+				"ParseCellRef(%q).IsR1C1 = false, want true",
+				tt.input,
+			)
+		}
+
+		if ref.AbsCol != tt.absCol {
+			t.Errorf(
+				"ParseCellRef(%q).AbsCol = %v, want %v",
+				tt.input,
+				ref.AbsCol,
+				tt.absCol,
+			)
+		}
+		if ref.AbsRow != tt.absRow {
+			t.Errorf(
+				"ParseCellRef(%q).AbsRow = %v, want %v",
+				tt.input,
+				ref.AbsRow,
+				tt.absRow,
+			)
+		}
+
+		if tt.absCol && ref.Col != tt.wantCol {
+			t.Errorf(
+				"ParseCellRef(%q).Col = %d, want %d",
+				tt.input,
+				ref.Col,
+				tt.wantCol,
+			)
+		}
+		if tt.absRow && ref.Row != tt.wantRow {
+			t.Errorf(
+				"ParseCellRef(%q).Row = %d, want %d",
+				tt.input,
+				ref.Row,
+				tt.wantRow,
+			)
+		}
+
+		if !tt.absCol &&
+			ref.R1C1RelCol != tt.r1c1RelCol {
+			t.Errorf(
+				"ParseCellRef(%q).R1C1RelCol = %d, want %d",
+				tt.input,
+				ref.R1C1RelCol,
+				tt.r1c1RelCol,
+			)
+		}
+		if !tt.absRow &&
+			ref.R1C1RelRow != tt.r1c1RelRow {
+			t.Errorf(
+				"ParseCellRef(%q).R1C1RelRow = %d, want %d",
+				tt.input,
+				ref.R1C1RelRow,
+				tt.r1c1RelRow,
+			)
+		}
+	}
+}
+
+// TestCrossSheetStringRoundtrip tests roundtrip of cross-sheet references
+func TestCrossSheetStringRoundtrip(t *testing.T) {
+	testCases := []string{
+		"Sheet2!A1",
+		"Sheet2!$A$1",
+		"'Sheet Name'!A1",
+		"'My Sheet'!$A1",
+		"'Sheet (2024)'!A$1",
+		"'Data:Summary'!AA100",
+		"'Sheet[1]'!XFD1048576",
+	}
+
+	for _, input := range testCases {
+		ref, err := ParseCellRef(input)
+		if err != nil {
+			t.Errorf(
+				"ParseCellRef(%q) failed: %v",
+				input,
+				err,
+			)
+
+			continue
+		}
+
+		result := ref.String()
+		if result != input {
+			t.Errorf(
+				"Roundtrip failed: %q -> %v -> %q",
+				input,
+				ref,
+				result,
+			)
+		}
+	}
+}
+
+// TestR1C1StringRoundtrip tests roundtrip of R1C1 notation
+func TestR1C1StringRoundtrip(t *testing.T) {
+	testCases := []string{
+		"R1C1",
+		"R5C10",
+		"R[1]C[2]",
+		"R[-1]C[-2]",
+		"R5C[2]",
+		"R[-1]C10",
+		"R[0]C[0]",
+		"R1048576C16384",
+	}
+
+	for _, input := range testCases {
+		ref, err := ParseCellRef(input)
+		if err != nil {
+			t.Errorf(
+				"ParseCellRef(%q) failed: %v",
+				input,
+				err,
+			)
+
+			continue
+		}
+
+		result := ref.String()
+		if result != input {
+			t.Errorf(
+				"Roundtrip failed: %q -> %v -> %q",
+				input,
+				ref,
+				result,
+			)
+		}
+	}
+}
+
+// TestCrossSheetR1C1 tests cross-sheet R1C1 references
+func TestCrossSheetR1C1(t *testing.T) {
+	tests := []struct {
+		input     string
+		wantSheet string
+		isR1C1    bool
+		wantOut   string // Expected output (if different from input)
+	}{
+		{"Sheet2!R1C1", "Sheet2", true, ""},
+		{
+			"'My Sheet'!R5C10",
+			"My Sheet",
+			true,
+			"",
+		},
+		{"Data!R[-1]C[2]", "Data", true, ""},
+		// Test that unnecessary quotes are normalized away
+		{
+			"'Data'!R[-1]C[2]",
+			"Data",
+			true,
+			"Data!R[-1]C[2]",
+		},
+	}
+
+	for _, tt := range tests {
+		ref, err := ParseCellRef(tt.input)
+		if err != nil {
+			t.Errorf(
+				"ParseCellRef(%q) failed: %v",
+				tt.input,
+				err,
+			)
+
+			continue
+		}
+
+		if ref.Sheet != tt.wantSheet {
+			t.Errorf(
+				"ParseCellRef(%q).Sheet = %q, want %q",
+				tt.input,
+				ref.Sheet,
+				tt.wantSheet,
+			)
+		}
+
+		if ref.IsR1C1 != tt.isR1C1 {
+			t.Errorf(
+				"ParseCellRef(%q).IsR1C1 = %v, want %v",
+				tt.input,
+				ref.IsR1C1,
+				tt.isR1C1,
+			)
+		}
+
+		// Test roundtrip
+		result := ref.String()
+		expectedOut := tt.input
+		if tt.wantOut != "" {
+			expectedOut = tt.wantOut
+		}
+		if result != expectedOut {
+			t.Errorf(
+				"Roundtrip failed: %q -> %q (expected %q)",
+				tt.input,
+				result,
+				expectedOut,
+			)
+		}
+	}
+}

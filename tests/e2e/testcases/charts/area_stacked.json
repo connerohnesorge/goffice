@@ -1,0 +1,106 @@
+{
+  "id": "chart_area_stacked_01",
+  "name": "Stacked Area Chart",
+  "description": "Tests stacked area chart rendering with 5 data points and 3 series",
+  "category": "chart",
+  "tags": ["area", "stacked", "filled"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "chart",
+            "position": {
+              "x": 914400,
+              "y": 914400
+            },
+            "size": {
+              "width": 6858000,
+              "height": 4572000
+            },
+            "z_index": 1,
+            "chart": {
+              "type": "area_stacked",
+              "title": "Resource Utilization Over Time",
+              "legend": {
+                "position": "top",
+                "show_legend": true
+              },
+              "data": {
+                "categories": ["Jan", "Feb", "Mar", "Apr", "May"],
+                "series": [
+                  {
+                    "name": "CPU",
+                    "values": [30, 35, 32, 40, 38],
+                    "color": "4472C4",
+                    "smooth": true
+                  },
+                  {
+                    "name": "Memory",
+                    "values": [25, 28, 30, 32, 35],
+                    "color": "ED7D31",
+                    "smooth": true
+                  },
+                  {
+                    "name": "Disk",
+                    "values": [15, 18, 20, 22, 25],
+                    "color": "A5A5A5",
+                    "smooth": true
+                  }
+                ]
+              },
+              "style": {
+                "color_palette": ["4472C4", "ED7D31", "A5A5A5"],
+                "font_size": 11,
+                "font_family": "Calibri",
+                "show_data_labels": false,
+                "grid_lines": {
+                  "major_horizontal": true,
+                  "minor_horizontal": false,
+                  "major_vertical": false,
+                  "minor_vertical": false
+                }
+              },
+              "axes": {
+                "category": {
+                  "title": "Month"
+                },
+                "value": {
+                  "title": "Usage (%)",
+                  "min": 0,
+                  "max": 100
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "medium",
+    "expected_duration": "fast"
+  }
+}

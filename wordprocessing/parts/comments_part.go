@@ -122,6 +122,19 @@ func (cp *CommentsPart) GetComment(
 	return c.GetComment(id)
 }
 
+// RemoveComment removes the comment with the specified ID from the collection.
+// Returns true if the comment was found and removed, false if not found.
+func (cp *CommentsPart) RemoveComment(
+	id int,
+) bool {
+	c := cp.Comments()
+	if c == nil {
+		return false
+	}
+
+	return c.RemoveComment(id)
+}
+
 // GetStream returns a reader for the part content.
 func (cp *CommentsPart) GetStream() io.Reader {
 	return cp.OpenXmlPartData.GetStream()

@@ -656,46 +656,6 @@ func TestRelationshipTypeConstants(t *testing.T) {
 	}
 }
 
-// Test OpenXmlRelationship interface compliance
-
-func TestRelationshipInterfaceCompliance(
-	t *testing.T,
-) {
-	t.Run(
-		"PartRelationship implements OpenXmlRelationship",
-		func(_ *testing.T) {
-			part := NewOpenXmlPartData(
-				"/word/styles.xml",
-				"application/xml",
-				nil,
-				nil,
-			)
-			var _ OpenXmlRelationship = NewPartRelationship(testRelID, RelationshipTypeStyles, part, nil)
-		},
-	)
-
-	t.Run(
-		"ExternalRelationship implements OpenXmlRelationship",
-		func(_ *testing.T) {
-			var _ OpenXmlRelationship = NewExternalRelationship(testRelID, RelationshipTypeHyperlink, "https://example.com", nil)
-		},
-	)
-
-	t.Run(
-		"HyperlinkRelationship implements OpenXmlRelationship",
-		func(_ *testing.T) {
-			var _ OpenXmlRelationship = NewHyperlinkRelationship(testRelID, "https://example.com", true, nil)
-		},
-	)
-
-	t.Run(
-		"DataPartReferenceRelationship implements OpenXmlRelationship",
-		func(_ *testing.T) {
-			var _ OpenXmlRelationship = NewDataPartReferenceRelationship(testRelID, RelationshipTypeImage, "/media/image1.png", nil)
-		},
-	)
-}
-
 // Test concurrent access to RelationshipIDGenerator
 
 func TestRelationshipIDGeneratorConcurrent(

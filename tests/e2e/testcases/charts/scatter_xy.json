@@ -1,0 +1,93 @@
+{
+  "id": "chart_scatter_01",
+  "name": "Scatter Plot XY Chart",
+  "description": "Tests scatter plot with 10 data points and labeled X and Y axes",
+  "category": "chart",
+  "tags": ["scatter", "xy", "plot"],
+  "created": "2025-12-30T00:00:00Z",
+  "author": "E2E Test Suite",
+  "spec": {
+    "slide_count": 1,
+    "slide_size": {
+      "width": 9144000,
+      "height": 5143500
+    },
+    "slides": [
+      {
+        "index": 0,
+        "layout": "Blank",
+        "elements": [
+          {
+            "type": "chart",
+            "position": {
+              "x": 914400,
+              "y": 914400
+            },
+            "size": {
+              "width": 6858000,
+              "height": 4572000
+            },
+            "z_index": 1,
+            "chart": {
+              "type": "scatter",
+              "title": "Height vs Weight Correlation",
+              "legend": {
+                "position": "top_right",
+                "show_legend": false
+              },
+              "data": {
+                "categories": [],
+                "series": [
+                  {
+                    "name": "Data Points",
+                    "x_values": [150, 160, 155, 170, 165, 180, 175, 185, 190, 168],
+                    "values": [55, 62, 58, 70, 68, 80, 75, 85, 90, 72],
+                    "color": "4472C4",
+                    "marker_style": "circle"
+                  }
+                ]
+              },
+              "style": {
+                "color_palette": ["4472C4"],
+                "font_size": 11,
+                "font_family": "Calibri",
+                "show_data_labels": false,
+                "grid_lines": {
+                  "major_horizontal": true,
+                  "minor_horizontal": true,
+                  "major_vertical": true,
+                  "minor_vertical": true
+                }
+              },
+              "axes": {
+                "category": {
+                  "title": "Height (cm)"
+                },
+                "value": {
+                  "title": "Weight (kg)"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "config": {
+    "render_dpi": 300,
+    "render_backend": "libreoffice",
+    "diff_threshold": 0.02,
+    "diff_algorithm": "ssim",
+    "ignore_antialiasing": true,
+    "generator_timeout": 60,
+    "render_timeout": 120,
+    "generate_diff_image": true,
+    "save_intermediates": false,
+    "retry_count": 2,
+    "retry_delay": 5
+  },
+  "metadata": {
+    "complexity": "medium",
+    "expected_duration": "fast"
+  }
+}

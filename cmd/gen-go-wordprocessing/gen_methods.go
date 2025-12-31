@@ -198,8 +198,8 @@ func generateValidate(f *os.File, t *SchemaType) {
 func shouldSkipValidation(
 	pkg, className string,
 ) bool {
-	if pkg == drawingMLPkg &&
-		!existsInDrawingML(className) {
+	// Skip validation for all DrawingML types as they don't have Validate() methods
+	if pkg == drawingMLPkg {
 		return true
 	}
 	// Reordered operands for performance and revive compliance.

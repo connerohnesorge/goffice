@@ -1,0 +1,35 @@
+# E2E Test Artifacts
+# Ignore generated test outputs to keep repository clean
+
+# Generated PPTX, PDF, PNG files
+output/
+!output/.gitkeep
+
+# HTML test reports
+reports/
+!reports/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+generators/go/e2e-go-generator
+generators/csharp/bin/
+generators/csharp/obj/
+bridges/csharp/DocxBridge/bin/
+bridges/csharp/DocxBridge/obj/
+
+# Test coverage
+coverage.out
+*.coverprofile

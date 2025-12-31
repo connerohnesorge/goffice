@@ -2,6 +2,7 @@
 package elements
 
 import (
+	"fmt"
 	"iter"
 	"strings"
 
@@ -404,4 +405,127 @@ func (p *Paragraph) IsNumbered() bool {
 	}
 
 	return props.NumberingProperties() != nil
+}
+
+// InsertChildBefore inserts a new child element before the reference child.
+// Returns an error if refChild is not a child of this paragraph.
+func (p *Paragraph) InsertChildBefore(
+	newChild, refChild openxml.Element,
+) error {
+	// Verify refChild is actually a child
+	found := false
+	for child := range p.Children() {
+		if child == refChild {
+			found = true
+
+			break
+		}
+	}
+	if !found {
+		return fmt.Errorf(
+			"reference child is not a child of this paragraph",
+		)
+	}
+
+	p.InsertBefore(newChild, refChild)
+
+	return nil
+}
+
+// InsertChildAfter inserts a new child element after the reference child.
+// Returns an error if refChild is not a child of this paragraph.
+func (p *Paragraph) InsertChildAfter(
+	newChild, refChild openxml.Element,
+) error {
+	// Verify refChild is actually a child
+	found := false
+	for child := range p.Children() {
+		if child == refChild {
+			found = true
+
+			break
+		}
+	}
+	if !found {
+		return fmt.Errorf(
+			"reference child is not a child of this paragraph",
+		)
+	}
+
+	p.InsertAfter(newChild, refChild)
+
+	return nil
+}
+
+// MarkCommentRange marks a range of runs in the paragraph with comment markers.
+// It inserts CommentRangeStart before the start run, CommentRangeEnd after the
+// end run, and CommentReference inside the end run.
+//
+// Parameters:
+//   - startRunIdx: 0-based index of the first run in the comment range
+//   - endRunIdx: 0-based index of the last run in the comment range
+//   - commentID: ID of the comment to associate with this range
+//
+// Returns an error if:
+//   - The run indices are invalid (negative, out of bounds, or startRunIdx > endRunIdx)
+//   - The paragraph has no runs
+func (p *Paragraph) MarkCommentRange(
+	startRunIdx, endRunIdx, commentID int,
+) error {
+	// Collect all runs - we'll count them first for pre-allocation
+	// Count runs first
+	runCount := 0
+	for range p.Runs() {
+		runCount++
+	}
+
+	// Pre-allocate slice
+	runs := make([]*Run, 0, runCount)
+	for run := range p.Runs() {
+		runs = append(runs, run)
+	}
+
+	// Validate indices
+	if len(runs) == 0 {
+		return fmt.Errorf("paragraph has no runs")
+	}
+	if startRunIdx < 0 ||
+		startRunIdx >= len(runs) {
+		return fmt.Errorf(
+			"startRunIdx %d out of bounds (0-%d)",
+			startRunIdx,
+			len(runs)-1,
+		)
+	}
+	if endRunIdx < 0 || endRunIdx >= len(runs) {
+		return fmt.Errorf(
+			"endRunIdx %d out of bounds (0-%d)",
+			endRunIdx,
+			len(runs)-1,
+		)
+	}
+	if startRunIdx > endRunIdx {
+		return fmt.Errorf(
+			"startRunIdx %d > endRunIdx %d",
+			startRunIdx,
+			endRunIdx,
+		)
+	}
+
+	startRun := runs[startRunIdx]
+	endRun := runs[endRunIdx]
+
+	// Insert CommentRangeStart before the start run
+	rangeStart := NewCommentRangeStart(commentID)
+	p.InsertBefore(rangeStart, startRun)
+
+	// Insert CommentRangeEnd after the end run
+	rangeEnd := NewCommentRangeEnd(commentID)
+	p.InsertAfter(rangeEnd, endRun)
+
+	// Insert CommentReference inside the end run (at the end)
+	commentRef := NewCommentReference(commentID)
+	endRun.AppendChild(commentRef)
+
+	return nil
 }

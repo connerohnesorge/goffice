@@ -123,6 +123,7 @@ func (r *SpreadsheetRenderer) WithOptions(
 	opts RenderOptions,
 ) *SpreadsheetRenderer {
 	r.options = opts
+
 	return r
 }
 
@@ -180,6 +181,7 @@ func (r *SpreadsheetRenderer) getSheetsToRender() []*spreadsheet.Sheet {
 		for sheet := range r.doc.Sheets() {
 			result = append(result, sheet)
 		}
+
 		return result
 	}
 
@@ -406,6 +408,7 @@ func parsePrintAreaRef(
 
 	// Parse the range (e.g., $A$1:$Z$100)
 	rangeStr := parts[1]
+
 	return parseRange(rangeStr)
 }
 
@@ -415,6 +418,7 @@ func splitReference(ref string) []string {
 	for i, ch := range ref {
 		if ch == '!' {
 			idx = i
+
 			break
 		}
 	}
@@ -437,6 +441,7 @@ func parseRange(rangeStr string) *CellRange {
 	for i, ch := range rangeStr {
 		if ch == ':' {
 			colonIdx = i
+
 			break
 		}
 	}
@@ -470,11 +475,12 @@ func parseRange(rangeStr string) *CellRange {
 // stripDollarSigns removes $ characters from a string.
 func stripDollarSigns(s string) string {
 	result := make([]byte, 0, len(s))
-	for i := 0; i < len(s); i++ {
+	for i := range len(s) {
 		if s[i] != '$' {
 			result = append(result, s[i])
 		}
 	}
+
 	return string(result)
 }
 
@@ -519,6 +525,7 @@ func columnLetterToNumber(letters string) int {
 	for _, ch := range letters {
 		result = result*26 + int(ch-'A'+1)
 	}
+
 	return result
 }
 
@@ -593,6 +600,7 @@ func (r *SpreadsheetRenderer) registerFont(
 		if err == nil {
 			// Successfully registered TrueType font
 			r.fontRegistry[page][fontFamily] = resourceName
+
 			return resourceName
 		}
 

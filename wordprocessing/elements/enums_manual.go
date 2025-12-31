@@ -40,13 +40,12 @@ type (
 	TextAlignmentValue = TextAlignmentTypeValues
 	TabAlignment       = TextTabAlignmentValues
 	TabLeader          = TabStopLeaderCharValues
-	BorderStyle        = BorderStyleValues
+	BorderStyle        = BorderValues
 	ShadingPattern     = ShadingPatternValues
 	UnderlineValue     = UnderlineValues
 	HighlightColor     = HighlightColorValues
-	VerticalAlignValue = VerticalAlignmentRunValues
+	VerticalAlignValue = VerticalAlignmentValues
 	EmphasisMarkValue  = EmphasisMarkValues
-	PageOrientation    = PageOrientationValues
 )
 
 // Break type constants
@@ -93,6 +92,11 @@ const (
 const (
 	UnderlineNone   UnderlineValue = ""
 	UnderlineSingle UnderlineValue = UnderlineValuesSingle
+	UnderlineDouble UnderlineValue = UnderlineValuesDouble
+	UnderlineThick  UnderlineValue = UnderlineValuesThick
+	UnderlineDotted UnderlineValue = UnderlineValuesDotted
+	UnderlineDash   UnderlineValue = UnderlineValuesDash
+	UnderlineWave   UnderlineValue = UnderlineValuesWave
 )
 
 // TextAlignmentValue constants
@@ -112,9 +116,9 @@ const (
 
 // BorderStyle constants
 const (
-	BorderNone   BorderStyle = BorderStyleValuesNone
-	BorderSingle BorderStyle = "single" // Custom value for single border
-	BorderDouble BorderStyle = BorderStyleValuesDouble
+	BorderNone   BorderStyle = BorderValuesNone
+	BorderSingle BorderStyle = BorderValuesSingle
+	BorderDouble BorderStyle = BorderValuesDouble
 )
 
 // ShadingPattern constants
@@ -129,19 +133,16 @@ const (
 )
 
 // VerticalAlignValue constants
-const (
-	VerticalAlignBaseline VerticalAlignValue = VerticalAlignmentRunValuesBaseline
-)
+// TODO: Re-enable these when VerticalAlignmentRunValues enum is regenerated
+// const (
+// 	VerticalAlignBaseline    VerticalAlignValue = VerticalAlignmentRunValuesBaseline
+// 	VerticalAlignSuperscript VerticalAlignValue = VerticalAlignmentRunValuesSuperscript
+// 	VerticalAlignSubscript   VerticalAlignValue = VerticalAlignmentRunValuesSubscript
+// )
 
 // EmphasisMarkValue constants
 const (
 	EmphasisNone EmphasisMarkValue = EmphasisMarkValuesNone
-)
-
-// PageOrientation constants
-const (
-	PageOrientationPortrait  PageOrientation = PageOrientationValuesPortrait
-	PageOrientationLandscape PageOrientation = PageOrientationValuesLandscape
 )
 
 // HeaderFooter constants (note: need to add type alias)
@@ -149,4 +150,6 @@ type HeaderFooter = HeaderFooterValues
 
 const (
 	HeaderFooterDefault HeaderFooter = HeaderFooterValuesDefault
+	HeaderFooterFirst   HeaderFooter = HeaderFooterValuesFirst
+	HeaderFooterEven    HeaderFooter = HeaderFooterValuesEven
 )
