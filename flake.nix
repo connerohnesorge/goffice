@@ -147,6 +147,7 @@ nix fmt
             graphviz
             goreleaser
             gofumpt
+            ghostscript
 
             # E2E Visual Testing Dependencies
             dotnet-sdk_9 # .NET SDK 9.0 for C# generator
