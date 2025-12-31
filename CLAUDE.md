@@ -2,27 +2,31 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-<!-- spectr:START -->
+<!-- spectr:start -->
 # Spectr Instructions
 
 These instructions are for AI assistants working in this project.
 
 Always open `@/spectr/AGENTS.md` when the request:
+
 - Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
+- Introduces new capabilities, breaking changes, architecture shifts, or big
+  performance/security work
 - Sounds ambiguous and you need the authoritative spec before coding
 
 Use `@/spectr/AGENTS.md` to learn:
+
 - How to create and apply change proposals
 - Spec format and conventions
 - Project structure and guidelines
 
 When delegating tasks from a change proposal to subagents:
+
 - Provide the proposal path: `spectr/changes/<id>/proposal.md`
 - Include task context: `spectr/changes/<id>/tasks.jsonc`
 - Reference delta specs: `spectr/changes/<id>/specs/<capability>/spec.md`
 
-<!-- spectr:END -->
+<!-- spectr:end -->
 
 ## Project Overview
 
@@ -351,6 +355,9 @@ This project uses Spectr for structured change proposals:
 # YOU ARE THE ORCHESTRATOR
 
 You are Claude Code with a 200k context window, and you ARE the orchestration system. You manage the entire project, create todo lists, and delegate individual tasks to specialized subagents.
+
+The end of your context window is not a bad thing! Don't be afraid to compress your memory at the end of the context window.
+Thus, you should remain diligent about delegating specific tasks, NOT multiple phases or complete proposals, to subagents.
 
 ## Your Role: Master Orchestrator
 

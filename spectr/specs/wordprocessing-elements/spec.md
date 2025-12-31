@@ -213,22 +213,27 @@ The system SHALL provide Hyperlink elements for links.
 - THEN a hyperlink element with run is created
 
 ### Requirement: Field Elements
-The system SHALL provide elements for field codes.
+The system SHALL provide elements for field codes AND a high-level API for form field manipulation.
 
-#### Scenario: Simple field
+#### Scenario: Simple field (unchanged)
 - GIVEN a SimpleField element
 - WHEN Instruction() is accessed
 - THEN the field code (e.g., "PAGE", "DATE") is returned
 
-#### Scenario: Complex field
+#### Scenario: Complex field (unchanged)
 - GIVEN FieldChar elements (Begin, Separate, End) with FieldCode
 - WHEN processed
 - THEN the complex field instruction is understood
 
-#### Scenario: Create page number field
+#### Scenario: Create page number field (unchanged)
 - GIVEN need for page number
 - WHEN NewSimpleField("PAGE") is called
 - THEN a page number field is created
+
+#### Scenario: Form field API access
+- GIVEN a SimpleField with FormFieldData child
+- WHEN wrapped in FormField object
+- THEN high-level get/set methods are available
 
 ### Requirement: Drawing Element
 The system SHALL provide Drawing elements for graphics.
@@ -293,20 +298,433 @@ The system SHALL provide SDT elements for content controls.
 - THEN the table cell content control is handled
 
 ### Requirement: Revision Elements
-The system SHALL provide elements for tracked changes.
+The system SHALL provide elements for tracked changes with high-level wrapper API for document-level operations.
+
+**Note**: This modifies the existing "Revision Elements" requirement in `spectr/specs/wordprocessing-elements/spec.md` to add the high-level wrapper context.
 
 #### Scenario: InsertedRun (w:ins)
 - GIVEN an InsertedRun element
 - WHEN Author(), Date(), and content are accessed
 - THEN the insertion revision information is returned
+- AND the element can be wrapped in a high-level Revision object
+- AND the Revision wrapper provides Accept() and Reject() methods
 
 #### Scenario: DeletedRun (w:del)
 - GIVEN a DeletedRun element
 - WHEN content is accessed
 - THEN the deleted content and revision info are returned
+- AND the element can be wrapped in a high-level Revision object
+- AND the Revision wrapper provides Accept() and Reject() methods
 
 #### Scenario: DeletedText
 - GIVEN a DeletedText element
 - WHEN InnerText() is called
 - THEN the deleted text content is returned
+- AND the text can be restored to normal Text during reject operations
 
+#### Scenario: MoveFromRun
+- GIVEN a MoveFromRun element with id=10
+- WHEN wrapped in a Revision object
+- THEN the revision metadata (id, author, date) is accessible
+- AND the Revision can be paired with matching MoveToRun id=10
+- AND Accept/Reject operations coordinate with the move pair
+
+#### Scenario: MoveToRun
+- GIVEN a MoveToRun element with id=10
+- WHEN wrapped in a Revision object
+- THEN the revision metadata (id, author, date) is accessible
+- AND the Revision can be paired with matching MoveFromRun id=10
+- AND Accept/Reject operations coordinate with the move pair
+
+#### Scenario: RunPropertiesChange
+- GIVEN a RunPropertiesChange element
+- WHEN wrapped in a Revision object
+- THEN the previous properties and new properties are accessible
+- AND Accept applies new properties and removes wrapper
+- AND Reject restores previous properties and removes wrapper
+
+#### Scenario: ParagraphPropertiesChange
+- GIVEN a ParagraphPropertiesChange element
+- WHEN wrapped in a Revision object
+- THEN the previous properties and new properties are accessible
+- AND Accept applies new properties and removes wrapper
+- AND Reject restores previous properties and removes wrapper
+
+### Requirement: Form Field Wrapper
+The system SHALL provide a FormField wrapper for legacy form fields.
+
+#### Scenario: FormField wraps SimpleField
+- GIVEN a SimpleField with FormFieldData
+- WHEN FormField wrapper is created
+- THEN the wrapper provides access to field properties
+
+#### Scenario: Field type detection
+- GIVEN a SimpleField with instr="FORMTEXT"
+- WHEN FormField.Type() is called
+- THEN FormFieldTypeText is returned
+
+#### Scenario: Field name access
+- GIVEN a FormField with name "CustomerName"
+- WHEN FormField.Name() is called
+- THEN "CustomerName" is returned
+
+#### Scenario: Field name modification
+- GIVEN a FormField
+- WHEN FormField.SetName("NewName") is called
+- THEN the ffData/name element is updated
+
+### Requirement: Text Field Manipulation
+The system SHALL provide methods for text form field manipulation.
+
+#### Scenario: Get text field value
+- GIVEN a text FormField with value "John Doe"
+- WHEN GetTextValue() is called
+- THEN "John Doe" is returned
+
+#### Scenario: Set text field value
+- GIVEN a text FormField
+- WHEN SetTextValue("Jane Smith") is called
+- THEN both ffData/textInput/default AND run/text are updated to "Jane Smith"
+
+#### Scenario: Set maximum length
+- GIVEN a text FormField
+- WHEN SetMaxLength(50) is called
+- THEN ffData/textInput/maxLength is set to 50
+
+#### Scenario: Get maximum length
+- GIVEN a text FormField with maxLength=50
+- WHEN GetMaxLength() is called
+- THEN 50 is returned
+
+#### Scenario: Set default text value
+- GIVEN a text FormField
+- WHEN SetDefaultTextValue("Default Name") is called
+- THEN ffData/textInput/default is set to "Default Name"
+
+#### Scenario: Text value synchronization
+- GIVEN a text FormField
+- WHEN SetTextValue("New Value") is called
+- THEN the run text element matches "New Value" exactly
+
+### Requirement: CheckBox Field Manipulation
+The system SHALL provide methods for checkbox form field manipulation.
+
+#### Scenario: Check checkbox state
+- GIVEN a checkbox FormField that is checked
+- WHEN IsChecked() is called
+- THEN true is returned
+
+#### Scenario: Toggle checkbox to checked
+- GIVEN an unchecked checkbox FormField
+- WHEN SetChecked(true) is called
+- THEN ffData/checkBox/checked is set to 1 AND symbol character is updated to F052
+
+#### Scenario: Toggle checkbox to unchecked
+- GIVEN a checked checkbox FormField
+- WHEN SetChecked(false) is called
+- THEN ffData/checkBox/checked is set to 0 AND symbol character is updated to F06F
+
+#### Scenario: Set checkbox size
+- GIVEN a checkbox FormField
+- WHEN SetCheckBoxSize(20) is called
+- THEN ffData/checkBox/size is set to 20 (10 points)
+
+#### Scenario: Get checkbox size
+- GIVEN a checkbox FormField with size=20
+- WHEN GetCheckBoxSize() is called
+- THEN 20 is returned
+
+#### Scenario: Auto checkbox size
+- GIVEN a checkbox FormField
+- WHEN SetAutoCheckBoxSize(true) is called
+- THEN ffData/checkBox/sizeAuto is set to 1
+
+#### Scenario: Checkbox symbol synchronization
+- GIVEN a checkbox FormField
+- WHEN SetChecked(true) is called
+- THEN the run/sym element has char="F052" (checked box symbol)
+
+#### Scenario: Checkbox symbol must be set via SetChecked
+- GIVEN a checkbox FormField
+- WHEN SetChecked() is used to change state
+- THEN both ffData/checkBox/checked AND run/sym/char are synchronized
+- NOTE: Symbols MUST only be set via SetChecked() to ensure proper synchronization
+- NOTE: Manual manipulation of symbol elements may create invalid state
+
+### Requirement: DropDown Field Manipulation
+The system SHALL provide methods for dropdown form field manipulation.
+
+#### Scenario: Get dropdown items
+- GIVEN a dropdown FormField with items ["USA", "Canada", "UK"]
+- WHEN GetDropDownItems() is called
+- THEN ["USA", "Canada", "UK"] is returned
+
+#### Scenario: Set dropdown items
+- GIVEN a dropdown FormField
+- WHEN SetDropDownItems(["Option A", "Option B", "Option C"]) is called
+- THEN ffData/ddList contains three listEntry elements with those values
+
+#### Scenario: Get selected index
+- GIVEN a dropdown FormField with selectedIndex=1
+- WHEN GetSelectedIndex() is called
+- THEN 1 is returned
+
+#### Scenario: Set selected index
+- GIVEN a dropdown FormField with items ["A", "B", "C"]
+- WHEN SetSelectedIndex(2) is called
+- THEN ffData/ddList/result is 2 AND run/text is "C"
+
+#### Scenario: Get selected value
+- GIVEN a dropdown FormField with items ["USA", "Canada"] and selectedIndex=0
+- WHEN GetSelectedValue() is called
+- THEN "USA" is returned
+
+#### Scenario: DropDown value synchronization
+- GIVEN a dropdown FormField with items ["X", "Y", "Z"]
+- WHEN SetSelectedIndex(1) is called
+- THEN the run text element contains "Y" exactly
+
+#### Scenario: Invalid selected index handling
+- GIVEN a dropdown FormField with 3 items
+- WHEN SetSelectedIndex(5) is called (out of range)
+- THEN the operation is ignored or error is returned
+
+#### Scenario: Get default dropdown index
+- GIVEN a dropdown FormField with default=2
+- WHEN GetDefaultDropDownIndex() is called
+- THEN 2 is returned
+
+#### Scenario: Set default dropdown index
+- GIVEN a dropdown FormField with items ["A", "B", "C"]
+- WHEN SetDefaultDropDownIndex(1) is called
+- THEN ffData/ddList/default is set to 1
+
+#### Scenario: DropDown max items validation
+- GIVEN a Paragraph
+- WHEN SetDropDownItems() is called with 26 items
+- THEN the operation panics with "cannot have more than 25 items"
+
+#### Scenario: DropDown insert max items validation
+- GIVEN a Paragraph
+- WHEN InsertDropDown() is called with 26 items
+- THEN the operation panics with schema constraint error
+
+### Requirement: Form Field Insertion in Paragraphs
+The system SHALL provide methods to insert form fields into paragraphs.
+
+#### Scenario: Insert text field
+- GIVEN a Paragraph
+- WHEN InsertTextField("CustomerName", "Enter name") is called
+- THEN a SimpleField with FORMTEXT instruction, FormFieldData, and run is added
+
+#### Scenario: Insert checkbox
+- GIVEN a Paragraph
+- WHEN InsertCheckBox("AgreeTerms", false) is called
+- THEN a SimpleField with FORMCHECKBOX instruction, FormFieldData with checkBox, and symbol run is added
+
+#### Scenario: Insert dropdown
+- GIVEN a Paragraph
+- WHEN InsertDropDown("Country", ["USA", "UK"], 0) is called
+- THEN a SimpleField with FORMDROPDOWN instruction, FormFieldData with ddList, and run with selected text is added
+
+#### Scenario: Multiple fields in one paragraph
+- GIVEN a Paragraph
+- WHEN InsertTextField(), InsertCheckBox(), and InsertDropDown() are called sequentially
+- THEN all three SimpleField elements are added to the paragraph
+
+#### Scenario: Inserted field is immediately accessible
+- GIVEN a Paragraph
+- WHEN field := InsertTextField("Test", "Value") is called
+- THEN field.GetTextValue() returns "Value" immediately
+
+### Requirement: Form Field Removal
+The system SHALL support removing form fields from paragraphs.
+
+#### Scenario: Remove field from paragraph
+- GIVEN a FormField in a Paragraph
+- WHEN Remove() is called
+- THEN the SimpleField element is removed from the paragraph
+
+#### Scenario: Remove and re-iterate
+- GIVEN a document with 3 form fields
+- WHEN one field is removed
+- THEN GetFormFields() yields only 2 fields
+
+### Requirement: Form Field Enabled State
+The system SHALL support enabling and disabling form fields.
+
+#### Scenario: Check if field is enabled
+- GIVEN a FormField with enabled element present
+- WHEN Enabled() is called
+- THEN true is returned
+
+#### Scenario: Disable field
+- GIVEN a FormField
+- WHEN SetEnabled(false) is called
+- THEN the ffData/enabled element is removed
+
+#### Scenario: Enable field
+- GIVEN a FormField
+- WHEN SetEnabled(true) is called
+- THEN the ffData/enabled element is added (if not present)
+
+#### Scenario: Disabled field persists on save
+- GIVEN a disabled FormField
+- WHEN the document is saved and reopened
+- THEN the field is still disabled
+
+### Requirement: Form Field XML Structure Compliance
+The system SHALL generate form field XML structures compatible with Microsoft Word.
+
+#### Scenario: Text field XML structure
+- GIVEN a created text FormField
+- WHEN serialized to XML
+- THEN the structure matches: fldSimple[@instr="FORMTEXT"]/ffData/textInput/default
+
+#### Scenario: CheckBox field XML structure
+- GIVEN a created checkbox FormField
+- WHEN serialized to XML
+- THEN the structure matches: fldSimple[@instr="FORMCHECKBOX"]/ffData/checkBox/checked
+
+#### Scenario: DropDown field XML structure
+- GIVEN a created dropdown FormField
+- WHEN serialized to XML
+- THEN the structure matches: fldSimple[@instr="FORMDROPDOWN"]/ffData/ddList/listEntry
+
+#### Scenario: Field name in ffData
+- GIVEN any FormField with name "TestField"
+- WHEN serialized to XML
+- THEN ffData contains: name[@val="TestField"]
+
+#### Scenario: Enabled attribute
+- GIVEN an enabled FormField
+- WHEN serialized to XML
+- THEN ffData contains: enabled element (empty)
+
+### Requirement: Form Field Roundtrip Compatibility
+The system SHALL maintain form field integrity across save/load cycles.
+
+#### Scenario: Text field value roundtrip
+- GIVEN a text FormField with value "Test Value"
+- WHEN saved, closed, and reopened
+- THEN GetTextValue() returns "Test Value"
+
+#### Scenario: CheckBox state roundtrip
+- GIVEN a checked checkbox FormField
+- WHEN saved, closed, and reopened
+- THEN IsChecked() returns true
+
+#### Scenario: DropDown selection roundtrip
+- GIVEN a dropdown FormField with selectedIndex=2
+- WHEN saved, closed, and reopened
+- THEN GetSelectedIndex() returns 2
+
+#### Scenario: Field name roundtrip
+- GIVEN a FormField with name "UniqueField"
+- WHEN saved, closed, and reopened
+- THEN Name() returns "UniqueField"
+
+#### Scenario: Multiple fields roundtrip
+- GIVEN a document with text, checkbox, and dropdown fields
+- WHEN saved, closed, and reopened
+- THEN all three fields exist with correct types and values
+
+### Requirement: Revision Type Enumeration
+The system SHALL provide type identification for all revision elements.
+
+#### Scenario: Identify insertion type
+- GIVEN an InsertedRun element
+- WHEN wrapped as Revision
+- THEN Type() returns RevisionTypeInsert
+
+#### Scenario: Identify deletion type
+- GIVEN a DeletedRun element
+- WHEN wrapped as Revision
+- THEN Type() returns RevisionTypeDelete
+
+#### Scenario: Identify move-from type
+- GIVEN a MoveFromRun element
+- WHEN wrapped as Revision
+- THEN Type() returns RevisionTypeMoveFrom
+
+#### Scenario: Identify move-to type
+- GIVEN a MoveToRun element
+- WHEN wrapped as Revision
+- THEN Type() returns RevisionTypeMoveTo
+
+#### Scenario: Identify format change type
+- GIVEN a RunPropertiesChange or ParagraphPropertiesChange element
+- WHEN wrapped as Revision
+- THEN Type() returns RevisionTypeFormatChange
+
+### Requirement: Revision Content Extraction
+The system SHALL provide unified content access across revision types.
+
+#### Scenario: Extract insertion content
+- GIVEN an InsertedRun containing runs with text "new content"
+- WHEN wrapped as Revision and Content() is called
+- THEN "new content" is returned
+
+#### Scenario: Extract deletion content
+- GIVEN a DeletedRun containing DeletedText "removed content"
+- WHEN wrapped as Revision and Content() is called
+- THEN "removed content" is returned
+
+#### Scenario: Extract move content
+- GIVEN a MoveFromRun containing runs with text "moved text"
+- WHEN wrapped as Revision and Content() is called
+- THEN "moved text" is returned
+
+#### Scenario: Extract format change description
+- GIVEN a RunPropertiesChange element
+- WHEN wrapped as Revision and Content() is called
+- THEN a description of the property change is returned
+
+### Requirement: Revision Element Traversal
+The system SHALL support finding all revision elements in a document tree.
+
+#### Scenario: Find revisions in paragraph
+- GIVEN a Paragraph containing 2 InsertedRun and 1 DeletedRun
+- WHEN the paragraph is traversed for revisions
+- THEN all 3 revision elements are found
+
+#### Scenario: Find revisions in nested elements
+- GIVEN a Table containing cells with InsertedRun elements
+- WHEN the table is traversed for revisions
+- THEN all InsertedRun elements in all cells are found
+
+#### Scenario: Find revisions in headers
+- GIVEN a HeaderPart containing tracked changes
+- WHEN the header is traversed for revisions
+- THEN all revision elements in the header are found
+
+#### Scenario: Find revisions in footers
+- GIVEN a FooterPart containing tracked changes
+- WHEN the footer is traversed for revisions
+- THEN all revision elements in the footer are found
+
+#### Scenario: Find revisions in comments
+- GIVEN a CommentsPart with tracked changes in comment text
+- WHEN the comments are traversed for revisions
+- THEN all revision elements in comments are found
+
+### Requirement: Revision Iterator Pattern
+The system SHALL use Go 1.23+ iter.Seq for memory-efficient revision enumeration.
+
+#### Scenario: Iterate revisions without loading all
+- GIVEN a document with 10,000 tracked changes
+- WHEN GetRevisions() returns iter.Seq[*Revision]
+- THEN memory usage scales with iteration, not total count
+- AND early break stops further enumeration
+
+#### Scenario: Iterate and filter
+- GIVEN an iterator over revisions
+- WHEN filtering by author during iteration
+- THEN only matching revisions are processed
+- AND non-matching revisions are skipped efficiently
+
+#### Scenario: Empty revision iterator
+- GIVEN a document with no tracked changes
+- WHEN GetRevisions() is called
+- THEN the iterator completes immediately
+- AND no allocations occur for empty results

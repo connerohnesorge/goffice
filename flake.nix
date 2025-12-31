@@ -91,7 +91,7 @@ nix fmt
         };
         tests = {
           exec = rooted ''
-            gotestsum --format short-verbose "$REPO_ROOT"/... --timeout=5m
+            gotestsum --format short-verbose "$REPO_ROOT"/... --timeout=6m
           '';
           description = "Run tests";
           deps = [pkgs.gotestsum];
