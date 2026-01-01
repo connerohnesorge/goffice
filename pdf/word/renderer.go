@@ -734,6 +734,99 @@ func (r *WordRenderer) renderInlineDrawing(
 		return nil
 	}
 
+	if graphicData.URI() == drawingml.NamespaceChart {
+		chartRelID := ""
+		for child := range graphicData.Children() {
+			if child.LocalName() != "chart" ||
+				child.NamespaceURI() != drawingml.NamespaceChart {
+				continue
+			}
+			attr, found := child.GetAttribute(
+				"id",
+				openxml.NamespaceRelationships,
+			)
+			if !found {
+				continue
+			}
+			chartRelID = attr.Value()
+			break
+		}
+
+		if chartRelID != "" {
+			pageSize := core.PageSize{
+				Width:  page.Width(),
+				Height: page.Height(),
+			}
+			ctx := core.NewRenderingContextFromPageSize(
+				pageSize,
+			)
+
+			pageImpl := core.NewPageImpl(
+				page.Width(),
+				page.Height(),
+			)
+			pageImpl.AttachResources(r.pdf, page)
+			ctx.SetPage(pageImpl)
+
+			mainPart := r.doc.MainPart()
+			if mainPart != nil {
+				part, err := mainPart.GetPartById(
+					chartRelID,
+				)
+				if err != nil {
+					return nil
+				}
+				chartPart, ok := part.(*parts.ChartPart)
+				if !ok {
+					return nil
+				}
+
+				chartKind, chartData, horizontal, err := drawing.ExtractChartData(
+					chartPart.ChartSpace(),
+				)
+				if err != nil {
+					return nil
+				}
+
+				chartRenderer := drawing.NewChartRenderer(ctx)
+				boundsY := y - heightPt
+				switch chartKind {
+				case drawing.ChartKindBar:
+					_ = chartRenderer.RenderBarChart(
+						x,
+						boundsY,
+						widthPt,
+						heightPt,
+						chartData,
+						horizontal,
+					)
+				case drawing.ChartKindLine:
+					_ = chartRenderer.RenderLineChart(
+						x,
+						boundsY,
+						widthPt,
+						heightPt,
+						chartData,
+					)
+				case drawing.ChartKindPie:
+					_ = chartRenderer.RenderPieChart(
+						x,
+						boundsY,
+						widthPt,
+						heightPt,
+						chartData,
+					)
+				}
+
+				page.WriteContent(
+					[]byte(pageImpl.GetContent()),
+				)
+
+				return nil
+			}
+		}
+	}
+
 	// Get the picture
 	picture := graphicData.Picture()
 	if picture == nil {
@@ -754,12 +847,31 @@ func (r *WordRenderer) renderInlineDrawing(
 	ctx := core.NewRenderingContextFromPageSize(
 		pageSize,
 	)
+	mainPart := r.doc.MainPart()
+	if mainPart != nil {
+		ctx.SetImageResolver(func(id string) ([]byte, error) {
+			part, err := mainPart.GetPartById(id)
+			if err != nil {
+				return nil, err
+			}
+			imagePart, ok := part.(*parts.ImagePart)
+			if !ok {
+				return nil, fmt.Errorf(
+					"part %s is not an image",
+					id,
+				)
+			}
+
+			return imagePart.GetData()
+		})
+	}
 
 	// Create a PageImpl adapter for the page
 	pageImpl := core.NewPageImpl(
 		page.Width(),
 		page.Height(),
 	)
+	pageImpl.AttachResources(r.pdf, page)
 	ctx.SetPage(pageImpl)
 
 	// Create an image renderer
@@ -1343,11 +1455,11 @@ func (r *WordRenderer) processRun(
 		}
 
 		lr.Strike = rPr.Strike()
-		if va := rPr.VerticalTextAlignment(); va != elements.VerticalAlignBaseline {
+		if va := rPr.VerticalTextAlignment(); va != elements.VerticalAlignValue("baseline") {
 			switch va {
-			case elements.VerticalAlignmentRunValuesSubscript:
+			case elements.VerticalAlignValue("subscript"):
 				lr.Subscript = true
-			case elements.VerticalAlignmentRunValuesSuperscript:
+			case elements.VerticalAlignValue("superscript"):
 				lr.Superscript = true
 			}
 		}

@@ -26,64 +26,51 @@ func NewTransformRenderer(
 }
 
 // ApplyTransform applies all transformations for a shape.
-func (*TransformRenderer) ApplyTransform(
+func (r *TransformRenderer) ApplyTransform(
 	transform *drawingml.Transform2D,
 ) error {
 	if transform == nil {
 		return nil
 	}
 
-	offset := transform.Offset()
-	extent := transform.Extent()
+	ooxml := core.NewOOXMLTransform(
+		int64(transform.OffsetX()),
+		int64(transform.OffsetY()),
+		int64(transform.Width()),
+		int64(transform.Height()),
+	).WithRotation(int32(transform.Rotation())).
+		WithFlipH(transform.FlipH()).
+		WithFlipV(transform.FlipV())
 
-	x := drawingml.EmuToPoints(offset.X)
-	y := drawingml.EmuToPoints(offset.Y)
-	width := drawingml.EmuToPoints(extent.Cx)
-	height := drawingml.EmuToPoints(extent.Cy)
+	if !ooxml.HasTransform() {
+		return nil
+	}
 
-	// Calculate center point for transformations
-	cx := x + width/2
-	cy := y + height/2
-
-	// Apply rotation if present
-	// Note: DrawingML rotation is in 60000ths of a degree
-	// This would need to be extracted from the transform element attributes
-
-	// Apply flip if present
-	// This would also come from transform element attributes
-
-	// For basic implementation, just translate to position
-	// Full transformation matrix support would be needed for complete implementation
-
-	_ = cx
-	_ = cy
+	r.ctx.Page.SaveGraphicsState()
+	r.ctx.Page.Transform(
+		core.OOXMLTransformToPDFMatrix(
+			ooxml,
+			r.ctx.GetPageHeight(),
+		),
+	)
 
 	return nil
 }
 
 // ApplyRotation applies rotation around a center point.
 func (r *TransformRenderer) ApplyRotation(
-	_, _, angleDegrees float64,
+	centerX, centerY, angleDegrees float64,
 ) {
 	// Save state before transformation
 	r.ctx.Page.SaveGraphicsState()
 
-	// Convert angle to radians
-	angleRad := angleDegrees * degreesToRadians
-
 	// Translate to center
-	// Rotate
-	// Translate back
-	// This requires transformation matrix operations in PDF
+	matrix := core.IdentityMatrix().
+		Translate(centerX, centerY).
+		RotateDegrees(angleDegrees).
+		Translate(-centerX, -centerY)
 
-	// PDF transformation matrix: [a b c d e f]
-	// For rotation: [cos(θ) sin(θ) -sin(θ) cos(θ) 0 0]
-	cos := math.Cos(angleRad)
-	sin := math.Sin(angleRad)
-
-	// Apply transformation (placeholder - would use PDF transformation matrix)
-	_ = cos
-	_ = sin
+	r.ctx.Page.Transform(matrix)
 }
 
 // ApplyFlipHorizontal flips content horizontally.
@@ -95,9 +82,11 @@ func (r *TransformRenderer) ApplyFlipHorizontal(
 	// Horizontal flip: scale X by -1
 	// Matrix: [-1 0 0 1 2*centerX 0]
 
-	// Placeholder for flip transformation
-	_ = centerX
-	_ = width
+	matrix := core.IdentityMatrix().
+		Translate(centerX+width/2, 0).
+		Scale(-1, 1).
+		Translate(-(centerX + width/2), 0)
+	r.ctx.Page.Transform(matrix)
 }
 
 // ApplyFlipVertical flips content vertically.
@@ -109,9 +98,11 @@ func (r *TransformRenderer) ApplyFlipVertical(
 	// Vertical flip: scale Y by -1
 	// Matrix: [1 0 0 -1 0 2*centerY]
 
-	// Placeholder for flip transformation
-	_ = centerY
-	_ = height
+	matrix := core.IdentityMatrix().
+		Translate(0, centerY+height/2).
+		Scale(1, -1).
+		Translate(0, -(centerY + height/2))
+	r.ctx.Page.Transform(matrix)
 }
 
 // ApplyScale applies scaling transformation.
@@ -122,9 +113,8 @@ func (r *TransformRenderer) ApplyScale(
 
 	// Scale transformation matrix: [scaleX 0 0 scaleY 0 0]
 
-	// Placeholder
-	_ = scaleX
-	_ = scaleY
+	matrix := core.IdentityMatrix().Scale(scaleX, scaleY)
+	r.ctx.Page.Transform(matrix)
 }
 
 // ApplyGroupTransform applies transformations for grouped shapes.

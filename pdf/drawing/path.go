@@ -32,6 +32,11 @@ type PathBuilder struct {
 	startY     float64
 	hasStart   bool
 	subpathLen int
+	minX       float64
+	minY       float64
+	maxX       float64
+	maxY       float64
+	boundsSet  bool
 }
 
 // NewPathBuilder creates a new path builder.
@@ -57,6 +62,7 @@ func (p *PathBuilder) MoveTo(
 	p.startY = y
 	p.hasStart = true
 	p.subpathLen = 0
+	p.updateBoundsPoint(x, y)
 
 	return p
 }
@@ -79,6 +85,7 @@ func (p *PathBuilder) LineTo(
 	p.currentX = x
 	p.currentY = y
 	p.subpathLen++
+	p.updateBoundsPoint(x, y)
 
 	return p
 }
@@ -101,6 +108,9 @@ func (p *PathBuilder) CurveTo(
 	p.currentX = x3
 	p.currentY = y3
 	p.subpathLen++
+	p.updateBoundsPoint(x1, y1)
+	p.updateBoundsPoint(x2, y2)
+	p.updateBoundsPoint(x3, y3)
 
 	return p
 }
@@ -180,8 +190,57 @@ func (p *PathBuilder) Rectangle(
 	p.startY = y
 	p.hasStart = true
 	p.subpathLen = 4
+	p.updateBoundsRect(x, y, width, height)
 
 	return p
+}
+
+// Bounds returns the bounding rectangle of the path.
+// The boolean return value indicates whether any bounds were recorded.
+func (p *PathBuilder) Bounds() (Rect, bool) {
+	if !p.boundsSet {
+		return Rect{}, false
+	}
+
+	return Rect{
+		X:      p.minX,
+		Y:      p.minY,
+		Width:  p.maxX - p.minX,
+		Height: p.maxY - p.minY,
+	}, true
+}
+
+func (p *PathBuilder) updateBoundsPoint(x, y float64) {
+	if !p.boundsSet {
+		p.minX = x
+		p.maxX = x
+		p.minY = y
+		p.maxY = y
+		p.boundsSet = true
+		return
+	}
+
+	if x < p.minX {
+		p.minX = x
+	}
+	if x > p.maxX {
+		p.maxX = x
+	}
+	if y < p.minY {
+		p.minY = y
+	}
+	if y > p.maxY {
+		p.maxY = y
+	}
+}
+
+func (p *PathBuilder) updateBoundsRect(
+	x, y, width, height float64,
+) {
+	p.updateBoundsPoint(x, y)
+	p.updateBoundsPoint(x+width, y)
+	p.updateBoundsPoint(x, y+height)
+	p.updateBoundsPoint(x+width, y+height)
 }
 
 // RoundedRect appends a rounded rectangle path.

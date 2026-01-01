@@ -115,6 +115,9 @@ func ChartPartFactory(
 		packPart,
 		container,
 	)
+	partData.SetRootFactory(func() openxml.PartRootElement {
+		return drawingml.NewChartSpace()
+	})
 
 	return &ChartPart{
 		OpenXmlPartData: partData,

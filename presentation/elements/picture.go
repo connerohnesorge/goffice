@@ -79,7 +79,7 @@ func (pic *Picture) BlipFill() *BlipFill {
 func (pic *Picture) ShapeProperties() *ShapeProperties {
 	elem := pic.GetElement(
 		"spPr",
-		NamespacePresentationML,
+		NamespaceDrawingML,
 	)
 	if elem == nil {
 		return nil

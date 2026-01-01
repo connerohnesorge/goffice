@@ -101,6 +101,16 @@ var (
 	typeMap = make(map[string]TypeInfo)
 	// enumMap maps enum names to their SchemaType definitions.
 	enumMap = make(map[string]*SchemaType)
+	// enumNameMap tracks enum names to detect struct naming conflicts.
+	enumNameMap = make(map[string]bool)
+	// renamedTypes maps schema type names to renamed Go class names.
+	renamedTypes = make(map[string]string)
+	// typeNameMap tracks schema type class names for constructor conflicts.
+	typeNameMap = make(map[string]bool)
+	// constructorNameMap tracks constructor identifiers to avoid collisions.
+	constructorNameMap = make(map[string]bool)
+	// usedStructNames tracks assigned struct names to avoid duplicates.
+	usedStructNames = make(map[string]bool)
 	// existingTypes tracks types already defined in manually written files.
 	existingTypes = make(map[string]bool)
 	// generatedTypes prevents duplicate generation of the same type.
@@ -115,11 +125,15 @@ const (
 	// stringValueType is the Go type for OpenXML string values.
 	stringValueType = "*types.StringValue"
 	// nsPresentationML is the PresentationML main namespace URI.
+	//nolint:unused // reserved for future namespace-aware generation
 	nsPresentationML = "http://schemas.openxmlformats.org/" +
 		"presentationml/2006/main"
 	// nsRelationships is the Office document relationships namespace URI.
 	nsRelationships = "http://schemas.openxmlformats.org/" +
 		"officeDocument/2006/relationships"
+	// nsWordprocessingML is the WordprocessingML main namespace URI.
+	nsWordprocessingML = "http://schemas.openxmlformats.org/" +
+		"wordprocessingml/2006/main"
 	// nsDrawingML is the DrawingML main namespace URI.
 	nsDrawingML = "http://schemas.openxmlformats.org/" +
 		"drawingml/2006/main"

@@ -101,6 +101,8 @@ var (
 	typeMap = make(map[string]TypeInfo)
 	// enumMap maps enum names to their SchemaType definitions.
 	enumMap = make(map[string]SchemaType)
+	// enumNameMap tracks enum names to detect struct naming conflicts.
+	enumNameMap = make(map[string]bool)
 	// existingTypes tracks types already defined in manually written files.
 	existingTypes = make(map[string]bool)
 	// generatedTypes prevents duplicate generation of the same type.

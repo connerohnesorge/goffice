@@ -9,6 +9,9 @@ import (
 // attrValueOne is the string value "1" used for boolean attributes.
 const attrValueOne = "1"
 
+// localNameChOff is the local name for child offset element.
+const localNameChOff = "chOff"
+
 // Transform2D convenience methods for common operations.
 // These methods provide simpler access to transform properties.
 
@@ -209,4 +212,162 @@ func (t *Transform2D) MoveBy(dx, dy EMU) {
 // Resize sets the transform extent to the specified dimensions.
 func (t *Transform2D) Resize(width, height EMU) {
 	t.SetExtent(Extent{Cx: width, Cy: height})
+}
+
+// ChildOffset returns the child coordinate space origin (a:chOff element).
+// For group shapes, this defines where the child coordinate space starts.
+// Returns (x, y, present) where present is false if the element doesn't exist.
+func (t *Transform2D) ChildOffset() (x, y EMU, present bool) {
+	chOffElem := t.GetElement(
+		localNameChOff,
+		NamespaceMain,
+	)
+	if chOffElem == nil {
+		return 0, 0, false
+	}
+
+	var xVal, yVal EMU
+	if xAttr, found := chOffElem.GetAttribute("x", ""); found {
+		val, _ := strconv.ParseInt(
+			xAttr.Value(),
+			base10,
+			bitSize64,
+		)
+		xVal = EMU(val)
+	}
+	if yAttr, found := chOffElem.GetAttribute("y", ""); found {
+		val, _ := strconv.ParseInt(
+			yAttr.Value(),
+			base10,
+			bitSize64,
+		)
+		yVal = EMU(val)
+	}
+
+	return xVal, yVal, true
+}
+
+// SetChildOffset sets the child coordinate space origin (a:chOff element).
+// Creates the element if it doesn't exist.
+func (t *Transform2D) SetChildOffset(x, y EMU) {
+	chOffElem := t.GetElement(
+		localNameChOff,
+		NamespaceMain,
+	)
+	if chOffElem == nil {
+		chOffElem = openxml.NewCompositeElement(
+			NamespaceMain,
+			localNameChOff,
+			PrefixMain,
+		)
+		// Insert after extent element
+		if extElem := t.GetElement("ext", NamespaceMain); extElem != nil {
+			t.InsertAfter(chOffElem, extElem)
+		} else {
+			t.AppendChild(chOffElem)
+		}
+	}
+
+	chOffElem.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"x",
+			"",
+			strconv.FormatInt(
+				x.Int64(),
+				base10,
+			),
+		),
+	)
+	chOffElem.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"y",
+			"",
+			strconv.FormatInt(
+				y.Int64(),
+				base10,
+			),
+		),
+	)
+}
+
+// ChildExtent returns the child coordinate space size (a:chExt element).
+// For group shapes, this defines the size of the child coordinate space.
+// Returns (cx, cy, present) where present is false if the element doesn't exist.
+func (t *Transform2D) ChildExtent() (cx, cy EMU, present bool) {
+	chExtElem := t.GetElement(
+		"chExt",
+		NamespaceMain,
+	)
+	if chExtElem == nil {
+		return 0, 0, false
+	}
+
+	var cxVal, cyVal EMU
+	if cxAttr, found := chExtElem.GetAttribute("cx", ""); found {
+		val, _ := strconv.ParseInt(
+			cxAttr.Value(),
+			base10,
+			bitSize64,
+		)
+		cxVal = EMU(val)
+	}
+	if cyAttr, found := chExtElem.GetAttribute("cy", ""); found {
+		val, _ := strconv.ParseInt(
+			cyAttr.Value(),
+			base10,
+			bitSize64,
+		)
+		cyVal = EMU(val)
+	}
+
+	return cxVal, cyVal, true
+}
+
+// SetChildExtent sets the child coordinate space size (a:chExt element).
+// Creates the element if it doesn't exist.
+func (t *Transform2D) SetChildExtent(cx, cy EMU) {
+	chExtElem := t.GetElement(
+		"chExt",
+		NamespaceMain,
+	)
+	if chExtElem == nil {
+		chExtElem = openxml.NewCompositeElement(
+			NamespaceMain,
+			"chExt",
+			PrefixMain,
+		)
+		// Insert after chOff element if it exists, otherwise after ext
+		if chOffElem := t.GetElement(localNameChOff, NamespaceMain); chOffElem != nil {
+			t.InsertAfter(chExtElem, chOffElem)
+		} else if extElem := t.GetElement("ext", NamespaceMain); extElem != nil {
+			t.InsertAfter(chExtElem, extElem)
+		} else {
+			t.AppendChild(chExtElem)
+		}
+	}
+
+	chExtElem.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"cx",
+			"",
+			strconv.FormatInt(
+				cx.Int64(),
+				base10,
+			),
+		),
+	)
+	chExtElem.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"cy",
+			"",
+			strconv.FormatInt(
+				cy.Int64(),
+				base10,
+			),
+		),
+	)
 }

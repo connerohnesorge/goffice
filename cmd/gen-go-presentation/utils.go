@@ -1,4 +1,4 @@
-// Package main provides a code generator for PresentationML elements.
+// Package main provides a code generator for WordprocessingML elements.
 package main
 
 import (
@@ -7,6 +7,13 @@ import (
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+)
+
+const (
+	booleanValueType = "*types.BooleanValue"
+	// Namespace prefix constants for extension namespaces
+	nsPrefixA16 = "A16"
+	nsPrefixW16 = "W16"
 )
 
 // isStructValueType returns true if the type should be handled as a struct.
@@ -19,7 +26,7 @@ func isStructValueType(name string) bool {
 }
 
 // isPointerValueType returns true if the type should be a pointer.
-// It includes specialized DrawingML and PresentationML types.
+// It includes specialized DrawingML and WordprocessingML types.
 func isPointerValueType(name string) bool {
 	pointerTypes := map[string]bool{
 		"RgbColor": true, "HslColor": true, "SystemColor": true,
@@ -59,7 +66,7 @@ func getXMLName(name string) string {
 }
 
 // getLocalName extracts the local XML name from a schema type name string.
-// For example, "p:sld" becomes "sld".
+// For example, "w:document" becomes "document".
 func getLocalName(name string) string {
 	parts := strings.Split(name, "/")
 	last := parts[len(parts)-1]
@@ -92,7 +99,7 @@ func getGoPackage(ns string) string {
 	switch {
 	case ns == nsDrawingML:
 		return drawingMLPkg
-	case ns == nsPresentationML:
+	case ns == nsWordprocessingML:
 		return ""
 	case strings.Contains(ns, drawingMLPkg):
 		return drawingMLPkg
@@ -110,8 +117,8 @@ func getGoPackage(ns string) string {
 // getGoNamespace returns the Go variable representing an XML namespace URI.
 func getGoNamespace(uri string) string {
 	switch uri {
-	case nsPresentationML:
-		return "openxml.NamespacePresentationML"
+	case nsWordprocessingML:
+		return "openxml.NamespaceWordprocessingML"
 	case nsRelationships:
 		return "openxml.NamespaceRelationships"
 	case nsDrawingML:
@@ -163,13 +170,13 @@ func mapNumericType(schemaType string) string {
 func mapBooleanType(schemaType string) string {
 	switch schemaType {
 	case "BooleanValue":
-		return "*types.BooleanValue"
+		return booleanValueType
 	case "OnOffValue":
 		return "*types.OnOffValue"
 	case "TrueFalseValue":
-		return "*types.TrueFalseValue"
+		return booleanValueType
 	case "TrueFalseBlankValue":
-		return "*types.TrueFalseBlankValue"
+		return booleanValueType
 	default:
 		return ""
 	}
@@ -252,4 +259,52 @@ func toPascalCase(s string) string {
 // existsInDrawingML returns true if the type is in DrawingML pkg.
 func existsInDrawingML(name string) bool {
 	return drawingMLTypes[name]
+}
+
+// deriveStructPrefix derives a namespace-aware prefix for struct names
+// to avoid conflicts with enum names. Returns prefix like "A14", "W14", etc.
+// for structures from extension namespaces.
+func deriveStructPrefix(namespace string) string {
+	// For drawing extension namespaces
+	if strings.Contains(namespace, "/drawing/") {
+		switch {
+		case strings.Contains(namespace, "2010"):
+			return "A14"
+		case strings.Contains(namespace, "2012"):
+			return "A15"
+		case strings.Contains(namespace, "2014"),
+			strings.Contains(namespace, "2016"),
+			strings.Contains(namespace, "2017"),
+			strings.Contains(namespace, "2018"):
+			return nsPrefixA16
+		default:
+			return "ADraw"
+		}
+	}
+
+	// For word extension namespaces
+	if strings.Contains(namespace, "/word/") {
+		switch {
+		case strings.Contains(namespace, "2010"):
+			return "W14"
+		case strings.Contains(namespace, "2012"),
+			strings.Contains(namespace, "2015"):
+			return "W15"
+		case strings.Contains(namespace, "2016"),
+			strings.Contains(namespace, "2018"),
+			strings.Contains(namespace, "2020"),
+			strings.Contains(namespace, "2023"),
+			strings.Contains(namespace, "2024"):
+			return nsPrefixW16
+		default:
+			return "WExt"
+		}
+	}
+
+	// For wordprocessingml extension namespaces (if any)
+	if strings.Contains(namespace, "/wordprocessingml/") {
+		return "WExt"
+	}
+
+	return "Ext"
 }

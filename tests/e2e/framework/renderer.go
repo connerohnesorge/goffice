@@ -11,18 +11,24 @@ import (
 	"time"
 )
 
-// Renderer converts PPTX to PNG images for visual comparison
+// Renderer converts PPTX files to PNG images for visual comparison.
+// Implementations include LibreOfficeRenderer (via headless soffice) and others.
 type Renderer interface {
-	// Render converts a PPTX file to a list of PNG images (one per slide)
-	// Returns the paths to the generated PNG files
+	// Render converts a PPTX file to a list of PNG images (one per slide).
+	// Returns the paths to the generated PNG files in slide order.
+	// The context can be used to cancel long-running renders or enforce timeouts.
 	Render(
 		ctx context.Context,
 		pptxPath string,
 	) ([]string, error)
 }
 
-// LibreOfficeRenderer uses LibreOffice headless mode to render PPTX files
-// It first converts PPTX to PDF using soffice, then converts PDF to PNG using pdftoppm
+// LibreOfficeRenderer uses LibreOffice headless mode to render PPTX files.
+// It performs a two-step conversion:
+//  1. PPTX to PDF using `soffice --headless --convert-to pdf`
+//  2. PDF to PNG using `pdftoppm` from poppler-utils
+//
+// This provides high-fidelity rendering that closely matches Microsoft Office output.
 type LibreOfficeRenderer struct {
 	// DPI for PNG output (default: 150)
 	DPI int
@@ -42,7 +48,9 @@ type LibreOfficeRenderer struct {
 	PdftoppmBin string
 }
 
-// NewLibreOfficeRenderer creates a new renderer with default settings
+// NewLibreOfficeRenderer creates a new renderer with default settings.
+// Default DPI is 150, and timeout is 30 seconds per conversion operation.
+// Binary paths for soffice and pdftoppm are auto-detected from common locations.
 func NewLibreOfficeRenderer(
 	outputDir string,
 ) *LibreOfficeRenderer {

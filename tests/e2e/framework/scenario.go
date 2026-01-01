@@ -9,7 +9,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// TestScenario represents a complete test scenario
+// TestScenario represents a complete test scenario for document generation.
+// Scenarios define a sequence of operations to perform on a document and
+// tolerance configuration for comparison.
 type TestScenario struct {
 	Name         string          `yaml:"name"`
 	Description  string          `yaml:"description"`
@@ -33,7 +35,8 @@ type ToleranceConfig struct {
 	VisualDiffThreshold        float64 `yaml:"visual_diff_threshold"`
 }
 
-// LoadScenario loads a scenario from YAML file
+// LoadScenario loads a test scenario from a YAML file.
+// Applies default tolerance values if not specified in the file.
 func LoadScenario(
 	path string,
 ) (scenario *TestScenario, err error) {

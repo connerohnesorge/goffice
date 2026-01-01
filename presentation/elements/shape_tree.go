@@ -104,7 +104,7 @@ func (st *ShapeTree) Shapes() []*Shape {
 func (st *ShapeTree) Pictures() []*Picture {
 	var pics []*Picture
 	for child := range st.Children() {
-		if child.LocalName() == "pic" &&
+		if child.LocalName() == localNamePic &&
 			child.NamespaceURI() == NamespacePresentationML {
 			if pic, ok := child.(*Picture); ok {
 				pics = append(pics, pic)
@@ -121,7 +121,7 @@ func (st *ShapeTree) Pictures() []*Picture {
 func (st *ShapeTree) GroupShapes() []*GroupShape {
 	var groups []*GroupShape
 	for child := range st.Children() {
-		if child.LocalName() == "grpSp" &&
+		if child.LocalName() == localNameGroupShape &&
 			child.NamespaceURI() == NamespacePresentationML {
 			if gs, ok := child.(*GroupShape); ok {
 				groups = append(groups, gs)
@@ -138,7 +138,7 @@ func (st *ShapeTree) GroupShapes() []*GroupShape {
 func (st *ShapeTree) GraphicFrames() []*GraphicFrame {
 	var frames []*GraphicFrame
 	for child := range st.Children() {
-		if child.LocalName() == "graphicFrame" &&
+		if child.LocalName() == localNameGraphicFrame &&
 			child.NamespaceURI() == NamespacePresentationML {
 			if gf, ok := child.(*GraphicFrame); ok {
 				frames = append(frames, gf)
@@ -155,7 +155,7 @@ func (st *ShapeTree) GraphicFrames() []*GraphicFrame {
 func (st *ShapeTree) ConnectionShapes() []*ConnectionShape {
 	var connectors []*ConnectionShape
 	for child := range st.Children() {
-		if child.LocalName() == "cxnSp" &&
+		if child.LocalName() == localNameConnShape &&
 			child.NamespaceURI() == NamespacePresentationML {
 			if cs, ok := child.(*ConnectionShape); ok {
 				connectors = append(
@@ -304,6 +304,62 @@ func NewGroupShapeProperties() *GroupShapeProperties {
 	}
 }
 
+// Transform returns the transform element (a:xfrm) if it exists.
+// Returns nil if no transform element is present.
+func (gsp *GroupShapeProperties) Transform() *openxml.CompositeElementBase {
+	xfrmElem := gsp.GetElement(
+		"xfrm",
+		NamespaceDrawingML,
+	)
+	if xfrmElem == nil {
+		return nil
+	}
+	if xfrm, ok := xfrmElem.(*openxml.CompositeElementBase); ok {
+		return xfrm
+	}
+
+	return nil
+}
+
+// SetTransform sets the transform element (a:xfrm).
+// If transform is nil, removes any existing transform element.
+func (gsp *GroupShapeProperties) SetTransform(xfrm *openxml.CompositeElementBase) {
+	// Remove existing transform
+	if existing := gsp.Transform(); existing != nil {
+		gsp.RemoveChild(existing)
+	}
+	// Add new transform if provided
+	if xfrm != nil {
+		// Insert as first child
+		if first := gsp.FirstChild(); first != nil {
+			gsp.InsertBefore(xfrm, first)
+		} else {
+			gsp.AppendChild(xfrm)
+		}
+	}
+}
+
+// GetOrCreateTransform returns the transform element, creating it if it doesn't exist.
+func (gsp *GroupShapeProperties) GetOrCreateTransform() *openxml.CompositeElementBase {
+	xfrm := gsp.Transform()
+	if xfrm != nil {
+		return xfrm
+	}
+	xfrm = openxml.NewCompositeElement(
+		NamespaceDrawingML,
+		"xfrm",
+		PrefixA,
+	)
+	// Insert as first child
+	if first := gsp.FirstChild(); first != nil {
+		gsp.InsertBefore(xfrm, first)
+	} else {
+		gsp.AppendChild(xfrm)
+	}
+
+	return xfrm
+}
+
 // Clone creates a deep copy of this GroupShapeProperties element.
 func (gsp *GroupShapeProperties) Clone() openxml.Element {
 	cloned := gsp.CompositeElementBase.Clone()
@@ -339,6 +395,199 @@ func NewGroupShape() *GroupShape {
 	gs.AppendChild(NewGroupShapeProperties())
 
 	return gs
+}
+
+// GroupShapeProperties returns the group shape properties.
+func (gs *GroupShape) GroupShapeProperties() *GroupShapeProperties {
+	elem := gs.GetElement(
+		"grpSpPr",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if gsp, ok := elem.(*GroupShapeProperties); ok {
+		return gsp
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &GroupShapeProperties{
+			CompositeElementBase: comp,
+		}
+	}
+
+	return nil
+}
+
+// NonVisualGroupShapeProperties returns the non-visual group shape properties.
+func (gs *GroupShape) NonVisualGroupShapeProperties() *NonVisualGroupShapeProperties {
+	elem := gs.GetElement(
+		"nvGrpSpPr",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if nvgsp, ok := elem.(*NonVisualGroupShapeProperties); ok {
+		return nvgsp
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &NonVisualGroupShapeProperties{
+			CompositeElementBase: comp,
+		}
+	}
+
+	return nil
+}
+
+// Shapes returns all shape elements within this group.
+func (gs *GroupShape) Shapes() []*Shape {
+	var shapes []*Shape
+	for child := range gs.Children() {
+		if child.LocalName() == "sp" &&
+			child.NamespaceURI() == NamespacePresentationML {
+			if sp, ok := child.(*Shape); ok {
+				shapes = append(shapes, sp)
+			} else if comp := wrapCompositeElement(child); comp != nil {
+				shapes = append(shapes, &Shape{CompositeElementBase: comp})
+			}
+		}
+	}
+
+	return shapes
+}
+
+// Pictures returns all picture elements within this group.
+func (gs *GroupShape) Pictures() []*Picture {
+	var pics []*Picture
+	for child := range gs.Children() {
+		if child.LocalName() == localNamePic &&
+			child.NamespaceURI() == NamespacePresentationML {
+			if pic, ok := child.(*Picture); ok {
+				pics = append(pics, pic)
+			} else if comp := wrapCompositeElement(child); comp != nil {
+				pics = append(pics, &Picture{CompositeElementBase: comp})
+			}
+		}
+	}
+
+	return pics
+}
+
+// GroupShapes returns all nested group shape elements within this group.
+func (gs *GroupShape) GroupShapes() []*GroupShape {
+	var groups []*GroupShape
+	for child := range gs.Children() {
+		if child.LocalName() == localNameGroupShape &&
+			child.NamespaceURI() == NamespacePresentationML {
+			if g, ok := child.(*GroupShape); ok {
+				groups = append(groups, g)
+			} else if comp := wrapCompositeElement(child); comp != nil {
+				groups = append(groups, &GroupShape{CompositeElementBase: comp})
+			}
+		}
+	}
+
+	return groups
+}
+
+// ConnectionShapes returns all connection shape elements within this group.
+func (gs *GroupShape) ConnectionShapes() []*ConnectionShape {
+	var connectors []*ConnectionShape
+	for child := range gs.Children() {
+		if child.LocalName() == localNameConnShape &&
+			child.NamespaceURI() == NamespacePresentationML {
+			if cs, ok := child.(*ConnectionShape); ok {
+				connectors = append(connectors, cs)
+			} else if comp := wrapCompositeElement(child); comp != nil {
+				connectors = append(connectors, &ConnectionShape{CompositeElementBase: comp})
+			}
+		}
+	}
+
+	return connectors
+}
+
+// GraphicFrames returns all graphic frame elements within this group.
+func (gs *GroupShape) GraphicFrames() []*GraphicFrame {
+	var frames []*GraphicFrame
+	for child := range gs.Children() {
+		if child.LocalName() == localNameGraphicFrame &&
+			child.NamespaceURI() == NamespacePresentationML {
+			if gf, ok := child.(*GraphicFrame); ok {
+				frames = append(frames, gf)
+			} else if comp := wrapCompositeElement(child); comp != nil {
+				frames = append(frames, &GraphicFrame{CompositeElementBase: comp})
+			}
+		}
+	}
+
+	return frames
+}
+
+// AddShape adds a new shape element to this group.
+func (gs *GroupShape) AddShape() *Shape {
+	sp := NewShape()
+	gs.AppendChild(sp)
+
+	return sp
+}
+
+// AddPicture adds a new picture element to this group.
+func (gs *GroupShape) AddPicture(relId string) *Picture {
+	pic := NewPicture(relId)
+	gs.AppendChild(pic)
+
+	return pic
+}
+
+// AddGroupShape adds a new nested group shape element to this group.
+func (gs *GroupShape) AddGroupShape() *GroupShape {
+	nested := NewGroupShape()
+	gs.AppendChild(nested)
+
+	return nested
+}
+
+// AddConnectionShape adds a new connection shape element to this group.
+func (gs *GroupShape) AddConnectionShape() *ConnectionShape {
+	cs := NewConnectionShape()
+	gs.AppendChild(cs)
+
+	return cs
+}
+
+// AddGraphicFrame adds a new graphic frame element to this group.
+func (gs *GroupShape) AddGraphicFrame() *GraphicFrame {
+	gf := NewGraphicFrame()
+	gs.AppendChild(gf)
+
+	return gf
+}
+
+// RemoveChild removes a child element from this group.
+func (gs *GroupShape) RemoveChild(child openxml.Element) {
+	gs.CompositeElementBase.RemoveChild(child)
+}
+
+// Clear removes all child shapes from this group.
+// This preserves the non-visual properties and group shape properties,
+// only removing shape, picture, group, connection, and graphic frame children.
+func (gs *GroupShape) Clear() {
+	// Collect children to remove (can't modify while iterating)
+	var toRemove []openxml.Element
+	for child := range gs.Children() {
+		switch child.LocalName() {
+		case "sp", "pic", "grpSp", "cxnSp", "graphicFrame":
+			if child.NamespaceURI() == NamespacePresentationML {
+				toRemove = append(toRemove, child)
+			}
+		}
+	}
+
+	// Remove collected children
+	for _, child := range toRemove {
+		gs.RemoveChild(child)
+	}
 }
 
 // Clone creates a deep copy of this GroupShape element.
@@ -613,6 +862,188 @@ func (cs *ConnectionShape) Clone() openxml.Element {
 
 	return &ConnectionShape{
 		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+	}
+}
+
+// ConnectionInfo represents information about a shape connection.
+type ConnectionInfo struct {
+	ShapeID             string
+	ConnectionSiteIndex int
+}
+
+// StartConnection returns the start connection information.
+// ok is false if no start connection is set.
+func (cs *ConnectionShape) StartConnection() (conn ConnectionInfo, ok bool) {
+	// Navigate to nvCxnSpPr/cNvCxnSpPr element
+	nvCxnSpPr := wrapCompositeElement(cs.GetElement("nvCxnSpPr", NamespacePresentationML))
+	if nvCxnSpPr == nil {
+		return ConnectionInfo{}, false
+	}
+
+	cNvCxnSpPr := wrapCompositeElement(nvCxnSpPr.GetElement("cNvCxnSpPr", NamespacePresentationML))
+	if cNvCxnSpPr == nil {
+		return ConnectionInfo{}, false
+	}
+
+	// Look for a:stCxn element
+	stCxn := cNvCxnSpPr.GetElement("stCxn", NamespaceDrawingML)
+	if stCxn == nil {
+		return ConnectionInfo{}, false
+	}
+
+	// Read id and idx attributes
+	idAttr, foundID := stCxn.GetAttribute("id", "")
+	if !foundID {
+		return ConnectionInfo{}, false
+	}
+
+	idxAttr, foundIdx := stCxn.GetAttribute("idx", "")
+	if !foundIdx {
+		return ConnectionInfo{}, false
+	}
+
+	idx, err := strconv.Atoi(idxAttr.Value())
+	if err != nil {
+		return ConnectionInfo{}, false
+	}
+
+	return ConnectionInfo{
+		ShapeID:             idAttr.Value(),
+		ConnectionSiteIndex: idx,
+	}, true
+}
+
+// SetStartConnection sets the start connection to a shape's connection site.
+func (cs *ConnectionShape) SetStartConnection(shapeID string, connectionSiteIndex int) {
+	// Get nvCxnSpPr/cNvCxnSpPr structure
+	nvCxnSpPr := wrapCompositeElement(cs.GetElement("nvCxnSpPr", NamespacePresentationML))
+	if nvCxnSpPr == nil {
+		return
+	}
+
+	cNvCxnSpPr := wrapCompositeElement(nvCxnSpPr.GetElement("cNvCxnSpPr", NamespacePresentationML))
+	if cNvCxnSpPr == nil {
+		return
+	}
+
+	// Remove existing stCxn if present
+	if existing := cNvCxnSpPr.GetElement("stCxn", NamespaceDrawingML); existing != nil {
+		cNvCxnSpPr.RemoveChild(existing)
+	}
+
+	// Create new a:stCxn element
+	stCxn := openxml.NewCompositeElement(NamespaceDrawingML, "stCxn", PrefixA)
+	stCxn.SetAttribute(openxml.NewAttribute("", "id", "", shapeID))
+	stCxn.SetAttribute(openxml.NewAttribute("", "idx", "", strconv.Itoa(connectionSiteIndex)))
+
+	// Insert before endCxn if present, otherwise append
+	if endCxn := cNvCxnSpPr.GetElement("endCxn", NamespaceDrawingML); endCxn != nil {
+		cNvCxnSpPr.InsertBefore(stCxn, endCxn)
+	} else {
+		cNvCxnSpPr.AppendChild(stCxn)
+	}
+}
+
+// EndConnection returns the end connection information.
+// ok is false if no end connection is set.
+func (cs *ConnectionShape) EndConnection() (conn ConnectionInfo, ok bool) {
+	// Navigate to nvCxnSpPr/cNvCxnSpPr element
+	nvCxnSpPr := wrapCompositeElement(cs.GetElement("nvCxnSpPr", NamespacePresentationML))
+	if nvCxnSpPr == nil {
+		return ConnectionInfo{}, false
+	}
+
+	cNvCxnSpPr := wrapCompositeElement(nvCxnSpPr.GetElement("cNvCxnSpPr", NamespacePresentationML))
+	if cNvCxnSpPr == nil {
+		return ConnectionInfo{}, false
+	}
+
+	// Look for a:endCxn element
+	endCxn := cNvCxnSpPr.GetElement("endCxn", NamespaceDrawingML)
+	if endCxn == nil {
+		return ConnectionInfo{}, false
+	}
+
+	// Read id and idx attributes
+	idAttr, foundID := endCxn.GetAttribute("id", "")
+	if !foundID {
+		return ConnectionInfo{}, false
+	}
+
+	idxAttr, foundIdx := endCxn.GetAttribute("idx", "")
+	if !foundIdx {
+		return ConnectionInfo{}, false
+	}
+
+	idx, err := strconv.Atoi(idxAttr.Value())
+	if err != nil {
+		return ConnectionInfo{}, false
+	}
+
+	return ConnectionInfo{
+		ShapeID:             idAttr.Value(),
+		ConnectionSiteIndex: idx,
+	}, true
+}
+
+// SetEndConnection sets the end connection to a shape's connection site.
+func (cs *ConnectionShape) SetEndConnection(shapeID string, connectionSiteIndex int) {
+	// Get nvCxnSpPr/cNvCxnSpPr structure
+	nvCxnSpPr := wrapCompositeElement(cs.GetElement("nvCxnSpPr", NamespacePresentationML))
+	if nvCxnSpPr == nil {
+		return
+	}
+
+	cNvCxnSpPr := wrapCompositeElement(nvCxnSpPr.GetElement("cNvCxnSpPr", NamespacePresentationML))
+	if cNvCxnSpPr == nil {
+		return
+	}
+
+	// Remove existing endCxn if present
+	if existing := cNvCxnSpPr.GetElement("endCxn", NamespaceDrawingML); existing != nil {
+		cNvCxnSpPr.RemoveChild(existing)
+	}
+
+	// Create new a:endCxn element
+	endCxn := openxml.NewCompositeElement(NamespaceDrawingML, "endCxn", PrefixA)
+	endCxn.SetAttribute(openxml.NewAttribute("", "id", "", shapeID))
+	endCxn.SetAttribute(openxml.NewAttribute("", "idx", "", strconv.Itoa(connectionSiteIndex)))
+
+	// Append endCxn
+	cNvCxnSpPr.AppendChild(endCxn)
+}
+
+// ClearStartConnection removes the start connection.
+func (cs *ConnectionShape) ClearStartConnection() {
+	nvCxnSpPr := wrapCompositeElement(cs.GetElement("nvCxnSpPr", NamespacePresentationML))
+	if nvCxnSpPr == nil {
+		return
+	}
+
+	cNvCxnSpPr := wrapCompositeElement(nvCxnSpPr.GetElement("cNvCxnSpPr", NamespacePresentationML))
+	if cNvCxnSpPr == nil {
+		return
+	}
+
+	if stCxn := cNvCxnSpPr.GetElement("stCxn", NamespaceDrawingML); stCxn != nil {
+		cNvCxnSpPr.RemoveChild(stCxn)
+	}
+}
+
+// ClearEndConnection removes the end connection.
+func (cs *ConnectionShape) ClearEndConnection() {
+	nvCxnSpPr := wrapCompositeElement(cs.GetElement("nvCxnSpPr", NamespacePresentationML))
+	if nvCxnSpPr == nil {
+		return
+	}
+
+	cNvCxnSpPr := wrapCompositeElement(nvCxnSpPr.GetElement("cNvCxnSpPr", NamespacePresentationML))
+	if cNvCxnSpPr == nil {
+		return
+	}
+
+	if endCxn := cNvCxnSpPr.GetElement("endCxn", NamespaceDrawingML); endCxn != nil {
+		cNvCxnSpPr.RemoveChild(endCxn)
 	}
 }
 

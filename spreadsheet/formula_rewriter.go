@@ -40,11 +40,11 @@ var ErrInvalidFormula = errors.New(
 	"invalid formula",
 )
 
-// tokenizeFormula splits a formula into tokens.
+// TokenizeFormula splits a formula into tokens.
 // The formula should include the leading '=' if it's a cell formula.
 //
 //nolint:revive // function-length, cognitive-complexity: tokenization is complex
-func tokenizeFormula(
+func TokenizeFormula(
 	formula string,
 ) ([]Token, error) {
 	if formula == "" {
@@ -392,7 +392,7 @@ func (r *FormulaRewriter) Rewrite(
 	hasEquals := formula[0] == '='
 
 	// Tokenize the formula
-	tokens, err := tokenizeFormula(formula)
+	tokens, err := TokenizeFormula(formula)
 	if err != nil {
 		// If tokenization fails, return original formula
 		return formula, err

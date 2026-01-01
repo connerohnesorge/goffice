@@ -9,6 +9,7 @@ import (
 	"github.com/connerohnesorge/goffice-pdf/core"
 	"github.com/connerohnesorge/goffice-pdf/drawing"
 	"github.com/connerohnesorge/goffice/spreadsheet/elements"
+	"github.com/connerohnesorge/goffice/spreadsheet/parts"
 )
 
 // PageInfo contains information about a page being rendered.
@@ -988,6 +989,7 @@ func (r *SpreadsheetRenderer) renderCharts(
 		pageSize.Width,
 		pageSize.Height,
 	)
+	pageImpl.AttachResources(r.pdf, page)
 
 	// Create rendering context with the page
 	ctx := core.NewRenderingContextFromPageOptions(
@@ -1011,6 +1013,24 @@ func (r *SpreadsheetRenderer) renderCharts(
 			continue
 		}
 
+		chartRelID := chartRelIDFromGraphicFrame(
+			graphicFrame,
+		)
+		if chartRelID == "" {
+			continue
+		}
+
+		part, err := drawingsPart.GetPartById(
+			chartRelID,
+		)
+		if err != nil {
+			continue
+		}
+		chartPart, ok := part.(*parts.ChartPart)
+		if !ok {
+			continue
+		}
+
 		// Get chart position from anchor markers
 		fromMarker := anchor.From()
 		toMarker := anchor.To()
@@ -1025,60 +1045,48 @@ func (r *SpreadsheetRenderer) renderCharts(
 			pageInfo,
 			margins,
 		)
+		// Convert from top-left (worksheet) to PDF bottom-left coordinates.
+		y = pageSize.Height - y - height
 
-		// For now, render a placeholder chart with sample data
-		// TODO: Extract actual chart data from the chart part
-		chartData := drawing.ChartData{
-			Categories: []string{
-				"Q1",
-				"Q2",
-				"Q3",
-				"Q4",
-			},
-			Series: []drawing.ChartSeries{
-				{
-					Name: "Sales",
-					Values: []float64{
-						100,
-						150,
-						120,
-						180,
-					},
-					Color: drawing.NewRGB(
-						0.2,
-						0.4,
-						0.8,
-					),
-				},
-				{
-					Name: "Revenue",
-					Values: []float64{
-						80,
-						120,
-						100,
-						150,
-					},
-					Color: drawing.NewRGB(
-						0.8,
-						0.3,
-						0.3,
-					),
-				},
-			},
+		chartKind, chartData, horizontal, err := drawing.ExtractChartData(
+			chartPart.ChartSpace(),
+		)
+		if err != nil {
+			continue
 		}
 
-		// Render a column chart (most common type)
-		// TODO: Determine actual chart type from chart element
-		if err := chartRenderer.RenderBarChart(
-			x,
-			y,
-			width,
-			height,
-			chartData,
-			false, // false = vertical columns, true = horizontal bars
-		); err != nil {
-			// Log error but continue with other charts
-			continue
+		switch chartKind {
+		case drawing.ChartKindBar:
+			if err := chartRenderer.RenderBarChart(
+				x,
+				y,
+				width,
+				height,
+				chartData,
+				horizontal,
+			); err != nil {
+				continue
+			}
+		case drawing.ChartKindLine:
+			if err := chartRenderer.RenderLineChart(
+				x,
+				y,
+				width,
+				height,
+				chartData,
+			); err != nil {
+				continue
+			}
+		case drawing.ChartKindPie:
+			if err := chartRenderer.RenderPieChart(
+				x,
+				y,
+				width,
+				height,
+				chartData,
+			); err != nil {
+				continue
+			}
 		}
 	}
 

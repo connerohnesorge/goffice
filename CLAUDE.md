@@ -343,6 +343,118 @@ This project uses Spectr for structured change proposals:
 - `testdata/` - Test fixtures
 - `internal/` - Internal utilities
 
+## E2E Visual Testing
+
+The `tests/e2e/` directory contains an end-to-end visual testing framework for verifying goffice output matches Microsoft's Open-XML-SDK.
+
+### Overview
+
+The E2E framework:
+- Generates identical presentations using both Go (goffice) and C# (Open-XML-SDK)
+- Renders presentations to high-resolution PNG images via LibreOffice
+- Compares images pixel-by-pixel with perceptual metrics (SSIM, MSE, PSNR)
+- Generates comprehensive HTML reports with side-by-side comparisons
+
+### Running E2E Tests
+
+```bash
+# Enter Nix development shell (provides all dependencies)
+nix develop
+
+# Run all E2E tests
+cd tests/e2e
+go test ./... -v
+
+# Run specific test category
+go test ./... -run TestCharts -v
+
+# Generate HTML report (if run script exists)
+./scripts/run_tests.sh
+```
+
+### Creating Test Cases
+
+Test cases are defined using declarative Go structs:
+
+```go
+package charts
+
+import "github.com/unidoc/goffice/tests/e2e/framework"
+
+func init() {
+    framework.RegisterTestCase(framework.TestCase{
+        ID:          "chart_bar_basic",
+        Name:        "Basic Bar Chart",
+        Description: "Simple clustered bar chart",
+        Category:    framework.CategoryChart,
+        Tags:        []string{"chart", "bar", "basic"},
+        Spec: framework.TestSpec{
+            SlideCount: 1,
+            SlideSize:  framework.SlideSize16x9,
+            Slides: []framework.SlideSpec{
+                {
+                    Index:  0,
+                    Layout: "Blank",
+                    Elements: []framework.ElementSpec{
+                        {
+                            Type: framework.ElementTypeChart,
+                            Chart: &framework.ChartSpec{
+                                Type:  framework.ChartTypeBarClustered,
+                                Title: "Sales by Region",
+                                Data: framework.ChartData{
+                                    Categories: []string{"Q1", "Q2", "Q3", "Q4"},
+                                    Series: []framework.SeriesData{
+                                        {
+                                            Name:   "North",
+                                            Values: []float64{120, 150, 180, 200},
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    })
+}
+```
+
+### Configuration
+
+Configure test behavior per test case or globally:
+
+```go
+Config: framework.TestConfig{
+    DiffThreshold:      0.01,  // 1% tolerance
+    IgnoreAntialiasing: true,
+    RenderBackend:      framework.RenderBackendLibreOffice,
+    DPI:                300,
+}
+```
+
+### Dependencies
+
+All dependencies are provided by the Nix development shell:
+- LibreOffice 7.6+ (headless rendering)
+- ImageMagick 7.x (image comparison)
+- .NET SDK 9.0+ (C# generator)
+- poppler-utils (PDF to PNG conversion)
+
+### Viewing Reports
+
+After running tests, open the generated HTML report:
+
+```bash
+# macOS
+open tests/e2e/reports/index.html
+
+# Linux
+xdg-open tests/e2e/reports/index.html
+```
+
+See `tests/e2e/README.md` for complete documentation.
+
 ## Tips
 
 - **Read before editing**: Always read files before modifying them

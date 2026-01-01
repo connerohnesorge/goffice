@@ -787,6 +787,27 @@ type PageImage interface {
 	Data() []byte
 }
 
+// ImageResource provides the PDF-ready image metadata needed for embedding.
+// This is used by PageImpl to register XObjects and draw images.
+type ImageResource interface {
+	PageImage
+
+	// ImageColorSpace returns the PDF color space name (e.g., "DeviceRGB").
+	ImageColorSpace() string
+	// ImageBitsPerComponent returns the number of bits per component.
+	ImageBitsPerComponent() int
+	// ImageFilter returns the PDF filter name (e.g., "DCTDecode", "FlateDecode").
+	ImageFilter() string
+	// ImageDecode returns the decode array for color mapping, if any.
+	ImageDecode() []float64
+	// ImageDecodeParms returns decode parameters for the filter, if any.
+	ImageDecodeParms() map[string]interface{}
+	// ImageInterpolate reports whether the image should be interpolated.
+	ImageInterpolate() bool
+	// ImageSMask returns a soft mask image for transparency, if any.
+	ImageSMask() ImageResource
+}
+
 // PageDrawer defines the drawing API for PDF pages.
 // It provides methods for drawing shapes, setting colors, managing graphics state,
 // and rendering text and images. The interface abstracts PDF page content stream

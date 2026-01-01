@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 // generateCode orchestrates the generation of enums and elements files.
@@ -115,7 +114,7 @@ import (
 }
 
 // processSchemaFiles iterates through schema files and triggers generation.
-// It filters for SpreadsheetML and Excel schema files.
+// It filters for SpreadsheetML and Excel schema files (including extensions).
 func processSchemaFiles(
 	f *os.File,
 	schemasDir string,
@@ -123,15 +122,13 @@ func processSchemaFiles(
 ) {
 	for _, file := range files {
 		name := file.Name()
-		isSpreadsheet := strings.Contains(
-			name,
-			"spreadsheetml",
-		) ||
-			strings.Contains(name, "excel")
-		if !isSpreadsheet ||
-			!strings.Contains(name, "main.json") {
+
+		// Filter for Spreadsheet/Excel schemas (both main and extension)
+		if !isSpreadsheetSchema(name) &&
+			!isDrawingSchema(name) {
 			continue
 		}
+
 		processSchemaFile(
 			f,
 			filepath.Join(schemasDir, name),
@@ -153,6 +150,9 @@ func processSchemaFile(f *os.File, path string) {
 	for i := range schema.Types {
 		t := &schema.Types[i]
 		t.TargetNamespace = schema.TargetNamespace
+		if renamed, ok := renamedTypes[t.Name]; ok {
+			t.ClassName = renamed
+		}
 		if len(t.Facets) == 0 &&
 			t.ClassName != "" {
 			generateStruct(f, t)

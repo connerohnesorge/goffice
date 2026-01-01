@@ -348,6 +348,7 @@ func (r *PresentationRenderer) renderSlides(
 		// Create slide renderer
 		slideRenderer := NewSlideRenderer(
 			r.doc,
+			r.pdfDoc,
 			slidePart,
 			page,
 			slideSize,

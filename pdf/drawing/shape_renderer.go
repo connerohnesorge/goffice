@@ -48,6 +48,17 @@ func (r *ShapeRenderer) RenderShapeWithFill(
 		return err
 	}
 
+	effectsRenderer := NewEffectsRenderer(r.ctx)
+	if err := effectsRenderer.RenderAllEffects(
+		sp,
+		path,
+	); err != nil {
+		return fmt.Errorf(
+			"failed to render effects: %w",
+			err,
+		)
+	}
+
 	// Apply fill
 	if fill != nil {
 		if err := fill.Apply(r.ctx, path); err != nil {
@@ -80,22 +91,16 @@ func (r *ShapeRenderer) applyTransform(
 		return nil
 	}
 
-	offset := transform.Offset()
-	extent := transform.Extent()
+	ooxml := toOOXMLTransform(transform)
+	if !ooxml.HasTransform() {
+		return nil
+	}
 
-	x := drawingml.EmuToPoints(offset.X)
-	y := drawingml.EmuToPoints(offset.Y)
-	width := drawingml.EmuToPoints(extent.Cx)
-	height := drawingml.EmuToPoints(extent.Cy)
-
-	// Calculate center point for rotation
-	cx := x + width/2
-	cy := y + height/2
-
-	// Apply rotation (if implemented in Transform2D)
-	// This is a placeholder for rotation support
-	_ = cx
-	_ = cy
+	matrix := core.OOXMLTransformToPDFMatrix(
+		ooxml,
+		r.ctx.GetPageHeight(),
+	)
+	r.ctx.Page.Transform(matrix)
 
 	return nil
 }
@@ -112,13 +117,12 @@ func (r *ShapeRenderer) createShapePath(
 		)
 	}
 
-	offset := transform.Offset()
-	extent := transform.Extent()
-
-	x := drawingml.EmuToPoints(offset.X)
-	y := drawingml.EmuToPoints(offset.Y)
-	width := drawingml.EmuToPoints(extent.Cx)
-	height := drawingml.EmuToPoints(extent.Cy)
+	x, y, width, height, err := r.shapeBounds(
+		transform,
+	)
+	if err != nil {
+		return err
+	}
 
 	// Handle different geometry types
 	if presetGeom := sp.PresetGeometry(); presetGeom != nil {
@@ -147,6 +151,48 @@ func (r *ShapeRenderer) createShapePath(
 	path.Rectangle(x, y, width, height)
 
 	return nil
+}
+
+func (r *ShapeRenderer) shapeBounds(
+	transform *drawingml.Transform2D,
+) (x, y, width, height float64, err error) {
+	if transform == nil {
+		return 0, 0, 0, 0, fmt.Errorf(
+			"shape has no transform",
+		)
+	}
+
+	offset := transform.Offset()
+	extent := transform.Extent()
+
+	width = drawingml.EmuToPoints(extent.Cx)
+	height = drawingml.EmuToPoints(extent.Cy)
+	x = drawingml.EmuToPoints(offset.X)
+	yTop := drawingml.EmuToPoints(offset.Y)
+	y = r.ctx.GetPageHeight() - yTop - height
+
+	return x, y, width, height, nil
+}
+
+func toOOXMLTransform(
+	transform *drawingml.Transform2D,
+) core.OOXMLTransform {
+	offset := transform.Offset()
+	extent := transform.Extent()
+
+	ooxml := core.NewOOXMLTransform(
+		int64(offset.X),
+		int64(offset.Y),
+		int64(extent.Cx),
+		int64(extent.Cy),
+	)
+	ooxml = ooxml.WithRotation(
+		int32(transform.Rotation()),
+	)
+	ooxml = ooxml.WithFlipH(transform.FlipH())
+	ooxml = ooxml.WithFlipV(transform.FlipV())
+
+	return ooxml
 }
 
 // Preset shape rendering functions (Section 4.1)
@@ -274,9 +320,9 @@ func renderTriangle(
 	path *PathBuilder,
 	x, y, width, height float64,
 ) {
-	path.MoveTo(x+width/2, y)
-	path.LineTo(x+width, y+height)
-	path.LineTo(x, y+height)
+	path.MoveTo(x+width/2, y+height)
+	path.LineTo(x+width, y)
+	path.LineTo(x, y)
 	path.ClosePath()
 }
 
@@ -304,13 +350,13 @@ func renderPolygon(
 	radius := math.Min(width, height) / 2
 
 	// Use PathBuilder's built-in RegularPolygon method
-	// Start at -90 degrees to match expected orientation (top vertex)
+	// Start at 90 degrees to put the first vertex at the top in PDF coordinates.
 	path.RegularPolygon(
 		cx,
 		cy,
 		radius,
 		sides,
-		-90,
+		90,
 	)
 }
 
@@ -325,14 +371,14 @@ func renderStar(
 	innerRadius := outerRadius * 0.382 // Golden ratio approximation
 
 	// Use PathBuilder's built-in Star method
-	// Start at -90 degrees to have point at top
+	// Start at 90 degrees to have the top point in PDF coordinates.
 	path.Star(
 		cx,
 		cy,
 		outerRadius,
 		innerRadius,
 		points,
-		-90,
+		90,
 	)
 }
 

@@ -11,9 +11,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// GoBridge defines the interface for executing Go bridge
+// GoBridge defines the interface for executing Go-based document generation.
+// Implementations use goffice to create Office documents from test scenarios.
 type GoBridge interface {
-	// Execute generates a document at the specified output path
+	// Execute generates a document at the specified output path.
+	// Returns an error if document generation fails.
 	Execute(outputPath string) error
 }
 
@@ -26,7 +28,8 @@ type DocumentComparer interface {
 	) (*ComparisonResult, error)
 }
 
-// Executor runs test scenarios through both bridges and compares results
+// Executor runs test scenarios through both Go (goffice) and C# (Open-XML-SDK) bridges,
+// then performs three-level comparison: XML structure, binary equivalence, and visual rendering.
 type Executor struct {
 	csharpBridge    string // Path to C# bridge executable
 	outputDir       string // Base output directory
@@ -36,7 +39,10 @@ type Executor struct {
 	comparer        DocumentComparer
 }
 
-// NewExecutor creates a new test executor
+// NewExecutor creates a new test executor.
+// The csharpBridgePath points to the C# bridge executable.
+// The outputDir is where generated documents are stored.
+// The baselineDir contains pre-generated baseline documents for comparison mode.
 func NewExecutor(
 	csharpBridgePath, outputDir, baselineDir string,
 ) *Executor {

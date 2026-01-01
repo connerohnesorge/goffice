@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 // generateCode orchestrates the generation of enums and elements files.
@@ -114,7 +113,7 @@ import (
 }
 
 // processSchemaFiles iterates through schema files and triggers generation.
-// It filters for PresentationML and PowerPoint schema files.
+// It filters for PresentationML and PowerPoint schema files (including extensions).
 func processSchemaFiles(
 	f *os.File,
 	schemasDir string,
@@ -122,15 +121,13 @@ func processSchemaFiles(
 ) {
 	for _, file := range files {
 		name := file.Name()
-		isPresentation := strings.Contains(
-			name,
-			"presentationml",
-		) ||
-			strings.Contains(name, "powerpoint")
-		if !isPresentation ||
-			!strings.Contains(name, "main.json") {
+
+		// Filter for Presentation/PowerPoint schemas (both main and extension)
+		if !isPresentationSchema(name) &&
+			!isDrawingSchema(name) {
 			continue
 		}
+
 		processSchemaFile(
 			f,
 			filepath.Join(schemasDir, name),
@@ -151,6 +148,9 @@ func processSchemaFile(f *os.File, path string) {
 	}
 	for i := range schema.Types {
 		schema.Types[i].TargetNamespace = schema.TargetNamespace
+		if renamed, ok := renamedTypes[schema.Types[i].Name]; ok {
+			schema.Types[i].ClassName = renamed
+		}
 		if len(schema.Types[i].Facets) == 0 &&
 			schema.Types[i].ClassName != "" {
 			generateStruct(f, &schema.Types[i])

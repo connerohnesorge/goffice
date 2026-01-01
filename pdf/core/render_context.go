@@ -39,7 +39,14 @@ type RenderingContext struct {
 	// This field must be set before rendering DrawingML elements.
 	// It can be set via WithPage() or SetPage() after construction.
 	Page PageDrawer
+
+	// ImageResolver resolves embedded relationship IDs to raw image data.
+	// DrawingML image renderers use this to load image bytes.
+	ImageResolver ImageResolver
 }
+
+// ImageResolver resolves an embedded relationship ID to raw image data.
+type ImageResolver func(embedID string) ([]byte, error)
 
 // Point represents a 2D point with X and Y coordinates.
 type Point struct {
@@ -198,6 +205,13 @@ func (rc *RenderingContext) SetPage(
 	page PageDrawer,
 ) {
 	rc.Page = page
+}
+
+// SetImageResolver sets the image resolver used by DrawingML renderers.
+func (rc *RenderingContext) SetImageResolver(
+	resolver ImageResolver,
+) {
+	rc.ImageResolver = resolver
 }
 
 // WithPage sets the Page field and returns the context for method chaining.

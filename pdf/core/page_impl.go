@@ -11,6 +11,8 @@ type PageImpl struct {
 	content    strings.Builder // Accumulates PDF operators
 	pageWidth  float64
 	pageHeight float64
+	doc        *Document
+	page       *Page
 
 	// Current graphics state (for optimization - avoid redundant operators)
 	fillR, fillG, fillB       float64
@@ -47,6 +49,15 @@ func NewPageImpl(
 		strokeB:   -1,
 		lineWidth: -1,
 	}
+}
+
+// AttachResources wires the PageImpl to a document and page for resource registration.
+func (p *PageImpl) AttachResources(
+	doc *Document,
+	page *Page,
+) {
+	p.doc = doc
+	p.page = page
 }
 
 // DrawRectangle draws a rectangle at (x, y) with the given width and height.
@@ -335,19 +346,50 @@ func (p *PageImpl) AddImage(
 	img PageImage,
 	x, y, width, height float64,
 ) {
-	// Placeholder: Image handling requires XObject resources
-	// For now, just add a comment to the content stream
+	if img == nil {
+		return
+	}
+
+	resource, ok := img.(ImageResource)
+	if p.doc == nil || p.page == nil || !ok {
+		// Fallback when resources are not wired up.
+		p.content.WriteString(
+			fmt.Sprintf(
+				"%% Image: %dx%d at (%s, %s) size %sx%s\n",
+				img.Width(),
+				img.Height(),
+				FormatFloat(x),
+				FormatFloat(y),
+				FormatFloat(width),
+				FormatFloat(height),
+			),
+		)
+		return
+	}
+
+	name, err := p.doc.RegisterImage(p.page, resource)
+	if err != nil {
+		p.content.WriteString(
+			fmt.Sprintf(
+				"%% Image registration failed: %v\n",
+				err,
+			),
+		)
+		return
+	}
+
+	p.content.WriteString("q\n")
 	p.content.WriteString(
 		fmt.Sprintf(
-			"%% Image: %dx%d at (%s, %s) size %sx%s\n",
-			img.Width(),
-			img.Height(),
-			FormatFloat(x),
-			FormatFloat(y),
+			"%s 0 0 %s %s %s cm\n",
 			FormatFloat(width),
 			FormatFloat(height),
+			FormatFloat(x),
+			FormatFloat(y),
 		),
 	)
+	p.content.WriteString(fmt.Sprintf("/%s Do\n", name))
+	p.content.WriteString("Q\n")
 }
 
 // DrawText draws text at the specified position.
@@ -388,6 +430,10 @@ func (p *PageImpl) SetFont(
 			name,
 			FormatFloat(size)),
 	)
+
+	if p.page != nil {
+		p.page.RegisterFont(name, name)
+	}
 
 	p.currentFont = name
 	p.currentFontSize = size

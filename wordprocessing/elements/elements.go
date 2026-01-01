@@ -6059,6 +6059,33 @@ func (m *PivotFormat) Validate() error {
 	return nil
 }
 
+// Legend Position.
+type ExtLegendPosition struct {
+	*openxml.LeafElementBase
+	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/drawingml/2006/chart legendPos"`
+	Val *types.EnumValue[LegendPositionValues] `xml:"val,attr,omitempty"`
+}
+
+func NewExtLegendPosition() *ExtLegendPosition {
+	ret := &ExtLegendPosition{}
+	ns := "http://schemas.openxmlformats.org/drawingml/2006/chart"
+	ret.LeafElementBase = openxml.NewLeafElement(ns, "legendPos", "c")
+	return ret
+}
+
+func (m *ExtLegendPosition) Clone() openxml.Element {
+	ret := NewExtLegendPosition()
+	if m.Val != nil {
+		v := *m.Val
+		ret.Val = &v
+	}
+	return ret
+}
+
+func (m *ExtLegendPosition) Validate() error {
+	return nil
+}
+
 // Legend Entry.
 type LegendEntry struct {
 	*openxml.CompositeElementBase
@@ -23485,7 +23512,7 @@ type OneCellAnchor struct {
 func NewOneCellAnchor() *OneCellAnchor {
 	ret := &OneCellAnchor{}
 	ns := "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "oneCellAnchor", "xdr")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "oneCellAnchor", "x")
 	return ret
 }
 
@@ -23512,7 +23539,7 @@ type AbsoluteAnchor struct {
 func NewAbsoluteAnchor() *AbsoluteAnchor {
 	ret := &AbsoluteAnchor{}
 	ns := "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "absoluteAnchor", "xdr")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "absoluteAnchor", "x")
 	return ret
 }
 
@@ -23636,7 +23663,7 @@ type RowOffset struct {
 func NewRowOffset() *RowOffset {
 	ret := &RowOffset{}
 	ns := "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "rowOff", "xdr")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "rowOff", "x")
 	return ret
 }
 
@@ -23726,7 +23753,7 @@ type ClientData struct {
 func NewClientData() *ClientData {
 	ret := &ClientData{}
 	ns := "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
-	ret.LeafElementBase = openxml.NewLeafElement(ns, "clientData", "xdr")
+	ret.LeafElementBase = openxml.NewLeafElement(ns, "clientData", "x")
 	return ret
 }
 
@@ -51629,6 +51656,33 @@ func (m *ReadModeInkLockDown) Validate() error {
 	return nil
 }
 
+// Defines the TargetScreenSize Class.
+type WExtTargetScreenSize struct {
+	*openxml.LeafElementBase
+	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main targetScreenSz"`
+	Val *types.EnumValue[TargetScreenSizeValues] `xml:"w:val,attr,omitempty"`
+}
+
+func NewWExtTargetScreenSize() *WExtTargetScreenSize {
+	ret := &WExtTargetScreenSize{}
+	ns := openxml.NamespaceWordprocessingML
+	ret.LeafElementBase = openxml.NewLeafElement(ns, "targetScreenSz", "w")
+	return ret
+}
+
+func (m *WExtTargetScreenSize) Clone() openxml.Element {
+	ret := NewWExtTargetScreenSize()
+	if m.Val != nil {
+		v := *m.Val
+		ret.Val = &v
+	}
+	return ret
+}
+
+func (m *WExtTargetScreenSize) Validate() error {
+	return nil
+}
+
 // Defines the PictureBulletBase Class.
 type PictureBulletBase struct {
 	*openxml.CompositeElementBase
@@ -54152,7 +54206,7 @@ type DataModelExtensionBlock struct {
 func NewDataModelExtensionBlock() *DataModelExtensionBlock {
 	ret := &DataModelExtensionBlock{}
 	ns := "http://schemas.microsoft.com/office/drawing/2008/diagram"
-	ret.LeafElementBase = openxml.NewLeafElement(ns, "dataModelExt", "a14")
+	ret.LeafElementBase = openxml.NewLeafElement(ns, "dataModelExt", "dsp")
 	return ret
 }
 
@@ -54182,7 +54236,7 @@ type ShapeNonVisualProperties struct {
 func NewShapeNonVisualProperties() *ShapeNonVisualProperties {
 	ret := &ShapeNonVisualProperties{}
 	ns := "http://schemas.microsoft.com/office/drawing/2008/diagram"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "nvSpPr", "a14")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "nvSpPr", "dsp")
 	return ret
 }
 
@@ -54226,7 +54280,7 @@ type ShapeTree struct {
 func NewShapeTree() *ShapeTree {
 	ret := &ShapeTree{}
 	ns := "http://schemas.microsoft.com/office/drawing/2008/diagram"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "spTree", "a14")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "spTree", "dsp")
 	return ret
 }
 
@@ -54248,7 +54302,7 @@ type GroupShapeType struct {
 func NewGroupShapeType() *GroupShapeType {
 	ret := &GroupShapeType{}
 	ns := "http://schemas.microsoft.com/office/drawing/2008/diagram"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "", "dsp")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "", "a14")
 	return ret
 }
 
@@ -56164,7 +56218,7 @@ type PercentagePositionVerticalOffset struct {
 func NewPercentagePositionVerticalOffset() *PercentagePositionVerticalOffset {
 	ret := &PercentagePositionVerticalOffset{}
 	ns := "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "pctPosVOffset", "wp14")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "pctPosVOffset", "w14")
 	return ret
 }
 
@@ -56188,7 +56242,7 @@ type RelativeWidth struct {
 func NewRelativeWidth() *RelativeWidth {
 	ret := &RelativeWidth{}
 	ns := "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "sizeRelH", "wp14")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "sizeRelH", "w14")
 	return ret
 }
 
@@ -56224,7 +56278,7 @@ type RelativeHeight struct {
 func NewRelativeHeight() *RelativeHeight {
 	ret := &RelativeHeight{}
 	ns := "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "sizeRelV", "wp14")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "sizeRelV", "w14")
 	return ret
 }
 
@@ -56258,7 +56312,7 @@ type PercentageWidth struct {
 func NewPercentageWidth() *PercentageWidth {
 	ret := &PercentageWidth{}
 	ns := "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "pctWidth", "wp14")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "pctWidth", "w14")
 	return ret
 }
 
@@ -56280,7 +56334,7 @@ type PercentageHeight struct {
 func NewPercentageHeight() *PercentageHeight {
 	ret := &PercentageHeight{}
 	ns := "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "pctHeight", "wp14")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "pctHeight", "w14")
 	return ret
 }
 
@@ -60320,7 +60374,7 @@ type WebVideoProperty struct {
 func NewWebVideoProperty() *WebVideoProperty {
 	ret := &WebVideoProperty{}
 	ns := "http://schemas.microsoft.com/office/word/2012/wordprocessingDrawing"
-	ret.LeafElementBase = openxml.NewLeafElement(ns, "webVideoPr", "w15")
+	ret.LeafElementBase = openxml.NewLeafElement(ns, "webVideoPr", "wp15")
 	return ret
 }
 
@@ -61721,7 +61775,7 @@ type TimeSlicer struct {
 func NewTimeSlicer() *TimeSlicer {
 	ret := &TimeSlicer{}
 	ns := "http://schemas.microsoft.com/office/drawing/2012/timeslicer"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "timeslicer", "a15")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "timeslicer", "tsle")
 	return ret
 }
 
@@ -62084,21 +62138,21 @@ func (m *LiteralDataChart) Validate() error {
 }
 
 // Defines the BooleanFalse Class.
-type BooleanFalse struct {
+type A16BooleanFalse struct {
 	*openxml.LeafElementBase
 	XMLName xml.Name `xml:"http://schemas.microsoft.com/office/drawing/2014/chart showExpandCollapseFieldButtons"`
 	Val *types.BooleanValue `xml:"val,attr,omitempty"`
 }
 
-func NewBooleanFalse() *BooleanFalse {
-	ret := &BooleanFalse{}
+func NewA16BooleanFalse() *A16BooleanFalse {
+	ret := &A16BooleanFalse{}
 	ns := "http://schemas.microsoft.com/office/drawing/2014/chart"
 	ret.LeafElementBase = openxml.NewLeafElement(ns, "showExpandCollapseFieldButtons", "c16")
 	return ret
 }
 
-func (m *BooleanFalse) Clone() openxml.Element {
-	ret := NewBooleanFalse()
+func (m *A16BooleanFalse) Clone() openxml.Element {
+	ret := NewA16BooleanFalse()
 	if m.Val != nil {
 		v := *m.Val
 		ret.Val = &v
@@ -62106,7 +62160,7 @@ func (m *BooleanFalse) Clone() openxml.Element {
 	return ret
 }
 
-func (m *BooleanFalse) Validate() error {
+func (m *A16BooleanFalse) Validate() error {
 	return nil
 }
 
@@ -65299,7 +65353,7 @@ type SymEx struct {
 func NewSymEx() *SymEx {
 	ret := &SymEx{}
 	ns := "http://schemas.microsoft.com/office/word/2015/wordml/symex"
-	ret.LeafElementBase = openxml.NewLeafElement(ns, "symEx", "w16")
+	ret.LeafElementBase = openxml.NewLeafElement(ns, "symEx", "w16se")
 	return ret
 }
 
@@ -66782,7 +66836,7 @@ type ScriptLink struct {
 func NewScriptLink() *ScriptLink {
 	ret := &ScriptLink{}
 	ns := "http://schemas.microsoft.com/office/drawing/2021/scriptlink"
-	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "scriptLink", "asl")
+	ret.CompositeElementBase = openxml.NewCompositeElement(ns, "scriptLink", "a21")
 	return ret
 }
 
@@ -66809,7 +66863,7 @@ type ImageFormula struct {
 func NewImageFormula() *ImageFormula {
 	ret := &ImageFormula{}
 	ns := "http://schemas.microsoft.com/office/drawing/2022/imageformula"
-	ret.LeafElementBase = openxml.NewLeafElement(ns, "imageFormula", "aif")
+	ret.LeafElementBase = openxml.NewLeafElement(ns, "imageFormula", "a22")
 	return ret
 }
 

@@ -3,9 +3,11 @@ package drawing
 
 import (
 	"iter"
+	"math"
 
 	"github.com/connerohnesorge/goffice-pdf/core"
 	"github.com/connerohnesorge/goffice/drawingml"
+	"github.com/connerohnesorge/goffice/openxml"
 )
 
 // EffectsRenderer handles rendering of visual effects.
@@ -32,21 +34,39 @@ func (r *EffectsRenderer) RenderDropShadow(
 	// 2. Fill with shadow color and opacity
 	// 3. Apply blur (requires soft mask or external tool)
 
-	// For basic implementation, render a semi-transparent offset shape
-	r.ctx.Page.SaveGraphicsState()
-	defer r.ctx.Page.RestoreGraphicsState()
+	if r.ctx == nil || r.ctx.Page == nil {
+		return nil
+	}
 
-	// Set shadow color with reduced opacity
-	r.ctx.Page.SetFillColor(
-		color.R*opacity,
-		color.G*opacity,
-		color.B*opacity,
-	)
+	// For basic implementation, render a semi-transparent offset shape.
+	shadowColor := applyOpacity(color, opacity)
 
-	// Create offset path
-	// In a full implementation, this would offset the path
-	// For now, this is a placeholder
-	r.ctx.Page.WriteContent(path.Fill())
+	passes := 1
+	if blurRadius > 0 {
+		passes = 3
+	}
+	for i := 0; i < passes; i++ {
+		shift := 0.0
+		if passes > 1 {
+			factor := float64(i) - float64(passes-1)/2
+			shift = factor * blurRadius / float64(passes)
+		}
+
+		r.ctx.Page.SaveGraphicsState()
+		r.ctx.Page.Transform(
+			core.IdentityMatrix().Translate(
+				offsetX+shift,
+				offsetY+shift,
+			),
+		)
+		r.ctx.Page.SetFillColor(
+			shadowColor.R,
+			shadowColor.G,
+			shadowColor.B,
+		)
+		r.ctx.Page.WriteContent(path.Fill())
+		r.ctx.Page.RestoreGraphicsState()
+	}
 
 	return nil
 }
@@ -58,32 +78,22 @@ func (r *EffectsRenderer) RenderOuterGlow(
 	color Color,
 	opacity float64,
 ) error {
-	// Outer glow is similar to drop shadow but radiates outward
-	// This requires path expansion and blur
+	if r.ctx == nil || r.ctx.Page == nil {
+		return nil
+	}
 
-	// For basic implementation, render multiple offset paths
-	r.ctx.Page.SaveGraphicsState()
-	defer r.ctx.Page.RestoreGraphicsState()
-
-	// Render glow as concentric rings with decreasing opacity
+	// Outer glow is approximated with concentric strokes.
+	glowColor := applyOpacity(color, opacity)
 	steps := 5
 	for i := steps; i > 0; i-- {
-		stepOpacity := opacity * float64(
-			i,
-		) / float64(
-			steps,
-		) * 0.3
+		stepOpacity := float64(i) / float64(steps)
 		r.ctx.Page.SetStrokeColor(
-			color.R*stepOpacity,
-			color.G*stepOpacity,
-			color.B*stepOpacity,
+			glowColor.R*stepOpacity,
+			glowColor.G*stepOpacity,
+			glowColor.B*stepOpacity,
 		)
 		r.ctx.Page.SetLineWidth(
-			glowSize * float64(
-				i,
-			) / float64(
-				steps,
-			),
+			glowSize * float64(i) / float64(steps),
 		)
 		r.ctx.Page.WriteContent(path.Stroke())
 	}
@@ -96,14 +106,15 @@ func (r *EffectsRenderer) RenderSoftEdges(
 	path *PathBuilder,
 	radius float64,
 ) error {
-	// Soft edges fade the edges of a shape
-	// This requires alpha gradients or soft masks in PDF
+	if r.ctx == nil || r.ctx.Page == nil {
+		return nil
+	}
 
-	// For basic implementation, just stroke with reduced opacity
+	// Soft edges are approximated with a light stroke.
 	r.ctx.Page.SaveGraphicsState()
 	defer r.ctx.Page.RestoreGraphicsState()
 
-	r.ctx.Page.SetStrokeColor(0.5, 0.5, 0.5)
+	r.ctx.Page.SetStrokeColor(0.7, 0.7, 0.7)
 	r.ctx.Page.SetLineWidth(radius)
 	r.ctx.Page.WriteContent(path.Stroke())
 
@@ -116,21 +127,34 @@ func (r *EffectsRenderer) RenderReflection(
 	offsetY, alpha float64,
 	flipVertical bool,
 ) error {
-	// Reflection creates a mirrored version below the shape
-	// This requires:
-	// 1. Flip the path vertically
-	// 2. Offset downward
-	// 3. Apply alpha gradient (fade from alpha to 0)
+	if r.ctx == nil || r.ctx.Page == nil {
+		return nil
+	}
 
 	r.ctx.Page.SaveGraphicsState()
 	defer r.ctx.Page.RestoreGraphicsState()
 
-	// Apply vertical flip transform
-	// For basic implementation, this is a placeholder
-	// Full implementation would use transformation matrix
+	if flipVertical {
+		r.ctx.Page.Transform(
+			core.IdentityMatrix().
+				Translate(0, offsetY).
+				Scale(1, -1),
+		)
+	} else {
+		r.ctx.Page.Transform(
+			core.IdentityMatrix().Translate(0, -offsetY),
+		)
+	}
 
-	// Render with reduced opacity
-	r.ctx.Page.SetFillColor(0.7, 0.7, 0.7)
+	reflectionColor := applyOpacity(
+		NewGray(0.7),
+		alpha,
+	)
+	r.ctx.Page.SetFillColor(
+		reflectionColor.R,
+		reflectionColor.G,
+		reflectionColor.B,
+	)
 	r.ctx.Page.WriteContent(path.Fill())
 
 	return nil
@@ -143,19 +167,22 @@ func (r *EffectsRenderer) RenderInnerShadow(
 	color Color,
 	opacity float64,
 ) error {
-	// Inner shadow is a shadow inside the shape
-	// This requires:
-	// 1. Clip to shape
-	// 2. Render inverted shadow
+	if r.ctx == nil || r.ctx.Page == nil {
+		return nil
+	}
 
+	// Basic implementation without clipping.
 	r.ctx.Page.SaveGraphicsState()
 	defer r.ctx.Page.RestoreGraphicsState()
 
-	// Basic implementation
+	shadowColor := applyOpacity(color, opacity*0.5)
+	r.ctx.Page.Transform(
+		core.IdentityMatrix().Translate(offsetX, offsetY),
+	)
 	r.ctx.Page.SetFillColor(
-		color.R*opacity*0.5,
-		color.G*opacity*0.5,
-		color.B*opacity*0.5,
+		shadowColor.R,
+		shadowColor.G,
+		shadowColor.B,
 	)
 	r.ctx.Page.WriteContent(path.Fill())
 
@@ -265,14 +292,34 @@ func (r *EffectsRenderer) renderOuterShadowEffect(
 	effectElem interface{},
 	path *PathBuilder,
 ) error {
-	// Parse shadow parameters and render
+	shadow := wrapOuterShadow(effectElem)
+	if shadow == nil {
+		return nil
+	}
+
+	distance := drawingml.EmuToPoints(shadow.Distance())
+	direction := float64(shadow.Direction()) / 60000.0
+	angle := direction * math.Pi / 180.0
+	offsetX := math.Cos(angle) * distance
+	offsetY := -math.Sin(angle) * distance
+	blurRadius := drawingml.EmuToPoints(shadow.BlurRadius())
+
+	color := resolveEffectColor(
+		shadow.RgbColor(),
+		shadow.SchemeColor(),
+	)
+	opacity := color.A
+	if opacity == 0 {
+		opacity = 0.5
+	}
+
 	return r.RenderDropShadow(
 		path,
-		3,
-		3,
-		2,
-		NewRGB(0, 0, 0),
-		0.5,
+		offsetX,
+		offsetY,
+		blurRadius,
+		color,
+		opacity,
 	)
 }
 
@@ -280,12 +327,26 @@ func (r *EffectsRenderer) renderGlowEffect(
 	effectElem interface{},
 	path *PathBuilder,
 ) error {
-	// Parse glow parameters and render
+	glow := wrapGlow(effectElem)
+	if glow == nil {
+		return nil
+	}
+
+	radius := drawingml.EmuToPoints(glow.Radius())
+	color := resolveEffectColor(
+		glow.RgbColor(),
+		glow.SchemeColor(),
+	)
+	opacity := color.A
+	if opacity == 0 {
+		opacity = 0.6
+	}
+
 	return r.RenderOuterGlow(
 		path,
-		2,
-		NewRGB(1, 1, 0),
-		0.6,
+		radius,
+		color,
+		opacity,
 	)
 }
 
@@ -293,14 +354,135 @@ func (r *EffectsRenderer) renderSoftEdgeEffect(
 	effectElem interface{},
 	path *PathBuilder,
 ) error {
-	// Parse soft edge parameters and render
-	return r.RenderSoftEdges(path, 1)
+	softEdge := wrapSoftEdge(effectElem)
+	if softEdge == nil {
+		return nil
+	}
+
+	radius := drawingml.EmuToPoints(softEdge.Radius())
+	if radius == 0 {
+		radius = 1
+	}
+
+	return r.RenderSoftEdges(path, radius)
 }
 
 func (r *EffectsRenderer) renderReflectionEffect(
 	effectElem interface{},
 	path *PathBuilder,
 ) error {
-	// Parse reflection parameters and render
-	return r.RenderReflection(path, 5, 0.5, true)
+	reflection := wrapReflection(effectElem)
+	if reflection == nil {
+		return nil
+	}
+
+	offset := drawingml.EmuToPoints(reflection.Distance())
+	alpha := float64(reflection.StartOpacity()) / 100000.0
+	if alpha == 0 {
+		alpha = 0.5
+	}
+
+	return r.RenderReflection(path, -offset, alpha, true)
+}
+
+func applyOpacity(
+	color Color,
+	opacity float64,
+) Color {
+	if opacity <= 0 {
+		return Color{}
+	}
+
+	alpha := opacity
+	if color.A > 0 {
+		alpha *= color.A
+	}
+	if alpha > 1 {
+		alpha = 1
+	}
+
+	return Color{
+		R: color.R * alpha,
+		G: color.G * alpha,
+		B: color.B * alpha,
+		A: alpha,
+	}
+}
+
+func resolveEffectColor(
+	rgb *drawingml.RgbColor,
+	scheme *drawingml.SchemeColor,
+) Color {
+	if rgb != nil {
+		if color := FromRgbColor(rgb); color != nil {
+			return color.Resolve(nil)
+		}
+	}
+	if scheme != nil {
+		if color := FromSchemeColor(scheme); color != nil {
+			return color.Resolve(nil)
+		}
+	}
+
+	return Black
+}
+
+func wrapOuterShadow(
+	effectElem interface{},
+) *drawingml.OuterShadow {
+	switch elem := effectElem.(type) {
+	case *drawingml.OuterShadow:
+		return elem
+	case *openxml.CompositeElementBase:
+		return &drawingml.OuterShadow{
+			CompositeElementBase: elem,
+		}
+	default:
+		return nil
+	}
+}
+
+func wrapGlow(
+	effectElem interface{},
+) *drawingml.Glow {
+	switch elem := effectElem.(type) {
+	case *drawingml.Glow:
+		return elem
+	case *openxml.CompositeElementBase:
+		return &drawingml.Glow{
+			CompositeElementBase: elem,
+		}
+	default:
+		return nil
+	}
+}
+
+func wrapSoftEdge(
+	effectElem interface{},
+) *drawingml.SoftEdge {
+	switch elem := effectElem.(type) {
+	case *drawingml.SoftEdge:
+		return elem
+	case *openxml.LeafElementBase:
+		return &drawingml.SoftEdge{
+			LeafElementBase: elem,
+		}
+	default:
+		return nil
+	}
+}
+
+func wrapReflection(
+	effectElem interface{},
+) *drawingml.Reflection {
+	switch elem := effectElem.(type) {
+	case *drawingml.Reflection:
+		return elem
+	case *openxml.LeafElementBase:
+		return &drawingml.Reflection{
+			LeafElementBase: elem,
+		}
+	default:
+		return nil
+	}
 }

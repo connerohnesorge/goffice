@@ -3,18 +3,13 @@ package drawing
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/connerohnesorge/goffice-pdf/core"
 	"github.com/connerohnesorge/goffice/drawingml"
 )
 
 const (
-	// placeholderImageColorR is the red component for placeholder image rectangles.
-	placeholderImageColorR = 0.9
-	// placeholderImageColorG is the green component for placeholder image rectangles.
-	placeholderImageColorG = 0.9
-	// placeholderImageColorB is the blue component for placeholder image rectangles.
-	placeholderImageColorB = 1.0
 	// placeholderImageDimension is the default dimension for placeholder images.
 	placeholderImageDimension = 100.0
 )
@@ -44,6 +39,9 @@ func (r *ImageRenderer) RenderPicture(
 	if blipFill == nil {
 		return errors.New("blip fill is nil")
 	}
+	if r.ctx == nil || r.ctx.Page == nil {
+		return errors.New("rendering context or page is nil")
+	}
 
 	// Get the embedded relationship ID
 	embedID := blipFill.Embed()
@@ -53,25 +51,39 @@ func (r *ImageRenderer) RenderPicture(
 		)
 	}
 
-	// In a full implementation, this would:
-	// 1. Load the image from the relationship
-	// 2. Process cropping
-	// 3. Apply stretch or tile mode
-	// 4. Render to PDF
+	if r.ctx.ImageResolver == nil {
+		return errors.New(
+			"image resolver is not set",
+		)
+	}
 
-	// For now, just draw a placeholder rectangle
-	r.ctx.Page.SetFillColor(
-		placeholderImageColorR,
-		placeholderImageColorG,
-		placeholderImageColorB,
-	) // Light blue
-	r.ctx.Page.DrawRectangle(
+	data, err := r.ctx.ImageResolver(embedID)
+	if err != nil {
+		return fmt.Errorf(
+			"resolve image %s: %w",
+			embedID,
+			err,
+		)
+	}
+
+	embedded, err := LoadEmbeddedImage(
+		data,
+		embedID,
+	)
+	if err != nil {
+		return fmt.Errorf(
+			"load image %s: %w",
+			embedID,
+			err,
+		)
+	}
+
+	r.ctx.Page.AddImage(
+		embedded,
 		bounds.X,
 		bounds.Y,
 		bounds.Width,
 		bounds.Height,
-		true,
-		false,
 	)
 
 	return nil

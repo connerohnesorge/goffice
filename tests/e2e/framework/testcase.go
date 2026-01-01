@@ -6,7 +6,8 @@ import (
 	"time"
 )
 
-// TestCase represents a single visual comparison test
+// TestCase represents a single visual comparison test between goffice and Open-XML-SDK.
+// It defines the presentation content to generate and configuration for comparison.
 type TestCase struct {
 	// Metadata
 	ID          string       `json:"id"`          // Unique identifier (e.g., "chart_bar_clustered_01")
@@ -35,7 +36,8 @@ const (
 	CategoryIntegration TestCategory = "integration"
 )
 
-// TestSpec defines the presentation content to generate
+// TestSpec defines the presentation content to generate.
+// Both Go and C# generators use this specification to create identical presentations.
 type TestSpec struct {
 	// Slide configuration
 	SlideCount int       `json:"slide_count"`
@@ -562,7 +564,8 @@ type FontSpec struct {
 // Test Configuration
 //
 
-// TestConfig configures test execution
+// TestConfig configures test execution behavior including rendering, comparison, and retry logic.
+// Can be set globally or per-test case for fine-grained control.
 type TestConfig struct {
 	// Rendering
 	RenderDPI     int           `json:"render_dpi"`     // DPI for PNG output (default: 300)
@@ -611,7 +614,8 @@ const (
 // Helper Methods
 //
 
-// NewTestCase creates a test case with defaults
+// NewTestCase creates a test case with sensible defaults.
+// Automatically sets creation time and initializes configuration.
 func NewTestCase(
 	id, name string,
 	category TestCategory,
@@ -627,7 +631,8 @@ func NewTestCase(
 	}
 }
 
-// DefaultTestConfig returns sensible defaults
+// DefaultTestConfig returns sensible defaults for test configuration.
+// Uses LibreOffice rendering at 300 DPI with 1% perceptual difference threshold.
 func DefaultTestConfig() TestConfig {
 	return TestConfig{
 		RenderDPI:          300,

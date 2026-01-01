@@ -13,7 +13,8 @@ import (
 	"strings"
 )
 
-// DiffResult contains comparison metrics
+// DiffResult contains comprehensive comparison metrics from visual image comparison.
+// Includes pixel-level metrics (diff count, percentage) and perceptual metrics (SSIM, MSE, PSNR).
 type DiffResult struct {
 	Image1Path string
 	Image2Path string
@@ -32,8 +33,13 @@ type DiffResult struct {
 	Threshold float64 // Configured threshold
 }
 
-// Differ performs visual comparison
+// Differ performs visual comparison between two PNG images.
+// Implementations include ImageMagickDiffer (uses ImageMagick's compare tool)
+// and GoDiffer (pure Go pixel-by-pixel comparison).
 type Differ interface {
+	// Compare compares two images and generates a diff image highlighting differences.
+	// The diffPath specifies where to save the visual diff (red overlay on grayscale).
+	// Returns metrics including SSIM, MSE, PSNR, and pass/fail based on config threshold.
 	Compare(
 		ctx context.Context,
 		img1Path, img2Path, diffPath string,
@@ -41,7 +47,9 @@ type Differ interface {
 	) (*DiffResult, error)
 }
 
-// ImageMagickDiffer uses ImageMagick's compare tool
+// ImageMagickDiffer uses ImageMagick's compare tool for visual comparison.
+// This provides access to multiple comparison algorithms (SSIM, MSE, PSNR, PHASH, AE)
+// via the `compare -metric <METRIC>` command.
 type ImageMagickDiffer struct{}
 
 // NewImageMagickDiffer creates an ImageMagick-based differ
@@ -199,7 +207,9 @@ func mapDiffAlgorithmToImageMagick(
 	}
 }
 
-// GoDiffer implements pure Go image comparison
+// GoDiffer implements pure Go image comparison without external dependencies.
+// Performs pixel-by-pixel comparison with optional anti-aliasing tolerance.
+// Computes SSIM, MSE, and PSNR metrics internally.
 type GoDiffer struct{}
 
 // NewGoDiffer creates a Go-native differ
@@ -373,7 +383,9 @@ func (d *GoDiffer) Compare(
 	return result, nil
 }
 
-// calculateSSIM computes Structural Similarity Index
+// calculateSSIM computes Structural Similarity Index (SSIM) between two images.
+// SSIM measures perceptual similarity considering luminance, contrast, and structure.
+// Returns a value between -1 and 1, where 1 indicates identical images.
 func calculateSSIM(
 	img1, img2 image.Image,
 ) float64 {

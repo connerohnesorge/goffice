@@ -1,0 +1,70 @@
+// Spectr Tasks File (JSONC)
+//
+// SmartArt Layout Engine MVP
+// Focus: Layout Engine Foundation + List Layout (simplest algorithm)
+
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "1.1",
+      "section": "Phase 1: Layout Engine Foundation",
+      "description": "Create LayoutEngine interface and LayoutType enum",
+      "status": "completed"
+    },
+    {
+      "id": "1.2",
+      "section": "Phase 1: Layout Engine Foundation",
+      "description": "Create Rectangle, Position, Point helper types",
+      "status": "completed"
+    },
+    {
+      "id": "1.3",
+      "section": "Phase 1: Layout Engine Foundation",
+      "description": "Create layout engine registry with Register/GetEngine methods",
+      "status": "completed"
+    },
+    {
+      "id": "1.4",
+      "section": "Phase 1: Layout Engine Foundation",
+      "description": "Create constraint types (Spacing, Sizing, Alignment)",
+      "status": "completed"
+    },
+    {
+      "id": "1.5",
+      "section": "Phase 1: Layout Engine Foundation",
+      "description": "Add unit tests for foundation types",
+      "status": "completed"
+    },
+    {
+      "id": "2.1",
+      "section": "Phase 2: List Layout",
+      "description": "Implement ListLayout struct with vertical/horizontal orientation",
+      "status": "completed"
+    },
+    {
+      "id": "2.2",
+      "section": "Phase 2: List Layout",
+      "description": "Implement calculatePositions for vertical and horizontal lists",
+      "status": "completed"
+    },
+    {
+      "id": "2.3",
+      "section": "Phase 2: List Layout",
+      "description": "Register ListLayout in default registry",
+      "status": "completed"
+    },
+    {
+      "id": "2.4",
+      "section": "Phase 2: List Layout",
+      "description": "Add unit tests for list layout positioning",
+      "status": "completed"
+    },
+    {
+      "id": "3.1",
+      "section": "Phase 3: Testing",
+      "description": "Run all tests and verify",
+      "status": "completed"
+    }
+  ]
+}

@@ -18,6 +18,14 @@ const (
 	PrefixR                   = "r"
 )
 
+// Local names for shape tree elements.
+const (
+	localNamePic          = "pic"
+	localNameGroupShape   = "grpSp"
+	localNameGraphicFrame = "graphicFrame"
+	localNameConnShape    = "cxnSp"
+)
+
 // Common PresentationML sizes.
 const (
 	Screen4x3Width  = 9144000
@@ -172,6 +180,47 @@ func LinkGraphicFrameToChart(
 
 	// Build the structure: graphic > graphicData > chartRef
 	graphicData.AppendChild(chartRef)
+	graphic.AppendChild(graphicData)
+	gf.AppendChild(graphic)
+}
+
+// LinkGraphicFrameToTable sets up a GraphicFrame to contain a DrawingML table.
+// This creates the proper <a:graphic><a:graphicData> structure with the table element.
+func LinkGraphicFrameToTable(
+	gf *GraphicFrame,
+	table openxml.Element,
+) {
+	if gf == nil || table == nil {
+		return
+	}
+
+	// Create the graphic element (a:graphic)
+	graphic := openxml.NewCompositeElement(
+		NamespaceDrawingML,
+		"graphic",
+		PrefixA,
+	)
+
+	// Create the graphic data element (a:graphicData)
+	// with the table URI namespace
+	graphicData := openxml.NewCompositeElement(
+		NamespaceDrawingML,
+		"graphicData",
+		PrefixA,
+	)
+	graphicData.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"uri",
+			"",
+			"http://schemas.openxmlformats.org/drawingml/2006/table",
+		),
+	)
+
+	// Add the table element to graphicData
+	graphicData.AppendChild(table)
+
+	// Build the structure: graphic > graphicData > table
 	graphic.AppendChild(graphicData)
 	gf.AppendChild(graphic)
 }

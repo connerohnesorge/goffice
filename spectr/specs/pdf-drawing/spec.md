@@ -3,165 +3,70 @@
 ## Requirements
 
 ### Requirement: Shape Geometry Rendering
-The system SHALL render DrawingML shape geometries to PDF paths.
+The system SHALL render DrawingML shape geometries to PDF paths using the Page abstraction.
 
-#### Scenario: Preset shape
-- GIVEN a preset shape type (e.g., rect, ellipse, star5)
-- WHEN rendered
-- THEN correct geometric path is produced
+#### Scenario: Preset shape with Page API
+- GIVEN a preset shape type (e.g., rect, ellipse)
+- WHEN rendered using ctx.Page methods
+- THEN shape is drawn using DrawRectangle/DrawEllipse/DrawPath
 
-#### Scenario: Custom geometry
-- GIVEN a shape with custom path definition
-- WHEN rendered
-- THEN path commands are converted to PDF path operations
+### Requirement: Fill Rendering  
+The system SHALL render DrawingML fill types using the Page abstraction.
 
-#### Scenario: Rounded corners
-- GIVEN a shape with rounded corners
-- WHEN rendered
-- THEN corner radii are rendered correctly
-
-### Requirement: Fill Rendering
-The system SHALL render DrawingML fill types.
-
-#### Scenario: Solid fill
+#### Scenario: Solid fill with Page API
 - GIVEN a shape with solid color fill
-- WHEN rendered
-- THEN shape is filled with specified color
+- WHEN rendered  
+- THEN Page.SetFillColor is called followed by Page.DrawPath
 
-#### Scenario: Gradient fill
+#### Scenario: Linear gradient approximation
 - GIVEN a shape with linear gradient fill
 - WHEN rendered
-- THEN gradient is rendered with correct colors and direction
-
-#### Scenario: Radial gradient
-- GIVEN a shape with radial gradient fill
-- WHEN rendered
-- THEN radial gradient is rendered from center outward
-
-#### Scenario: Pattern fill
-- GIVEN a shape with pattern fill
-- WHEN rendered
-- THEN pattern is tiled within shape bounds
-
-#### Scenario: Picture fill
-- GIVEN a shape with image fill
-- WHEN rendered
-- THEN image is placed within shape (stretched, tiled, or cropped)
+- THEN gradient is approximated using multiple DrawRectangle calls with interpolated colors
 
 ### Requirement: Line/Stroke Rendering
-The system SHALL render DrawingML outline properties.
+The system SHALL render DrawingML outline properties using the Page abstraction.
 
-#### Scenario: Solid line
+#### Scenario: Solid line with Page API
 - GIVEN a shape with solid outline
 - WHEN rendered
-- THEN outline is drawn with correct color and width
+- THEN Page.SetStrokeColor and Page.SetLineWidth are called before drawing
 
-#### Scenario: Dashed line
+#### Scenario: Dashed line with Page API
 - GIVEN a shape with dashed outline
 - WHEN rendered
-- THEN dash pattern matches specification
-
-#### Scenario: Line caps
-- GIVEN a line with specific cap style (flat, round, square)
-- WHEN rendered
-- THEN line ends are drawn with correct cap
-
-#### Scenario: Line joins
-- GIVEN a shape with specific join style (miter, round, bevel)
-- WHEN rendered
-- THEN corners are drawn with correct join
-
-#### Scenario: Compound line
-- GIVEN a line with compound style (double, triple)
-- WHEN rendered
-- THEN multiple strokes are drawn
+- THEN Page.SetLineDashPattern is called with appropriate pattern
 
 ### Requirement: Text in Shapes
-The system SHALL render text content within shapes.
+The system SHALL render text content within shapes using the Page abstraction.
 
-#### Scenario: Text body
+#### Scenario: Text body with Page API
 - GIVEN a shape with text content
 - WHEN rendered
-- THEN text is laid out within shape bounds
-
-#### Scenario: Text wrapping
-- GIVEN a shape with text that exceeds width
-- WHEN rendered
-- THEN text wraps to multiple lines within shape
-
-#### Scenario: Vertical text
-- GIVEN a shape with vertical text direction
-- WHEN rendered
-- THEN text is rotated 90 degrees
-
-#### Scenario: Text anchor
-- GIVEN a shape with text anchor (top, middle, bottom)
-- WHEN rendered
-- THEN text is vertically positioned accordingly
-
-#### Scenario: Text margins
-- GIVEN a shape with internal text margins
-- WHEN rendered
-- THEN text is inset from shape edges
+- THEN Page.DrawText is called for each text run with correct positioning
 
 ### Requirement: Picture Rendering
-The system SHALL render DrawingML pictures.
+The system SHALL render DrawingML pictures using the Page abstraction.
 
-#### Scenario: Inline image
+#### Scenario: Inline image with Page API
 - GIVEN a picture element with image reference
 - WHEN rendered
-- THEN image is displayed at specified size
-
-#### Scenario: Image crop
-- GIVEN a picture with crop settings
-- WHEN rendered
-- THEN only visible portion of image is shown
-
-#### Scenario: Image stretch
-- GIVEN a picture with stretch fill settings
-- WHEN rendered
-- THEN image fills frame with possible distortion
+- THEN Page.AddImage is called with correct dimensions and positioning
 
 ### Requirement: Transform Rendering
-The system SHALL apply DrawingML transforms.
+The system SHALL apply DrawingML transforms using the Page abstraction.
 
-#### Scenario: Rotation
+#### Scenario: Rotation with Page API
 - GIVEN a shape with rotation angle
 - WHEN rendered
-- THEN shape is rotated around its center
-
-#### Scenario: Flip
-- GIVEN a shape with horizontal/vertical flip
-- WHEN rendered
-- THEN shape is mirrored appropriately
-
-#### Scenario: Offset
-- GIVEN a shape with position offset
-- WHEN rendered
-- THEN shape is placed at correct coordinates
+- THEN Page.PushState, Page.Transform with rotation matrix, Page.PopState are called
 
 ### Requirement: Effect Rendering
-The system SHALL render DrawingML effects.
+The system SHALL render DrawingML effects using the Page abstraction.
 
-#### Scenario: Drop shadow
+#### Scenario: Drop shadow with Page API
 - GIVEN a shape with drop shadow effect
 - WHEN rendered
-- THEN shadow is rendered behind shape with correct blur and offset
-
-#### Scenario: Outer glow
-- GIVEN a shape with outer glow effect
-- WHEN rendered
-- THEN glow is rendered around shape edges
-
-#### Scenario: Soft edges
-- GIVEN a shape with soft edges effect
-- WHEN rendered
-- THEN edges are blurred/feathered
-
-#### Scenario: Reflection
-- GIVEN a shape with reflection effect
-- WHEN rendered
-- THEN mirrored reflection appears below shape
+- THEN shadow is drawn first using Page.SetFillColor with transparency, followed by shape
 
 ### Requirement: Connector Rendering
 The system SHALL render connector lines between shapes.
@@ -195,32 +100,17 @@ The system SHALL render grouped shapes.
 - THEN nesting is preserved with correct transforms
 
 ### Requirement: Chart Rendering
-The system SHALL render DrawingML charts.
+The system SHALL render DrawingML charts using the Page abstraction.
 
-#### Scenario: Column chart
-- GIVEN a column/bar chart
+#### Scenario: Bar chart with Page API
+- GIVEN a bar chart
 - WHEN rendered
-- THEN bars are drawn with correct heights and spacing
+- THEN bars are drawn using Page.DrawRectangle for each data point
 
-#### Scenario: Line chart
-- GIVEN a line chart with data series
+#### Scenario: Line chart with Page API
+- GIVEN a line chart
 - WHEN rendered
-- THEN lines connect data points correctly
-
-#### Scenario: Pie chart
-- GIVEN a pie chart
-- WHEN rendered
-- THEN segments are sized proportionally to data
-
-#### Scenario: Chart legend
-- GIVEN a chart with legend
-- WHEN rendered
-- THEN legend is positioned and styled correctly
-
-#### Scenario: Chart axes
-- GIVEN a chart with axes
-- WHEN rendered
-- THEN axes, labels, and gridlines are drawn correctly
+- THEN lines are drawn using Page.DrawPath connecting data points
 
 ### Requirement: Page Interface
 
@@ -537,3 +427,64 @@ The system SHALL render images via the enabled image_renderer.go.
 - WHEN `RenderImage(ctx, blip, bounds)` is called
 - THEN the image is drawn within bounds
 - AND aspect ratio may be preserved per settings
+
+### Requirement: Renderer File Re-enablement
+The system SHALL have all DrawingML renderer files active (no .wip extensions).
+
+#### Scenario: Chart renderer active
+- GIVEN the pdf/drawing package
+- WHEN inspecting files
+- THEN chart_renderer.go exists (not .wip)
+
+#### Scenario: Fill renderer active
+- GIVEN the pdf/drawing package
+- WHEN inspecting files
+- THEN fill_renderer.go exists (not .wip)
+
+#### Scenario: Shape renderer active
+- GIVEN the pdf/drawing package
+- WHEN inspecting files
+- THEN shape_renderer.go exists (not .wip)
+
+#### Scenario: Stroke renderer active
+- GIVEN the pdf/drawing package
+- WHEN inspecting files
+- THEN stroke_renderer.go exists (not .wip)
+
+#### Scenario: Image renderer active
+- GIVEN the pdf/drawing package
+- WHEN inspecting files
+- THEN image_renderer.go exists (not .wip)
+
+#### Scenario: Text in shape renderer active
+- GIVEN the pdf/drawing package
+- WHEN inspecting files
+- THEN text_in_shape.go exists (not .wip)
+
+#### Scenario: Transform renderer active
+- GIVEN the pdf/drawing package
+- WHEN inspecting files
+- THEN transform_renderer.go exists (not .wip)
+
+#### Scenario: Effects renderer active
+- GIVEN the pdf/drawing package
+- WHEN inspecting files
+- THEN effects_renderer.go exists (not .wip)
+
+### Requirement: Integration with Document Renderers
+The system SHALL integrate DrawingML rendering with Word, Excel, and PowerPoint PDF renderers.
+
+#### Scenario: Excel chart rendering
+- GIVEN an Excel document with a column chart
+- WHEN rendered to PDF
+- THEN chart appears in PDF output at correct location
+
+#### Scenario: PowerPoint shape rendering
+- GIVEN a PowerPoint slide with shapes
+- WHEN rendered to PDF  
+- THEN shapes appear with correct fills and strokes
+
+#### Scenario: Word inline image rendering
+- GIVEN a Word document with inline images
+- WHEN rendered to PDF
+- THEN images appear at correct positions with correct sizing

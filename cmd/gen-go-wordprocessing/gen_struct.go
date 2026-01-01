@@ -9,6 +9,14 @@ import (
 // generateStruct generates a Go struct for a schema element type.
 // It creates the struct definition, constructor, and methods.
 func generateStruct(f *os.File, t *SchemaType) {
+	originalClassName := t.ClassName
+
+	// Check for conflicts with enum names and add prefix if needed
+	if enumNameMap[originalClassName] {
+		prefix := deriveStructPrefix(t.TargetNamespace)
+		t.ClassName = prefix + originalClassName
+	}
+
 	if existingTypes[t.ClassName] ||
 		generatedTypes[t.ClassName] {
 		return

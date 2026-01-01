@@ -11,9 +11,12 @@ import (
 	"time"
 )
 
-// Generator defines the interface for PPTX generation (Go or C#)
+// Generator defines the interface for PPTX generation from test cases.
+// Implementations include GoGenerator (uses goffice) and CSharpGenerator (uses Open-XML-SDK).
 type Generator interface {
-	// Generate creates a PPTX file from a test case
+	// Generate creates a PPTX file from a test case specification.
+	// The outputPath specifies where to save the generated PPTX file.
+	// The context can be used to cancel generation or enforce timeouts.
 	Generate(
 		ctx context.Context,
 		tc *TestCase,
@@ -21,7 +24,8 @@ type Generator interface {
 	) error
 }
 
-// GoGenerator generates PPTX using goffice (via external command)
+// GoGenerator generates PPTX using goffice via an external generator binary.
+// The generator binary reads TestCase JSON and produces PPTX output.
 type GoGenerator struct {
 	BinaryPath string // Path to e2e-go-generator binary
 }
@@ -171,11 +175,6 @@ func (c *CSharpGenerator) Generate(
 	}
 
 	return nil
-}
-
-// Reporter generates HTML reports from test results
-type Reporter struct {
-	OutputDir string
 }
 
 // Runner orchestrates the full test execution pipeline

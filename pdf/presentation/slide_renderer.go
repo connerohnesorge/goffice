@@ -16,6 +16,7 @@ import (
 // It handles master slide inheritance, backgrounds, and shape rendering.
 type SlideRenderer struct {
 	doc           *presentation.Document
+	pdfDoc        *core.Document
 	slidePart     *parts.SlidePart
 	page          *core.Page
 	pageSize      core.PageSize
@@ -26,6 +27,7 @@ type SlideRenderer struct {
 // NewSlideRenderer creates a new slide renderer.
 func NewSlideRenderer(
 	doc *presentation.Document,
+	pdfDoc *core.Document,
 	slidePart *parts.SlidePart,
 	page *core.Page,
 	pageSize core.PageSize,
@@ -35,6 +37,7 @@ func NewSlideRenderer(
 		pageSize.Width,
 		pageSize.Height,
 	)
+	pageImpl.AttachResources(pdfDoc, page)
 
 	// Create rendering context with the PageImpl
 	renderContext := core.NewRenderingContext(
@@ -42,6 +45,23 @@ func NewSlideRenderer(
 		pageSize.Height,
 	)
 	renderContext.SetPage(pageImpl)
+	renderContext.SetImageResolver(
+		func(id string) ([]byte, error) {
+			part, err := slidePart.GetPartById(id)
+			if err != nil {
+				return nil, err
+			}
+			imagePart, ok := part.(*parts.ImagePart)
+			if !ok {
+				return nil, fmt.Errorf(
+					"part %s is not an image",
+					id,
+				)
+			}
+
+			return imagePart.GetData()
+		},
+	)
 
 	// Create shape renderer
 	shapeRenderer := drawing.NewShapeRenderer(
@@ -50,6 +70,7 @@ func NewSlideRenderer(
 
 	return &SlideRenderer{
 		doc:           doc,
+		pdfDoc:        pdfDoc,
 		slidePart:     slidePart,
 		page:          page,
 		pageSize:      pageSize,
@@ -538,6 +559,10 @@ func (sr *SlideRenderer) renderShapeElement(
 		return sr.renderShape(shape, isMaster)
 	case *elements.Picture:
 		return sr.renderPicture(shape)
+	case *elements.GroupShape:
+		return sr.renderGroupShape(shape)
+	case *elements.GraphicFrame:
+		return sr.renderGraphicFrame(shape)
 	default:
 		// Unknown or unsupported shape type, skip silently
 		return nil
@@ -973,16 +998,236 @@ func (sr *SlideRenderer) renderPicture(
 	// PDF coordinates are bottom-left origin
 	yPdfPt := sr.pageSize.Height - yPt - heightPt
 
-	// For now, render a placeholder rectangle for the image
-	// Full image rendering would require loading the image data from relationships
-	content := fmt.Sprintf(
-		"q\n0.8 0.8 0.8 RG\n1 w\n%.2f %.2f %.2f %.2f re\nS\nQ\n",
-		xPt,
-		yPdfPt,
-		widthPt,
-		heightPt,
+	// Resolve image relationship ID
+	blipFill := picture.BlipFill()
+	if blipFill == nil {
+		return nil
+	}
+	embedID := blipFill.RelId()
+	if embedID == "" {
+		return nil
+	}
+
+	// Render the image via DrawingML renderer
+	imageRenderer := drawing.NewImageRenderer(
+		sr.renderContext,
 	)
-	sr.page.WriteContentString(content)
+	drawingFill := drawingml.NewBlipFillWithEmbed(
+		embedID,
+	)
+	err := imageRenderer.RenderPicture(
+		drawingFill,
+		drawing.RenderBounds{
+			X:      xPt,
+			Y:      yPdfPt,
+			Width:  widthPt,
+			Height: heightPt,
+		},
+	)
+	if err != nil {
+		// Fallback placeholder rectangle on failure
+		if pageImpl, ok := sr.renderContext.Page.(*core.PageImpl); ok {
+			pageImpl.SetStrokeColor(0.8, 0.8, 0.8)
+			pageImpl.SetLineWidth(1)
+			pageImpl.DrawRectangle(
+				xPt,
+				yPdfPt,
+				widthPt,
+				heightPt,
+				false,
+				true,
+			)
+		}
+	}
+
+	// Write accumulated content to the page
+	if pageImpl, ok := sr.renderContext.Page.(*core.PageImpl); ok {
+		content := pageImpl.GetContent()
+		if content != "" {
+			if _, err := sr.page.WriteContentString(content); err != nil {
+				return fmt.Errorf(
+					"failed to write picture content: %w",
+					err,
+				)
+			}
+			pageImpl.Reset()
+		}
+	}
+
+	return nil
+}
+
+// renderGroupShape renders a group shape and all its children.
+// Groups maintain their transform hierarchy using the PDF graphics state stack.
+func (sr *SlideRenderer) renderGroupShape(
+	group *elements.GroupShape,
+) error {
+	if group == nil {
+		return nil
+	}
+
+	// Create a group renderer
+	groupRenderer := drawing.NewGroupRenderer(sr.renderContext)
+
+	// Render the group and all its children
+	return groupRenderer.RenderGroup(group)
+}
+
+// renderGraphicFrame renders charts embedded in graphic frames.
+func (sr *SlideRenderer) renderGraphicFrame(
+	frame *elements.GraphicFrame,
+) error {
+	if frame == nil {
+		return nil
+	}
+
+	graphic := findChild(
+		frame,
+		"graphic",
+		drawingml.NamespaceMain,
+	)
+	if graphic == nil {
+		return nil
+	}
+
+	graphicData := findChild(
+		graphic,
+		"graphicData",
+		drawingml.NamespaceMain,
+	)
+	if graphicData == nil {
+		return nil
+	}
+
+	if uri, found := graphicData.GetAttribute("uri", ""); !found ||
+		uri.Value() != drawingml.NamespaceChart {
+		return nil
+	}
+
+	chartElem := findChild(
+		graphicData,
+		"chart",
+		drawingml.NamespaceChart,
+	)
+	if chartElem == nil {
+		return nil
+	}
+	relAttr, found := chartElem.GetAttribute(
+		"id",
+		openxml.NamespaceRelationships,
+	)
+	if !found {
+		return nil
+	}
+	relID := relAttr.Value()
+
+	part, err := sr.slidePart.GetPartById(relID)
+	if err != nil {
+		return nil
+	}
+	chartPart, ok := part.(*parts.ChartPart)
+	if !ok {
+		return nil
+	}
+
+	xfrm := findChild(
+		frame,
+		"xfrm",
+		elements.NamespacePresentationML,
+	)
+	if xfrm == nil {
+		return nil
+	}
+
+	off := findChild(
+		xfrm,
+		"off",
+		drawingml.NamespaceMain,
+	)
+	ext := findChild(
+		xfrm,
+		"ext",
+		drawingml.NamespaceMain,
+	)
+
+	var x, y, cx, cy int64
+	if off != nil {
+		if xAttr, found := off.GetAttribute("x", ""); found {
+			fmt.Sscanf(xAttr.Value(), "%d", &x)
+		}
+		if yAttr, found := off.GetAttribute("y", ""); found {
+			fmt.Sscanf(yAttr.Value(), "%d", &y)
+		}
+	}
+	if ext != nil {
+		if cxAttr, found := ext.GetAttribute("cx", ""); found {
+			fmt.Sscanf(cxAttr.Value(), "%d", &cx)
+		}
+		if cyAttr, found := ext.GetAttribute("cy", ""); found {
+			fmt.Sscanf(cyAttr.Value(), "%d", &cy)
+		}
+	}
+
+	xPt := drawingml.EmuToPoints(drawingml.EMU(x))
+	yPt := drawingml.EmuToPoints(drawingml.EMU(y))
+	widthPt := drawingml.EmuToPoints(drawingml.EMU(cx))
+	heightPt := drawingml.EmuToPoints(drawingml.EMU(cy))
+	yPdfPt := sr.pageSize.Height - yPt - heightPt
+
+	chartKind, chartData, horizontal, err := drawing.ExtractChartData(
+		chartPart.ChartSpace(),
+	)
+	if err != nil {
+		return nil
+	}
+
+	chartRenderer := drawing.NewChartRenderer(sr.renderContext)
+	switch chartKind {
+	case drawing.ChartKindBar:
+		if err := chartRenderer.RenderBarChart(
+			xPt,
+			yPdfPt,
+			widthPt,
+			heightPt,
+			chartData,
+			horizontal,
+		); err != nil {
+			return nil
+		}
+	case drawing.ChartKindLine:
+		if err := chartRenderer.RenderLineChart(
+			xPt,
+			yPdfPt,
+			widthPt,
+			heightPt,
+			chartData,
+		); err != nil {
+			return nil
+		}
+	case drawing.ChartKindPie:
+		if err := chartRenderer.RenderPieChart(
+			xPt,
+			yPdfPt,
+			widthPt,
+			heightPt,
+			chartData,
+		); err != nil {
+			return nil
+		}
+	}
+
+	if pageImpl, ok := sr.renderContext.Page.(*core.PageImpl); ok {
+		content := pageImpl.GetContent()
+		if content != "" {
+			if _, err := sr.page.WriteContentString(content); err != nil {
+				return fmt.Errorf(
+					"failed to write chart content: %w",
+					err,
+				)
+			}
+			pageImpl.Reset()
+		}
+	}
 
 	return nil
 }

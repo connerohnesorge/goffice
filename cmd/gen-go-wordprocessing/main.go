@@ -64,6 +64,10 @@ func main() {
 		len(schemas),
 	)
 
+	// Build enum name map to detect struct naming conflicts
+	// This must happen BEFORE collectTypesWithVersion to avoid duplicate type names
+	buildEnumNameMap()
+
 	// Collect types from all schemas
 	for _, schema := range schemas {
 		collectTypesWithVersion(schema)

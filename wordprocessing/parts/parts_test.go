@@ -505,6 +505,11 @@ func TestContentTypeConstants(t *testing.T) {
 			ContentTypeVbaProject,
 			"application/vnd.ms-office.vbaProject",
 		},
+		{
+			"ContentTypeChart",
+			ContentTypeChart,
+			"application/vnd.openxmlformats-officedocument.drawingml.chart+xml",
+		},
 	}
 
 	for _, tt := range tests {
@@ -592,6 +597,11 @@ func TestRelationshipTypeConstants(t *testing.T) {
 			"RelationshipTypeVbaProject",
 			RelationshipTypeVbaProject,
 			"http://schemas.microsoft.com/office/2006/relationships/vbaProject",
+		},
+		{
+			"RelationshipTypeChart",
+			RelationshipTypeChart,
+			"http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
 		},
 	}
 

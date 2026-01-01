@@ -230,18 +230,43 @@ func (r *PictureFillRenderer) Apply(
 		return nil
 	}
 
-	// Picture fills require loading the image and using it as a fill
-	// This is complex in PDF and requires image manipulation
-	// For basic implementation, just fill the path with a placeholder color
+	if ctx == nil || ctx.Page == nil {
+		return nil
+	}
 
-	ctx.Page.SetFillColor(
-		0.9,
-		0.9,
-		1.0,
-	) // Light blue as placeholder
-	ctx.Page.WriteContent(path.Fill())
+	bounds, ok := path.Bounds()
+	if !ok || bounds.Width == 0 || bounds.Height == 0 {
+		return nil
+	}
+
+	if ctx.ImageResolver == nil {
+		renderPictureFillPlaceholder(ctx, path)
+		return nil
+	}
+
+	imageRenderer := NewImageRenderer(ctx)
+	err := imageRenderer.RenderPicture(
+		r.fill,
+		RenderBounds{
+			X:      bounds.X,
+			Y:      bounds.Y,
+			Width:  bounds.Width,
+			Height: bounds.Height,
+		},
+	)
+	if err != nil {
+		renderPictureFillPlaceholder(ctx, path)
+	}
 
 	return nil
+}
+
+func renderPictureFillPlaceholder(
+	ctx *core.RenderingContext,
+	path *PathBuilder,
+) {
+	ctx.Page.SetFillColor(0.9, 0.9, 1.0)
+	ctx.Page.WriteContent(path.Fill())
 }
 
 // NoFillRenderer represents no fill (transparent).

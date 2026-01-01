@@ -115,6 +115,7 @@ func generateCloneChildren(
 	f *os.File,
 	t *SchemaType,
 ) {
+	seen := make(map[string]bool)
 	for _, child := range t.Children {
 		info, ok := typeMap[child.Name]
 		if !ok {
@@ -124,6 +125,11 @@ func generateCloneChildren(
 		if propName == "" {
 			propName = info.ClassName
 		}
+
+		if seen[propName] {
+			continue
+		}
+		seen[propName] = true
 
 		childType := info.ClassName
 		if pkg := getGoPackage(info.Namespace); pkg != "" {
@@ -165,6 +171,7 @@ func generateValidate(f *os.File, t *SchemaType) {
 		"func (m *%s) Validate() error {\n",
 		t.ClassName,
 	)
+	seen := make(map[string]bool)
 	for _, child := range t.Children {
 		info, ok := typeMap[child.Name]
 		if !ok {
@@ -174,6 +181,11 @@ func generateValidate(f *os.File, t *SchemaType) {
 		if propName == "" {
 			propName = info.ClassName
 		}
+
+		if seen[propName] {
+			continue
+		}
+		seen[propName] = true
 
 		pkg := getGoPackage(info.Namespace)
 		if shouldSkipValidation(
@@ -198,8 +210,7 @@ func generateValidate(f *os.File, t *SchemaType) {
 func shouldSkipValidation(
 	pkg, className string,
 ) bool {
-	if pkg == drawingMLPkg &&
-		!existsInDrawingML(className) {
+	if pkg == drawingMLPkg {
 		return true
 	}
 	// Reordered operands for performance and revive compliance.

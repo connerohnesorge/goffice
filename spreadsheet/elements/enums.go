@@ -8,22 +8,74 @@ import (
 	"encoding/xml"
 )
 
-// TextVerticalAlignmentValues
-type TextVerticalAlignmentValues string
+// PivotEditValueTypeValues
+type PivotEditValueTypeValues string
 const (
-	TextVerticalAlignmentValuesTop TextVerticalAlignmentValues = "top"
-	TextVerticalAlignmentValuesCenter TextVerticalAlignmentValues = "center"
-	TextVerticalAlignmentValuesBottom TextVerticalAlignmentValues = "bottom"
-	TextVerticalAlignmentValuesJustify TextVerticalAlignmentValues = "justify"
-	TextVerticalAlignmentValuesDistributed TextVerticalAlignmentValues = "distributed"
+	PivotEditValueTypeValuesNumber PivotEditValueTypeValues = "number"
+	PivotEditValueTypeValuesDatetime PivotEditValueTypeValues = "dateTime"
+	PivotEditValueTypeValuesString PivotEditValueTypeValues = "string"
+	PivotEditValueTypeValuesBoolean PivotEditValueTypeValues = "boolean"
+	PivotEditValueTypeValuesError PivotEditValueTypeValues = "error"
 )
 
-func (e TextVerticalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PivotEditValueTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TextVerticalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextVerticalAlignmentValues(attr.Value)
+func (e *PivotEditValueTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PivotEditValueTypeValues(attr.Value)
+		return nil
+}
+
+// TickMarkValues
+type TickMarkValues string
+const (
+	TickMarkValuesCross TickMarkValues = "cross"
+	TickMarkValuesIn TickMarkValues = "in"
+	TickMarkValuesNone TickMarkValues = "none"
+	TickMarkValuesOut TickMarkValues = "out"
+)
+
+func (e TickMarkValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TickMarkValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TickMarkValues(attr.Value)
+		return nil
+}
+
+// TextAnchorHorizontalValues
+type TextAnchorHorizontalValues string
+const (
+	TextAnchorHorizontalValuesNone TextAnchorHorizontalValues = "none"
+	TextAnchorHorizontalValuesCtr TextAnchorHorizontalValues = "ctr"
+)
+
+func (e TextAnchorHorizontalValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextAnchorHorizontalValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextAnchorHorizontalValues(attr.Value)
+		return nil
+}
+
+// PhoneticValues
+type PhoneticValues string
+const (
+	PhoneticValuesHalfwidthkatakana PhoneticValues = "halfwidthKatakana"
+	PhoneticValuesFullwidthkatakana PhoneticValues = "fullwidthKatakana"
+	PhoneticValuesHiragana PhoneticValues = "Hiragana"
+	PhoneticValuesNoconversion PhoneticValues = "noConversion"
+)
+
+func (e PhoneticValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PhoneticValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PhoneticValues(attr.Value)
 		return nil
 }
 
@@ -51,210 +103,96 @@ func (e *TimePeriodValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// VolatileDependencyValues
-type VolatileDependencyValues string
+// ConditionalFormatValueObjectValues
+type ConditionalFormatValueObjectValues string
 const (
-	VolatileDependencyValuesRealtimedata VolatileDependencyValues = "realTimeData"
-	VolatileDependencyValuesOlapfunctions VolatileDependencyValues = "olapFunctions"
+	ConditionalFormatValueObjectValuesNum ConditionalFormatValueObjectValues = "num"
+	ConditionalFormatValueObjectValuesPercent ConditionalFormatValueObjectValues = "percent"
+	ConditionalFormatValueObjectValuesMax ConditionalFormatValueObjectValues = "max"
+	ConditionalFormatValueObjectValuesMin ConditionalFormatValueObjectValues = "min"
+	ConditionalFormatValueObjectValuesFormula ConditionalFormatValueObjectValues = "formula"
+	ConditionalFormatValueObjectValuesPercentile ConditionalFormatValueObjectValues = "percentile"
 )
 
-func (e VolatileDependencyValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ConditionalFormatValueObjectValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *VolatileDependencyValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = VolatileDependencyValues(attr.Value)
+func (e *ConditionalFormatValueObjectValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ConditionalFormatValueObjectValues(attr.Value)
 		return nil
 }
 
-// ArrayValueType
-type ArrayValueType string
+// ErrorValues
+type ErrorValues string
 const (
-	ArrayValueTypeD ArrayValueType = "d"
-	ArrayValueTypeI ArrayValueType = "i"
-	ArrayValueTypeB ArrayValueType = "b"
-	ArrayValueTypeE ArrayValueType = "e"
-	ArrayValueTypeS ArrayValueType = "s"
-	ArrayValueTypeR ArrayValueType = "r"
-	ArrayValueTypeA ArrayValueType = "a"
+	ErrorValuesCust ErrorValues = "cust"
+	ErrorValuesFixedval ErrorValues = "fixedVal"
+	ErrorValuesPercentage ErrorValues = "percentage"
+	ErrorValuesStddev ErrorValues = "stdDev"
+	ErrorValuesStderr ErrorValues = "stdErr"
 )
 
-func (e ArrayValueType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ErrorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ArrayValueType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ArrayValueType(attr.Value)
+func (e *ErrorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ErrorValues(attr.Value)
 		return nil
 }
 
-// Indefinite
-type Indefinite string
+// TextStrikeValues
+type TextStrikeValues string
 const (
-	IndefiniteIndefinite Indefinite = "indefinite"
+	TextStrikeValuesNostrike TextStrikeValues = "noStrike"
+	TextStrikeValuesSngstrike TextStrikeValues = "sngStrike"
+	TextStrikeValuesDblstrike TextStrikeValues = "dblStrike"
 )
 
-func (e Indefinite) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TextStrikeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *Indefinite) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = Indefinite(attr.Value)
+func (e *TextStrikeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextStrikeValues(attr.Value)
 		return nil
 }
 
-// BoolOperatorValues
-type BoolOperatorValues string
+// FilterOperatorValues
+type FilterOperatorValues string
 const (
-	BoolOperatorValuesNone BoolOperatorValues = "none"
-	BoolOperatorValuesEqu BoolOperatorValues = "equ"
-	BoolOperatorValuesGte BoolOperatorValues = "gte"
-	BoolOperatorValuesLte BoolOperatorValues = "lte"
+	FilterOperatorValuesEqual FilterOperatorValues = "equal"
+	FilterOperatorValuesLessthan FilterOperatorValues = "lessThan"
+	FilterOperatorValuesLessthanorequal FilterOperatorValues = "lessThanOrEqual"
+	FilterOperatorValuesNotequal FilterOperatorValues = "notEqual"
+	FilterOperatorValuesGreaterthanorequal FilterOperatorValues = "greaterThanOrEqual"
+	FilterOperatorValuesGreaterthan FilterOperatorValues = "greaterThan"
 )
 
-func (e BoolOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e FilterOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *BoolOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BoolOperatorValues(attr.Value)
+func (e *FilterOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FilterOperatorValues(attr.Value)
 		return nil
 }
 
-// TableStyleValues
-type TableStyleValues string
+// SparklineAxisMinMaxValues
+type SparklineAxisMinMaxValues string
 const (
-	TableStyleValuesWholetable TableStyleValues = "wholeTable"
-	TableStyleValuesHeaderrow TableStyleValues = "headerRow"
-	TableStyleValuesTotalrow TableStyleValues = "totalRow"
-	TableStyleValuesFirstcolumn TableStyleValues = "firstColumn"
-	TableStyleValuesLastcolumn TableStyleValues = "lastColumn"
-	TableStyleValuesFirstrowstripe TableStyleValues = "firstRowStripe"
-	TableStyleValuesSecondrowstripe TableStyleValues = "secondRowStripe"
-	TableStyleValuesFirstcolumnstripe TableStyleValues = "firstColumnStripe"
-	TableStyleValuesSecondcolumnstripe TableStyleValues = "secondColumnStripe"
-	TableStyleValuesFirstheadercell TableStyleValues = "firstHeaderCell"
-	TableStyleValuesLastheadercell TableStyleValues = "lastHeaderCell"
-	TableStyleValuesFirsttotalcell TableStyleValues = "firstTotalCell"
-	TableStyleValuesLasttotalcell TableStyleValues = "lastTotalCell"
-	TableStyleValuesFirstsubtotalcolumn TableStyleValues = "firstSubtotalColumn"
-	TableStyleValuesSecondsubtotalcolumn TableStyleValues = "secondSubtotalColumn"
-	TableStyleValuesThirdsubtotalcolumn TableStyleValues = "thirdSubtotalColumn"
-	TableStyleValuesFirstsubtotalrow TableStyleValues = "firstSubtotalRow"
-	TableStyleValuesSecondsubtotalrow TableStyleValues = "secondSubtotalRow"
-	TableStyleValuesThirdsubtotalrow TableStyleValues = "thirdSubtotalRow"
-	TableStyleValuesBlankrow TableStyleValues = "blankRow"
-	TableStyleValuesFirstcolumnsubheading TableStyleValues = "firstColumnSubheading"
-	TableStyleValuesSecondcolumnsubheading TableStyleValues = "secondColumnSubheading"
-	TableStyleValuesThirdcolumnsubheading TableStyleValues = "thirdColumnSubheading"
-	TableStyleValuesFirstrowsubheading TableStyleValues = "firstRowSubheading"
-	TableStyleValuesSecondrowsubheading TableStyleValues = "secondRowSubheading"
-	TableStyleValuesThirdrowsubheading TableStyleValues = "thirdRowSubheading"
-	TableStyleValuesPagefieldlabels TableStyleValues = "pageFieldLabels"
-	TableStyleValuesPagefieldvalues TableStyleValues = "pageFieldValues"
+	SparklineAxisMinMaxValuesIndividual SparklineAxisMinMaxValues = "individual"
+	SparklineAxisMinMaxValuesGroup SparklineAxisMinMaxValues = "group"
+	SparklineAxisMinMaxValuesCustom SparklineAxisMinMaxValues = "custom"
 )
 
-func (e TableStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e SparklineAxisMinMaxValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TableStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TableStyleValues(attr.Value)
-		return nil
-}
-
-// SplitValues
-type SplitValues string
-const (
-	SplitValuesCust SplitValues = "cust"
-	SplitValuesPercent SplitValues = "percent"
-	SplitValuesPos SplitValues = "pos"
-	SplitValuesVal SplitValues = "val"
-)
-
-func (e SplitValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SplitValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SplitValues(attr.Value)
-		return nil
-}
-
-// BlackWhiteModeValues
-type BlackWhiteModeValues string
-const (
-	BlackWhiteModeValuesClr BlackWhiteModeValues = "clr"
-	BlackWhiteModeValuesAuto BlackWhiteModeValues = "auto"
-	BlackWhiteModeValuesGray BlackWhiteModeValues = "gray"
-	BlackWhiteModeValuesLtgray BlackWhiteModeValues = "ltGray"
-	BlackWhiteModeValuesInvgray BlackWhiteModeValues = "invGray"
-	BlackWhiteModeValuesGraywhite BlackWhiteModeValues = "grayWhite"
-	BlackWhiteModeValuesBlackgray BlackWhiteModeValues = "blackGray"
-	BlackWhiteModeValuesBlackwhite BlackWhiteModeValues = "blackWhite"
-	BlackWhiteModeValuesBlack BlackWhiteModeValues = "black"
-	BlackWhiteModeValuesWhite BlackWhiteModeValues = "white"
-	BlackWhiteModeValuesHidden BlackWhiteModeValues = "hidden"
-)
-
-func (e BlackWhiteModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BlackWhiteModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BlackWhiteModeValues(attr.Value)
-		return nil
-}
-
-// PrintErrorValues
-type PrintErrorValues string
-const (
-	PrintErrorValuesDisplayed PrintErrorValues = "displayed"
-	PrintErrorValuesBlank PrintErrorValues = "blank"
-	PrintErrorValuesDash PrintErrorValues = "dash"
-	PrintErrorValuesNa PrintErrorValues = "NA"
-)
-
-func (e PrintErrorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PrintErrorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PrintErrorValues(attr.Value)
-		return nil
-}
-
-// SheetStateValues
-type SheetStateValues string
-const (
-	SheetStateValuesVisible SheetStateValues = "visible"
-	SheetStateValuesHidden SheetStateValues = "hidden"
-	SheetStateValuesVeryhidden SheetStateValues = "veryHidden"
-)
-
-func (e SheetStateValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SheetStateValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SheetStateValues(attr.Value)
-		return nil
-}
-
-// CheckedValues
-type CheckedValues string
-const (
-	CheckedValuesUnchecked CheckedValues = "Unchecked"
-	CheckedValuesChecked CheckedValues = "Checked"
-	CheckedValuesMixed CheckedValues = "Mixed"
-)
-
-func (e CheckedValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CheckedValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CheckedValues(attr.Value)
+func (e *SparklineAxisMinMaxValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SparklineAxisMinMaxValues(attr.Value)
 		return nil
 }
 
@@ -281,72 +219,759 @@ func (e *MarkerStyle) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// LinearDirectionValues
-type LinearDirectionValues string
+// TickLabelPositionNinch
+type TickLabelPositionNinch string
 const (
-	LinearDirectionValuesFroml LinearDirectionValues = "fromL"
-	LinearDirectionValuesFromr LinearDirectionValues = "fromR"
-	LinearDirectionValuesFromt LinearDirectionValues = "fromT"
-	LinearDirectionValuesFromb LinearDirectionValues = "fromB"
+	TickLabelPositionNinchHigh TickLabelPositionNinch = "high"
+	TickLabelPositionNinchLow TickLabelPositionNinch = "low"
+	TickLabelPositionNinchNexttoaxis TickLabelPositionNinch = "nextToAxis"
+	TickLabelPositionNinchNone TickLabelPositionNinch = "none"
+	TickLabelPositionNinchNinch TickLabelPositionNinch = "ninch"
 )
 
-func (e LinearDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TickLabelPositionNinch) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *LinearDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LinearDirectionValues(attr.Value)
+func (e *TickLabelPositionNinch) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TickLabelPositionNinch(attr.Value)
 		return nil
 }
 
-// TextTabAlignmentValues
-type TextTabAlignmentValues string
+// ShapeTypeValues
+type ShapeTypeValues string
 const (
-	TextTabAlignmentValuesL TextTabAlignmentValues = "l"
-	TextTabAlignmentValuesCtr TextTabAlignmentValues = "ctr"
-	TextTabAlignmentValuesR TextTabAlignmentValues = "r"
-	TextTabAlignmentValuesDec TextTabAlignmentValues = "dec"
+	ShapeTypeValuesLine ShapeTypeValues = "line"
+	ShapeTypeValuesLineinv ShapeTypeValues = "lineInv"
+	ShapeTypeValuesTriangle ShapeTypeValues = "triangle"
+	ShapeTypeValuesRttriangle ShapeTypeValues = "rtTriangle"
+	ShapeTypeValuesRect ShapeTypeValues = "rect"
+	ShapeTypeValuesDiamond ShapeTypeValues = "diamond"
+	ShapeTypeValuesParallelogram ShapeTypeValues = "parallelogram"
+	ShapeTypeValuesTrapezoid ShapeTypeValues = "trapezoid"
+	ShapeTypeValuesNonisoscelestrapezoid ShapeTypeValues = "nonIsoscelesTrapezoid"
+	ShapeTypeValuesPentagon ShapeTypeValues = "pentagon"
+	ShapeTypeValuesHexagon ShapeTypeValues = "hexagon"
+	ShapeTypeValuesHeptagon ShapeTypeValues = "heptagon"
+	ShapeTypeValuesOctagon ShapeTypeValues = "octagon"
+	ShapeTypeValuesDecagon ShapeTypeValues = "decagon"
+	ShapeTypeValuesDodecagon ShapeTypeValues = "dodecagon"
+	ShapeTypeValuesStar4 ShapeTypeValues = "star4"
+	ShapeTypeValuesStar5 ShapeTypeValues = "star5"
+	ShapeTypeValuesStar6 ShapeTypeValues = "star6"
+	ShapeTypeValuesStar7 ShapeTypeValues = "star7"
+	ShapeTypeValuesStar8 ShapeTypeValues = "star8"
+	ShapeTypeValuesStar10 ShapeTypeValues = "star10"
+	ShapeTypeValuesStar12 ShapeTypeValues = "star12"
+	ShapeTypeValuesStar16 ShapeTypeValues = "star16"
+	ShapeTypeValuesStar24 ShapeTypeValues = "star24"
+	ShapeTypeValuesStar32 ShapeTypeValues = "star32"
+	ShapeTypeValuesRoundrect ShapeTypeValues = "roundRect"
+	ShapeTypeValuesRound1rect ShapeTypeValues = "round1Rect"
+	ShapeTypeValuesRound2samerect ShapeTypeValues = "round2SameRect"
+	ShapeTypeValuesRound2diagrect ShapeTypeValues = "round2DiagRect"
+	ShapeTypeValuesSniproundrect ShapeTypeValues = "snipRoundRect"
+	ShapeTypeValuesSnip1rect ShapeTypeValues = "snip1Rect"
+	ShapeTypeValuesSnip2samerect ShapeTypeValues = "snip2SameRect"
+	ShapeTypeValuesSnip2diagrect ShapeTypeValues = "snip2DiagRect"
+	ShapeTypeValuesPlaque ShapeTypeValues = "plaque"
+	ShapeTypeValuesEllipse ShapeTypeValues = "ellipse"
+	ShapeTypeValuesTeardrop ShapeTypeValues = "teardrop"
+	ShapeTypeValuesHomeplate ShapeTypeValues = "homePlate"
+	ShapeTypeValuesChevron ShapeTypeValues = "chevron"
+	ShapeTypeValuesPiewedge ShapeTypeValues = "pieWedge"
+	ShapeTypeValuesPie ShapeTypeValues = "pie"
+	ShapeTypeValuesBlockarc ShapeTypeValues = "blockArc"
+	ShapeTypeValuesDonut ShapeTypeValues = "donut"
+	ShapeTypeValuesNosmoking ShapeTypeValues = "noSmoking"
+	ShapeTypeValuesRightarrow ShapeTypeValues = "rightArrow"
+	ShapeTypeValuesLeftarrow ShapeTypeValues = "leftArrow"
+	ShapeTypeValuesUparrow ShapeTypeValues = "upArrow"
+	ShapeTypeValuesDownarrow ShapeTypeValues = "downArrow"
+	ShapeTypeValuesStripedrightarrow ShapeTypeValues = "stripedRightArrow"
+	ShapeTypeValuesNotchedrightarrow ShapeTypeValues = "notchedRightArrow"
+	ShapeTypeValuesBentuparrow ShapeTypeValues = "bentUpArrow"
+	ShapeTypeValuesLeftrightarrow ShapeTypeValues = "leftRightArrow"
+	ShapeTypeValuesUpdownarrow ShapeTypeValues = "upDownArrow"
+	ShapeTypeValuesLeftuparrow ShapeTypeValues = "leftUpArrow"
+	ShapeTypeValuesLeftrightuparrow ShapeTypeValues = "leftRightUpArrow"
+	ShapeTypeValuesQuadarrow ShapeTypeValues = "quadArrow"
+	ShapeTypeValuesLeftarrowcallout ShapeTypeValues = "leftArrowCallout"
+	ShapeTypeValuesRightarrowcallout ShapeTypeValues = "rightArrowCallout"
+	ShapeTypeValuesUparrowcallout ShapeTypeValues = "upArrowCallout"
+	ShapeTypeValuesDownarrowcallout ShapeTypeValues = "downArrowCallout"
+	ShapeTypeValuesLeftrightarrowcallout ShapeTypeValues = "leftRightArrowCallout"
+	ShapeTypeValuesUpdownarrowcallout ShapeTypeValues = "upDownArrowCallout"
+	ShapeTypeValuesQuadarrowcallout ShapeTypeValues = "quadArrowCallout"
+	ShapeTypeValuesBentarrow ShapeTypeValues = "bentArrow"
+	ShapeTypeValuesUturnarrow ShapeTypeValues = "uturnArrow"
+	ShapeTypeValuesCirculararrow ShapeTypeValues = "circularArrow"
+	ShapeTypeValuesLeftcirculararrow ShapeTypeValues = "leftCircularArrow"
+	ShapeTypeValuesLeftrightcirculararrow ShapeTypeValues = "leftRightCircularArrow"
+	ShapeTypeValuesCurvedrightarrow ShapeTypeValues = "curvedRightArrow"
+	ShapeTypeValuesCurvedleftarrow ShapeTypeValues = "curvedLeftArrow"
+	ShapeTypeValuesCurveduparrow ShapeTypeValues = "curvedUpArrow"
+	ShapeTypeValuesCurveddownarrow ShapeTypeValues = "curvedDownArrow"
+	ShapeTypeValuesSwoosharrow ShapeTypeValues = "swooshArrow"
+	ShapeTypeValuesCube ShapeTypeValues = "cube"
+	ShapeTypeValuesCan ShapeTypeValues = "can"
+	ShapeTypeValuesLightningbolt ShapeTypeValues = "lightningBolt"
+	ShapeTypeValuesHeart ShapeTypeValues = "heart"
+	ShapeTypeValuesSun ShapeTypeValues = "sun"
+	ShapeTypeValuesMoon ShapeTypeValues = "moon"
+	ShapeTypeValuesSmileyface ShapeTypeValues = "smileyFace"
+	ShapeTypeValuesIrregularseal1 ShapeTypeValues = "irregularSeal1"
+	ShapeTypeValuesIrregularseal2 ShapeTypeValues = "irregularSeal2"
+	ShapeTypeValuesFoldedcorner ShapeTypeValues = "foldedCorner"
+	ShapeTypeValuesBevel ShapeTypeValues = "bevel"
+	ShapeTypeValuesFrame ShapeTypeValues = "frame"
+	ShapeTypeValuesHalfframe ShapeTypeValues = "halfFrame"
+	ShapeTypeValuesCorner ShapeTypeValues = "corner"
+	ShapeTypeValuesDiagstripe ShapeTypeValues = "diagStripe"
+	ShapeTypeValuesChord ShapeTypeValues = "chord"
+	ShapeTypeValuesArc ShapeTypeValues = "arc"
+	ShapeTypeValuesLeftbracket ShapeTypeValues = "leftBracket"
+	ShapeTypeValuesRightbracket ShapeTypeValues = "rightBracket"
+	ShapeTypeValuesLeftbrace ShapeTypeValues = "leftBrace"
+	ShapeTypeValuesRightbrace ShapeTypeValues = "rightBrace"
+	ShapeTypeValuesBracketpair ShapeTypeValues = "bracketPair"
+	ShapeTypeValuesBracepair ShapeTypeValues = "bracePair"
+	ShapeTypeValuesStraightconnector1 ShapeTypeValues = "straightConnector1"
+	ShapeTypeValuesBentconnector2 ShapeTypeValues = "bentConnector2"
+	ShapeTypeValuesBentconnector3 ShapeTypeValues = "bentConnector3"
+	ShapeTypeValuesBentconnector4 ShapeTypeValues = "bentConnector4"
+	ShapeTypeValuesBentconnector5 ShapeTypeValues = "bentConnector5"
+	ShapeTypeValuesCurvedconnector2 ShapeTypeValues = "curvedConnector2"
+	ShapeTypeValuesCurvedconnector3 ShapeTypeValues = "curvedConnector3"
+	ShapeTypeValuesCurvedconnector4 ShapeTypeValues = "curvedConnector4"
+	ShapeTypeValuesCurvedconnector5 ShapeTypeValues = "curvedConnector5"
+	ShapeTypeValuesCallout1 ShapeTypeValues = "callout1"
+	ShapeTypeValuesCallout2 ShapeTypeValues = "callout2"
+	ShapeTypeValuesCallout3 ShapeTypeValues = "callout3"
+	ShapeTypeValuesAccentcallout1 ShapeTypeValues = "accentCallout1"
+	ShapeTypeValuesAccentcallout2 ShapeTypeValues = "accentCallout2"
+	ShapeTypeValuesAccentcallout3 ShapeTypeValues = "accentCallout3"
+	ShapeTypeValuesBordercallout1 ShapeTypeValues = "borderCallout1"
+	ShapeTypeValuesBordercallout2 ShapeTypeValues = "borderCallout2"
+	ShapeTypeValuesBordercallout3 ShapeTypeValues = "borderCallout3"
+	ShapeTypeValuesAccentbordercallout1 ShapeTypeValues = "accentBorderCallout1"
+	ShapeTypeValuesAccentbordercallout2 ShapeTypeValues = "accentBorderCallout2"
+	ShapeTypeValuesAccentbordercallout3 ShapeTypeValues = "accentBorderCallout3"
+	ShapeTypeValuesWedgerectcallout ShapeTypeValues = "wedgeRectCallout"
+	ShapeTypeValuesWedgeroundrectcallout ShapeTypeValues = "wedgeRoundRectCallout"
+	ShapeTypeValuesWedgeellipsecallout ShapeTypeValues = "wedgeEllipseCallout"
+	ShapeTypeValuesCloudcallout ShapeTypeValues = "cloudCallout"
+	ShapeTypeValuesCloud ShapeTypeValues = "cloud"
+	ShapeTypeValuesRibbon ShapeTypeValues = "ribbon"
+	ShapeTypeValuesRibbon2 ShapeTypeValues = "ribbon2"
+	ShapeTypeValuesEllipseribbon ShapeTypeValues = "ellipseRibbon"
+	ShapeTypeValuesEllipseribbon2 ShapeTypeValues = "ellipseRibbon2"
+	ShapeTypeValuesLeftrightribbon ShapeTypeValues = "leftRightRibbon"
+	ShapeTypeValuesVerticalscroll ShapeTypeValues = "verticalScroll"
+	ShapeTypeValuesHorizontalscroll ShapeTypeValues = "horizontalScroll"
+	ShapeTypeValuesWave ShapeTypeValues = "wave"
+	ShapeTypeValuesDoublewave ShapeTypeValues = "doubleWave"
+	ShapeTypeValuesPlus ShapeTypeValues = "plus"
+	ShapeTypeValuesFlowchartprocess ShapeTypeValues = "flowChartProcess"
+	ShapeTypeValuesFlowchartdecision ShapeTypeValues = "flowChartDecision"
+	ShapeTypeValuesFlowchartinputoutput ShapeTypeValues = "flowChartInputOutput"
+	ShapeTypeValuesFlowchartpredefinedprocess ShapeTypeValues = "flowChartPredefinedProcess"
+	ShapeTypeValuesFlowchartinternalstorage ShapeTypeValues = "flowChartInternalStorage"
+	ShapeTypeValuesFlowchartdocument ShapeTypeValues = "flowChartDocument"
+	ShapeTypeValuesFlowchartmultidocument ShapeTypeValues = "flowChartMultidocument"
+	ShapeTypeValuesFlowchartterminator ShapeTypeValues = "flowChartTerminator"
+	ShapeTypeValuesFlowchartpreparation ShapeTypeValues = "flowChartPreparation"
+	ShapeTypeValuesFlowchartmanualinput ShapeTypeValues = "flowChartManualInput"
+	ShapeTypeValuesFlowchartmanualoperation ShapeTypeValues = "flowChartManualOperation"
+	ShapeTypeValuesFlowchartconnector ShapeTypeValues = "flowChartConnector"
+	ShapeTypeValuesFlowchartpunchedcard ShapeTypeValues = "flowChartPunchedCard"
+	ShapeTypeValuesFlowchartpunchedtape ShapeTypeValues = "flowChartPunchedTape"
+	ShapeTypeValuesFlowchartsummingjunction ShapeTypeValues = "flowChartSummingJunction"
+	ShapeTypeValuesFlowchartor ShapeTypeValues = "flowChartOr"
+	ShapeTypeValuesFlowchartcollate ShapeTypeValues = "flowChartCollate"
+	ShapeTypeValuesFlowchartsort ShapeTypeValues = "flowChartSort"
+	ShapeTypeValuesFlowchartextract ShapeTypeValues = "flowChartExtract"
+	ShapeTypeValuesFlowchartmerge ShapeTypeValues = "flowChartMerge"
+	ShapeTypeValuesFlowchartofflinestorage ShapeTypeValues = "flowChartOfflineStorage"
+	ShapeTypeValuesFlowchartonlinestorage ShapeTypeValues = "flowChartOnlineStorage"
+	ShapeTypeValuesFlowchartmagnetictape ShapeTypeValues = "flowChartMagneticTape"
+	ShapeTypeValuesFlowchartmagneticdisk ShapeTypeValues = "flowChartMagneticDisk"
+	ShapeTypeValuesFlowchartmagneticdrum ShapeTypeValues = "flowChartMagneticDrum"
+	ShapeTypeValuesFlowchartdisplay ShapeTypeValues = "flowChartDisplay"
+	ShapeTypeValuesFlowchartdelay ShapeTypeValues = "flowChartDelay"
+	ShapeTypeValuesFlowchartalternateprocess ShapeTypeValues = "flowChartAlternateProcess"
+	ShapeTypeValuesFlowchartoffpageconnector ShapeTypeValues = "flowChartOffpageConnector"
+	ShapeTypeValuesActionbuttonblank ShapeTypeValues = "actionButtonBlank"
+	ShapeTypeValuesActionbuttonhome ShapeTypeValues = "actionButtonHome"
+	ShapeTypeValuesActionbuttonhelp ShapeTypeValues = "actionButtonHelp"
+	ShapeTypeValuesActionbuttoninformation ShapeTypeValues = "actionButtonInformation"
+	ShapeTypeValuesActionbuttonforwardnext ShapeTypeValues = "actionButtonForwardNext"
+	ShapeTypeValuesActionbuttonbackprevious ShapeTypeValues = "actionButtonBackPrevious"
+	ShapeTypeValuesActionbuttonend ShapeTypeValues = "actionButtonEnd"
+	ShapeTypeValuesActionbuttonbeginning ShapeTypeValues = "actionButtonBeginning"
+	ShapeTypeValuesActionbuttonreturn ShapeTypeValues = "actionButtonReturn"
+	ShapeTypeValuesActionbuttondocument ShapeTypeValues = "actionButtonDocument"
+	ShapeTypeValuesActionbuttonsound ShapeTypeValues = "actionButtonSound"
+	ShapeTypeValuesActionbuttonmovie ShapeTypeValues = "actionButtonMovie"
+	ShapeTypeValuesGear6 ShapeTypeValues = "gear6"
+	ShapeTypeValuesGear9 ShapeTypeValues = "gear9"
+	ShapeTypeValuesFunnel ShapeTypeValues = "funnel"
+	ShapeTypeValuesMathplus ShapeTypeValues = "mathPlus"
+	ShapeTypeValuesMathminus ShapeTypeValues = "mathMinus"
+	ShapeTypeValuesMathmultiply ShapeTypeValues = "mathMultiply"
+	ShapeTypeValuesMathdivide ShapeTypeValues = "mathDivide"
+	ShapeTypeValuesMathequal ShapeTypeValues = "mathEqual"
+	ShapeTypeValuesMathnotequal ShapeTypeValues = "mathNotEqual"
+	ShapeTypeValuesCornertabs ShapeTypeValues = "cornerTabs"
+	ShapeTypeValuesSquaretabs ShapeTypeValues = "squareTabs"
+	ShapeTypeValuesPlaquetabs ShapeTypeValues = "plaqueTabs"
+	ShapeTypeValuesChartx ShapeTypeValues = "chartX"
+	ShapeTypeValuesChartstar ShapeTypeValues = "chartStar"
+	ShapeTypeValuesChartplus ShapeTypeValues = "chartPlus"
 )
 
-func (e TextTabAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ShapeTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TextTabAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextTabAlignmentValues(attr.Value)
+func (e *ShapeTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ShapeTypeValues(attr.Value)
 		return nil
 }
 
-// ScopeValues
-type ScopeValues string
+// PointValues
+type PointValues string
 const (
-	ScopeValuesSelection ScopeValues = "selection"
-	ScopeValuesData ScopeValues = "data"
-	ScopeValuesField ScopeValues = "field"
+	PointValuesNode PointValues = "node"
+	PointValuesAsst PointValues = "asst"
+	PointValuesDoc PointValues = "doc"
+	PointValuesPres PointValues = "pres"
+	PointValuesPartrans PointValues = "parTrans"
+	PointValuesSibtrans PointValues = "sibTrans"
 )
 
-func (e ScopeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PointValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ScopeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ScopeValues(attr.Value)
+func (e *PointValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PointValues(attr.Value)
 		return nil
 }
 
-// OutputShapeValues
-type OutputShapeValues string
+// AxisValues
+type AxisValues string
 const (
-	OutputShapeValuesNone OutputShapeValues = "none"
-	OutputShapeValuesConn OutputShapeValues = "conn"
+	AxisValuesSelf AxisValues = "self"
+	AxisValuesCh AxisValues = "ch"
+	AxisValuesDes AxisValues = "des"
+	AxisValuesDesorself AxisValues = "desOrSelf"
+	AxisValuesPar AxisValues = "par"
+	AxisValuesAncst AxisValues = "ancst"
+	AxisValuesAncstorself AxisValues = "ancstOrSelf"
+	AxisValuesFollowsib AxisValues = "followSib"
+	AxisValuesPrecedsib AxisValues = "precedSib"
+	AxisValuesFollow AxisValues = "follow"
+	AxisValuesPreced AxisValues = "preced"
+	AxisValuesRoot AxisValues = "root"
+	AxisValuesNone AxisValues = "none"
 )
 
-func (e OutputShapeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e AxisValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *OutputShapeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = OutputShapeValues(attr.Value)
+func (e *AxisValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AxisValues(attr.Value)
+		return nil
+}
+
+// SelectionTypeValues
+type SelectionTypeValues string
+const (
+	SelectionTypeValuesSingle SelectionTypeValues = "single"
+	SelectionTypeValuesMulti SelectionTypeValues = "multi"
+	SelectionTypeValuesExtended SelectionTypeValues = "extended"
+)
+
+func (e SelectionTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SelectionTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SelectionTypeValues(attr.Value)
+		return nil
+}
+
+// TextAlignmentValues
+type TextAlignmentValues string
+const (
+	TextAlignmentValuesL TextAlignmentValues = "l"
+	TextAlignmentValuesCtr TextAlignmentValues = "ctr"
+	TextAlignmentValuesR TextAlignmentValues = "r"
+)
+
+func (e TextAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextAlignmentValues(attr.Value)
+		return nil
+}
+
+// SystemColorValues
+type SystemColorValues string
+const (
+	SystemColorValuesScrollbar SystemColorValues = "scrollBar"
+	SystemColorValuesBackground SystemColorValues = "background"
+	SystemColorValuesActivecaption SystemColorValues = "activeCaption"
+	SystemColorValuesInactivecaption SystemColorValues = "inactiveCaption"
+	SystemColorValuesMenu SystemColorValues = "menu"
+	SystemColorValuesWindow SystemColorValues = "window"
+	SystemColorValuesWindowframe SystemColorValues = "windowFrame"
+	SystemColorValuesMenutext SystemColorValues = "menuText"
+	SystemColorValuesWindowtext SystemColorValues = "windowText"
+	SystemColorValuesCaptiontext SystemColorValues = "captionText"
+	SystemColorValuesActiveborder SystemColorValues = "activeBorder"
+	SystemColorValuesInactiveborder SystemColorValues = "inactiveBorder"
+	SystemColorValuesAppworkspace SystemColorValues = "appWorkspace"
+	SystemColorValuesHighlight SystemColorValues = "highlight"
+	SystemColorValuesHighlighttext SystemColorValues = "highlightText"
+	SystemColorValuesBtnface SystemColorValues = "btnFace"
+	SystemColorValuesBtnshadow SystemColorValues = "btnShadow"
+	SystemColorValuesGraytext SystemColorValues = "grayText"
+	SystemColorValuesBtntext SystemColorValues = "btnText"
+	SystemColorValuesInactivecaptiontext SystemColorValues = "inactiveCaptionText"
+	SystemColorValuesBtnhighlight SystemColorValues = "btnHighlight"
+	SystemColorValuesSystemColorValues3Ddkshadow SystemColorValues = "3dDkShadow"
+	SystemColorValuesSystemColorValues3Dlight SystemColorValues = "3dLight"
+	SystemColorValuesInfotext SystemColorValues = "infoText"
+	SystemColorValuesInfobk SystemColorValues = "infoBk"
+	SystemColorValuesHotlight SystemColorValues = "hotLight"
+	SystemColorValuesGradientactivecaption SystemColorValues = "gradientActiveCaption"
+	SystemColorValuesGradientinactivecaption SystemColorValues = "gradientInactiveCaption"
+	SystemColorValuesMenuhighlight SystemColorValues = "menuHighlight"
+	SystemColorValuesMenubar SystemColorValues = "menuBar"
+)
+
+func (e SystemColorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SystemColorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SystemColorValues(attr.Value)
+		return nil
+}
+
+// EffectContainerValues
+type EffectContainerValues string
+const (
+	EffectContainerValuesSib EffectContainerValues = "sib"
+	EffectContainerValuesTree EffectContainerValues = "tree"
+)
+
+func (e EffectContainerValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *EffectContainerValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = EffectContainerValues(attr.Value)
+		return nil
+}
+
+// TrendlineValues
+type TrendlineValues string
+const (
+	TrendlineValuesExp TrendlineValues = "exp"
+	TrendlineValuesLinear TrendlineValues = "linear"
+	TrendlineValuesLog TrendlineValues = "log"
+	TrendlineValuesMovingavg TrendlineValues = "movingAvg"
+	TrendlineValuesPoly TrendlineValues = "poly"
+	TrendlineValuesPower TrendlineValues = "power"
+)
+
+func (e TrendlineValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TrendlineValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TrendlineValues(attr.Value)
+		return nil
+}
+
+// OrientationValues
+type OrientationValues string
+const (
+	OrientationValuesDefault OrientationValues = "default"
+	OrientationValuesPortrait OrientationValues = "portrait"
+	OrientationValuesLandscape OrientationValues = "landscape"
+)
+
+func (e OrientationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *OrientationValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = OrientationValues(attr.Value)
+		return nil
+}
+
+// PivotShowAsValues
+type PivotShowAsValues string
+const (
+	PivotShowAsValuesPercentofparent PivotShowAsValues = "percentOfParent"
+	PivotShowAsValuesPercentofparentrow PivotShowAsValues = "percentOfParentRow"
+	PivotShowAsValuesPercentofparentcol PivotShowAsValues = "percentOfParentCol"
+	PivotShowAsValuesPercentofrunningtotal PivotShowAsValues = "percentOfRunningTotal"
+	PivotShowAsValuesRankascending PivotShowAsValues = "rankAscending"
+	PivotShowAsValuesRankdescending PivotShowAsValues = "rankDescending"
+)
+
+func (e PivotShowAsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PivotShowAsValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PivotShowAsValues(attr.Value)
+		return nil
+}
+
+// DropStyleValues
+type DropStyleValues string
+const (
+	DropStyleValuesCombo DropStyleValues = "combo"
+	DropStyleValuesComboedit DropStyleValues = "comboedit"
+	DropStyleValuesSimple DropStyleValues = "simple"
+)
+
+func (e DropStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DropStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DropStyleValues(attr.Value)
+		return nil
+}
+
+// BarGroupingValues
+type BarGroupingValues string
+const (
+	BarGroupingValuesPercentstacked BarGroupingValues = "percentStacked"
+	BarGroupingValuesClustered BarGroupingValues = "clustered"
+	BarGroupingValuesStandard BarGroupingValues = "standard"
+	BarGroupingValuesStacked BarGroupingValues = "stacked"
+)
+
+func (e BarGroupingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BarGroupingValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BarGroupingValues(attr.Value)
+		return nil
+}
+
+// ShapeValues
+type ShapeValues string
+const (
+	ShapeValuesCone ShapeValues = "cone"
+	ShapeValuesConetomax ShapeValues = "coneToMax"
+	ShapeValuesBox ShapeValues = "box"
+	ShapeValuesCylinder ShapeValues = "cylinder"
+	ShapeValuesPyramid ShapeValues = "pyramid"
+	ShapeValuesPyramidtomax ShapeValues = "pyramidToMax"
+)
+
+func (e ShapeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ShapeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ShapeValues(attr.Value)
+		return nil
+}
+
+// TickLabelPositionValues
+type TickLabelPositionValues string
+const (
+	TickLabelPositionValuesHigh TickLabelPositionValues = "high"
+	TickLabelPositionValuesLow TickLabelPositionValues = "low"
+	TickLabelPositionValuesNextto TickLabelPositionValues = "nextTo"
+	TickLabelPositionValuesNone TickLabelPositionValues = "none"
+)
+
+func (e TickLabelPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TickLabelPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TickLabelPositionValues(attr.Value)
+		return nil
+}
+
+// ColorApplicationMethodValues
+type ColorApplicationMethodValues string
+const (
+	ColorApplicationMethodValuesSpan ColorApplicationMethodValues = "span"
+	ColorApplicationMethodValuesCycle ColorApplicationMethodValues = "cycle"
+	ColorApplicationMethodValuesRepeat ColorApplicationMethodValues = "repeat"
+)
+
+func (e ColorApplicationMethodValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ColorApplicationMethodValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ColorApplicationMethodValues(attr.Value)
+		return nil
+}
+
+// BoolOperatorValues
+type BoolOperatorValues string
+const (
+	BoolOperatorValuesNone BoolOperatorValues = "none"
+	BoolOperatorValuesEqu BoolOperatorValues = "equ"
+	BoolOperatorValuesGte BoolOperatorValues = "gte"
+	BoolOperatorValuesLte BoolOperatorValues = "lte"
+)
+
+func (e BoolOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BoolOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BoolOperatorValues(attr.Value)
+		return nil
+}
+
+// NodeHorizontalAlignmentValues
+type NodeHorizontalAlignmentValues string
+const (
+	NodeHorizontalAlignmentValuesL NodeHorizontalAlignmentValues = "l"
+	NodeHorizontalAlignmentValuesCtr NodeHorizontalAlignmentValues = "ctr"
+	NodeHorizontalAlignmentValuesR NodeHorizontalAlignmentValues = "r"
+)
+
+func (e NodeHorizontalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *NodeHorizontalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = NodeHorizontalAlignmentValues(attr.Value)
+		return nil
+}
+
+// XmlDataValues
+type XmlDataValues string
+const (
+	XmlDataValuesString XmlDataValues = "string"
+	XmlDataValuesNormalizedstring XmlDataValues = "normalizedString"
+	XmlDataValuesToken XmlDataValues = "token"
+	XmlDataValuesByte XmlDataValues = "byte"
+	XmlDataValuesUnsignedbyte XmlDataValues = "unsignedByte"
+	XmlDataValuesBase64binary XmlDataValues = "base64Binary"
+	XmlDataValuesHexbinary XmlDataValues = "hexBinary"
+	XmlDataValuesInteger XmlDataValues = "integer"
+	XmlDataValuesPositiveinteger XmlDataValues = "positiveInteger"
+	XmlDataValuesNegativeinteger XmlDataValues = "negativeInteger"
+	XmlDataValuesNonpositiveinteger XmlDataValues = "nonPositiveInteger"
+	XmlDataValuesNonnegativeinteger XmlDataValues = "nonNegativeInteger"
+	XmlDataValuesInt XmlDataValues = "int"
+	XmlDataValuesUnsignedint XmlDataValues = "unsignedInt"
+	XmlDataValuesLong XmlDataValues = "long"
+	XmlDataValuesUnsignedlong XmlDataValues = "unsignedLong"
+	XmlDataValuesShort XmlDataValues = "short"
+	XmlDataValuesUnsignedshort XmlDataValues = "unsignedShort"
+	XmlDataValuesDecimal XmlDataValues = "decimal"
+	XmlDataValuesFloat XmlDataValues = "float"
+	XmlDataValuesDouble XmlDataValues = "double"
+	XmlDataValuesBoolean XmlDataValues = "boolean"
+	XmlDataValuesTime XmlDataValues = "time"
+	XmlDataValuesDatetime XmlDataValues = "dateTime"
+	XmlDataValuesDuration XmlDataValues = "duration"
+	XmlDataValuesDate XmlDataValues = "date"
+	XmlDataValuesGmonth XmlDataValues = "gMonth"
+	XmlDataValuesGyear XmlDataValues = "gYear"
+	XmlDataValuesGyearmonth XmlDataValues = "gYearMonth"
+	XmlDataValuesGday XmlDataValues = "gDay"
+	XmlDataValuesGmonthday XmlDataValues = "gMonthDay"
+	XmlDataValuesName XmlDataValues = "Name"
+	XmlDataValuesQname XmlDataValues = "QName"
+	XmlDataValuesNcname XmlDataValues = "NCName"
+	XmlDataValuesAnyuri XmlDataValues = "anyURI"
+	XmlDataValuesLanguage XmlDataValues = "language"
+	XmlDataValuesId XmlDataValues = "ID"
+	XmlDataValuesIdref XmlDataValues = "IDREF"
+	XmlDataValuesIdrefs XmlDataValues = "IDREFS"
+	XmlDataValuesEntity XmlDataValues = "ENTITY"
+	XmlDataValuesEntities XmlDataValues = "ENTITIES"
+	XmlDataValuesNotation XmlDataValues = "NOTATION"
+	XmlDataValuesNmtoken XmlDataValues = "NMTOKEN"
+	XmlDataValuesNmtokens XmlDataValues = "NMTOKENS"
+	XmlDataValuesAnytype XmlDataValues = "anyType"
+)
+
+func (e XmlDataValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *XmlDataValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = XmlDataValues(attr.Value)
+		return nil
+}
+
+// StyleEntryModifierEnum
+type StyleEntryModifierEnum string
+const (
+	StyleEntryModifierEnumAllownofilloverride StyleEntryModifierEnum = "allowNoFillOverride"
+	StyleEntryModifierEnumAllownolineoverride StyleEntryModifierEnum = "allowNoLineOverride"
+)
+
+func (e StyleEntryModifierEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *StyleEntryModifierEnum) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = StyleEntryModifierEnum(attr.Value)
+		return nil
+}
+
+// ConnectorRoutingValues
+type ConnectorRoutingValues string
+const (
+	ConnectorRoutingValuesStra ConnectorRoutingValues = "stra"
+	ConnectorRoutingValuesBend ConnectorRoutingValues = "bend"
+	ConnectorRoutingValuesCurve ConnectorRoutingValues = "curve"
+	ConnectorRoutingValuesLongcurve ConnectorRoutingValues = "longCurve"
+)
+
+func (e ConnectorRoutingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ConnectorRoutingValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ConnectorRoutingValues(attr.Value)
+		return nil
+}
+
+// BevelPresetValues
+type BevelPresetValues string
+const (
+	BevelPresetValuesRelaxedinset BevelPresetValues = "relaxedInset"
+	BevelPresetValuesCircle BevelPresetValues = "circle"
+	BevelPresetValuesSlope BevelPresetValues = "slope"
+	BevelPresetValuesCross BevelPresetValues = "cross"
+	BevelPresetValuesAngle BevelPresetValues = "angle"
+	BevelPresetValuesSoftround BevelPresetValues = "softRound"
+	BevelPresetValuesConvex BevelPresetValues = "convex"
+	BevelPresetValuesCoolslant BevelPresetValues = "coolSlant"
+	BevelPresetValuesDivot BevelPresetValues = "divot"
+	BevelPresetValuesRiblet BevelPresetValues = "riblet"
+	BevelPresetValuesHardedge BevelPresetValues = "hardEdge"
+	BevelPresetValuesArtdeco BevelPresetValues = "artDeco"
+)
+
+func (e BevelPresetValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BevelPresetValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BevelPresetValues(attr.Value)
+		return nil
+}
+
+// PenAlignmentValues
+type PenAlignmentValues string
+const (
+	PenAlignmentValuesCtr PenAlignmentValues = "ctr"
+	PenAlignmentValuesIn PenAlignmentValues = "in"
+)
+
+func (e PenAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PenAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PenAlignmentValues(attr.Value)
+		return nil
+}
+
+// ConformanceClass
+type ConformanceClass string
+const (
+	ConformanceClassStrict ConformanceClass = "strict"
+	ConformanceClassTransitional ConformanceClass = "transitional"
+)
+
+func (e ConformanceClass) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ConformanceClass) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ConformanceClass(attr.Value)
+		return nil
+}
+
+// SheetOp
+type SheetOp string
+const (
+	SheetOpInsert SheetOp = "insert"
+	SheetOpDelete SheetOp = "delete"
+	SheetOpReorder SheetOp = "reorder"
+	SheetOpRename SheetOp = "rename"
+)
+
+func (e SheetOp) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SheetOp) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SheetOp(attr.Value)
+		return nil
+}
+
+// GeoMappingLevel
+type GeoMappingLevel string
+const (
+	GeoMappingLevelDataonly GeoMappingLevel = "dataOnly"
+	GeoMappingLevelPostalcode GeoMappingLevel = "postalCode"
+	GeoMappingLevelCounty GeoMappingLevel = "county"
+	GeoMappingLevelState GeoMappingLevel = "state"
+	GeoMappingLevelCountryregion GeoMappingLevel = "countryRegion"
+	GeoMappingLevelCountryregionlist GeoMappingLevel = "countryRegionList"
+	GeoMappingLevelWorld GeoMappingLevel = "world"
+)
+
+func (e GeoMappingLevel) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *GeoMappingLevel) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = GeoMappingLevel(attr.Value)
+		return nil
+}
+
+// ModelTimeGroupingContentType
+type ModelTimeGroupingContentType string
+const (
+	ModelTimeGroupingContentTypeYears ModelTimeGroupingContentType = "years"
+	ModelTimeGroupingContentTypeQuarters ModelTimeGroupingContentType = "quarters"
+	ModelTimeGroupingContentTypeMonthsindex ModelTimeGroupingContentType = "monthsindex"
+	ModelTimeGroupingContentTypeMonths ModelTimeGroupingContentType = "months"
+	ModelTimeGroupingContentTypeDaysindex ModelTimeGroupingContentType = "daysindex"
+	ModelTimeGroupingContentTypeDays ModelTimeGroupingContentType = "days"
+	ModelTimeGroupingContentTypeHours ModelTimeGroupingContentType = "hours"
+	ModelTimeGroupingContentTypeMinutes ModelTimeGroupingContentType = "minutes"
+	ModelTimeGroupingContentTypeSeconds ModelTimeGroupingContentType = "seconds"
+)
+
+func (e ModelTimeGroupingContentType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ModelTimeGroupingContentType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ModelTimeGroupingContentType(attr.Value)
 		return nil
 }
 
@@ -370,40 +995,229 @@ func (e *LineEndValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// CompoundLineValues
-type CompoundLineValues string
+// PivotFilterValues
+type PivotFilterValues string
 const (
-	CompoundLineValuesSng CompoundLineValues = "sng"
-	CompoundLineValuesDbl CompoundLineValues = "dbl"
-	CompoundLineValuesThickthin CompoundLineValues = "thickThin"
-	CompoundLineValuesThinthick CompoundLineValues = "thinThick"
-	CompoundLineValuesTri CompoundLineValues = "tri"
+	PivotFilterValuesUnknown PivotFilterValues = "unknown"
+	PivotFilterValuesCount PivotFilterValues = "count"
+	PivotFilterValuesPercent PivotFilterValues = "percent"
+	PivotFilterValuesSum PivotFilterValues = "sum"
+	PivotFilterValuesCaptionequal PivotFilterValues = "captionEqual"
+	PivotFilterValuesCaptionnotequal PivotFilterValues = "captionNotEqual"
+	PivotFilterValuesCaptionbeginswith PivotFilterValues = "captionBeginsWith"
+	PivotFilterValuesCaptionnotbeginswith PivotFilterValues = "captionNotBeginsWith"
+	PivotFilterValuesCaptionendswith PivotFilterValues = "captionEndsWith"
+	PivotFilterValuesCaptionnotendswith PivotFilterValues = "captionNotEndsWith"
+	PivotFilterValuesCaptioncontains PivotFilterValues = "captionContains"
+	PivotFilterValuesCaptionnotcontains PivotFilterValues = "captionNotContains"
+	PivotFilterValuesCaptiongreaterthan PivotFilterValues = "captionGreaterThan"
+	PivotFilterValuesCaptiongreaterthanorequal PivotFilterValues = "captionGreaterThanOrEqual"
+	PivotFilterValuesCaptionlessthan PivotFilterValues = "captionLessThan"
+	PivotFilterValuesCaptionlessthanorequal PivotFilterValues = "captionLessThanOrEqual"
+	PivotFilterValuesCaptionbetween PivotFilterValues = "captionBetween"
+	PivotFilterValuesCaptionnotbetween PivotFilterValues = "captionNotBetween"
+	PivotFilterValuesValueequal PivotFilterValues = "valueEqual"
+	PivotFilterValuesValuenotequal PivotFilterValues = "valueNotEqual"
+	PivotFilterValuesValuegreaterthan PivotFilterValues = "valueGreaterThan"
+	PivotFilterValuesValuegreaterthanorequal PivotFilterValues = "valueGreaterThanOrEqual"
+	PivotFilterValuesValuelessthan PivotFilterValues = "valueLessThan"
+	PivotFilterValuesValuelessthanorequal PivotFilterValues = "valueLessThanOrEqual"
+	PivotFilterValuesValuebetween PivotFilterValues = "valueBetween"
+	PivotFilterValuesValuenotbetween PivotFilterValues = "valueNotBetween"
+	PivotFilterValuesDateequal PivotFilterValues = "dateEqual"
+	PivotFilterValuesDatenotequal PivotFilterValues = "dateNotEqual"
+	PivotFilterValuesDateolderthan PivotFilterValues = "dateOlderThan"
+	PivotFilterValuesDateolderthanorequal PivotFilterValues = "dateOlderThanOrEqual"
+	PivotFilterValuesDatenewerthan PivotFilterValues = "dateNewerThan"
+	PivotFilterValuesDatenewerthanorequal PivotFilterValues = "dateNewerThanOrEqual"
+	PivotFilterValuesDatebetween PivotFilterValues = "dateBetween"
+	PivotFilterValuesDatenotbetween PivotFilterValues = "dateNotBetween"
+	PivotFilterValuesTomorrow PivotFilterValues = "tomorrow"
+	PivotFilterValuesToday PivotFilterValues = "today"
+	PivotFilterValuesYesterday PivotFilterValues = "yesterday"
+	PivotFilterValuesNextweek PivotFilterValues = "nextWeek"
+	PivotFilterValuesThisweek PivotFilterValues = "thisWeek"
+	PivotFilterValuesLastweek PivotFilterValues = "lastWeek"
+	PivotFilterValuesNextmonth PivotFilterValues = "nextMonth"
+	PivotFilterValuesThismonth PivotFilterValues = "thisMonth"
+	PivotFilterValuesLastmonth PivotFilterValues = "lastMonth"
+	PivotFilterValuesNextquarter PivotFilterValues = "nextQuarter"
+	PivotFilterValuesThisquarter PivotFilterValues = "thisQuarter"
+	PivotFilterValuesLastquarter PivotFilterValues = "lastQuarter"
+	PivotFilterValuesNextyear PivotFilterValues = "nextYear"
+	PivotFilterValuesThisyear PivotFilterValues = "thisYear"
+	PivotFilterValuesLastyear PivotFilterValues = "lastYear"
+	PivotFilterValuesYeartodate PivotFilterValues = "yearToDate"
+	PivotFilterValuesQ1 PivotFilterValues = "Q1"
+	PivotFilterValuesQ2 PivotFilterValues = "Q2"
+	PivotFilterValuesQ3 PivotFilterValues = "Q3"
+	PivotFilterValuesQ4 PivotFilterValues = "Q4"
+	PivotFilterValuesM1 PivotFilterValues = "M1"
+	PivotFilterValuesM2 PivotFilterValues = "M2"
+	PivotFilterValuesM3 PivotFilterValues = "M3"
+	PivotFilterValuesM4 PivotFilterValues = "M4"
+	PivotFilterValuesM5 PivotFilterValues = "M5"
+	PivotFilterValuesM6 PivotFilterValues = "M6"
+	PivotFilterValuesM7 PivotFilterValues = "M7"
+	PivotFilterValuesM8 PivotFilterValues = "M8"
+	PivotFilterValuesM9 PivotFilterValues = "M9"
+	PivotFilterValuesM10 PivotFilterValues = "M10"
+	PivotFilterValuesM11 PivotFilterValues = "M11"
+	PivotFilterValuesM12 PivotFilterValues = "M12"
 )
 
-func (e CompoundLineValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PivotFilterValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *CompoundLineValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CompoundLineValues(attr.Value)
+func (e *PivotFilterValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PivotFilterValues(attr.Value)
 		return nil
 }
 
-// CellFormulaValues
-type CellFormulaValues string
+// ConditionalFormatValues
+type ConditionalFormatValues string
 const (
-	CellFormulaValuesNormal CellFormulaValues = "normal"
-	CellFormulaValuesArray CellFormulaValues = "array"
-	CellFormulaValuesDatatable CellFormulaValues = "dataTable"
-	CellFormulaValuesShared CellFormulaValues = "shared"
+	ConditionalFormatValuesExpression ConditionalFormatValues = "expression"
+	ConditionalFormatValuesCellis ConditionalFormatValues = "cellIs"
+	ConditionalFormatValuesColorscale ConditionalFormatValues = "colorScale"
+	ConditionalFormatValuesDatabar ConditionalFormatValues = "dataBar"
+	ConditionalFormatValuesIconset ConditionalFormatValues = "iconSet"
+	ConditionalFormatValuesTop10 ConditionalFormatValues = "top10"
+	ConditionalFormatValuesUniquevalues ConditionalFormatValues = "uniqueValues"
+	ConditionalFormatValuesDuplicatevalues ConditionalFormatValues = "duplicateValues"
+	ConditionalFormatValuesContainstext ConditionalFormatValues = "containsText"
+	ConditionalFormatValuesNotcontainstext ConditionalFormatValues = "notContainsText"
+	ConditionalFormatValuesBeginswith ConditionalFormatValues = "beginsWith"
+	ConditionalFormatValuesEndswith ConditionalFormatValues = "endsWith"
+	ConditionalFormatValuesContainsblanks ConditionalFormatValues = "containsBlanks"
+	ConditionalFormatValuesNotcontainsblanks ConditionalFormatValues = "notContainsBlanks"
+	ConditionalFormatValuesContainserrors ConditionalFormatValues = "containsErrors"
+	ConditionalFormatValuesNotcontainserrors ConditionalFormatValues = "notContainsErrors"
+	ConditionalFormatValuesTimeperiod ConditionalFormatValues = "timePeriod"
+	ConditionalFormatValuesAboveaverage ConditionalFormatValues = "aboveAverage"
 )
 
-func (e CellFormulaValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ConditionalFormatValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *CellFormulaValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CellFormulaValues(attr.Value)
+func (e *ConditionalFormatValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ConditionalFormatValues(attr.Value)
+		return nil
+}
+
+// ScatterStyleValues
+type ScatterStyleValues string
+const (
+	ScatterStyleValuesLine ScatterStyleValues = "line"
+	ScatterStyleValuesLinemarker ScatterStyleValues = "lineMarker"
+	ScatterStyleValuesMarker ScatterStyleValues = "marker"
+	ScatterStyleValuesSmooth ScatterStyleValues = "smooth"
+	ScatterStyleValuesSmoothmarker ScatterStyleValues = "smoothMarker"
+)
+
+func (e ScatterStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ScatterStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ScatterStyleValues(attr.Value)
+		return nil
+}
+
+// HorizontalAlignmentValues
+type HorizontalAlignmentValues string
+const (
+	HorizontalAlignmentValuesGeneral HorizontalAlignmentValues = "general"
+	HorizontalAlignmentValuesLeft HorizontalAlignmentValues = "left"
+	HorizontalAlignmentValuesCenter HorizontalAlignmentValues = "center"
+	HorizontalAlignmentValuesRight HorizontalAlignmentValues = "right"
+	HorizontalAlignmentValuesFill HorizontalAlignmentValues = "fill"
+	HorizontalAlignmentValuesJustify HorizontalAlignmentValues = "justify"
+	HorizontalAlignmentValuesCentercontinuous HorizontalAlignmentValues = "centerContinuous"
+	HorizontalAlignmentValuesDistributed HorizontalAlignmentValues = "distributed"
+)
+
+func (e HorizontalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *HorizontalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = HorizontalAlignmentValues(attr.Value)
+		return nil
+}
+
+// FlowDirectionValues
+type FlowDirectionValues string
+const (
+	FlowDirectionValuesRow FlowDirectionValues = "row"
+	FlowDirectionValuesCol FlowDirectionValues = "col"
+)
+
+func (e FlowDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *FlowDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FlowDirectionValues(attr.Value)
+		return nil
+}
+
+// PaneValues
+type PaneValues string
+const (
+	PaneValuesBottomright PaneValues = "bottomRight"
+	PaneValuesTopright PaneValues = "topRight"
+	PaneValuesBottomleft PaneValues = "bottomLeft"
+	PaneValuesTopleft PaneValues = "topLeft"
+)
+
+func (e PaneValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PaneValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PaneValues(attr.Value)
+		return nil
+}
+
+// UpdateLinksBehaviorValues
+type UpdateLinksBehaviorValues string
+const (
+	UpdateLinksBehaviorValuesUserset UpdateLinksBehaviorValues = "userSet"
+	UpdateLinksBehaviorValuesNever UpdateLinksBehaviorValues = "never"
+	UpdateLinksBehaviorValuesAlways UpdateLinksBehaviorValues = "always"
+)
+
+func (e UpdateLinksBehaviorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *UpdateLinksBehaviorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = UpdateLinksBehaviorValues(attr.Value)
+		return nil
+}
+
+// PivotAreaValues
+type PivotAreaValues string
+const (
+	PivotAreaValuesNone PivotAreaValues = "none"
+	PivotAreaValuesNormal PivotAreaValues = "normal"
+	PivotAreaValuesData PivotAreaValues = "data"
+	PivotAreaValuesAll PivotAreaValues = "all"
+	PivotAreaValuesOrigin PivotAreaValues = "origin"
+	PivotAreaValuesButton PivotAreaValues = "button"
+	PivotAreaValuesTopright PivotAreaValues = "topRight"
+	PivotAreaValuesTopend PivotAreaValues = "topEnd"
+)
+
+func (e PivotAreaValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PivotAreaValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PivotAreaValues(attr.Value)
 		return nil
 }
 
@@ -431,216 +1245,1011 @@ func (e *QuestionFormat) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// OfPieValues
-type OfPieValues string
+// Indefinite
+type Indefinite string
 const (
-	OfPieValuesPie OfPieValues = "pie"
-	OfPieValuesBar OfPieValues = "bar"
+	IndefiniteIndefinite Indefinite = "indefinite"
 )
 
-func (e OfPieValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e Indefinite) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *OfPieValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = OfPieValues(attr.Value)
+func (e *Indefinite) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = Indefinite(attr.Value)
 		return nil
 }
 
-// PresetMaterialTypeValues
-type PresetMaterialTypeValues string
+// CrossesValues
+type CrossesValues string
 const (
-	PresetMaterialTypeValuesLegacymatte PresetMaterialTypeValues = "legacyMatte"
-	PresetMaterialTypeValuesLegacyplastic PresetMaterialTypeValues = "legacyPlastic"
-	PresetMaterialTypeValuesLegacymetal PresetMaterialTypeValues = "legacyMetal"
-	PresetMaterialTypeValuesLegacywireframe PresetMaterialTypeValues = "legacyWireframe"
-	PresetMaterialTypeValuesMatte PresetMaterialTypeValues = "matte"
-	PresetMaterialTypeValuesPlastic PresetMaterialTypeValues = "plastic"
-	PresetMaterialTypeValuesMetal PresetMaterialTypeValues = "metal"
-	PresetMaterialTypeValuesWarmmatte PresetMaterialTypeValues = "warmMatte"
-	PresetMaterialTypeValuesTranslucentpowder PresetMaterialTypeValues = "translucentPowder"
-	PresetMaterialTypeValuesPowder PresetMaterialTypeValues = "powder"
-	PresetMaterialTypeValuesDkedge PresetMaterialTypeValues = "dkEdge"
-	PresetMaterialTypeValuesSoftedge PresetMaterialTypeValues = "softEdge"
-	PresetMaterialTypeValuesClear PresetMaterialTypeValues = "clear"
-	PresetMaterialTypeValuesFlat PresetMaterialTypeValues = "flat"
-	PresetMaterialTypeValuesSoftmetal PresetMaterialTypeValues = "softmetal"
+	CrossesValuesAutozero CrossesValues = "autoZero"
+	CrossesValuesMax CrossesValues = "max"
+	CrossesValuesMin CrossesValues = "min"
 )
 
-func (e PresetMaterialTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e CrossesValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *PresetMaterialTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PresetMaterialTypeValues(attr.Value)
+func (e *CrossesValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CrossesValues(attr.Value)
 		return nil
 }
 
-// TextFontAlignmentValues
-type TextFontAlignmentValues string
+// TextUnderlineValues
+type TextUnderlineValues string
 const (
-	TextFontAlignmentValuesAuto TextFontAlignmentValues = "auto"
-	TextFontAlignmentValuesT TextFontAlignmentValues = "t"
-	TextFontAlignmentValuesCtr TextFontAlignmentValues = "ctr"
-	TextFontAlignmentValuesBase TextFontAlignmentValues = "base"
-	TextFontAlignmentValuesB TextFontAlignmentValues = "b"
+	TextUnderlineValuesNone TextUnderlineValues = "none"
+	TextUnderlineValuesWords TextUnderlineValues = "words"
+	TextUnderlineValuesSng TextUnderlineValues = "sng"
+	TextUnderlineValuesDbl TextUnderlineValues = "dbl"
+	TextUnderlineValuesHeavy TextUnderlineValues = "heavy"
+	TextUnderlineValuesDotted TextUnderlineValues = "dotted"
+	TextUnderlineValuesDottedheavy TextUnderlineValues = "dottedHeavy"
+	TextUnderlineValuesDash TextUnderlineValues = "dash"
+	TextUnderlineValuesDashheavy TextUnderlineValues = "dashHeavy"
+	TextUnderlineValuesDashlong TextUnderlineValues = "dashLong"
+	TextUnderlineValuesDashlongheavy TextUnderlineValues = "dashLongHeavy"
+	TextUnderlineValuesDotdash TextUnderlineValues = "dotDash"
+	TextUnderlineValuesDotdashheavy TextUnderlineValues = "dotDashHeavy"
+	TextUnderlineValuesDotdotdash TextUnderlineValues = "dotDotDash"
+	TextUnderlineValuesDotdotdashheavy TextUnderlineValues = "dotDotDashHeavy"
+	TextUnderlineValuesWavy TextUnderlineValues = "wavy"
+	TextUnderlineValuesWavyheavy TextUnderlineValues = "wavyHeavy"
+	TextUnderlineValuesWavydbl TextUnderlineValues = "wavyDbl"
 )
 
-func (e TextFontAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TextUnderlineValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TextFontAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextFontAlignmentValues(attr.Value)
+func (e *TextUnderlineValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextUnderlineValues(attr.Value)
 		return nil
 }
 
-// ShowDataAsValues
-type ShowDataAsValues string
+// RowColumnActionValues
+type RowColumnActionValues string
 const (
-	ShowDataAsValuesNormal ShowDataAsValues = "normal"
-	ShowDataAsValuesDifference ShowDataAsValues = "difference"
-	ShowDataAsValuesPercent ShowDataAsValues = "percent"
-	ShowDataAsValuesPercentdiff ShowDataAsValues = "percentDiff"
-	ShowDataAsValuesRuntotal ShowDataAsValues = "runTotal"
-	ShowDataAsValuesPercentofrow ShowDataAsValues = "percentOfRow"
-	ShowDataAsValuesPercentofcol ShowDataAsValues = "percentOfCol"
-	ShowDataAsValuesPercentoftotal ShowDataAsValues = "percentOfTotal"
-	ShowDataAsValuesIndex ShowDataAsValues = "index"
+	RowColumnActionValuesInsertrow RowColumnActionValues = "insertRow"
+	RowColumnActionValuesDeleterow RowColumnActionValues = "deleteRow"
+	RowColumnActionValuesInsertcol RowColumnActionValues = "insertCol"
+	RowColumnActionValuesDeletecol RowColumnActionValues = "deleteCol"
 )
 
-func (e ShowDataAsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e RowColumnActionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ShowDataAsValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ShowDataAsValues(attr.Value)
+func (e *RowColumnActionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RowColumnActionValues(attr.Value)
 		return nil
 }
 
-// DataValidationErrorStyleValues
-type DataValidationErrorStyleValues string
+// CalculateModeValues
+type CalculateModeValues string
 const (
-	DataValidationErrorStyleValuesStop DataValidationErrorStyleValues = "stop"
-	DataValidationErrorStyleValuesWarning DataValidationErrorStyleValues = "warning"
-	DataValidationErrorStyleValuesInformation DataValidationErrorStyleValues = "information"
+	CalculateModeValuesManual CalculateModeValues = "manual"
+	CalculateModeValuesAuto CalculateModeValues = "auto"
+	CalculateModeValuesAutonotable CalculateModeValues = "autoNoTable"
 )
 
-func (e DataValidationErrorStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e CalculateModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *DataValidationErrorStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataValidationErrorStyleValues(attr.Value)
+func (e *CalculateModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CalculateModeValues(attr.Value)
 		return nil
 }
 
-// SXVCellType
-type SXVCellType string
+// OartAnchorType
+type OartAnchorType string
 const (
-	SXVCellTypeB SXVCellType = "b"
-	SXVCellTypeN SXVCellType = "n"
-	SXVCellTypeE SXVCellType = "e"
-	SXVCellTypeStr SXVCellType = "str"
-	SXVCellTypeD SXVCellType = "d"
-	SXVCellTypeBl SXVCellType = "bl"
+	OartAnchorTypeTwocell OartAnchorType = "twoCell"
+	OartAnchorTypeOnecell OartAnchorType = "oneCell"
+	OartAnchorTypeAbsolute OartAnchorType = "absolute"
 )
 
-func (e SXVCellType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e OartAnchorType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *SXVCellType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SXVCellType(attr.Value)
+func (e *OartAnchorType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = OartAnchorType(attr.Value)
 		return nil
 }
 
-// OrientationValues
-type OrientationValues string
+// ExtendedBrushPropertyName
+type ExtendedBrushPropertyName string
 const (
-	OrientationValuesDefault OrientationValues = "default"
-	OrientationValuesPortrait OrientationValues = "portrait"
-	OrientationValuesLandscape OrientationValues = "landscape"
+	ExtendedBrushPropertyNameInkeffects ExtendedBrushPropertyName = "inkEffects"
+	ExtendedBrushPropertyNameAnchorx ExtendedBrushPropertyName = "anchorX"
+	ExtendedBrushPropertyNameAnchory ExtendedBrushPropertyName = "anchorY"
+	ExtendedBrushPropertyNameScalefactor ExtendedBrushPropertyName = "scaleFactor"
 )
 
-func (e OrientationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ExtendedBrushPropertyName) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *OrientationValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = OrientationValues(attr.Value)
+func (e *ExtendedBrushPropertyName) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ExtendedBrushPropertyName(attr.Value)
 		return nil
 }
 
-// ConformanceClass
-type ConformanceClass string
+// ErrorBarValues
+type ErrorBarValues string
 const (
-	ConformanceClassStrict ConformanceClass = "strict"
-	ConformanceClassTransitional ConformanceClass = "transitional"
+	ErrorBarValuesBoth ErrorBarValues = "both"
+	ErrorBarValuesMinus ErrorBarValues = "minus"
+	ErrorBarValuesPlus ErrorBarValues = "plus"
 )
 
-func (e ConformanceClass) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ErrorBarValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ConformanceClass) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ConformanceClass(attr.Value)
+func (e *ErrorBarValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ErrorBarValues(attr.Value)
 		return nil
 }
 
-// SurveyPosition
-type SurveyPosition string
+// ChildDirectionValues
+type ChildDirectionValues string
 const (
-	SurveyPositionAbsolute SurveyPosition = "absolute"
-	SurveyPositionFixed SurveyPosition = "fixed"
-	SurveyPositionRelative SurveyPosition = "relative"
-	SurveyPositionStatic SurveyPosition = "static"
-	SurveyPositionInherit SurveyPosition = "inherit"
+	ChildDirectionValuesHorz ChildDirectionValues = "horz"
+	ChildDirectionValuesVert ChildDirectionValues = "vert"
 )
 
-func (e SurveyPosition) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ChildDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *SurveyPosition) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SurveyPosition(attr.Value)
+func (e *ChildDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ChildDirectionValues(attr.Value)
 		return nil
 }
 
-// TileFlipValues
-type TileFlipValues string
+// BendPointValues
+type BendPointValues string
 const (
-	TileFlipValuesNone TileFlipValues = "none"
-	TileFlipValuesX TileFlipValues = "x"
-	TileFlipValuesY TileFlipValues = "y"
-	TileFlipValuesXy TileFlipValues = "xy"
+	BendPointValuesBeg BendPointValues = "beg"
+	BendPointValuesDef BendPointValues = "def"
+	BendPointValuesEnd BendPointValues = "end"
 )
 
-func (e TileFlipValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e BendPointValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TileFlipValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TileFlipValues(attr.Value)
+func (e *BendPointValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BendPointValues(attr.Value)
 		return nil
 }
 
-// ScatterStyleValues
-type ScatterStyleValues string
+// TextDirectionValues
+type TextDirectionValues string
 const (
-	ScatterStyleValuesLine ScatterStyleValues = "line"
-	ScatterStyleValuesLinemarker ScatterStyleValues = "lineMarker"
-	ScatterStyleValuesMarker ScatterStyleValues = "marker"
-	ScatterStyleValuesSmooth ScatterStyleValues = "smooth"
-	ScatterStyleValuesSmoothmarker ScatterStyleValues = "smoothMarker"
+	TextDirectionValuesFromt TextDirectionValues = "fromT"
+	TextDirectionValuesFromb TextDirectionValues = "fromB"
 )
 
-func (e ScatterStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TextDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ScatterStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ScatterStyleValues(attr.Value)
+func (e *TextDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextDirectionValues(attr.Value)
+		return nil
+}
+
+// TextCapsValues
+type TextCapsValues string
+const (
+	TextCapsValuesNone TextCapsValues = "none"
+	TextCapsValuesSmall TextCapsValues = "small"
+	TextCapsValuesAll TextCapsValues = "all"
+)
+
+func (e TextCapsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextCapsValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextCapsValues(attr.Value)
+		return nil
+}
+
+// QuestionType
+type QuestionType string
+const (
+	QuestionTypeCheckbox QuestionType = "checkBox"
+	QuestionTypeChoice QuestionType = "choice"
+	QuestionTypeDate QuestionType = "date"
+	QuestionTypeTime QuestionType = "time"
+	QuestionTypeMultiplelinesoftext QuestionType = "multipleLinesOfText"
+	QuestionTypeNumber QuestionType = "number"
+	QuestionTypeSinglelineoftext QuestionType = "singleLineOfText"
+)
+
+func (e QuestionType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *QuestionType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = QuestionType(attr.Value)
+		return nil
+}
+
+// SlicerCacheCrossFilterValues
+type SlicerCacheCrossFilterValues string
+const (
+	SlicerCacheCrossFilterValuesNone SlicerCacheCrossFilterValues = "none"
+	SlicerCacheCrossFilterValuesShowitemswithdataattop SlicerCacheCrossFilterValues = "showItemsWithDataAtTop"
+	SlicerCacheCrossFilterValuesShowitemswithnodata SlicerCacheCrossFilterValues = "showItemsWithNoData"
+)
+
+func (e SlicerCacheCrossFilterValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SlicerCacheCrossFilterValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SlicerCacheCrossFilterValues(attr.Value)
+		return nil
+}
+
+// DetachConnection
+type DetachConnection string
+const (
+	DetachConnectionStart DetachConnection = "start"
+	DetachConnectionEnd DetachConnection = "end"
+	DetachConnectionBoth DetachConnection = "both"
+)
+
+func (e DetachConnection) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DetachConnection) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DetachConnection(attr.Value)
+		return nil
+}
+
+// AnimationLevelStringValues
+type AnimationLevelStringValues string
+const (
+	AnimationLevelStringValuesNone AnimationLevelStringValues = "none"
+	AnimationLevelStringValuesLvl AnimationLevelStringValues = "lvl"
+	AnimationLevelStringValuesCtr AnimationLevelStringValues = "ctr"
+)
+
+func (e AnimationLevelStringValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AnimationLevelStringValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AnimationLevelStringValues(attr.Value)
+		return nil
+}
+
+// ChildAlignmentValues
+type ChildAlignmentValues string
+const (
+	ChildAlignmentValuesT ChildAlignmentValues = "t"
+	ChildAlignmentValuesB ChildAlignmentValues = "b"
+	ChildAlignmentValuesL ChildAlignmentValues = "l"
+	ChildAlignmentValuesR ChildAlignmentValues = "r"
+)
+
+func (e ChildAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ChildAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ChildAlignmentValues(attr.Value)
+		return nil
+}
+
+// ChartBuildStepValues
+type ChartBuildStepValues string
+const (
+	ChartBuildStepValuesCategory ChartBuildStepValues = "category"
+	ChartBuildStepValuesPtincategory ChartBuildStepValues = "ptInCategory"
+	ChartBuildStepValuesSeries ChartBuildStepValues = "series"
+	ChartBuildStepValuesPtinseries ChartBuildStepValues = "ptInSeries"
+	ChartBuildStepValuesAllpts ChartBuildStepValues = "allPts"
+	ChartBuildStepValuesGridlegend ChartBuildStepValues = "gridLegend"
+)
+
+func (e ChartBuildStepValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ChartBuildStepValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ChartBuildStepValues(attr.Value)
+		return nil
+}
+
+// TextAlignmentTypeValues
+type TextAlignmentTypeValues string
+const (
+	TextAlignmentTypeValuesL TextAlignmentTypeValues = "l"
+	TextAlignmentTypeValuesCtr TextAlignmentTypeValues = "ctr"
+	TextAlignmentTypeValuesR TextAlignmentTypeValues = "r"
+	TextAlignmentTypeValuesJust TextAlignmentTypeValues = "just"
+	TextAlignmentTypeValuesJustlow TextAlignmentTypeValues = "justLow"
+	TextAlignmentTypeValuesDist TextAlignmentTypeValues = "dist"
+	TextAlignmentTypeValuesThaidist TextAlignmentTypeValues = "thaiDist"
+)
+
+func (e TextAlignmentTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextAlignmentTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextAlignmentTypeValues(attr.Value)
+		return nil
+}
+
+// GroupByValues
+type GroupByValues string
+const (
+	GroupByValuesRange GroupByValues = "range"
+	GroupByValuesSeconds GroupByValues = "seconds"
+	GroupByValuesMinutes GroupByValues = "minutes"
+	GroupByValuesHours GroupByValues = "hours"
+	GroupByValuesDays GroupByValues = "days"
+	GroupByValuesMonths GroupByValues = "months"
+	GroupByValuesQuarters GroupByValues = "quarters"
+	GroupByValuesYears GroupByValues = "years"
+)
+
+func (e GroupByValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *GroupByValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = GroupByValues(attr.Value)
+		return nil
+}
+
+// MdxKPIPropertyValues
+type MdxKPIPropertyValues string
+const (
+	MdxKPIPropertyValuesV MdxKPIPropertyValues = "v"
+	MdxKPIPropertyValuesG MdxKPIPropertyValues = "g"
+	MdxKPIPropertyValuesS MdxKPIPropertyValues = "s"
+	MdxKPIPropertyValuesT MdxKPIPropertyValues = "t"
+	MdxKPIPropertyValuesW MdxKPIPropertyValues = "w"
+	MdxKPIPropertyValuesM MdxKPIPropertyValues = "m"
+)
+
+func (e MdxKPIPropertyValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *MdxKPIPropertyValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = MdxKPIPropertyValues(attr.Value)
+		return nil
+}
+
+// SeriesLayout
+type SeriesLayout string
+const (
+	SeriesLayoutBoxwhisker SeriesLayout = "boxWhisker"
+	SeriesLayoutClusteredcolumn SeriesLayout = "clusteredColumn"
+	SeriesLayoutFunnel SeriesLayout = "funnel"
+	SeriesLayoutParetoline SeriesLayout = "paretoLine"
+	SeriesLayoutRegionmap SeriesLayout = "regionMap"
+	SeriesLayoutSunburst SeriesLayout = "sunburst"
+	SeriesLayoutTreemap SeriesLayout = "treemap"
+	SeriesLayoutWaterfall SeriesLayout = "waterfall"
+)
+
+func (e SeriesLayout) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SeriesLayout) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SeriesLayout(attr.Value)
+		return nil
+}
+
+// OutputShapeValues
+type OutputShapeValues string
+const (
+	OutputShapeValuesNone OutputShapeValues = "none"
+	OutputShapeValuesConn OutputShapeValues = "conn"
+)
+
+func (e OutputShapeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *OutputShapeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = OutputShapeValues(attr.Value)
+		return nil
+}
+
+// AnimationDiagramOnlyBuildValues
+type AnimationDiagramOnlyBuildValues string
+const (
+	AnimationDiagramOnlyBuildValuesOne AnimationDiagramOnlyBuildValues = "one"
+	AnimationDiagramOnlyBuildValuesLvlone AnimationDiagramOnlyBuildValues = "lvlOne"
+	AnimationDiagramOnlyBuildValuesLvlatonce AnimationDiagramOnlyBuildValues = "lvlAtOnce"
+)
+
+func (e AnimationDiagramOnlyBuildValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AnimationDiagramOnlyBuildValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AnimationDiagramOnlyBuildValues(attr.Value)
+		return nil
+}
+
+// TargetScreenSizeValues
+type TargetScreenSizeValues string
+const (
+	TargetScreenSizeValuesTargetScreenSizeValues544X376 TargetScreenSizeValues = "544x376"
+	TargetScreenSizeValuesTargetScreenSizeValues640X480 TargetScreenSizeValues = "640x480"
+	TargetScreenSizeValuesTargetScreenSizeValues720X512 TargetScreenSizeValues = "720x512"
+	TargetScreenSizeValuesTargetScreenSizeValues800X600 TargetScreenSizeValues = "800x600"
+	TargetScreenSizeValuesTargetScreenSizeValues1024X768 TargetScreenSizeValues = "1024x768"
+	TargetScreenSizeValuesTargetScreenSizeValues1152X882 TargetScreenSizeValues = "1152x882"
+	TargetScreenSizeValuesTargetScreenSizeValues1152X900 TargetScreenSizeValues = "1152x900"
+	TargetScreenSizeValuesTargetScreenSizeValues1280X1024 TargetScreenSizeValues = "1280x1024"
+	TargetScreenSizeValuesTargetScreenSizeValues1600X1200 TargetScreenSizeValues = "1600x1200"
+	TargetScreenSizeValuesTargetScreenSizeValues1800X1440 TargetScreenSizeValues = "1800x1440"
+	TargetScreenSizeValuesTargetScreenSizeValues1920X1200 TargetScreenSizeValues = "1920x1200"
+)
+
+func (e TargetScreenSizeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TargetScreenSizeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TargetScreenSizeValues(attr.Value)
+		return nil
+}
+
+// SparklineTypeValues
+type SparklineTypeValues string
+const (
+	SparklineTypeValuesLine SparklineTypeValues = "line"
+	SparklineTypeValuesColumn SparklineTypeValues = "column"
+	SparklineTypeValuesStacked SparklineTypeValues = "stacked"
+)
+
+func (e SparklineTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SparklineTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SparklineTypeValues(attr.Value)
+		return nil
+}
+
+// PosAlign
+type PosAlign string
+const (
+	PosAlignMin PosAlign = "min"
+	PosAlignCtr PosAlign = "ctr"
+	PosAlignMax PosAlign = "max"
+)
+
+func (e PosAlign) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PosAlign) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PosAlign(attr.Value)
+		return nil
+}
+
+// LayoutModeValues
+type LayoutModeValues string
+const (
+	LayoutModeValuesEdge LayoutModeValues = "edge"
+	LayoutModeValuesFactor LayoutModeValues = "factor"
+)
+
+func (e LayoutModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *LayoutModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LayoutModeValues(attr.Value)
+		return nil
+}
+
+// PageSetupOrientationValues
+type PageSetupOrientationValues string
+const (
+	PageSetupOrientationValuesDefault PageSetupOrientationValues = "default"
+	PageSetupOrientationValuesPortrait PageSetupOrientationValues = "portrait"
+	PageSetupOrientationValuesLandscape PageSetupOrientationValues = "landscape"
+)
+
+func (e PageSetupOrientationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PageSetupOrientationValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PageSetupOrientationValues(attr.Value)
+		return nil
+}
+
+// TextBlockDirectionValues
+type TextBlockDirectionValues string
+const (
+	TextBlockDirectionValuesHorz TextBlockDirectionValues = "horz"
+	TextBlockDirectionValuesVert TextBlockDirectionValues = "vert"
+)
+
+func (e TextBlockDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextBlockDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextBlockDirectionValues(attr.Value)
+		return nil
+}
+
+// VerticalAlignmentRunValues
+type VerticalAlignmentRunValues string
+const (
+	VerticalAlignmentRunValuesBaseline VerticalAlignmentRunValues = "baseline"
+	VerticalAlignmentRunValuesSuperscript VerticalAlignmentRunValues = "superscript"
+	VerticalAlignmentRunValuesSubscript VerticalAlignmentRunValues = "subscript"
+)
+
+func (e VerticalAlignmentRunValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *VerticalAlignmentRunValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = VerticalAlignmentRunValues(attr.Value)
+		return nil
+}
+
+// TitlePosition
+type TitlePosition string
+const (
+	TitlePositionAbove TitlePosition = "above"
+	TitlePositionOverlay TitlePosition = "overlay"
+	TitlePositionOff TitlePosition = "off"
+	TitlePositionNinch TitlePosition = "ninch"
+)
+
+func (e TitlePosition) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TitlePosition) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TitlePosition(attr.Value)
+		return nil
+}
+
+// BarDirectionValues
+type BarDirectionValues string
+const (
+	BarDirectionValuesBar BarDirectionValues = "bar"
+	BarDirectionValuesCol BarDirectionValues = "col"
+)
+
+func (e BarDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BarDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BarDirectionValues(attr.Value)
+		return nil
+}
+
+// HueDirectionValues
+type HueDirectionValues string
+const (
+	HueDirectionValuesCw HueDirectionValues = "cw"
+	HueDirectionValuesCcw HueDirectionValues = "ccw"
+)
+
+func (e HueDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *HueDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = HueDirectionValues(attr.Value)
+		return nil
+}
+
+// ResizeHandlesStringValues
+type ResizeHandlesStringValues string
+const (
+	ResizeHandlesStringValuesExact ResizeHandlesStringValues = "exact"
+	ResizeHandlesStringValuesRel ResizeHandlesStringValues = "rel"
+)
+
+func (e ResizeHandlesStringValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ResizeHandlesStringValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ResizeHandlesStringValues(attr.Value)
+		return nil
+}
+
+// ArrowheadStyleValues
+type ArrowheadStyleValues string
+const (
+	ArrowheadStyleValuesAuto ArrowheadStyleValues = "auto"
+	ArrowheadStyleValuesArr ArrowheadStyleValues = "arr"
+	ArrowheadStyleValuesNoarr ArrowheadStyleValues = "noArr"
+)
+
+func (e ArrowheadStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ArrowheadStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ArrowheadStyleValues(attr.Value)
+		return nil
+}
+
+// HierarchyAlignmentValues
+type HierarchyAlignmentValues string
+const (
+	HierarchyAlignmentValuesTl HierarchyAlignmentValues = "tL"
+	HierarchyAlignmentValuesTr HierarchyAlignmentValues = "tR"
+	HierarchyAlignmentValuesTctrch HierarchyAlignmentValues = "tCtrCh"
+	HierarchyAlignmentValuesTctrdes HierarchyAlignmentValues = "tCtrDes"
+	HierarchyAlignmentValuesBl HierarchyAlignmentValues = "bL"
+	HierarchyAlignmentValuesBr HierarchyAlignmentValues = "bR"
+	HierarchyAlignmentValuesBctrch HierarchyAlignmentValues = "bCtrCh"
+	HierarchyAlignmentValuesBctrdes HierarchyAlignmentValues = "bCtrDes"
+	HierarchyAlignmentValuesLt HierarchyAlignmentValues = "lT"
+	HierarchyAlignmentValuesLb HierarchyAlignmentValues = "lB"
+	HierarchyAlignmentValuesLctrch HierarchyAlignmentValues = "lCtrCh"
+	HierarchyAlignmentValuesLctrdes HierarchyAlignmentValues = "lCtrDes"
+	HierarchyAlignmentValuesRt HierarchyAlignmentValues = "rT"
+	HierarchyAlignmentValuesRb HierarchyAlignmentValues = "rB"
+	HierarchyAlignmentValuesRctrch HierarchyAlignmentValues = "rCtrCh"
+	HierarchyAlignmentValuesRctrdes HierarchyAlignmentValues = "rCtrDes"
+)
+
+func (e HierarchyAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *HierarchyAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = HierarchyAlignmentValues(attr.Value)
+		return nil
+}
+
+// TextTabAlignmentValues
+type TextTabAlignmentValues string
+const (
+	TextTabAlignmentValuesL TextTabAlignmentValues = "l"
+	TextTabAlignmentValuesCtr TextTabAlignmentValues = "ctr"
+	TextTabAlignmentValuesR TextTabAlignmentValues = "r"
+	TextTabAlignmentValuesDec TextTabAlignmentValues = "dec"
+)
+
+func (e TextTabAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextTabAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextTabAlignmentValues(attr.Value)
+		return nil
+}
+
+// IconSetValues
+type IconSetValues string
+const (
+	IconSetValuesIconSetValues3Arrows IconSetValues = "3Arrows"
+	IconSetValuesIconSetValues3Arrowsgray IconSetValues = "3ArrowsGray"
+	IconSetValuesIconSetValues3Flags IconSetValues = "3Flags"
+	IconSetValuesIconSetValues3Trafficlights1 IconSetValues = "3TrafficLights1"
+	IconSetValuesIconSetValues3Trafficlights2 IconSetValues = "3TrafficLights2"
+	IconSetValuesIconSetValues3Signs IconSetValues = "3Signs"
+	IconSetValuesIconSetValues3Symbols IconSetValues = "3Symbols"
+	IconSetValuesIconSetValues3Symbols2 IconSetValues = "3Symbols2"
+	IconSetValuesIconSetValues4Arrows IconSetValues = "4Arrows"
+	IconSetValuesIconSetValues4Arrowsgray IconSetValues = "4ArrowsGray"
+	IconSetValuesIconSetValues4Redtoblack IconSetValues = "4RedToBlack"
+	IconSetValuesIconSetValues4Rating IconSetValues = "4Rating"
+	IconSetValuesIconSetValues4Trafficlights IconSetValues = "4TrafficLights"
+	IconSetValuesIconSetValues5Arrows IconSetValues = "5Arrows"
+	IconSetValuesIconSetValues5Arrowsgray IconSetValues = "5ArrowsGray"
+	IconSetValuesIconSetValues5Rating IconSetValues = "5Rating"
+	IconSetValuesIconSetValues5Quarters IconSetValues = "5Quarters"
+)
+
+func (e IconSetValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *IconSetValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = IconSetValues(attr.Value)
+		return nil
+}
+
+// MovingPeriodStep
+type MovingPeriodStep string
+const (
+	MovingPeriodStepYear MovingPeriodStep = "year"
+	MovingPeriodStepQuarter MovingPeriodStep = "quarter"
+	MovingPeriodStepMonth MovingPeriodStep = "month"
+	MovingPeriodStepWeek MovingPeriodStep = "week"
+	MovingPeriodStepDay MovingPeriodStep = "day"
+)
+
+func (e MovingPeriodStep) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *MovingPeriodStep) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = MovingPeriodStep(attr.Value)
+		return nil
+}
+
+// StyleColorEnum
+type StyleColorEnum string
+const (
+	StyleColorEnumAuto StyleColorEnum = "auto"
+)
+
+func (e StyleColorEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *StyleColorEnum) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = StyleColorEnum(attr.Value)
+		return nil
+}
+
+// TimeUnitValues
+type TimeUnitValues string
+const (
+	TimeUnitValuesDays TimeUnitValues = "days"
+	TimeUnitValuesMonths TimeUnitValues = "months"
+	TimeUnitValuesYears TimeUnitValues = "years"
+)
+
+func (e TimeUnitValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TimeUnitValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TimeUnitValues(attr.Value)
+		return nil
+}
+
+// ContinueDirectionValues
+type ContinueDirectionValues string
+const (
+	ContinueDirectionValuesRevdir ContinueDirectionValues = "revDir"
+	ContinueDirectionValuesSamedir ContinueDirectionValues = "sameDir"
+)
+
+func (e ContinueDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ContinueDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ContinueDirectionValues(attr.Value)
+		return nil
+}
+
+// DateTimeGroupingValues
+type DateTimeGroupingValues string
+const (
+	DateTimeGroupingValuesYear DateTimeGroupingValues = "year"
+	DateTimeGroupingValuesMonth DateTimeGroupingValues = "month"
+	DateTimeGroupingValuesDay DateTimeGroupingValues = "day"
+	DateTimeGroupingValuesHour DateTimeGroupingValues = "hour"
+	DateTimeGroupingValuesMinute DateTimeGroupingValues = "minute"
+	DateTimeGroupingValuesSecond DateTimeGroupingValues = "second"
+)
+
+func (e DateTimeGroupingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DateTimeGroupingValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DateTimeGroupingValues(attr.Value)
+		return nil
+}
+
+// DataLabelPos
+type DataLabelPos string
+const (
+	DataLabelPosBestfit DataLabelPos = "bestFit"
+	DataLabelPosB DataLabelPos = "b"
+	DataLabelPosCtr DataLabelPos = "ctr"
+	DataLabelPosInbase DataLabelPos = "inBase"
+	DataLabelPosInend DataLabelPos = "inEnd"
+	DataLabelPosL DataLabelPos = "l"
+	DataLabelPosOutend DataLabelPos = "outEnd"
+	DataLabelPosR DataLabelPos = "r"
+	DataLabelPosT DataLabelPos = "t"
+)
+
+func (e DataLabelPos) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DataLabelPos) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataLabelPos(attr.Value)
+		return nil
+}
+
+// SupportingPropertyBagArrayValueType
+type SupportingPropertyBagArrayValueType string
+const (
+	SupportingPropertyBagArrayValueTypeD SupportingPropertyBagArrayValueType = "d"
+	SupportingPropertyBagArrayValueTypeI SupportingPropertyBagArrayValueType = "i"
+	SupportingPropertyBagArrayValueTypeB SupportingPropertyBagArrayValueType = "b"
+	SupportingPropertyBagArrayValueTypeS SupportingPropertyBagArrayValueType = "s"
+	SupportingPropertyBagArrayValueTypeSpb SupportingPropertyBagArrayValueType = "spb"
+)
+
+func (e SupportingPropertyBagArrayValueType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SupportingPropertyBagArrayValueType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SupportingPropertyBagArrayValueType(attr.Value)
+		return nil
+}
+
+// SecondaryLinearDirectionValues
+type SecondaryLinearDirectionValues string
+const (
+	SecondaryLinearDirectionValuesNone SecondaryLinearDirectionValues = "none"
+	SecondaryLinearDirectionValuesFroml SecondaryLinearDirectionValues = "fromL"
+	SecondaryLinearDirectionValuesFromr SecondaryLinearDirectionValues = "fromR"
+	SecondaryLinearDirectionValuesFromt SecondaryLinearDirectionValues = "fromT"
+	SecondaryLinearDirectionValuesFromb SecondaryLinearDirectionValues = "fromB"
+)
+
+func (e SecondaryLinearDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SecondaryLinearDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SecondaryLinearDirectionValues(attr.Value)
+		return nil
+}
+
+// FormulaExpressionValues
+type FormulaExpressionValues string
+const (
+	FormulaExpressionValuesRef FormulaExpressionValues = "ref"
+	FormulaExpressionValuesReferror FormulaExpressionValues = "refError"
+	FormulaExpressionValuesArea FormulaExpressionValues = "area"
+	FormulaExpressionValuesAreaerror FormulaExpressionValues = "areaError"
+	FormulaExpressionValuesComputedarea FormulaExpressionValues = "computedArea"
+)
+
+func (e FormulaExpressionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *FormulaExpressionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FormulaExpressionValues(attr.Value)
+		return nil
+}
+
+// FontSchemeValues
+type FontSchemeValues string
+const (
+	FontSchemeValuesNone FontSchemeValues = "none"
+	FontSchemeValuesMajor FontSchemeValues = "major"
+	FontSchemeValuesMinor FontSchemeValues = "minor"
+)
+
+func (e FontSchemeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *FontSchemeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FontSchemeValues(attr.Value)
+		return nil
+}
+
+// DataBarDirectionValues
+type DataBarDirectionValues string
+const (
+	DataBarDirectionValuesContext DataBarDirectionValues = "context"
+	DataBarDirectionValuesLefttoright DataBarDirectionValues = "leftToRight"
+	DataBarDirectionValuesRighttoleft DataBarDirectionValues = "rightToLeft"
+)
+
+func (e DataBarDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DataBarDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataBarDirectionValues(attr.Value)
+		return nil
+}
+
+// OlapSlicerCacheSortOrderValues
+type OlapSlicerCacheSortOrderValues string
+const (
+	OlapSlicerCacheSortOrderValuesNatural OlapSlicerCacheSortOrderValues = "natural"
+	OlapSlicerCacheSortOrderValuesAscending OlapSlicerCacheSortOrderValues = "ascending"
+	OlapSlicerCacheSortOrderValuesDescending OlapSlicerCacheSortOrderValues = "descending"
+)
+
+func (e OlapSlicerCacheSortOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *OlapSlicerCacheSortOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = OlapSlicerCacheSortOrderValues(attr.Value)
+		return nil
+}
+
+// GroupingValues
+type GroupingValues string
+const (
+	GroupingValuesPercentstacked GroupingValues = "percentStacked"
+	GroupingValuesStandard GroupingValues = "standard"
+	GroupingValuesStacked GroupingValues = "stacked"
+)
+
+func (e GroupingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *GroupingValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = GroupingValues(attr.Value)
+		return nil
+}
+
+// DisplayBlanksAsValues
+type DisplayBlanksAsValues string
+const (
+	DisplayBlanksAsValuesSpan DisplayBlanksAsValues = "span"
+	DisplayBlanksAsValuesGap DisplayBlanksAsValues = "gap"
+	DisplayBlanksAsValuesZero DisplayBlanksAsValues = "zero"
+)
+
+func (e DisplayBlanksAsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DisplayBlanksAsValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DisplayBlanksAsValues(attr.Value)
+		return nil
+}
+
+// VariableValues
+type VariableValues string
+const (
+	VariableValuesNone VariableValues = "none"
+	VariableValuesOrgchart VariableValues = "orgChart"
+	VariableValuesChmax VariableValues = "chMax"
+	VariableValuesChpref VariableValues = "chPref"
+	VariableValuesBulenabled VariableValues = "bulEnabled"
+	VariableValuesDir VariableValues = "dir"
+	VariableValuesHierbranch VariableValues = "hierBranch"
+	VariableValuesAnimone VariableValues = "animOne"
+	VariableValuesAnimlvl VariableValues = "animLvl"
+	VariableValuesResizehandles VariableValues = "resizeHandles"
+)
+
+func (e VariableValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *VariableValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = VariableValues(attr.Value)
 		return nil
 }
 
@@ -709,154 +2318,25 @@ func (e *ExternalConnectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// BorderStyleValues
-type BorderStyleValues string
+// DataValidationValues
+type DataValidationValues string
 const (
-	BorderStyleValuesNone BorderStyleValues = "none"
-	BorderStyleValuesThin BorderStyleValues = "thin"
-	BorderStyleValuesMedium BorderStyleValues = "medium"
-	BorderStyleValuesDashed BorderStyleValues = "dashed"
-	BorderStyleValuesDotted BorderStyleValues = "dotted"
-	BorderStyleValuesThick BorderStyleValues = "thick"
-	BorderStyleValuesDouble BorderStyleValues = "double"
-	BorderStyleValuesHair BorderStyleValues = "hair"
-	BorderStyleValuesMediumdashed BorderStyleValues = "mediumDashed"
-	BorderStyleValuesDashdot BorderStyleValues = "dashDot"
-	BorderStyleValuesMediumdashdot BorderStyleValues = "mediumDashDot"
-	BorderStyleValuesDashdotdot BorderStyleValues = "dashDotDot"
-	BorderStyleValuesMediumdashdotdot BorderStyleValues = "mediumDashDotDot"
-	BorderStyleValuesSlantdashdot BorderStyleValues = "slantDashDot"
+	DataValidationValuesNone DataValidationValues = "none"
+	DataValidationValuesWhole DataValidationValues = "whole"
+	DataValidationValuesDecimal DataValidationValues = "decimal"
+	DataValidationValuesList DataValidationValues = "list"
+	DataValidationValuesDate DataValidationValues = "date"
+	DataValidationValuesTime DataValidationValues = "time"
+	DataValidationValuesTextlength DataValidationValues = "textLength"
+	DataValidationValuesCustom DataValidationValues = "custom"
 )
 
-func (e BorderStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e DataValidationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *BorderStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BorderStyleValues(attr.Value)
-		return nil
-}
-
-// LegendPosition
-type LegendPosition string
-const (
-	LegendPositionRight LegendPosition = "right"
-	LegendPositionTop LegendPosition = "top"
-	LegendPositionLeft LegendPosition = "left"
-	LegendPositionBottom LegendPosition = "bottom"
-	LegendPositionNinch LegendPosition = "ninch"
-)
-
-func (e LegendPosition) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *LegendPosition) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LegendPosition(attr.Value)
-		return nil
-}
-
-// TitlePosition
-type TitlePosition string
-const (
-	TitlePositionAbove TitlePosition = "above"
-	TitlePositionOverlay TitlePosition = "overlay"
-	TitlePositionOff TitlePosition = "off"
-	TitlePositionNinch TitlePosition = "ninch"
-)
-
-func (e TitlePosition) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TitlePosition) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TitlePosition(attr.Value)
-		return nil
-}
-
-// ExtFeatureType
-type ExtFeatureType string
-const (
-	ExtFeatureTypeReserved ExtFeatureType = "reserved"
-)
-
-func (e ExtFeatureType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ExtFeatureType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ExtFeatureType(attr.Value)
-		return nil
-}
-
-// TextAnchorHorizontalValues
-type TextAnchorHorizontalValues string
-const (
-	TextAnchorHorizontalValuesNone TextAnchorHorizontalValues = "none"
-	TextAnchorHorizontalValuesCtr TextAnchorHorizontalValues = "ctr"
-)
-
-func (e TextAnchorHorizontalValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextAnchorHorizontalValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextAnchorHorizontalValues(attr.Value)
-		return nil
-}
-
-// OffsetValues
-type OffsetValues string
-const (
-	OffsetValuesCtr OffsetValues = "ctr"
-	OffsetValuesOff OffsetValues = "off"
-)
-
-func (e OffsetValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *OffsetValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = OffsetValues(attr.Value)
-		return nil
-}
-
-// CellCommentsValues
-type CellCommentsValues string
-const (
-	CellCommentsValuesNone CellCommentsValues = "none"
-	CellCommentsValuesAsdisplayed CellCommentsValues = "asDisplayed"
-	CellCommentsValuesAtend CellCommentsValues = "atEnd"
-)
-
-func (e CellCommentsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CellCommentsValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CellCommentsValues(attr.Value)
-		return nil
-}
-
-// WebSourceValues
-type WebSourceValues string
-const (
-	WebSourceValuesSheet WebSourceValues = "sheet"
-	WebSourceValuesPrintarea WebSourceValues = "printArea"
-	WebSourceValuesAutofilter WebSourceValues = "autoFilter"
-	WebSourceValuesRange WebSourceValues = "range"
-	WebSourceValuesChart WebSourceValues = "chart"
-	WebSourceValuesPivottable WebSourceValues = "pivotTable"
-	WebSourceValuesQuery WebSourceValues = "query"
-	WebSourceValuesLabel WebSourceValues = "label"
-)
-
-func (e WebSourceValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *WebSourceValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = WebSourceValues(attr.Value)
+func (e *DataValidationValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataValidationValues(attr.Value)
 		return nil
 }
 
@@ -879,61 +2359,453 @@ func (e *DdeValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// TimelineStyleType
-type TimelineStyleType string
+// RwColAction
+type RwColAction string
 const (
-	TimelineStyleTypeSelectionlabel TimelineStyleType = "selectionLabel"
-	TimelineStyleTypeTimelevel TimelineStyleType = "timeLevel"
-	TimelineStyleTypePeriodlabel1 TimelineStyleType = "periodLabel1"
-	TimelineStyleTypePeriodlabel2 TimelineStyleType = "periodLabel2"
-	TimelineStyleTypeSelectedtimeblock TimelineStyleType = "selectedTimeBlock"
-	TimelineStyleTypeUnselectedtimeblock TimelineStyleType = "unselectedTimeBlock"
-	TimelineStyleTypeSelectedtimeblockspace TimelineStyleType = "selectedTimeBlockSpace"
+	RwColActionInsr RwColAction = "insr"
+	RwColActionDelr RwColAction = "delr"
+	RwColActionInsc RwColAction = "insc"
+	RwColActionDelc RwColAction = "delc"
 )
 
-func (e TimelineStyleType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e RwColAction) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TimelineStyleType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TimelineStyleType(attr.Value)
+func (e *RwColAction) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RwColAction(attr.Value)
 		return nil
 }
 
-// SheetOp
-type SheetOp string
+// FunctionOperatorValues
+type FunctionOperatorValues string
 const (
-	SheetOpInsert SheetOp = "insert"
-	SheetOpDelete SheetOp = "delete"
-	SheetOpReorder SheetOp = "reorder"
-	SheetOpRename SheetOp = "rename"
+	FunctionOperatorValuesEqu FunctionOperatorValues = "equ"
+	FunctionOperatorValuesNeq FunctionOperatorValues = "neq"
+	FunctionOperatorValuesGt FunctionOperatorValues = "gt"
+	FunctionOperatorValuesLt FunctionOperatorValues = "lt"
+	FunctionOperatorValuesGte FunctionOperatorValues = "gte"
+	FunctionOperatorValuesLte FunctionOperatorValues = "lte"
 )
 
-func (e SheetOp) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e FunctionOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *SheetOp) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SheetOp(attr.Value)
+func (e *FunctionOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FunctionOperatorValues(attr.Value)
 		return nil
 }
 
-// NumericDimensionType
-type NumericDimensionType string
+// WrapTextValues
+type WrapTextValues string
 const (
-	NumericDimensionTypeVal NumericDimensionType = "val"
-	NumericDimensionTypeX NumericDimensionType = "x"
-	NumericDimensionTypeY NumericDimensionType = "y"
-	NumericDimensionTypeSize NumericDimensionType = "size"
-	NumericDimensionTypeColorval NumericDimensionType = "colorVal"
+	WrapTextValuesBothsides WrapTextValues = "bothSides"
+	WrapTextValuesLeft WrapTextValues = "left"
+	WrapTextValuesRight WrapTextValues = "right"
+	WrapTextValuesLargest WrapTextValues = "largest"
 )
 
-func (e NumericDimensionType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e WrapTextValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *NumericDimensionType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = NumericDimensionType(attr.Value)
+func (e *WrapTextValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = WrapTextValues(attr.Value)
+		return nil
+}
+
+// HorizontalRelativePositionValues
+type HorizontalRelativePositionValues string
+const (
+	HorizontalRelativePositionValuesMargin HorizontalRelativePositionValues = "margin"
+	HorizontalRelativePositionValuesPage HorizontalRelativePositionValues = "page"
+	HorizontalRelativePositionValuesColumn HorizontalRelativePositionValues = "column"
+	HorizontalRelativePositionValuesCharacter HorizontalRelativePositionValues = "character"
+	HorizontalRelativePositionValuesLeftmargin HorizontalRelativePositionValues = "leftMargin"
+	HorizontalRelativePositionValuesRightmargin HorizontalRelativePositionValues = "rightMargin"
+	HorizontalRelativePositionValuesInsidemargin HorizontalRelativePositionValues = "insideMargin"
+	HorizontalRelativePositionValuesOutsidemargin HorizontalRelativePositionValues = "outsideMargin"
+)
+
+func (e HorizontalRelativePositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *HorizontalRelativePositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = HorizontalRelativePositionValues(attr.Value)
+		return nil
+}
+
+// TotalsRowFunctionValues
+type TotalsRowFunctionValues string
+const (
+	TotalsRowFunctionValuesNone TotalsRowFunctionValues = "none"
+	TotalsRowFunctionValuesSum TotalsRowFunctionValues = "sum"
+	TotalsRowFunctionValuesMin TotalsRowFunctionValues = "min"
+	TotalsRowFunctionValuesMax TotalsRowFunctionValues = "max"
+	TotalsRowFunctionValuesAverage TotalsRowFunctionValues = "average"
+	TotalsRowFunctionValuesCount TotalsRowFunctionValues = "count"
+	TotalsRowFunctionValuesCountnums TotalsRowFunctionValues = "countNums"
+	TotalsRowFunctionValuesStddev TotalsRowFunctionValues = "stdDev"
+	TotalsRowFunctionValuesVar TotalsRowFunctionValues = "var"
+	TotalsRowFunctionValuesCustom TotalsRowFunctionValues = "custom"
+)
+
+func (e TotalsRowFunctionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TotalsRowFunctionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TotalsRowFunctionValues(attr.Value)
+		return nil
+}
+
+// SXVCellType
+type SXVCellType string
+const (
+	SXVCellTypeB SXVCellType = "b"
+	SXVCellTypeN SXVCellType = "n"
+	SXVCellTypeE SXVCellType = "e"
+	SXVCellTypeStr SXVCellType = "str"
+	SXVCellTypeD SXVCellType = "d"
+	SXVCellTypeBl SXVCellType = "bl"
+)
+
+func (e SXVCellType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SXVCellType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SXVCellType(attr.Value)
+		return nil
+}
+
+// IntervalClosedSide
+type IntervalClosedSide string
+const (
+	IntervalClosedSideL IntervalClosedSide = "l"
+	IntervalClosedSideR IntervalClosedSide = "r"
+)
+
+func (e IntervalClosedSide) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *IntervalClosedSide) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = IntervalClosedSide(attr.Value)
+		return nil
+}
+
+// STorageType
+type STorageType string
+const (
+	STorageTypeSibtrans STorageType = "sibTrans"
+	STorageTypePartrans STorageType = "parTrans"
+)
+
+func (e STorageType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *STorageType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = STorageType(attr.Value)
+		return nil
+}
+
+// PrintErrorValues
+type PrintErrorValues string
+const (
+	PrintErrorValuesDisplayed PrintErrorValues = "displayed"
+	PrintErrorValuesBlank PrintErrorValues = "blank"
+	PrintErrorValuesDash PrintErrorValues = "dash"
+	PrintErrorValuesNa PrintErrorValues = "NA"
+)
+
+func (e PrintErrorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PrintErrorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PrintErrorValues(attr.Value)
+		return nil
+}
+
+// RevisionContext
+type RevisionContext string
+const (
+	RevisionContextNormal RevisionContext = "normal"
+	RevisionContextUndo RevisionContext = "undo"
+	RevisionContextRedo RevisionContext = "redo"
+	RevisionContextCopy RevisionContext = "copy"
+)
+
+func (e RevisionContext) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RevisionContext) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RevisionContext(attr.Value)
+		return nil
+}
+
+// RowColVisualOp
+type RowColVisualOp string
+const (
+	RowColVisualOpHide RowColVisualOp = "hide"
+	RowColVisualOpUnhide RowColVisualOp = "unhide"
+	RowColVisualOpResize RowColVisualOp = "resize"
+	RowColVisualOpAutosize RowColVisualOp = "autosize"
+)
+
+func (e RowColVisualOp) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RowColVisualOp) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RowColVisualOp(attr.Value)
+		return nil
+}
+
+// StringDimensionType
+type StringDimensionType string
+const (
+	StringDimensionTypeCat StringDimensionType = "cat"
+	StringDimensionTypeColorstr StringDimensionType = "colorStr"
+	StringDimensionTypeEntityid StringDimensionType = "entityId"
+)
+
+func (e StringDimensionType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *StringDimensionType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = StringDimensionType(attr.Value)
+		return nil
+}
+
+// RectangleAlignmentValues
+type RectangleAlignmentValues string
+const (
+	RectangleAlignmentValuesTl RectangleAlignmentValues = "tl"
+	RectangleAlignmentValuesT RectangleAlignmentValues = "t"
+	RectangleAlignmentValuesTr RectangleAlignmentValues = "tr"
+	RectangleAlignmentValuesL RectangleAlignmentValues = "l"
+	RectangleAlignmentValuesCtr RectangleAlignmentValues = "ctr"
+	RectangleAlignmentValuesR RectangleAlignmentValues = "r"
+	RectangleAlignmentValuesBl RectangleAlignmentValues = "bl"
+	RectangleAlignmentValuesB RectangleAlignmentValues = "b"
+	RectangleAlignmentValuesBr RectangleAlignmentValues = "br"
+)
+
+func (e RectangleAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RectangleAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RectangleAlignmentValues(attr.Value)
+		return nil
+}
+
+// RevisionActionValues
+type RevisionActionValues string
+const (
+	RevisionActionValuesAdd RevisionActionValues = "add"
+	RevisionActionValuesDelete RevisionActionValues = "delete"
+)
+
+func (e RevisionActionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RevisionActionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RevisionActionValues(attr.Value)
+		return nil
+}
+
+// VolatileDependencyValues
+type VolatileDependencyValues string
+const (
+	VolatileDependencyValuesRealtimedata VolatileDependencyValues = "realTimeData"
+	VolatileDependencyValuesOlapfunctions VolatileDependencyValues = "olapFunctions"
+)
+
+func (e VolatileDependencyValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *VolatileDependencyValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = VolatileDependencyValues(attr.Value)
+		return nil
+}
+
+// SheetStateValues
+type SheetStateValues string
+const (
+	SheetStateValuesVisible SheetStateValues = "visible"
+	SheetStateValuesHidden SheetStateValues = "hidden"
+	SheetStateValuesVeryhidden SheetStateValues = "veryHidden"
+)
+
+func (e SheetStateValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SheetStateValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SheetStateValues(attr.Value)
+		return nil
+}
+
+// DataBarAxisPositionValues
+type DataBarAxisPositionValues string
+const (
+	DataBarAxisPositionValuesAutomatic DataBarAxisPositionValues = "automatic"
+	DataBarAxisPositionValuesMiddle DataBarAxisPositionValues = "middle"
+	DataBarAxisPositionValuesNone DataBarAxisPositionValues = "none"
+)
+
+func (e DataBarAxisPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DataBarAxisPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataBarAxisPositionValues(attr.Value)
+		return nil
+}
+
+// EntityTypeEnum
+type EntityTypeEnum string
+const (
+	EntityTypeEnumAddress EntityTypeEnum = "Address"
+	EntityTypeEnumAdmindistrict EntityTypeEnum = "AdminDistrict"
+	EntityTypeEnumAdmindistrict2 EntityTypeEnum = "AdminDistrict2"
+	EntityTypeEnumAdmindistrict3 EntityTypeEnum = "AdminDistrict3"
+	EntityTypeEnumContinent EntityTypeEnum = "Continent"
+	EntityTypeEnumCountryregion EntityTypeEnum = "CountryRegion"
+	EntityTypeEnumLocality EntityTypeEnum = "Locality"
+	EntityTypeEnumOcean EntityTypeEnum = "Ocean"
+	EntityTypeEnumPlanet EntityTypeEnum = "Planet"
+	EntityTypeEnumPostalcode EntityTypeEnum = "PostalCode"
+	EntityTypeEnumRegion EntityTypeEnum = "Region"
+	EntityTypeEnumUnsupported EntityTypeEnum = "Unsupported"
+)
+
+func (e EntityTypeEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *EntityTypeEnum) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = EntityTypeEnum(attr.Value)
+		return nil
+}
+
+// NodeVerticalAlignmentValues
+type NodeVerticalAlignmentValues string
+const (
+	NodeVerticalAlignmentValuesT NodeVerticalAlignmentValues = "t"
+	NodeVerticalAlignmentValuesMid NodeVerticalAlignmentValues = "mid"
+	NodeVerticalAlignmentValuesB NodeVerticalAlignmentValues = "b"
+)
+
+func (e NodeVerticalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *NodeVerticalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = NodeVerticalAlignmentValues(attr.Value)
+		return nil
+}
+
+// UnderlineValues
+type UnderlineValues string
+const (
+	UnderlineValuesSingle UnderlineValues = "single"
+	UnderlineValuesDouble UnderlineValues = "double"
+	UnderlineValuesSingleaccounting UnderlineValues = "singleAccounting"
+	UnderlineValuesDoubleaccounting UnderlineValues = "doubleAccounting"
+	UnderlineValuesNone UnderlineValues = "none"
+)
+
+func (e UnderlineValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *UnderlineValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = UnderlineValues(attr.Value)
+		return nil
+}
+
+// TextVerticalAlignmentValues
+type TextVerticalAlignmentValues string
+const (
+	TextVerticalAlignmentValuesTop TextVerticalAlignmentValues = "top"
+	TextVerticalAlignmentValuesCenter TextVerticalAlignmentValues = "center"
+	TextVerticalAlignmentValuesBottom TextVerticalAlignmentValues = "bottom"
+	TextVerticalAlignmentValuesJustify TextVerticalAlignmentValues = "justify"
+	TextVerticalAlignmentValuesDistributed TextVerticalAlignmentValues = "distributed"
+)
+
+func (e TextVerticalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextVerticalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextVerticalAlignmentValues(attr.Value)
+		return nil
+}
+
+// EditValidationValues
+type EditValidationValues string
+const (
+	EditValidationValuesText EditValidationValues = "text"
+	EditValidationValuesInteger EditValidationValues = "integer"
+	EditValidationValuesNumber EditValidationValues = "number"
+	EditValidationValuesReference EditValidationValues = "reference"
+	EditValidationValuesFormula EditValidationValues = "formula"
+)
+
+func (e EditValidationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *EditValidationValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = EditValidationValues(attr.Value)
+		return nil
+}
+
+// Boolean
+type Boolean string
+const (
+	BooleanFalse Boolean = "false"
+	BooleanTrue Boolean = "true"
+	BooleanNinch Boolean = "ninch"
+)
+
+func (e Boolean) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *Boolean) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = Boolean(attr.Value)
+		return nil
+}
+
+// BooleanEntryWithBlankValues
+type BooleanEntryWithBlankValues string
+const (
+	BooleanEntryWithBlankValuesTrue BooleanEntryWithBlankValues = "True"
+	BooleanEntryWithBlankValuesT BooleanEntryWithBlankValues = "t"
+	BooleanEntryWithBlankValuesFalse BooleanEntryWithBlankValues = "False"
+	BooleanEntryWithBlankValuesF BooleanEntryWithBlankValues = "f"
+	BooleanEntryWithBlankValuesNone BooleanEntryWithBlankValues = ""
+)
+
+func (e BooleanEntryWithBlankValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BooleanEntryWithBlankValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BooleanEntryWithBlankValues(attr.Value)
 		return nil
 }
 
@@ -961,118 +2833,284 @@ func (e *ElementValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// TextCapsValues
-type TextCapsValues string
+// TileFlipValues
+type TileFlipValues string
 const (
-	TextCapsValuesNone TextCapsValues = "none"
-	TextCapsValuesSmall TextCapsValues = "small"
-	TextCapsValuesAll TextCapsValues = "all"
+	TileFlipValuesNone TileFlipValues = "none"
+	TileFlipValuesX TileFlipValues = "x"
+	TileFlipValuesY TileFlipValues = "y"
+	TileFlipValuesXy TileFlipValues = "xy"
 )
 
-func (e TextCapsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TileFlipValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TextCapsValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextCapsValues(attr.Value)
+func (e *TileFlipValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TileFlipValues(attr.Value)
 		return nil
 }
 
-// SourceValues
-type SourceValues string
+// PathFillModeValues
+type PathFillModeValues string
 const (
-	SourceValuesWorksheet SourceValues = "worksheet"
-	SourceValuesExternal SourceValues = "external"
-	SourceValuesConsolidation SourceValues = "consolidation"
-	SourceValuesScenario SourceValues = "scenario"
+	PathFillModeValuesNone PathFillModeValues = "none"
+	PathFillModeValuesNorm PathFillModeValues = "norm"
+	PathFillModeValuesLighten PathFillModeValues = "lighten"
+	PathFillModeValuesLightenless PathFillModeValues = "lightenLess"
+	PathFillModeValuesDarken PathFillModeValues = "darken"
+	PathFillModeValuesDarkenless PathFillModeValues = "darkenLess"
 )
 
-func (e SourceValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PathFillModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *SourceValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SourceValues(attr.Value)
+func (e *PathFillModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PathFillModeValues(attr.Value)
 		return nil
 }
 
-// OleUpdateValues
-type OleUpdateValues string
+// HtmlFormattingValues
+type HtmlFormattingValues string
 const (
-	OleUpdateValuesOleupdateAlways OleUpdateValues = "OLEUPDATE_ALWAYS"
-	OleUpdateValuesOleupdateOncall OleUpdateValues = "OLEUPDATE_ONCALL"
+	HtmlFormattingValuesNone HtmlFormattingValues = "none"
+	HtmlFormattingValuesRtf HtmlFormattingValues = "rtf"
+	HtmlFormattingValuesAll HtmlFormattingValues = "all"
 )
 
-func (e OleUpdateValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e HtmlFormattingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *OleUpdateValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = OleUpdateValues(attr.Value)
+func (e *HtmlFormattingValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = HtmlFormattingValues(attr.Value)
 		return nil
 }
 
-// SlicerCacheCrossFilterValues
-type SlicerCacheCrossFilterValues string
+// ExtFeatureType
+type ExtFeatureType string
 const (
-	SlicerCacheCrossFilterValuesNone SlicerCacheCrossFilterValues = "none"
-	SlicerCacheCrossFilterValuesShowitemswithdataattop SlicerCacheCrossFilterValues = "showItemsWithDataAtTop"
-	SlicerCacheCrossFilterValuesShowitemswithnodata SlicerCacheCrossFilterValues = "showItemsWithNoData"
+	ExtFeatureTypeReserved ExtFeatureType = "reserved"
 )
 
-func (e SlicerCacheCrossFilterValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ExtFeatureType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *SlicerCacheCrossFilterValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SlicerCacheCrossFilterValues(attr.Value)
+func (e *ExtFeatureType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ExtFeatureType(attr.Value)
 		return nil
 }
 
-// AdjustType
-type AdjustType string
+// ErrorBarDirectionValues
+type ErrorBarDirectionValues string
 const (
-	AdjustTypeFmla AdjustType = "fmla"
-	AdjustTypeFormat AdjustType = "format"
-	AdjustTypeCondfmt AdjustType = "condFmt"
-	AdjustTypeSparkline AdjustType = "sparkline"
-	AdjustTypeAnchor AdjustType = "anchor"
-	AdjustTypeFmlanosticky AdjustType = "fmlaNoSticky"
-	AdjustTypeNoadj AdjustType = "noAdj"
-	AdjustTypeFragile AdjustType = "fragile"
-	AdjustTypeFuture AdjustType = "future"
+	ErrorBarDirectionValuesX ErrorBarDirectionValues = "x"
+	ErrorBarDirectionValuesY ErrorBarDirectionValues = "y"
 )
 
-func (e AdjustType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ErrorBarDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *AdjustType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AdjustType(attr.Value)
+func (e *ErrorBarDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ErrorBarDirectionValues(attr.Value)
 		return nil
 }
 
-// AxisUnit
-type AxisUnit string
+// MarkerStyleValues
+type MarkerStyleValues string
 const (
-	AxisUnitHundreds AxisUnit = "hundreds"
-	AxisUnitThousands AxisUnit = "thousands"
-	AxisUnitTenthousands AxisUnit = "tenThousands"
-	AxisUnitHundredthousands AxisUnit = "hundredThousands"
-	AxisUnitMillions AxisUnit = "millions"
-	AxisUnitTenmillions AxisUnit = "tenMillions"
-	AxisUnitHundredmillions AxisUnit = "hundredMillions"
-	AxisUnitBillions AxisUnit = "billions"
-	AxisUnitTrillions AxisUnit = "trillions"
-	AxisUnitPercentage AxisUnit = "percentage"
+	MarkerStyleValuesAuto MarkerStyleValues = "auto"
+	MarkerStyleValuesCircle MarkerStyleValues = "circle"
+	MarkerStyleValuesDash MarkerStyleValues = "dash"
+	MarkerStyleValuesDiamond MarkerStyleValues = "diamond"
+	MarkerStyleValuesDot MarkerStyleValues = "dot"
+	MarkerStyleValuesNone MarkerStyleValues = "none"
+	MarkerStyleValuesPicture MarkerStyleValues = "picture"
+	MarkerStyleValuesPlus MarkerStyleValues = "plus"
+	MarkerStyleValuesSquare MarkerStyleValues = "square"
+	MarkerStyleValuesStar MarkerStyleValues = "star"
+	MarkerStyleValuesTriangle MarkerStyleValues = "triangle"
+	MarkerStyleValuesX MarkerStyleValues = "x"
 )
 
-func (e AxisUnit) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e MarkerStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *AxisUnit) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AxisUnit(attr.Value)
+func (e *MarkerStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = MarkerStyleValues(attr.Value)
+		return nil
+}
+
+// BreakpointValues
+type BreakpointValues string
+const (
+	BreakpointValuesEndcnv BreakpointValues = "endCnv"
+	BreakpointValuesBal BreakpointValues = "bal"
+	BreakpointValuesFixed BreakpointValues = "fixed"
+)
+
+func (e BreakpointValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BreakpointValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BreakpointValues(attr.Value)
+		return nil
+}
+
+// PresetCameraValues
+type PresetCameraValues string
+const (
+	PresetCameraValuesLegacyobliquetopleft PresetCameraValues = "legacyObliqueTopLeft"
+	PresetCameraValuesLegacyobliquetop PresetCameraValues = "legacyObliqueTop"
+	PresetCameraValuesLegacyobliquetopright PresetCameraValues = "legacyObliqueTopRight"
+	PresetCameraValuesLegacyobliqueleft PresetCameraValues = "legacyObliqueLeft"
+	PresetCameraValuesLegacyobliquefront PresetCameraValues = "legacyObliqueFront"
+	PresetCameraValuesLegacyobliqueright PresetCameraValues = "legacyObliqueRight"
+	PresetCameraValuesLegacyobliquebottomleft PresetCameraValues = "legacyObliqueBottomLeft"
+	PresetCameraValuesLegacyobliquebottom PresetCameraValues = "legacyObliqueBottom"
+	PresetCameraValuesLegacyobliquebottomright PresetCameraValues = "legacyObliqueBottomRight"
+	PresetCameraValuesLegacyperspectivetopleft PresetCameraValues = "legacyPerspectiveTopLeft"
+	PresetCameraValuesLegacyperspectivetop PresetCameraValues = "legacyPerspectiveTop"
+	PresetCameraValuesLegacyperspectivetopright PresetCameraValues = "legacyPerspectiveTopRight"
+	PresetCameraValuesLegacyperspectiveleft PresetCameraValues = "legacyPerspectiveLeft"
+	PresetCameraValuesLegacyperspectivefront PresetCameraValues = "legacyPerspectiveFront"
+	PresetCameraValuesLegacyperspectiveright PresetCameraValues = "legacyPerspectiveRight"
+	PresetCameraValuesLegacyperspectivebottomleft PresetCameraValues = "legacyPerspectiveBottomLeft"
+	PresetCameraValuesLegacyperspectivebottom PresetCameraValues = "legacyPerspectiveBottom"
+	PresetCameraValuesLegacyperspectivebottomright PresetCameraValues = "legacyPerspectiveBottomRight"
+	PresetCameraValuesOrthographicfront PresetCameraValues = "orthographicFront"
+	PresetCameraValuesIsometrictopup PresetCameraValues = "isometricTopUp"
+	PresetCameraValuesIsometrictopdown PresetCameraValues = "isometricTopDown"
+	PresetCameraValuesIsometricbottomup PresetCameraValues = "isometricBottomUp"
+	PresetCameraValuesIsometricbottomdown PresetCameraValues = "isometricBottomDown"
+	PresetCameraValuesIsometricleftup PresetCameraValues = "isometricLeftUp"
+	PresetCameraValuesIsometricleftdown PresetCameraValues = "isometricLeftDown"
+	PresetCameraValuesIsometricrightup PresetCameraValues = "isometricRightUp"
+	PresetCameraValuesIsometricrightdown PresetCameraValues = "isometricRightDown"
+	PresetCameraValuesIsometricoffaxis1left PresetCameraValues = "isometricOffAxis1Left"
+	PresetCameraValuesIsometricoffaxis1right PresetCameraValues = "isometricOffAxis1Right"
+	PresetCameraValuesIsometricoffaxis1top PresetCameraValues = "isometricOffAxis1Top"
+	PresetCameraValuesIsometricoffaxis2left PresetCameraValues = "isometricOffAxis2Left"
+	PresetCameraValuesIsometricoffaxis2right PresetCameraValues = "isometricOffAxis2Right"
+	PresetCameraValuesIsometricoffaxis2top PresetCameraValues = "isometricOffAxis2Top"
+	PresetCameraValuesIsometricoffaxis3left PresetCameraValues = "isometricOffAxis3Left"
+	PresetCameraValuesIsometricoffaxis3right PresetCameraValues = "isometricOffAxis3Right"
+	PresetCameraValuesIsometricoffaxis3bottom PresetCameraValues = "isometricOffAxis3Bottom"
+	PresetCameraValuesIsometricoffaxis4left PresetCameraValues = "isometricOffAxis4Left"
+	PresetCameraValuesIsometricoffaxis4right PresetCameraValues = "isometricOffAxis4Right"
+	PresetCameraValuesIsometricoffaxis4bottom PresetCameraValues = "isometricOffAxis4Bottom"
+	PresetCameraValuesObliquetopleft PresetCameraValues = "obliqueTopLeft"
+	PresetCameraValuesObliquetop PresetCameraValues = "obliqueTop"
+	PresetCameraValuesObliquetopright PresetCameraValues = "obliqueTopRight"
+	PresetCameraValuesObliqueleft PresetCameraValues = "obliqueLeft"
+	PresetCameraValuesObliqueright PresetCameraValues = "obliqueRight"
+	PresetCameraValuesObliquebottomleft PresetCameraValues = "obliqueBottomLeft"
+	PresetCameraValuesObliquebottom PresetCameraValues = "obliqueBottom"
+	PresetCameraValuesObliquebottomright PresetCameraValues = "obliqueBottomRight"
+	PresetCameraValuesPerspectivefront PresetCameraValues = "perspectiveFront"
+	PresetCameraValuesPerspectiveleft PresetCameraValues = "perspectiveLeft"
+	PresetCameraValuesPerspectiveright PresetCameraValues = "perspectiveRight"
+	PresetCameraValuesPerspectiveabove PresetCameraValues = "perspectiveAbove"
+	PresetCameraValuesPerspectivebelow PresetCameraValues = "perspectiveBelow"
+	PresetCameraValuesPerspectiveaboveleftfacing PresetCameraValues = "perspectiveAboveLeftFacing"
+	PresetCameraValuesPerspectiveaboverightfacing PresetCameraValues = "perspectiveAboveRightFacing"
+	PresetCameraValuesPerspectivecontrastingleftfacing PresetCameraValues = "perspectiveContrastingLeftFacing"
+	PresetCameraValuesPerspectivecontrastingrightfacing PresetCameraValues = "perspectiveContrastingRightFacing"
+	PresetCameraValuesPerspectiveheroicleftfacing PresetCameraValues = "perspectiveHeroicLeftFacing"
+	PresetCameraValuesPerspectiveheroicrightfacing PresetCameraValues = "perspectiveHeroicRightFacing"
+	PresetCameraValuesPerspectiveheroicextremeleftfacing PresetCameraValues = "perspectiveHeroicExtremeLeftFacing"
+	PresetCameraValuesPerspectiveheroicextremerightfacing PresetCameraValues = "perspectiveHeroicExtremeRightFacing"
+	PresetCameraValuesPerspectiverelaxed PresetCameraValues = "perspectiveRelaxed"
+	PresetCameraValuesPerspectiverelaxedmoderately PresetCameraValues = "perspectiveRelaxedModerately"
+)
+
+func (e PresetCameraValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PresetCameraValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PresetCameraValues(attr.Value)
+		return nil
+}
+
+// IconSetTypeValues
+type IconSetTypeValues string
+const (
+	IconSetTypeValuesIconSetTypeValues3Arrows IconSetTypeValues = "3Arrows"
+	IconSetTypeValuesIconSetTypeValues3Arrowsgray IconSetTypeValues = "3ArrowsGray"
+	IconSetTypeValuesIconSetTypeValues3Flags IconSetTypeValues = "3Flags"
+	IconSetTypeValuesIconSetTypeValues3Trafficlights1 IconSetTypeValues = "3TrafficLights1"
+	IconSetTypeValuesIconSetTypeValues3Trafficlights2 IconSetTypeValues = "3TrafficLights2"
+	IconSetTypeValuesIconSetTypeValues3Signs IconSetTypeValues = "3Signs"
+	IconSetTypeValuesIconSetTypeValues3Symbols IconSetTypeValues = "3Symbols"
+	IconSetTypeValuesIconSetTypeValues3Symbols2 IconSetTypeValues = "3Symbols2"
+	IconSetTypeValuesIconSetTypeValues4Arrows IconSetTypeValues = "4Arrows"
+	IconSetTypeValuesIconSetTypeValues4Arrowsgray IconSetTypeValues = "4ArrowsGray"
+	IconSetTypeValuesIconSetTypeValues4Redtoblack IconSetTypeValues = "4RedToBlack"
+	IconSetTypeValuesIconSetTypeValues4Rating IconSetTypeValues = "4Rating"
+	IconSetTypeValuesIconSetTypeValues4Trafficlights IconSetTypeValues = "4TrafficLights"
+	IconSetTypeValuesIconSetTypeValues5Arrows IconSetTypeValues = "5Arrows"
+	IconSetTypeValuesIconSetTypeValues5Arrowsgray IconSetTypeValues = "5ArrowsGray"
+	IconSetTypeValuesIconSetTypeValues5Rating IconSetTypeValues = "5Rating"
+	IconSetTypeValuesIconSetTypeValues5Quarters IconSetTypeValues = "5Quarters"
+	IconSetTypeValuesIconSetTypeValues3Stars IconSetTypeValues = "3Stars"
+	IconSetTypeValuesIconSetTypeValues3Triangles IconSetTypeValues = "3Triangles"
+	IconSetTypeValuesIconSetTypeValues5Boxes IconSetTypeValues = "5Boxes"
+	IconSetTypeValuesNoicons IconSetTypeValues = "NoIcons"
+)
+
+func (e IconSetTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *IconSetTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = IconSetTypeValues(attr.Value)
+		return nil
+}
+
+// NumericDimensionType
+type NumericDimensionType string
+const (
+	NumericDimensionTypeVal NumericDimensionType = "val"
+	NumericDimensionTypeX NumericDimensionType = "x"
+	NumericDimensionTypeY NumericDimensionType = "y"
+	NumericDimensionTypeSize NumericDimensionType = "size"
+	NumericDimensionTypeColorval NumericDimensionType = "colorVal"
+)
+
+func (e NumericDimensionType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *NumericDimensionType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = NumericDimensionType(attr.Value)
+		return nil
+}
+
+// RichValueValueType
+type RichValueValueType string
+const (
+	RichValueValueTypeD RichValueValueType = "d"
+	RichValueValueTypeI RichValueValueType = "i"
+	RichValueValueTypeB RichValueValueType = "b"
+	RichValueValueTypeE RichValueValueType = "e"
+	RichValueValueTypeS RichValueValueType = "s"
+	RichValueValueTypeR RichValueValueType = "r"
+	RichValueValueTypeA RichValueValueType = "a"
+	RichValueValueTypeSpb RichValueValueType = "spb"
+)
+
+func (e RichValueValueType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RichValueValueType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RichValueValueType(attr.Value)
 		return nil
 }
 
@@ -1096,6 +3134,387 @@ func (e BuiltInUnitValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 
 func (e *BuiltInUnitValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		*e = BuiltInUnitValues(attr.Value)
+		return nil
+}
+
+// BlendModeValues
+type BlendModeValues string
+const (
+	BlendModeValuesOver BlendModeValues = "over"
+	BlendModeValuesMult BlendModeValues = "mult"
+	BlendModeValuesScreen BlendModeValues = "screen"
+	BlendModeValuesDarken BlendModeValues = "darken"
+	BlendModeValuesLighten BlendModeValues = "lighten"
+)
+
+func (e BlendModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BlendModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BlendModeValues(attr.Value)
+		return nil
+}
+
+// DataValidationOperatorValues
+type DataValidationOperatorValues string
+const (
+	DataValidationOperatorValuesBetween DataValidationOperatorValues = "between"
+	DataValidationOperatorValuesNotbetween DataValidationOperatorValues = "notBetween"
+	DataValidationOperatorValuesEqual DataValidationOperatorValues = "equal"
+	DataValidationOperatorValuesNotequal DataValidationOperatorValues = "notEqual"
+	DataValidationOperatorValuesLessthan DataValidationOperatorValues = "lessThan"
+	DataValidationOperatorValuesLessthanorequal DataValidationOperatorValues = "lessThanOrEqual"
+	DataValidationOperatorValuesGreaterthan DataValidationOperatorValues = "greaterThan"
+	DataValidationOperatorValuesGreaterthanorequal DataValidationOperatorValues = "greaterThanOrEqual"
+)
+
+func (e DataValidationOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DataValidationOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataValidationOperatorValues(attr.Value)
+		return nil
+}
+
+// WebSourceValues
+type WebSourceValues string
+const (
+	WebSourceValuesSheet WebSourceValues = "sheet"
+	WebSourceValuesPrintarea WebSourceValues = "printArea"
+	WebSourceValuesAutofilter WebSourceValues = "autoFilter"
+	WebSourceValuesRange WebSourceValues = "range"
+	WebSourceValuesChart WebSourceValues = "chart"
+	WebSourceValuesPivottable WebSourceValues = "pivotTable"
+	WebSourceValuesQuery WebSourceValues = "query"
+	WebSourceValuesLabel WebSourceValues = "label"
+)
+
+func (e WebSourceValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *WebSourceValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = WebSourceValues(attr.Value)
+		return nil
+}
+
+// PyramidAccentPositionValues
+type PyramidAccentPositionValues string
+const (
+	PyramidAccentPositionValuesBef PyramidAccentPositionValues = "bef"
+	PyramidAccentPositionValuesAft PyramidAccentPositionValues = "aft"
+)
+
+func (e PyramidAccentPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PyramidAccentPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PyramidAccentPositionValues(attr.Value)
+		return nil
+}
+
+// PresetShadowValues
+type PresetShadowValues string
+const (
+	PresetShadowValuesShdw1 PresetShadowValues = "shdw1"
+	PresetShadowValuesShdw2 PresetShadowValues = "shdw2"
+	PresetShadowValuesShdw3 PresetShadowValues = "shdw3"
+	PresetShadowValuesShdw4 PresetShadowValues = "shdw4"
+	PresetShadowValuesShdw5 PresetShadowValues = "shdw5"
+	PresetShadowValuesShdw6 PresetShadowValues = "shdw6"
+	PresetShadowValuesShdw7 PresetShadowValues = "shdw7"
+	PresetShadowValuesShdw8 PresetShadowValues = "shdw8"
+	PresetShadowValuesShdw9 PresetShadowValues = "shdw9"
+	PresetShadowValuesShdw10 PresetShadowValues = "shdw10"
+	PresetShadowValuesShdw11 PresetShadowValues = "shdw11"
+	PresetShadowValuesShdw12 PresetShadowValues = "shdw12"
+	PresetShadowValuesShdw13 PresetShadowValues = "shdw13"
+	PresetShadowValuesShdw14 PresetShadowValues = "shdw14"
+	PresetShadowValuesShdw15 PresetShadowValues = "shdw15"
+	PresetShadowValuesShdw16 PresetShadowValues = "shdw16"
+	PresetShadowValuesShdw17 PresetShadowValues = "shdw17"
+	PresetShadowValuesShdw18 PresetShadowValues = "shdw18"
+	PresetShadowValuesShdw19 PresetShadowValues = "shdw19"
+	PresetShadowValuesShdw20 PresetShadowValues = "shdw20"
+)
+
+func (e PresetShadowValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PresetShadowValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PresetShadowValues(attr.Value)
+		return nil
+}
+
+// SheetViewValues
+type SheetViewValues string
+const (
+	SheetViewValuesNormal SheetViewValues = "normal"
+	SheetViewValuesPagebreakpreview SheetViewValues = "pageBreakPreview"
+	SheetViewValuesPagelayout SheetViewValues = "pageLayout"
+)
+
+func (e SheetViewValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SheetViewValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SheetViewValues(attr.Value)
+		return nil
+}
+
+// AnimateOneByOneValues
+type AnimateOneByOneValues string
+const (
+	AnimateOneByOneValuesNone AnimateOneByOneValues = "none"
+	AnimateOneByOneValuesOne AnimateOneByOneValues = "one"
+	AnimateOneByOneValuesBranch AnimateOneByOneValues = "branch"
+)
+
+func (e AnimateOneByOneValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AnimateOneByOneValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AnimateOneByOneValues(attr.Value)
+		return nil
+}
+
+// VerticalAlignmentValues
+type VerticalAlignmentValues string
+const (
+	VerticalAlignmentValuesTop VerticalAlignmentValues = "top"
+	VerticalAlignmentValuesCenter VerticalAlignmentValues = "center"
+	VerticalAlignmentValuesBottom VerticalAlignmentValues = "bottom"
+	VerticalAlignmentValuesJustify VerticalAlignmentValues = "justify"
+	VerticalAlignmentValuesDistributed VerticalAlignmentValues = "distributed"
+)
+
+func (e VerticalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *VerticalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = VerticalAlignmentValues(attr.Value)
+		return nil
+}
+
+// AnimationBuildValues
+type AnimationBuildValues string
+const (
+	AnimationBuildValuesAllatonce AnimationBuildValues = "allAtOnce"
+)
+
+func (e AnimationBuildValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AnimationBuildValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AnimationBuildValues(attr.Value)
+		return nil
+}
+
+// AnimationChartOnlyBuildValues
+type AnimationChartOnlyBuildValues string
+const (
+	AnimationChartOnlyBuildValuesSeries AnimationChartOnlyBuildValues = "series"
+	AnimationChartOnlyBuildValuesCategory AnimationChartOnlyBuildValues = "category"
+	AnimationChartOnlyBuildValuesSeriesel AnimationChartOnlyBuildValues = "seriesEl"
+	AnimationChartOnlyBuildValuesCategoryel AnimationChartOnlyBuildValues = "categoryEl"
+)
+
+func (e AnimationChartOnlyBuildValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AnimationChartOnlyBuildValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AnimationChartOnlyBuildValues(attr.Value)
+		return nil
+}
+
+// QualifierValues
+type QualifierValues string
+const (
+	QualifierValuesDoublequote QualifierValues = "doubleQuote"
+	QualifierValuesSinglequote QualifierValues = "singleQuote"
+	QualifierValuesNone QualifierValues = "none"
+)
+
+func (e QualifierValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *QualifierValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = QualifierValues(attr.Value)
+		return nil
+}
+
+// InkEffectsType
+type InkEffectsType string
+const (
+	InkEffectsTypeNone InkEffectsType = "none"
+	InkEffectsTypePencil InkEffectsType = "pencil"
+	InkEffectsTypeRainbow InkEffectsType = "rainbow"
+	InkEffectsTypeGalaxy InkEffectsType = "galaxy"
+	InkEffectsTypeGold InkEffectsType = "gold"
+	InkEffectsTypeSilver InkEffectsType = "silver"
+	InkEffectsTypeLava InkEffectsType = "lava"
+	InkEffectsTypeOcean InkEffectsType = "ocean"
+	InkEffectsTypeRosegold InkEffectsType = "rosegold"
+	InkEffectsTypeBronze InkEffectsType = "bronze"
+)
+
+func (e InkEffectsType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *InkEffectsType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = InkEffectsType(attr.Value)
+		return nil
+}
+
+// AxisPositionValues
+type AxisPositionValues string
+const (
+	AxisPositionValuesB AxisPositionValues = "b"
+	AxisPositionValuesL AxisPositionValues = "l"
+	AxisPositionValuesR AxisPositionValues = "r"
+	AxisPositionValuesT AxisPositionValues = "t"
+)
+
+func (e AxisPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AxisPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AxisPositionValues(attr.Value)
+		return nil
+}
+
+// ParameterIdValues
+type ParameterIdValues string
+const (
+	ParameterIdValuesHorzalign ParameterIdValues = "horzAlign"
+	ParameterIdValuesVertalign ParameterIdValues = "vertAlign"
+	ParameterIdValuesChdir ParameterIdValues = "chDir"
+	ParameterIdValuesChalign ParameterIdValues = "chAlign"
+	ParameterIdValuesSecchalign ParameterIdValues = "secChAlign"
+	ParameterIdValuesLindir ParameterIdValues = "linDir"
+	ParameterIdValuesSeclindir ParameterIdValues = "secLinDir"
+	ParameterIdValuesStelem ParameterIdValues = "stElem"
+	ParameterIdValuesBendpt ParameterIdValues = "bendPt"
+	ParameterIdValuesConnrout ParameterIdValues = "connRout"
+	ParameterIdValuesBegsty ParameterIdValues = "begSty"
+	ParameterIdValuesEndsty ParameterIdValues = "endSty"
+	ParameterIdValuesDim ParameterIdValues = "dim"
+	ParameterIdValuesRotpath ParameterIdValues = "rotPath"
+	ParameterIdValuesCtrshpmap ParameterIdValues = "ctrShpMap"
+	ParameterIdValuesNodehorzalign ParameterIdValues = "nodeHorzAlign"
+	ParameterIdValuesNodevertalign ParameterIdValues = "nodeVertAlign"
+	ParameterIdValuesFallback ParameterIdValues = "fallback"
+	ParameterIdValuesTxdir ParameterIdValues = "txDir"
+	ParameterIdValuesPyraacctpos ParameterIdValues = "pyraAcctPos"
+	ParameterIdValuesPyraaccttxmar ParameterIdValues = "pyraAcctTxMar"
+	ParameterIdValuesTxbldir ParameterIdValues = "txBlDir"
+	ParameterIdValuesTxanchorhorz ParameterIdValues = "txAnchorHorz"
+	ParameterIdValuesTxanchorvert ParameterIdValues = "txAnchorVert"
+	ParameterIdValuesTxanchorhorzch ParameterIdValues = "txAnchorHorzCh"
+	ParameterIdValuesTxanchorvertch ParameterIdValues = "txAnchorVertCh"
+	ParameterIdValuesPartxltralign ParameterIdValues = "parTxLTRAlign"
+	ParameterIdValuesPartxrtlalign ParameterIdValues = "parTxRTLAlign"
+	ParameterIdValuesShptxltralignch ParameterIdValues = "shpTxLTRAlignCh"
+	ParameterIdValuesShptxrtlalignch ParameterIdValues = "shpTxRTLAlignCh"
+	ParameterIdValuesAutotxrot ParameterIdValues = "autoTxRot"
+	ParameterIdValuesGrdir ParameterIdValues = "grDir"
+	ParameterIdValuesFlowdir ParameterIdValues = "flowDir"
+	ParameterIdValuesContdir ParameterIdValues = "contDir"
+	ParameterIdValuesBkpt ParameterIdValues = "bkpt"
+	ParameterIdValuesOff ParameterIdValues = "off"
+	ParameterIdValuesHieralign ParameterIdValues = "hierAlign"
+	ParameterIdValuesBkptfixedval ParameterIdValues = "bkPtFixedVal"
+	ParameterIdValuesStbulletlvl ParameterIdValues = "stBulletLvl"
+	ParameterIdValuesStang ParameterIdValues = "stAng"
+	ParameterIdValuesSpanang ParameterIdValues = "spanAng"
+	ParameterIdValuesAr ParameterIdValues = "ar"
+	ParameterIdValuesLnsppar ParameterIdValues = "lnSpPar"
+	ParameterIdValuesLnspafparp ParameterIdValues = "lnSpAfParP"
+	ParameterIdValuesLnspch ParameterIdValues = "lnSpCh"
+	ParameterIdValuesLnspafchp ParameterIdValues = "lnSpAfChP"
+	ParameterIdValuesRtshortdist ParameterIdValues = "rtShortDist"
+	ParameterIdValuesAligntx ParameterIdValues = "alignTx"
+	ParameterIdValuesPyralvlnode ParameterIdValues = "pyraLvlNode"
+	ParameterIdValuesPyraacctbkgdnode ParameterIdValues = "pyraAcctBkgdNode"
+	ParameterIdValuesPyraaccttxnode ParameterIdValues = "pyraAcctTxNode"
+	ParameterIdValuesSrcnode ParameterIdValues = "srcNode"
+	ParameterIdValuesDstnode ParameterIdValues = "dstNode"
+	ParameterIdValuesBegpts ParameterIdValues = "begPts"
+	ParameterIdValuesEndpts ParameterIdValues = "endPts"
+)
+
+func (e ParameterIdValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ParameterIdValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ParameterIdValues(attr.Value)
+		return nil
+}
+
+// TextVerticalOverflowValues
+type TextVerticalOverflowValues string
+const (
+	TextVerticalOverflowValuesOverflow TextVerticalOverflowValues = "overflow"
+	TextVerticalOverflowValuesEllipsis TextVerticalOverflowValues = "ellipsis"
+	TextVerticalOverflowValuesClip TextVerticalOverflowValues = "clip"
+)
+
+func (e TextVerticalOverflowValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextVerticalOverflowValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextVerticalOverflowValues(attr.Value)
+		return nil
+}
+
+// TextHorizontalAlignmentValues
+type TextHorizontalAlignmentValues string
+const (
+	TextHorizontalAlignmentValuesLeft TextHorizontalAlignmentValues = "left"
+	TextHorizontalAlignmentValuesCenter TextHorizontalAlignmentValues = "center"
+	TextHorizontalAlignmentValuesRight TextHorizontalAlignmentValues = "right"
+	TextHorizontalAlignmentValuesJustify TextHorizontalAlignmentValues = "justify"
+	TextHorizontalAlignmentValuesDistributed TextHorizontalAlignmentValues = "distributed"
+)
+
+func (e TextHorizontalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextHorizontalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextHorizontalAlignmentValues(attr.Value)
+		return nil
+}
+
+// ConnectionValues
+type ConnectionValues string
+const (
+	ConnectionValuesParof ConnectionValues = "parOf"
+	ConnectionValuesPresof ConnectionValues = "presOf"
+	ConnectionValuesPresparof ConnectionValues = "presParOf"
+	ConnectionValuesUnknownrelationship ConnectionValues = "unknownRelationship"
+)
+
+func (e ConnectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ConnectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ConnectionValues(attr.Value)
 		return nil
 }
 
@@ -1128,6 +3547,270 @@ func (e *ItemValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
+// CredentialsMethodValues
+type CredentialsMethodValues string
+const (
+	CredentialsMethodValuesIntegrated CredentialsMethodValues = "integrated"
+	CredentialsMethodValuesNone CredentialsMethodValues = "none"
+	CredentialsMethodValuesStored CredentialsMethodValues = "stored"
+)
+
+func (e CredentialsMethodValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *CredentialsMethodValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CredentialsMethodValues(attr.Value)
+		return nil
+}
+
+// PhoneticAlignmentValues
+type PhoneticAlignmentValues string
+const (
+	PhoneticAlignmentValuesNocontrol PhoneticAlignmentValues = "noControl"
+	PhoneticAlignmentValuesLeft PhoneticAlignmentValues = "left"
+	PhoneticAlignmentValuesCenter PhoneticAlignmentValues = "center"
+	PhoneticAlignmentValuesDistributed PhoneticAlignmentValues = "distributed"
+)
+
+func (e PhoneticAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PhoneticAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PhoneticAlignmentValues(attr.Value)
+		return nil
+}
+
+// BorderStyleValues
+type BorderStyleValues string
+const (
+	BorderStyleValuesNone BorderStyleValues = "none"
+	BorderStyleValuesThin BorderStyleValues = "thin"
+	BorderStyleValuesMedium BorderStyleValues = "medium"
+	BorderStyleValuesDashed BorderStyleValues = "dashed"
+	BorderStyleValuesDotted BorderStyleValues = "dotted"
+	BorderStyleValuesThick BorderStyleValues = "thick"
+	BorderStyleValuesDouble BorderStyleValues = "double"
+	BorderStyleValuesHair BorderStyleValues = "hair"
+	BorderStyleValuesMediumdashed BorderStyleValues = "mediumDashed"
+	BorderStyleValuesDashdot BorderStyleValues = "dashDot"
+	BorderStyleValuesMediumdashdot BorderStyleValues = "mediumDashDot"
+	BorderStyleValuesDashdotdot BorderStyleValues = "dashDotDot"
+	BorderStyleValuesMediumdashdotdot BorderStyleValues = "mediumDashDotDot"
+	BorderStyleValuesSlantdashdot BorderStyleValues = "slantDashDot"
+)
+
+func (e BorderStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BorderStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BorderStyleValues(attr.Value)
+		return nil
+}
+
+// SchemeColorValues
+type SchemeColorValues string
+const (
+	SchemeColorValuesBg1 SchemeColorValues = "bg1"
+	SchemeColorValuesTx1 SchemeColorValues = "tx1"
+	SchemeColorValuesBg2 SchemeColorValues = "bg2"
+	SchemeColorValuesTx2 SchemeColorValues = "tx2"
+	SchemeColorValuesAccent1 SchemeColorValues = "accent1"
+	SchemeColorValuesAccent2 SchemeColorValues = "accent2"
+	SchemeColorValuesAccent3 SchemeColorValues = "accent3"
+	SchemeColorValuesAccent4 SchemeColorValues = "accent4"
+	SchemeColorValuesAccent5 SchemeColorValues = "accent5"
+	SchemeColorValuesAccent6 SchemeColorValues = "accent6"
+	SchemeColorValuesHlink SchemeColorValues = "hlink"
+	SchemeColorValuesFolhlink SchemeColorValues = "folHlink"
+	SchemeColorValuesPhclr SchemeColorValues = "phClr"
+	SchemeColorValuesDk1 SchemeColorValues = "dk1"
+	SchemeColorValuesLt1 SchemeColorValues = "lt1"
+	SchemeColorValuesDk2 SchemeColorValues = "dk2"
+	SchemeColorValuesLt2 SchemeColorValues = "lt2"
+)
+
+func (e SchemeColorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SchemeColorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SchemeColorValues(attr.Value)
+		return nil
+}
+
+// CompoundLineValues
+type CompoundLineValues string
+const (
+	CompoundLineValuesSng CompoundLineValues = "sng"
+	CompoundLineValuesDbl CompoundLineValues = "dbl"
+	CompoundLineValuesThickthin CompoundLineValues = "thickThin"
+	CompoundLineValuesThinthick CompoundLineValues = "thinThick"
+	CompoundLineValuesTri CompoundLineValues = "tri"
+)
+
+func (e CompoundLineValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *CompoundLineValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CompoundLineValues(attr.Value)
+		return nil
+}
+
+// BooleanStyleValues
+type BooleanStyleValues string
+const (
+	BooleanStyleValuesOn BooleanStyleValues = "on"
+	BooleanStyleValuesOff BooleanStyleValues = "off"
+	BooleanStyleValuesDef BooleanStyleValues = "def"
+)
+
+func (e BooleanStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BooleanStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BooleanStyleValues(attr.Value)
+		return nil
+}
+
+// FileTypeValues
+type FileTypeValues string
+const (
+	FileTypeValuesMac FileTypeValues = "mac"
+	FileTypeValuesWin FileTypeValues = "win"
+	FileTypeValuesDos FileTypeValues = "dos"
+)
+
+func (e FileTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *FileTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FileTypeValues(attr.Value)
+		return nil
+}
+
+// AxisUnit
+type AxisUnit string
+const (
+	AxisUnitHundreds AxisUnit = "hundreds"
+	AxisUnitThousands AxisUnit = "thousands"
+	AxisUnitTenthousands AxisUnit = "tenThousands"
+	AxisUnitHundredthousands AxisUnit = "hundredThousands"
+	AxisUnitMillions AxisUnit = "millions"
+	AxisUnitTenmillions AxisUnit = "tenMillions"
+	AxisUnitHundredmillions AxisUnit = "hundredMillions"
+	AxisUnitBillions AxisUnit = "billions"
+	AxisUnitTrillions AxisUnit = "trillions"
+	AxisUnitPercentage AxisUnit = "percentage"
+)
+
+func (e AxisUnit) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AxisUnit) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AxisUnit(attr.Value)
+		return nil
+}
+
+// SizeRepresentsValues
+type SizeRepresentsValues string
+const (
+	SizeRepresentsValuesArea SizeRepresentsValues = "area"
+	SizeRepresentsValuesW SizeRepresentsValues = "w"
+)
+
+func (e SizeRepresentsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SizeRepresentsValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SizeRepresentsValues(attr.Value)
+		return nil
+}
+
+// StartingElementValues
+type StartingElementValues string
+const (
+	StartingElementValuesNode StartingElementValues = "node"
+	StartingElementValuesTrans StartingElementValues = "trans"
+)
+
+func (e StartingElementValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *StartingElementValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = StartingElementValues(attr.Value)
+		return nil
+}
+
+// BlackWhiteModeValues
+type BlackWhiteModeValues string
+const (
+	BlackWhiteModeValuesClr BlackWhiteModeValues = "clr"
+	BlackWhiteModeValuesAuto BlackWhiteModeValues = "auto"
+	BlackWhiteModeValuesGray BlackWhiteModeValues = "gray"
+	BlackWhiteModeValuesLtgray BlackWhiteModeValues = "ltGray"
+	BlackWhiteModeValuesInvgray BlackWhiteModeValues = "invGray"
+	BlackWhiteModeValuesGraywhite BlackWhiteModeValues = "grayWhite"
+	BlackWhiteModeValuesBlackgray BlackWhiteModeValues = "blackGray"
+	BlackWhiteModeValuesBlackwhite BlackWhiteModeValues = "blackWhite"
+	BlackWhiteModeValuesBlack BlackWhiteModeValues = "black"
+	BlackWhiteModeValuesWhite BlackWhiteModeValues = "white"
+	BlackWhiteModeValuesHidden BlackWhiteModeValues = "hidden"
+)
+
+func (e BlackWhiteModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BlackWhiteModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BlackWhiteModeValues(attr.Value)
+		return nil
+}
+
+// LineCapValues
+type LineCapValues string
+const (
+	LineCapValuesRnd LineCapValues = "rnd"
+	LineCapValuesSq LineCapValues = "sq"
+	LineCapValuesFlat LineCapValues = "flat"
+)
+
+func (e LineCapValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *LineCapValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LineCapValues(attr.Value)
+		return nil
+}
+
+// TextFontAlignmentValues
+type TextFontAlignmentValues string
+const (
+	TextFontAlignmentValuesAuto TextFontAlignmentValues = "auto"
+	TextFontAlignmentValuesT TextFontAlignmentValues = "t"
+	TextFontAlignmentValuesCtr TextFontAlignmentValues = "ctr"
+	TextFontAlignmentValuesBase TextFontAlignmentValues = "base"
+	TextFontAlignmentValuesB TextFontAlignmentValues = "b"
+)
+
+func (e TextFontAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextFontAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextFontAlignmentValues(attr.Value)
+		return nil
+}
+
 // GrowShrinkValues
 type GrowShrinkValues string
 const (
@@ -1145,674 +3828,91 @@ func (e *GrowShrinkValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// TargetScreenSizeValues
-type TargetScreenSizeValues string
+// SlicerStyleTypeValues
+type SlicerStyleTypeValues string
 const (
-	TargetScreenSizeValuesTargetScreenSizeValues544X376 TargetScreenSizeValues = "544x376"
-	TargetScreenSizeValuesTargetScreenSizeValues640X480 TargetScreenSizeValues = "640x480"
-	TargetScreenSizeValuesTargetScreenSizeValues720X512 TargetScreenSizeValues = "720x512"
-	TargetScreenSizeValuesTargetScreenSizeValues800X600 TargetScreenSizeValues = "800x600"
-	TargetScreenSizeValuesTargetScreenSizeValues1024X768 TargetScreenSizeValues = "1024x768"
-	TargetScreenSizeValuesTargetScreenSizeValues1152X882 TargetScreenSizeValues = "1152x882"
-	TargetScreenSizeValuesTargetScreenSizeValues1152X900 TargetScreenSizeValues = "1152x900"
-	TargetScreenSizeValuesTargetScreenSizeValues1280X1024 TargetScreenSizeValues = "1280x1024"
-	TargetScreenSizeValuesTargetScreenSizeValues1600X1200 TargetScreenSizeValues = "1600x1200"
-	TargetScreenSizeValuesTargetScreenSizeValues1800X1440 TargetScreenSizeValues = "1800x1440"
-	TargetScreenSizeValuesTargetScreenSizeValues1920X1200 TargetScreenSizeValues = "1920x1200"
+	SlicerStyleTypeValuesUnselecteditemwithdata SlicerStyleTypeValues = "unselectedItemWithData"
+	SlicerStyleTypeValuesSelecteditemwithdata SlicerStyleTypeValues = "selectedItemWithData"
+	SlicerStyleTypeValuesUnselecteditemwithnodata SlicerStyleTypeValues = "unselectedItemWithNoData"
+	SlicerStyleTypeValuesSelecteditemwithnodata SlicerStyleTypeValues = "selectedItemWithNoData"
+	SlicerStyleTypeValuesHoveredunselecteditemwithdata SlicerStyleTypeValues = "hoveredUnselectedItemWithData"
+	SlicerStyleTypeValuesHoveredselecteditemwithdata SlicerStyleTypeValues = "hoveredSelectedItemWithData"
+	SlicerStyleTypeValuesHoveredunselecteditemwithnodata SlicerStyleTypeValues = "hoveredUnselectedItemWithNoData"
+	SlicerStyleTypeValuesHoveredselecteditemwithnodata SlicerStyleTypeValues = "hoveredSelectedItemWithNoData"
 )
 
-func (e TargetScreenSizeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e SlicerStyleTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TargetScreenSizeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TargetScreenSizeValues(attr.Value)
+func (e *SlicerStyleTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SlicerStyleTypeValues(attr.Value)
 		return nil
 }
 
-// PivotShowAsValues
-type PivotShowAsValues string
+// StyleReferenceModifierEnum
+type StyleReferenceModifierEnum string
 const (
-	PivotShowAsValuesPercentofparent PivotShowAsValues = "percentOfParent"
-	PivotShowAsValuesPercentofparentrow PivotShowAsValues = "percentOfParentRow"
-	PivotShowAsValuesPercentofparentcol PivotShowAsValues = "percentOfParentCol"
-	PivotShowAsValuesPercentofrunningtotal PivotShowAsValues = "percentOfRunningTotal"
-	PivotShowAsValuesRankascending PivotShowAsValues = "rankAscending"
-	PivotShowAsValuesRankdescending PivotShowAsValues = "rankDescending"
+	StyleReferenceModifierEnumIgnorecstransforms StyleReferenceModifierEnum = "ignoreCSTransforms"
 )
 
-func (e PivotShowAsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e StyleReferenceModifierEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *PivotShowAsValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PivotShowAsValues(attr.Value)
+func (e *StyleReferenceModifierEnum) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = StyleReferenceModifierEnum(attr.Value)
 		return nil
 }
 
-// AggregationType
-type AggregationType string
+// ChildOrderValues
+type ChildOrderValues string
 const (
-	AggregationTypeDistinctcount AggregationType = "distinctCount"
-	AggregationTypeMedian AggregationType = "median"
-	AggregationTypeDistinctduplicates AggregationType = "distinctDuplicates"
-	AggregationTypeCountvaluesduplicated AggregationType = "countValuesDuplicated"
-	AggregationTypeCountrepeatvalues AggregationType = "countRepeatValues"
+	ChildOrderValuesB ChildOrderValues = "b"
+	ChildOrderValuesT ChildOrderValues = "t"
 )
 
-func (e AggregationType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ChildOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *AggregationType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AggregationType(attr.Value)
+func (e *ChildOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ChildOrderValues(attr.Value)
 		return nil
 }
 
-// ClipboardFormatValues
-type ClipboardFormatValues string
+// PathShadeValues
+type PathShadeValues string
 const (
-	ClipboardFormatValuesPictold ClipboardFormatValues = "PictOld"
-	ClipboardFormatValuesPict ClipboardFormatValues = "Pict"
-	ClipboardFormatValuesBitmap ClipboardFormatValues = "Bitmap"
-	ClipboardFormatValuesPictprint ClipboardFormatValues = "PictPrint"
-	ClipboardFormatValuesPictscreen ClipboardFormatValues = "PictScreen"
+	PathShadeValuesShape PathShadeValues = "shape"
+	PathShadeValuesCircle PathShadeValues = "circle"
+	PathShadeValuesRect PathShadeValues = "rect"
 )
 
-func (e ClipboardFormatValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PathShadeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ClipboardFormatValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ClipboardFormatValues(attr.Value)
+func (e *PathShadeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PathShadeValues(attr.Value)
 		return nil
 }
 
-// TickMarkValues
-type TickMarkValues string
+// SourceValues
+type SourceValues string
 const (
-	TickMarkValuesCross TickMarkValues = "cross"
-	TickMarkValuesIn TickMarkValues = "in"
-	TickMarkValuesNone TickMarkValues = "none"
-	TickMarkValuesOut TickMarkValues = "out"
+	SourceValuesWorksheet SourceValues = "worksheet"
+	SourceValuesExternal SourceValues = "external"
+	SourceValuesConsolidation SourceValues = "consolidation"
+	SourceValuesScenario SourceValues = "scenario"
 )
 
-func (e TickMarkValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e SourceValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TickMarkValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TickMarkValues(attr.Value)
-		return nil
-}
-
-// ConnectionValues
-type ConnectionValues string
-const (
-	ConnectionValuesParof ConnectionValues = "parOf"
-	ConnectionValuesPresof ConnectionValues = "presOf"
-	ConnectionValuesPresparof ConnectionValues = "presParOf"
-	ConnectionValuesUnknownrelationship ConnectionValues = "unknownRelationship"
-)
-
-func (e ConnectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ConnectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ConnectionValues(attr.Value)
-		return nil
-}
-
-// HorizontalAlignmentValues
-type HorizontalAlignmentValues string
-const (
-	HorizontalAlignmentValuesGeneral HorizontalAlignmentValues = "general"
-	HorizontalAlignmentValuesLeft HorizontalAlignmentValues = "left"
-	HorizontalAlignmentValuesCenter HorizontalAlignmentValues = "center"
-	HorizontalAlignmentValuesRight HorizontalAlignmentValues = "right"
-	HorizontalAlignmentValuesFill HorizontalAlignmentValues = "fill"
-	HorizontalAlignmentValuesJustify HorizontalAlignmentValues = "justify"
-	HorizontalAlignmentValuesCentercontinuous HorizontalAlignmentValues = "centerContinuous"
-	HorizontalAlignmentValuesDistributed HorizontalAlignmentValues = "distributed"
-)
-
-func (e HorizontalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *HorizontalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = HorizontalAlignmentValues(attr.Value)
-		return nil
-}
-
-// TextDirectionValues
-type TextDirectionValues string
-const (
-	TextDirectionValuesFromt TextDirectionValues = "fromT"
-	TextDirectionValuesFromb TextDirectionValues = "fromB"
-)
-
-func (e TextDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextDirectionValues(attr.Value)
-		return nil
-}
-
-// TextBlockDirectionValues
-type TextBlockDirectionValues string
-const (
-	TextBlockDirectionValuesHorz TextBlockDirectionValues = "horz"
-	TextBlockDirectionValuesVert TextBlockDirectionValues = "vert"
-)
-
-func (e TextBlockDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextBlockDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextBlockDirectionValues(attr.Value)
-		return nil
-}
-
-// IconSetValues
-type IconSetValues string
-const (
-	IconSetValuesIconSetValues3Arrows IconSetValues = "3Arrows"
-	IconSetValuesIconSetValues3Arrowsgray IconSetValues = "3ArrowsGray"
-	IconSetValuesIconSetValues3Flags IconSetValues = "3Flags"
-	IconSetValuesIconSetValues3Trafficlights1 IconSetValues = "3TrafficLights1"
-	IconSetValuesIconSetValues3Trafficlights2 IconSetValues = "3TrafficLights2"
-	IconSetValuesIconSetValues3Signs IconSetValues = "3Signs"
-	IconSetValuesIconSetValues3Symbols IconSetValues = "3Symbols"
-	IconSetValuesIconSetValues3Symbols2 IconSetValues = "3Symbols2"
-	IconSetValuesIconSetValues4Arrows IconSetValues = "4Arrows"
-	IconSetValuesIconSetValues4Arrowsgray IconSetValues = "4ArrowsGray"
-	IconSetValuesIconSetValues4Redtoblack IconSetValues = "4RedToBlack"
-	IconSetValuesIconSetValues4Rating IconSetValues = "4Rating"
-	IconSetValuesIconSetValues4Trafficlights IconSetValues = "4TrafficLights"
-	IconSetValuesIconSetValues5Arrows IconSetValues = "5Arrows"
-	IconSetValuesIconSetValues5Arrowsgray IconSetValues = "5ArrowsGray"
-	IconSetValuesIconSetValues5Rating IconSetValues = "5Rating"
-	IconSetValuesIconSetValues5Quarters IconSetValues = "5Quarters"
-)
-
-func (e IconSetValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *IconSetValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = IconSetValues(attr.Value)
-		return nil
-}
-
-// DateTimeGroupingValues
-type DateTimeGroupingValues string
-const (
-	DateTimeGroupingValuesYear DateTimeGroupingValues = "year"
-	DateTimeGroupingValuesMonth DateTimeGroupingValues = "month"
-	DateTimeGroupingValuesDay DateTimeGroupingValues = "day"
-	DateTimeGroupingValuesHour DateTimeGroupingValues = "hour"
-	DateTimeGroupingValuesMinute DateTimeGroupingValues = "minute"
-	DateTimeGroupingValuesSecond DateTimeGroupingValues = "second"
-)
-
-func (e DateTimeGroupingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DateTimeGroupingValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DateTimeGroupingValues(attr.Value)
-		return nil
-}
-
-// PageSetupOrientationValues
-type PageSetupOrientationValues string
-const (
-	PageSetupOrientationValuesDefault PageSetupOrientationValues = "default"
-	PageSetupOrientationValuesPortrait PageSetupOrientationValues = "portrait"
-	PageSetupOrientationValuesLandscape PageSetupOrientationValues = "landscape"
-)
-
-func (e PageSetupOrientationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PageSetupOrientationValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PageSetupOrientationValues(attr.Value)
-		return nil
-}
-
-// ColorApplicationMethodValues
-type ColorApplicationMethodValues string
-const (
-	ColorApplicationMethodValuesSpan ColorApplicationMethodValues = "span"
-	ColorApplicationMethodValuesCycle ColorApplicationMethodValues = "cycle"
-	ColorApplicationMethodValuesRepeat ColorApplicationMethodValues = "repeat"
-)
-
-func (e ColorApplicationMethodValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ColorApplicationMethodValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ColorApplicationMethodValues(attr.Value)
-		return nil
-}
-
-// AnimationDiagramOnlyBuildValues
-type AnimationDiagramOnlyBuildValues string
-const (
-	AnimationDiagramOnlyBuildValuesOne AnimationDiagramOnlyBuildValues = "one"
-	AnimationDiagramOnlyBuildValuesLvlone AnimationDiagramOnlyBuildValues = "lvlOne"
-	AnimationDiagramOnlyBuildValuesLvlatonce AnimationDiagramOnlyBuildValues = "lvlAtOnce"
-)
-
-func (e AnimationDiagramOnlyBuildValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *AnimationDiagramOnlyBuildValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AnimationDiagramOnlyBuildValues(attr.Value)
-		return nil
-}
-
-// VisibilityValues
-type VisibilityValues string
-const (
-	VisibilityValuesVisible VisibilityValues = "visible"
-	VisibilityValuesHidden VisibilityValues = "hidden"
-	VisibilityValuesVeryhidden VisibilityValues = "veryHidden"
-)
-
-func (e VisibilityValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *VisibilityValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = VisibilityValues(attr.Value)
-		return nil
-}
-
-// RichValueFallbackType
-type RichValueFallbackType string
-const (
-	RichValueFallbackTypeB RichValueFallbackType = "b"
-	RichValueFallbackTypeN RichValueFallbackType = "n"
-	RichValueFallbackTypeE RichValueFallbackType = "e"
-	RichValueFallbackTypeS RichValueFallbackType = "s"
-)
-
-func (e RichValueFallbackType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RichValueFallbackType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RichValueFallbackType(attr.Value)
-		return nil
-}
-
-// WrapTextValues
-type WrapTextValues string
-const (
-	WrapTextValuesBothsides WrapTextValues = "bothSides"
-	WrapTextValuesLeft WrapTextValues = "left"
-	WrapTextValuesRight WrapTextValues = "right"
-	WrapTextValuesLargest WrapTextValues = "largest"
-)
-
-func (e WrapTextValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *WrapTextValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = WrapTextValues(attr.Value)
-		return nil
-}
-
-// FillType
-type FillType string
-const (
-	FillTypeFill FillType = "fill"
-	FillTypeArray FillType = "array"
-	FillTypeFuture FillType = "future"
-)
-
-func (e FillType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FillType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FillType(attr.Value)
-		return nil
-}
-
-// SupportingPropertyBagArrayValueType
-type SupportingPropertyBagArrayValueType string
-const (
-	SupportingPropertyBagArrayValueTypeD SupportingPropertyBagArrayValueType = "d"
-	SupportingPropertyBagArrayValueTypeI SupportingPropertyBagArrayValueType = "i"
-	SupportingPropertyBagArrayValueTypeB SupportingPropertyBagArrayValueType = "b"
-	SupportingPropertyBagArrayValueTypeS SupportingPropertyBagArrayValueType = "s"
-	SupportingPropertyBagArrayValueTypeSpb SupportingPropertyBagArrayValueType = "spb"
-)
-
-func (e SupportingPropertyBagArrayValueType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SupportingPropertyBagArrayValueType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SupportingPropertyBagArrayValueType(attr.Value)
-		return nil
-}
-
-// HierarchyBranchStyleValues
-type HierarchyBranchStyleValues string
-const (
-	HierarchyBranchStyleValuesL HierarchyBranchStyleValues = "l"
-	HierarchyBranchStyleValuesR HierarchyBranchStyleValues = "r"
-	HierarchyBranchStyleValuesHang HierarchyBranchStyleValues = "hang"
-	HierarchyBranchStyleValuesStd HierarchyBranchStyleValues = "std"
-	HierarchyBranchStyleValuesInit HierarchyBranchStyleValues = "init"
-)
-
-func (e HierarchyBranchStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *HierarchyBranchStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = HierarchyBranchStyleValues(attr.Value)
-		return nil
-}
-
-// PyramidAccentPositionValues
-type PyramidAccentPositionValues string
-const (
-	PyramidAccentPositionValuesBef PyramidAccentPositionValues = "bef"
-	PyramidAccentPositionValuesAft PyramidAccentPositionValues = "aft"
-)
-
-func (e PyramidAccentPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PyramidAccentPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PyramidAccentPositionValues(attr.Value)
-		return nil
-}
-
-// FontCollectionIndexValues
-type FontCollectionIndexValues string
-const (
-	FontCollectionIndexValuesMajor FontCollectionIndexValues = "major"
-	FontCollectionIndexValuesMinor FontCollectionIndexValues = "minor"
-	FontCollectionIndexValuesNone FontCollectionIndexValues = "none"
-)
-
-func (e FontCollectionIndexValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FontCollectionIndexValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FontCollectionIndexValues(attr.Value)
-		return nil
-}
-
-// EditAsValues
-type EditAsValues string
-const (
-	EditAsValuesTwocell EditAsValues = "twoCell"
-	EditAsValuesOnecell EditAsValues = "oneCell"
-	EditAsValuesAbsolute EditAsValues = "absolute"
-)
-
-func (e EditAsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *EditAsValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = EditAsValues(attr.Value)
-		return nil
-}
-
-// FillTypeExt
-type FillTypeExt string
-const (
-	FillTypeExtTest FillTypeExt = "test"
-)
-
-func (e FillTypeExt) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FillTypeExt) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FillTypeExt(attr.Value)
-		return nil
-}
-
-// ErrorBarValues
-type ErrorBarValues string
-const (
-	ErrorBarValuesBoth ErrorBarValues = "both"
-	ErrorBarValuesMinus ErrorBarValues = "minus"
-	ErrorBarValuesPlus ErrorBarValues = "plus"
-)
-
-func (e ErrorBarValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ErrorBarValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ErrorBarValues(attr.Value)
-		return nil
-}
-
-// ResizeHandlesStringValues
-type ResizeHandlesStringValues string
-const (
-	ResizeHandlesStringValuesExact ResizeHandlesStringValues = "exact"
-	ResizeHandlesStringValuesRel ResizeHandlesStringValues = "rel"
-)
-
-func (e ResizeHandlesStringValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ResizeHandlesStringValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ResizeHandlesStringValues(attr.Value)
-		return nil
-}
-
-// SecondaryChildAlignmentValues
-type SecondaryChildAlignmentValues string
-const (
-	SecondaryChildAlignmentValuesNone SecondaryChildAlignmentValues = "none"
-	SecondaryChildAlignmentValuesT SecondaryChildAlignmentValues = "t"
-	SecondaryChildAlignmentValuesB SecondaryChildAlignmentValues = "b"
-	SecondaryChildAlignmentValuesL SecondaryChildAlignmentValues = "l"
-	SecondaryChildAlignmentValuesR SecondaryChildAlignmentValues = "r"
-)
-
-func (e SecondaryChildAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SecondaryChildAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SecondaryChildAlignmentValues(attr.Value)
-		return nil
-}
-
-// SecondaryLinearDirectionValues
-type SecondaryLinearDirectionValues string
-const (
-	SecondaryLinearDirectionValuesNone SecondaryLinearDirectionValues = "none"
-	SecondaryLinearDirectionValuesFroml SecondaryLinearDirectionValues = "fromL"
-	SecondaryLinearDirectionValuesFromr SecondaryLinearDirectionValues = "fromR"
-	SecondaryLinearDirectionValuesFromt SecondaryLinearDirectionValues = "fromT"
-	SecondaryLinearDirectionValuesFromb SecondaryLinearDirectionValues = "fromB"
-)
-
-func (e SecondaryLinearDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SecondaryLinearDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SecondaryLinearDirectionValues(attr.Value)
-		return nil
-}
-
-// PathFillModeValues
-type PathFillModeValues string
-const (
-	PathFillModeValuesNone PathFillModeValues = "none"
-	PathFillModeValuesNorm PathFillModeValues = "norm"
-	PathFillModeValuesLighten PathFillModeValues = "lighten"
-	PathFillModeValuesLightenless PathFillModeValues = "lightenLess"
-	PathFillModeValuesDarken PathFillModeValues = "darken"
-	PathFillModeValuesDarkenless PathFillModeValues = "darkenLess"
-)
-
-func (e PathFillModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PathFillModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PathFillModeValues(attr.Value)
-		return nil
-}
-
-// ErrorValues
-type ErrorValues string
-const (
-	ErrorValuesCust ErrorValues = "cust"
-	ErrorValuesFixedval ErrorValues = "fixedVal"
-	ErrorValuesPercentage ErrorValues = "percentage"
-	ErrorValuesStddev ErrorValues = "stdDev"
-	ErrorValuesStderr ErrorValues = "stdErr"
-)
-
-func (e ErrorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ErrorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ErrorValues(attr.Value)
-		return nil
-}
-
-// EditValidationValues
-type EditValidationValues string
-const (
-	EditValidationValuesText EditValidationValues = "text"
-	EditValidationValuesInteger EditValidationValues = "integer"
-	EditValidationValuesNumber EditValidationValues = "number"
-	EditValidationValuesReference EditValidationValues = "reference"
-	EditValidationValuesFormula EditValidationValues = "formula"
-)
-
-func (e EditValidationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *EditValidationValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = EditValidationValues(attr.Value)
-		return nil
-}
-
-// ResourceLinkage
-type ResourceLinkage string
-const (
-	ResourceLinkageEmbed ResourceLinkage = "embed"
-	ResourceLinkageLink ResourceLinkage = "link"
-	ResourceLinkageLinkandembed ResourceLinkage = "linkAndEmbed"
-)
-
-func (e ResourceLinkage) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ResourceLinkage) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ResourceLinkage(attr.Value)
-		return nil
-}
-
-// RevisionActionValues
-type RevisionActionValues string
-const (
-	RevisionActionValuesAdd RevisionActionValues = "add"
-	RevisionActionValuesDelete RevisionActionValues = "delete"
-)
-
-func (e RevisionActionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RevisionActionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RevisionActionValues(attr.Value)
-		return nil
-}
-
-// FontSchemeValues
-type FontSchemeValues string
-const (
-	FontSchemeValuesNone FontSchemeValues = "none"
-	FontSchemeValuesMajor FontSchemeValues = "major"
-	FontSchemeValuesMinor FontSchemeValues = "minor"
-)
-
-func (e FontSchemeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FontSchemeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FontSchemeValues(attr.Value)
-		return nil
-}
-
-// VolatileValues
-type VolatileValues string
-const (
-	VolatileValuesB VolatileValues = "b"
-	VolatileValuesN VolatileValues = "n"
-	VolatileValuesE VolatileValues = "e"
-	VolatileValuesS VolatileValues = "s"
-)
-
-func (e VolatileValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *VolatileValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = VolatileValues(attr.Value)
-		return nil
-}
-
-// MarkerStyleValues
-type MarkerStyleValues string
-const (
-	MarkerStyleValuesAuto MarkerStyleValues = "auto"
-	MarkerStyleValuesCircle MarkerStyleValues = "circle"
-	MarkerStyleValuesDash MarkerStyleValues = "dash"
-	MarkerStyleValuesDiamond MarkerStyleValues = "diamond"
-	MarkerStyleValuesDot MarkerStyleValues = "dot"
-	MarkerStyleValuesNone MarkerStyleValues = "none"
-	MarkerStyleValuesPicture MarkerStyleValues = "picture"
-	MarkerStyleValuesPlus MarkerStyleValues = "plus"
-	MarkerStyleValuesSquare MarkerStyleValues = "square"
-	MarkerStyleValuesStar MarkerStyleValues = "star"
-	MarkerStyleValuesTriangle MarkerStyleValues = "triangle"
-	MarkerStyleValuesX MarkerStyleValues = "x"
-)
-
-func (e MarkerStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *MarkerStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = MarkerStyleValues(attr.Value)
+func (e *SourceValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SourceValues(attr.Value)
 		return nil
 }
 
@@ -1837,19 +3937,317 @@ func (e *SortValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// SizeRepresentsValues
-type SizeRepresentsValues string
+// CommentsValues
+type CommentsValues string
 const (
-	SizeRepresentsValuesArea SizeRepresentsValues = "area"
-	SizeRepresentsValuesW SizeRepresentsValues = "w"
+	CommentsValuesCommnone CommentsValues = "commNone"
+	CommentsValuesCommindicator CommentsValues = "commIndicator"
+	CommentsValuesCommindandcomment CommentsValues = "commIndAndComment"
 )
 
-func (e SizeRepresentsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e CommentsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *SizeRepresentsValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SizeRepresentsValues(attr.Value)
+func (e *CommentsValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CommentsValues(attr.Value)
+		return nil
+}
+
+// AdjustTypeExt
+type AdjustTypeExt string
+const (
+	AdjustTypeExtTest AdjustTypeExt = "test"
+)
+
+func (e AdjustTypeExt) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AdjustTypeExt) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AdjustTypeExt(attr.Value)
+		return nil
+}
+
+// RotationPathValues
+type RotationPathValues string
+const (
+	RotationPathValuesNone RotationPathValues = "none"
+	RotationPathValuesAlongpath RotationPathValues = "alongPath"
+)
+
+func (e RotationPathValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RotationPathValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RotationPathValues(attr.Value)
+		return nil
+}
+
+// TextAnchoringTypeValues
+type TextAnchoringTypeValues string
+const (
+	TextAnchoringTypeValuesT TextAnchoringTypeValues = "t"
+	TextAnchoringTypeValuesCtr TextAnchoringTypeValues = "ctr"
+	TextAnchoringTypeValuesB TextAnchoringTypeValues = "b"
+)
+
+func (e TextAnchoringTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextAnchoringTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextAnchoringTypeValues(attr.Value)
+		return nil
+}
+
+// SortByValues
+type SortByValues string
+const (
+	SortByValuesValue SortByValues = "value"
+	SortByValuesCellcolor SortByValues = "cellColor"
+	SortByValuesFontcolor SortByValues = "fontColor"
+	SortByValuesIcon SortByValues = "icon"
+)
+
+func (e SortByValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SortByValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SortByValues(attr.Value)
+		return nil
+}
+
+// SurveyPosition
+type SurveyPosition string
+const (
+	SurveyPositionAbsolute SurveyPosition = "absolute"
+	SurveyPositionFixed SurveyPosition = "fixed"
+	SurveyPositionRelative SurveyPosition = "relative"
+	SurveyPositionStatic SurveyPosition = "static"
+	SurveyPositionInherit SurveyPosition = "inherit"
+)
+
+func (e SurveyPosition) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SurveyPosition) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SurveyPosition(attr.Value)
+		return nil
+}
+
+// TickMarksType
+type TickMarksType string
+const (
+	TickMarksTypeIn TickMarksType = "in"
+	TickMarksTypeOut TickMarksType = "out"
+	TickMarksTypeCross TickMarksType = "cross"
+	TickMarksTypeNone TickMarksType = "none"
+)
+
+func (e TickMarksType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TickMarksType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TickMarksType(attr.Value)
+		return nil
+}
+
+// QuartileMethod
+type QuartileMethod string
+const (
+	QuartileMethodInclusive QuartileMethod = "inclusive"
+	QuartileMethodExclusive QuartileMethod = "exclusive"
+)
+
+func (e QuartileMethod) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *QuartileMethod) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = QuartileMethod(attr.Value)
+		return nil
+}
+
+// PageOrderValues
+type PageOrderValues string
+const (
+	PageOrderValuesDownthenover PageOrderValues = "downThenOver"
+	PageOrderValuesOverthendown PageOrderValues = "overThenDown"
+)
+
+func (e PageOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PageOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PageOrderValues(attr.Value)
+		return nil
+}
+
+// TickMarkNinch
+type TickMarkNinch string
+const (
+	TickMarkNinchCross TickMarkNinch = "cross"
+	TickMarkNinchInside TickMarkNinch = "inside"
+	TickMarkNinchNone TickMarkNinch = "none"
+	TickMarkNinchOutside TickMarkNinch = "outside"
+	TickMarkNinchNinch TickMarkNinch = "ninch"
+)
+
+func (e TickMarkNinch) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TickMarkNinch) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TickMarkNinch(attr.Value)
+		return nil
+}
+
+// DataLabelsPosition
+type DataLabelsPosition string
+const (
+	DataLabelsPositionCenter DataLabelsPosition = "center"
+	DataLabelsPositionInsideend DataLabelsPosition = "insideEnd"
+	DataLabelsPositionInsidebase DataLabelsPosition = "insideBase"
+	DataLabelsPositionOutsideend DataLabelsPosition = "outsideEnd"
+	DataLabelsPositionNinch DataLabelsPosition = "ninch"
+)
+
+func (e DataLabelsPosition) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DataLabelsPosition) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataLabelsPosition(attr.Value)
+		return nil
+}
+
+// PageOrientation
+type PageOrientation string
+const (
+	PageOrientationDefault PageOrientation = "default"
+	PageOrientationPortrait PageOrientation = "portrait"
+	PageOrientationLandscape PageOrientation = "landscape"
+)
+
+func (e PageOrientation) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PageOrientation) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PageOrientation(attr.Value)
+		return nil
+}
+
+// BlipCompressionValues
+type BlipCompressionValues string
+const (
+	BlipCompressionValuesEmail BlipCompressionValues = "email"
+	BlipCompressionValuesScreen BlipCompressionValues = "screen"
+	BlipCompressionValuesPrint BlipCompressionValues = "print"
+	BlipCompressionValuesHqprint BlipCompressionValues = "hqprint"
+	BlipCompressionValuesNone BlipCompressionValues = "none"
+)
+
+func (e BlipCompressionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *BlipCompressionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = BlipCompressionValues(attr.Value)
+		return nil
+}
+
+// CenterShapeMappingValues
+type CenterShapeMappingValues string
+const (
+	CenterShapeMappingValuesNone CenterShapeMappingValues = "none"
+	CenterShapeMappingValuesFnode CenterShapeMappingValues = "fNode"
+)
+
+func (e CenterShapeMappingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *CenterShapeMappingValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CenterShapeMappingValues(attr.Value)
+		return nil
+}
+
+// TextShapeValues
+type TextShapeValues string
+const (
+	TextShapeValuesTextnoshape TextShapeValues = "textNoShape"
+	TextShapeValuesTextplain TextShapeValues = "textPlain"
+	TextShapeValuesTextstop TextShapeValues = "textStop"
+	TextShapeValuesTexttriangle TextShapeValues = "textTriangle"
+	TextShapeValuesTexttriangleinverted TextShapeValues = "textTriangleInverted"
+	TextShapeValuesTextchevron TextShapeValues = "textChevron"
+	TextShapeValuesTextchevroninverted TextShapeValues = "textChevronInverted"
+	TextShapeValuesTextringinside TextShapeValues = "textRingInside"
+	TextShapeValuesTextringoutside TextShapeValues = "textRingOutside"
+	TextShapeValuesTextarchup TextShapeValues = "textArchUp"
+	TextShapeValuesTextarchdown TextShapeValues = "textArchDown"
+	TextShapeValuesTextcircle TextShapeValues = "textCircle"
+	TextShapeValuesTextbutton TextShapeValues = "textButton"
+	TextShapeValuesTextarchuppour TextShapeValues = "textArchUpPour"
+	TextShapeValuesTextarchdownpour TextShapeValues = "textArchDownPour"
+	TextShapeValuesTextcirclepour TextShapeValues = "textCirclePour"
+	TextShapeValuesTextbuttonpour TextShapeValues = "textButtonPour"
+	TextShapeValuesTextcurveup TextShapeValues = "textCurveUp"
+	TextShapeValuesTextcurvedown TextShapeValues = "textCurveDown"
+	TextShapeValuesTextcanup TextShapeValues = "textCanUp"
+	TextShapeValuesTextcandown TextShapeValues = "textCanDown"
+	TextShapeValuesTextwave1 TextShapeValues = "textWave1"
+	TextShapeValuesTextwave2 TextShapeValues = "textWave2"
+	TextShapeValuesTextdoublewave1 TextShapeValues = "textDoubleWave1"
+	TextShapeValuesTextwave4 TextShapeValues = "textWave4"
+	TextShapeValuesTextinflate TextShapeValues = "textInflate"
+	TextShapeValuesTextdeflate TextShapeValues = "textDeflate"
+	TextShapeValuesTextinflatebottom TextShapeValues = "textInflateBottom"
+	TextShapeValuesTextdeflatebottom TextShapeValues = "textDeflateBottom"
+	TextShapeValuesTextinflatetop TextShapeValues = "textInflateTop"
+	TextShapeValuesTextdeflatetop TextShapeValues = "textDeflateTop"
+	TextShapeValuesTextdeflateinflate TextShapeValues = "textDeflateInflate"
+	TextShapeValuesTextdeflateinflatedeflate TextShapeValues = "textDeflateInflateDeflate"
+	TextShapeValuesTextfaderight TextShapeValues = "textFadeRight"
+	TextShapeValuesTextfadeleft TextShapeValues = "textFadeLeft"
+	TextShapeValuesTextfadeup TextShapeValues = "textFadeUp"
+	TextShapeValuesTextfadedown TextShapeValues = "textFadeDown"
+	TextShapeValuesTextslantup TextShapeValues = "textSlantUp"
+	TextShapeValuesTextslantdown TextShapeValues = "textSlantDown"
+	TextShapeValuesTextcascadeup TextShapeValues = "textCascadeUp"
+	TextShapeValuesTextcascadedown TextShapeValues = "textCascadeDown"
+)
+
+func (e TextShapeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextShapeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextShapeValues(attr.Value)
+		return nil
+}
+
+// RadarStyleValues
+type RadarStyleValues string
+const (
+	RadarStyleValuesStandard RadarStyleValues = "standard"
+	RadarStyleValuesMarker RadarStyleValues = "marker"
+	RadarStyleValuesFilled RadarStyleValues = "filled"
+)
+
+func (e RadarStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RadarStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RadarStyleValues(attr.Value)
 		return nil
 }
 
@@ -1869,37 +4267,599 @@ func (e *DirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// TextVerticalOverflowValues
-type TextVerticalOverflowValues string
+// TextAnchorVerticalValues
+type TextAnchorVerticalValues string
 const (
-	TextVerticalOverflowValuesOverflow TextVerticalOverflowValues = "overflow"
-	TextVerticalOverflowValuesEllipsis TextVerticalOverflowValues = "ellipsis"
-	TextVerticalOverflowValuesClip TextVerticalOverflowValues = "clip"
+	TextAnchorVerticalValuesT TextAnchorVerticalValues = "t"
+	TextAnchorVerticalValuesMid TextAnchorVerticalValues = "mid"
+	TextAnchorVerticalValuesB TextAnchorVerticalValues = "b"
 )
 
-func (e TextVerticalOverflowValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TextAnchorVerticalValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TextVerticalOverflowValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextVerticalOverflowValues(attr.Value)
+func (e *TextAnchorVerticalValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextAnchorVerticalValues(attr.Value)
 		return nil
 }
 
-// FieldSortValues
-type FieldSortValues string
+// GeoProjectionType
+type GeoProjectionType string
 const (
-	FieldSortValuesManual FieldSortValues = "manual"
-	FieldSortValuesAscending FieldSortValues = "ascending"
-	FieldSortValuesDescending FieldSortValues = "descending"
+	GeoProjectionTypeMercator GeoProjectionType = "mercator"
+	GeoProjectionTypeMiller GeoProjectionType = "miller"
+	GeoProjectionTypeRobinson GeoProjectionType = "robinson"
+	GeoProjectionTypeAlbers GeoProjectionType = "albers"
 )
 
-func (e FieldSortValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e GeoProjectionType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *FieldSortValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FieldSortValues(attr.Value)
+func (e *GeoProjectionType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = GeoProjectionType(attr.Value)
+		return nil
+}
+
+// FormatActionValues
+type FormatActionValues string
+const (
+	FormatActionValuesBlank FormatActionValues = "blank"
+	FormatActionValuesFormatting FormatActionValues = "formatting"
+)
+
+func (e FormatActionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *FormatActionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FormatActionValues(attr.Value)
+		return nil
+}
+
+// ConditionalFormattingValueObjectTypeValues
+type ConditionalFormattingValueObjectTypeValues string
+const (
+	ConditionalFormattingValueObjectTypeValuesNum ConditionalFormattingValueObjectTypeValues = "num"
+	ConditionalFormattingValueObjectTypeValuesPercent ConditionalFormattingValueObjectTypeValues = "percent"
+	ConditionalFormattingValueObjectTypeValuesMax ConditionalFormattingValueObjectTypeValues = "max"
+	ConditionalFormattingValueObjectTypeValuesMin ConditionalFormattingValueObjectTypeValues = "min"
+	ConditionalFormattingValueObjectTypeValuesFormula ConditionalFormattingValueObjectTypeValues = "formula"
+	ConditionalFormattingValueObjectTypeValuesPercentile ConditionalFormattingValueObjectTypeValues = "percentile"
+	ConditionalFormattingValueObjectTypeValuesAutomin ConditionalFormattingValueObjectTypeValues = "autoMin"
+	ConditionalFormattingValueObjectTypeValuesAutomax ConditionalFormattingValueObjectTypeValues = "autoMax"
+)
+
+func (e ConditionalFormattingValueObjectTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ConditionalFormattingValueObjectTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ConditionalFormattingValueObjectTypeValues(attr.Value)
+		return nil
+}
+
+// AllocationMethodValues
+type AllocationMethodValues string
+const (
+	AllocationMethodValuesEqualallocation AllocationMethodValues = "equalAllocation"
+	AllocationMethodValuesEqualincrement AllocationMethodValues = "equalIncrement"
+	AllocationMethodValuesWeightedallocation AllocationMethodValues = "weightedAllocation"
+	AllocationMethodValuesWeightedincrement AllocationMethodValues = "weightedIncrement"
+)
+
+func (e AllocationMethodValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AllocationMethodValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AllocationMethodValues(attr.Value)
+		return nil
+}
+
+// AdjustType
+type AdjustType string
+const (
+	AdjustTypeFmla AdjustType = "fmla"
+	AdjustTypeFormat AdjustType = "format"
+	AdjustTypeCondfmt AdjustType = "condFmt"
+	AdjustTypeSparkline AdjustType = "sparkline"
+	AdjustTypeAnchor AdjustType = "anchor"
+	AdjustTypeFmlanosticky AdjustType = "fmlaNoSticky"
+	AdjustTypeNoadj AdjustType = "noAdj"
+	AdjustTypeFragile AdjustType = "fragile"
+	AdjustTypeFuture AdjustType = "future"
+)
+
+func (e AdjustType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AdjustType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AdjustType(attr.Value)
+		return nil
+}
+
+// ArrayValueType
+type ArrayValueType string
+const (
+	ArrayValueTypeD ArrayValueType = "d"
+	ArrayValueTypeI ArrayValueType = "i"
+	ArrayValueTypeB ArrayValueType = "b"
+	ArrayValueTypeE ArrayValueType = "e"
+	ArrayValueTypeS ArrayValueType = "s"
+	ArrayValueTypeR ArrayValueType = "r"
+	ArrayValueTypeA ArrayValueType = "a"
+)
+
+func (e ArrayValueType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ArrayValueType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ArrayValueType(attr.Value)
+		return nil
+}
+
+// RichFormatPropertyType
+type RichFormatPropertyType string
+const (
+	RichFormatPropertyTypeB RichFormatPropertyType = "b"
+	RichFormatPropertyTypeN RichFormatPropertyType = "n"
+	RichFormatPropertyTypeI RichFormatPropertyType = "i"
+	RichFormatPropertyTypeS RichFormatPropertyType = "s"
+)
+
+func (e RichFormatPropertyType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RichFormatPropertyType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RichFormatPropertyType(attr.Value)
+		return nil
+}
+
+// DataLabelPositionValues
+type DataLabelPositionValues string
+const (
+	DataLabelPositionValuesBestfit DataLabelPositionValues = "bestFit"
+	DataLabelPositionValuesB DataLabelPositionValues = "b"
+	DataLabelPositionValuesCtr DataLabelPositionValues = "ctr"
+	DataLabelPositionValuesInbase DataLabelPositionValues = "inBase"
+	DataLabelPositionValuesInend DataLabelPositionValues = "inEnd"
+	DataLabelPositionValuesL DataLabelPositionValues = "l"
+	DataLabelPositionValuesOutend DataLabelPositionValues = "outEnd"
+	DataLabelPositionValuesR DataLabelPositionValues = "r"
+	DataLabelPositionValuesT DataLabelPositionValues = "t"
+)
+
+func (e DataLabelPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DataLabelPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataLabelPositionValues(attr.Value)
+		return nil
+}
+
+// SecondaryChildAlignmentValues
+type SecondaryChildAlignmentValues string
+const (
+	SecondaryChildAlignmentValuesNone SecondaryChildAlignmentValues = "none"
+	SecondaryChildAlignmentValuesT SecondaryChildAlignmentValues = "t"
+	SecondaryChildAlignmentValuesB SecondaryChildAlignmentValues = "b"
+	SecondaryChildAlignmentValuesL SecondaryChildAlignmentValues = "l"
+	SecondaryChildAlignmentValuesR SecondaryChildAlignmentValues = "r"
+)
+
+func (e SecondaryChildAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SecondaryChildAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SecondaryChildAlignmentValues(attr.Value)
+		return nil
+}
+
+// LineEndLengthValues
+type LineEndLengthValues string
+const (
+	LineEndLengthValuesSm LineEndLengthValues = "sm"
+	LineEndLengthValuesMed LineEndLengthValues = "med"
+	LineEndLengthValuesLg LineEndLengthValues = "lg"
+)
+
+func (e LineEndLengthValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *LineEndLengthValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LineEndLengthValues(attr.Value)
+		return nil
+}
+
+// CalendarValues
+type CalendarValues string
+const (
+	CalendarValuesNone CalendarValues = "none"
+	CalendarValuesGregorian CalendarValues = "gregorian"
+	CalendarValuesGregorianus CalendarValues = "gregorianUs"
+	CalendarValuesJapan CalendarValues = "japan"
+	CalendarValuesTaiwan CalendarValues = "taiwan"
+	CalendarValuesKorea CalendarValues = "korea"
+	CalendarValuesHijri CalendarValues = "hijri"
+	CalendarValuesThai CalendarValues = "thai"
+	CalendarValuesHebrew CalendarValues = "hebrew"
+	CalendarValuesGregorianmefrench CalendarValues = "gregorianMeFrench"
+	CalendarValuesGregorianarabic CalendarValues = "gregorianArabic"
+	CalendarValuesGregorianxlitenglish CalendarValues = "gregorianXlitEnglish"
+	CalendarValuesGregorianxlitfrench CalendarValues = "gregorianXlitFrench"
+)
+
+func (e CalendarValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *CalendarValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CalendarValues(attr.Value)
+		return nil
+}
+
+// PivotTableAxisValues
+type PivotTableAxisValues string
+const (
+	PivotTableAxisValuesAxisrow PivotTableAxisValues = "axisRow"
+	PivotTableAxisValuesAxiscol PivotTableAxisValues = "axisCol"
+	PivotTableAxisValuesAxispage PivotTableAxisValues = "axisPage"
+	PivotTableAxisValuesAxisvalues PivotTableAxisValues = "axisValues"
+)
+
+func (e PivotTableAxisValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PivotTableAxisValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PivotTableAxisValues(attr.Value)
+		return nil
+}
+
+// FillType
+type FillType string
+const (
+	FillTypeFill FillType = "fill"
+	FillTypeArray FillType = "array"
+	FillTypeFuture FillType = "future"
+)
+
+func (e FillType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *FillType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FillType(attr.Value)
+		return nil
+}
+
+// ConditionalFormattingOperatorValues
+type ConditionalFormattingOperatorValues string
+const (
+	ConditionalFormattingOperatorValuesLessthan ConditionalFormattingOperatorValues = "lessThan"
+	ConditionalFormattingOperatorValuesLessthanorequal ConditionalFormattingOperatorValues = "lessThanOrEqual"
+	ConditionalFormattingOperatorValuesEqual ConditionalFormattingOperatorValues = "equal"
+	ConditionalFormattingOperatorValuesNotequal ConditionalFormattingOperatorValues = "notEqual"
+	ConditionalFormattingOperatorValuesGreaterthanorequal ConditionalFormattingOperatorValues = "greaterThanOrEqual"
+	ConditionalFormattingOperatorValuesGreaterthan ConditionalFormattingOperatorValues = "greaterThan"
+	ConditionalFormattingOperatorValuesBetween ConditionalFormattingOperatorValues = "between"
+	ConditionalFormattingOperatorValuesNotbetween ConditionalFormattingOperatorValues = "notBetween"
+	ConditionalFormattingOperatorValuesContainstext ConditionalFormattingOperatorValues = "containsText"
+	ConditionalFormattingOperatorValuesNotcontains ConditionalFormattingOperatorValues = "notContains"
+	ConditionalFormattingOperatorValuesBeginswith ConditionalFormattingOperatorValues = "beginsWith"
+	ConditionalFormattingOperatorValuesEndswith ConditionalFormattingOperatorValues = "endsWith"
+)
+
+func (e ConditionalFormattingOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ConditionalFormattingOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ConditionalFormattingOperatorValues(attr.Value)
+		return nil
+}
+
+// MdxFunctionValues
+type MdxFunctionValues string
+const (
+	MdxFunctionValuesM MdxFunctionValues = "m"
+	MdxFunctionValuesV MdxFunctionValues = "v"
+	MdxFunctionValuesS MdxFunctionValues = "s"
+	MdxFunctionValuesC MdxFunctionValues = "c"
+	MdxFunctionValuesR MdxFunctionValues = "r"
+	MdxFunctionValuesP MdxFunctionValues = "p"
+	MdxFunctionValuesK MdxFunctionValues = "k"
+)
+
+func (e MdxFunctionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *MdxFunctionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = MdxFunctionValues(attr.Value)
+		return nil
+}
+
+// ExtSubFeatureType
+type ExtSubFeatureType string
+const (
+	ExtSubFeatureTypeReserved ExtSubFeatureType = "reserved"
+)
+
+func (e ExtSubFeatureType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ExtSubFeatureType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ExtSubFeatureType(attr.Value)
+		return nil
+}
+
+// HyperlinkColorEnum
+type HyperlinkColorEnum string
+const (
+	HyperlinkColorEnumHlink HyperlinkColorEnum = "hlink"
+	HyperlinkColorEnumTx HyperlinkColorEnum = "tx"
+)
+
+func (e HyperlinkColorEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *HyperlinkColorEnum) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = HyperlinkColorEnum(attr.Value)
+		return nil
+}
+
+// LayoutTargetValues
+type LayoutTargetValues string
+const (
+	LayoutTargetValuesInner LayoutTargetValues = "inner"
+	LayoutTargetValuesOuter LayoutTargetValues = "outer"
+)
+
+func (e LayoutTargetValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *LayoutTargetValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LayoutTargetValues(attr.Value)
+		return nil
+}
+
+// GrowDirectionValues
+type GrowDirectionValues string
+const (
+	GrowDirectionValuesTl GrowDirectionValues = "tL"
+	GrowDirectionValuesTr GrowDirectionValues = "tR"
+	GrowDirectionValuesBl GrowDirectionValues = "bL"
+	GrowDirectionValuesBr GrowDirectionValues = "bR"
+)
+
+func (e GrowDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *GrowDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = GrowDirectionValues(attr.Value)
+		return nil
+}
+
+// CellCommentsValues
+type CellCommentsValues string
+const (
+	CellCommentsValuesNone CellCommentsValues = "none"
+	CellCommentsValuesAsdisplayed CellCommentsValues = "asDisplayed"
+	CellCommentsValuesAtend CellCommentsValues = "atEnd"
+)
+
+func (e CellCommentsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *CellCommentsValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CellCommentsValues(attr.Value)
+		return nil
+}
+
+// ObjectValues
+type ObjectValues string
+const (
+	ObjectValuesButton ObjectValues = "Button"
+	ObjectValuesCheckbox ObjectValues = "Checkbox"
+	ObjectValuesDialog ObjectValues = "Dialog"
+	ObjectValuesDrop ObjectValues = "Drop"
+	ObjectValuesEdit ObjectValues = "Edit"
+	ObjectValuesGbox ObjectValues = "GBox"
+	ObjectValuesLabel ObjectValues = "Label"
+	ObjectValuesLinea ObjectValues = "LineA"
+	ObjectValuesList ObjectValues = "List"
+	ObjectValuesMovie ObjectValues = "Movie"
+	ObjectValuesNote ObjectValues = "Note"
+	ObjectValuesPict ObjectValues = "Pict"
+	ObjectValuesRadio ObjectValues = "Radio"
+	ObjectValuesRecta ObjectValues = "RectA"
+	ObjectValuesScroll ObjectValues = "Scroll"
+	ObjectValuesSpin ObjectValues = "Spin"
+	ObjectValuesShape ObjectValues = "Shape"
+	ObjectValuesGroup ObjectValues = "Group"
+	ObjectValuesRect ObjectValues = "Rect"
+)
+
+func (e ObjectValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ObjectValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ObjectValues(attr.Value)
+		return nil
+}
+
+// VerticalRelativePositionValues
+type VerticalRelativePositionValues string
+const (
+	VerticalRelativePositionValuesMargin VerticalRelativePositionValues = "margin"
+	VerticalRelativePositionValuesPage VerticalRelativePositionValues = "page"
+	VerticalRelativePositionValuesParagraph VerticalRelativePositionValues = "paragraph"
+	VerticalRelativePositionValuesLine VerticalRelativePositionValues = "line"
+	VerticalRelativePositionValuesTopmargin VerticalRelativePositionValues = "topMargin"
+	VerticalRelativePositionValuesBottommargin VerticalRelativePositionValues = "bottomMargin"
+	VerticalRelativePositionValuesInsidemargin VerticalRelativePositionValues = "insideMargin"
+	VerticalRelativePositionValuesOutsidemargin VerticalRelativePositionValues = "outsideMargin"
+)
+
+func (e VerticalRelativePositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *VerticalRelativePositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = VerticalRelativePositionValues(attr.Value)
+		return nil
+}
+
+// DataConsolidateFunctionValues
+type DataConsolidateFunctionValues string
+const (
+	DataConsolidateFunctionValuesAverage DataConsolidateFunctionValues = "average"
+	DataConsolidateFunctionValuesCount DataConsolidateFunctionValues = "count"
+	DataConsolidateFunctionValuesCountnums DataConsolidateFunctionValues = "countNums"
+	DataConsolidateFunctionValuesMax DataConsolidateFunctionValues = "max"
+	DataConsolidateFunctionValuesMin DataConsolidateFunctionValues = "min"
+	DataConsolidateFunctionValuesProduct DataConsolidateFunctionValues = "product"
+	DataConsolidateFunctionValuesStddev DataConsolidateFunctionValues = "stdDev"
+	DataConsolidateFunctionValuesStddevp DataConsolidateFunctionValues = "stdDevp"
+	DataConsolidateFunctionValuesSum DataConsolidateFunctionValues = "sum"
+	DataConsolidateFunctionValuesVar DataConsolidateFunctionValues = "var"
+	DataConsolidateFunctionValuesVarp DataConsolidateFunctionValues = "varp"
+)
+
+func (e DataConsolidateFunctionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DataConsolidateFunctionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataConsolidateFunctionValues(attr.Value)
+		return nil
+}
+
+// DataValidationImeModeValues
+type DataValidationImeModeValues string
+const (
+	DataValidationImeModeValuesNocontrol DataValidationImeModeValues = "noControl"
+	DataValidationImeModeValuesOff DataValidationImeModeValues = "off"
+	DataValidationImeModeValuesOn DataValidationImeModeValues = "on"
+	DataValidationImeModeValuesDisabled DataValidationImeModeValues = "disabled"
+	DataValidationImeModeValuesHiragana DataValidationImeModeValues = "hiragana"
+	DataValidationImeModeValuesFullkatakana DataValidationImeModeValues = "fullKatakana"
+	DataValidationImeModeValuesHalfkatakana DataValidationImeModeValues = "halfKatakana"
+	DataValidationImeModeValuesFullalpha DataValidationImeModeValues = "fullAlpha"
+	DataValidationImeModeValuesHalfalpha DataValidationImeModeValues = "halfAlpha"
+	DataValidationImeModeValuesFullhangul DataValidationImeModeValues = "fullHangul"
+	DataValidationImeModeValuesHalfhangul DataValidationImeModeValues = "halfHangul"
+)
+
+func (e DataValidationImeModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DataValidationImeModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataValidationImeModeValues(attr.Value)
+		return nil
+}
+
+// ResourceLinkage
+type ResourceLinkage string
+const (
+	ResourceLinkageEmbed ResourceLinkage = "embed"
+	ResourceLinkageLink ResourceLinkage = "link"
+	ResourceLinkageLinkandembed ResourceLinkage = "linkAndEmbed"
+)
+
+func (e ResourceLinkage) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ResourceLinkage) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ResourceLinkage(attr.Value)
+		return nil
+}
+
+// CrossBetweenValues
+type CrossBetweenValues string
+const (
+	CrossBetweenValuesBetween CrossBetweenValues = "between"
+	CrossBetweenValuesMidcat CrossBetweenValues = "midCat"
+)
+
+func (e CrossBetweenValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *CrossBetweenValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CrossBetweenValues(attr.Value)
+		return nil
+}
+
+// AutoTextRotationValues
+type AutoTextRotationValues string
+const (
+	AutoTextRotationValuesNone AutoTextRotationValues = "none"
+	AutoTextRotationValuesUpr AutoTextRotationValues = "upr"
+	AutoTextRotationValuesGrav AutoTextRotationValues = "grav"
+)
+
+func (e AutoTextRotationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AutoTextRotationValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AutoTextRotationValues(attr.Value)
+		return nil
+}
+
+// TimelineStyleType
+type TimelineStyleType string
+const (
+	TimelineStyleTypeSelectionlabel TimelineStyleType = "selectionLabel"
+	TimelineStyleTypeTimelevel TimelineStyleType = "timeLevel"
+	TimelineStyleTypePeriodlabel1 TimelineStyleType = "periodLabel1"
+	TimelineStyleTypePeriodlabel2 TimelineStyleType = "periodLabel2"
+	TimelineStyleTypeSelectedtimeblock TimelineStyleType = "selectedTimeBlock"
+	TimelineStyleTypeUnselectedtimeblock TimelineStyleType = "unselectedTimeBlock"
+	TimelineStyleTypeSelectedtimeblockspace TimelineStyleType = "selectedTimeBlockSpace"
+)
+
+func (e TimelineStyleType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TimelineStyleType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TimelineStyleType(attr.Value)
+		return nil
+}
+
+// RegionLabelLayoutEnum
+type RegionLabelLayoutEnum string
+const (
+	RegionLabelLayoutEnumNone RegionLabelLayoutEnum = "none"
+	RegionLabelLayoutEnumBestfitonly RegionLabelLayoutEnum = "bestFitOnly"
+	RegionLabelLayoutEnumShowall RegionLabelLayoutEnum = "showAll"
+)
+
+func (e RegionLabelLayoutEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RegionLabelLayoutEnum) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RegionLabelLayoutEnum(attr.Value)
 		return nil
 }
 
@@ -1918,6 +4878,428 @@ func (e ClassificationOutcomeType) MarshalXMLAttr(name xml.Name) (xml.Attr, erro
 
 func (e *ClassificationOutcomeType) UnmarshalXMLAttr(attr xml.Attr) error {
 		*e = ClassificationOutcomeType(attr.Value)
+		return nil
+}
+
+// LabelAlignmentValues
+type LabelAlignmentValues string
+const (
+	LabelAlignmentValuesCtr LabelAlignmentValues = "ctr"
+	LabelAlignmentValuesL LabelAlignmentValues = "l"
+	LabelAlignmentValuesR LabelAlignmentValues = "r"
+)
+
+func (e LabelAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *LabelAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LabelAlignmentValues(attr.Value)
+		return nil
+}
+
+// ParameterValues
+type ParameterValues string
+const (
+	ParameterValuesPrompt ParameterValues = "prompt"
+	ParameterValuesValue ParameterValues = "value"
+	ParameterValuesCell ParameterValues = "cell"
+)
+
+func (e ParameterValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ParameterValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ParameterValues(attr.Value)
+		return nil
+}
+
+// MdxSetOrderValues
+type MdxSetOrderValues string
+const (
+	MdxSetOrderValuesU MdxSetOrderValues = "u"
+	MdxSetOrderValuesA MdxSetOrderValues = "a"
+	MdxSetOrderValuesD MdxSetOrderValues = "d"
+	MdxSetOrderValuesAa MdxSetOrderValues = "aa"
+	MdxSetOrderValuesAd MdxSetOrderValues = "ad"
+	MdxSetOrderValuesNa MdxSetOrderValues = "na"
+	MdxSetOrderValuesNd MdxSetOrderValues = "nd"
+)
+
+func (e MdxSetOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *MdxSetOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = MdxSetOrderValues(attr.Value)
+		return nil
+}
+
+// LinearDirectionValues
+type LinearDirectionValues string
+const (
+	LinearDirectionValuesFroml LinearDirectionValues = "fromL"
+	LinearDirectionValuesFromr LinearDirectionValues = "fromR"
+	LinearDirectionValuesFromt LinearDirectionValues = "fromT"
+	LinearDirectionValuesFromb LinearDirectionValues = "fromB"
+)
+
+func (e LinearDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *LinearDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LinearDirectionValues(attr.Value)
+		return nil
+}
+
+// LineEndWidthValues
+type LineEndWidthValues string
+const (
+	LineEndWidthValuesSm LineEndWidthValues = "sm"
+	LineEndWidthValuesMed LineEndWidthValues = "med"
+	LineEndWidthValuesLg LineEndWidthValues = "lg"
+)
+
+func (e LineEndWidthValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *LineEndWidthValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LineEndWidthValues(attr.Value)
+		return nil
+}
+
+// CellFormulaValues
+type CellFormulaValues string
+const (
+	CellFormulaValuesNormal CellFormulaValues = "normal"
+	CellFormulaValuesArray CellFormulaValues = "array"
+	CellFormulaValuesDatatable CellFormulaValues = "dataTable"
+	CellFormulaValuesShared CellFormulaValues = "shared"
+)
+
+func (e CellFormulaValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *CellFormulaValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CellFormulaValues(attr.Value)
+		return nil
+}
+
+// CellValues
+type CellValues string
+const (
+	CellValuesB CellValues = "b"
+	CellValuesN CellValues = "n"
+	CellValuesE CellValues = "e"
+	CellValuesS CellValues = "s"
+	CellValuesStr CellValues = "str"
+	CellValuesInlinestr CellValues = "inlineStr"
+	CellValuesD CellValues = "d"
+)
+
+func (e CellValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *CellValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CellValues(attr.Value)
+		return nil
+}
+
+// ObjectTypeValues
+type ObjectTypeValues string
+const (
+	ObjectTypeValuesButton ObjectTypeValues = "Button"
+	ObjectTypeValuesCheckbox ObjectTypeValues = "CheckBox"
+	ObjectTypeValuesDrop ObjectTypeValues = "Drop"
+	ObjectTypeValuesGbox ObjectTypeValues = "GBox"
+	ObjectTypeValuesLabel ObjectTypeValues = "Label"
+	ObjectTypeValuesList ObjectTypeValues = "List"
+	ObjectTypeValuesRadio ObjectTypeValues = "Radio"
+	ObjectTypeValuesScroll ObjectTypeValues = "Scroll"
+	ObjectTypeValuesSpin ObjectTypeValues = "Spin"
+	ObjectTypeValuesEditbox ObjectTypeValues = "EditBox"
+	ObjectTypeValuesDialog ObjectTypeValues = "Dialog"
+)
+
+func (e ObjectTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ObjectTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ObjectTypeValues(attr.Value)
+		return nil
+}
+
+// ParentLabelLayoutVal
+type ParentLabelLayoutVal string
+const (
+	ParentLabelLayoutValNone ParentLabelLayoutVal = "none"
+	ParentLabelLayoutValBanner ParentLabelLayoutVal = "banner"
+	ParentLabelLayoutValOverlapping ParentLabelLayoutVal = "overlapping"
+)
+
+func (e ParentLabelLayoutVal) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ParentLabelLayoutVal) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ParentLabelLayoutVal(attr.Value)
+		return nil
+}
+
+// SupportingPropertyBagValueType
+type SupportingPropertyBagValueType string
+const (
+	SupportingPropertyBagValueTypeD SupportingPropertyBagValueType = "d"
+	SupportingPropertyBagValueTypeI SupportingPropertyBagValueType = "i"
+	SupportingPropertyBagValueTypeB SupportingPropertyBagValueType = "b"
+	SupportingPropertyBagValueTypeS SupportingPropertyBagValueType = "s"
+	SupportingPropertyBagValueTypeSpb SupportingPropertyBagValueType = "spb"
+	SupportingPropertyBagValueTypeSpba SupportingPropertyBagValueType = "spba"
+)
+
+func (e SupportingPropertyBagValueType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *SupportingPropertyBagValueType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SupportingPropertyBagValueType(attr.Value)
+		return nil
+}
+
+// ConstraintValues
+type ConstraintValues string
+const (
+	ConstraintValuesNone ConstraintValues = "none"
+	ConstraintValuesAlignoff ConstraintValues = "alignOff"
+	ConstraintValuesBegmarg ConstraintValues = "begMarg"
+	ConstraintValuesBenddist ConstraintValues = "bendDist"
+	ConstraintValuesBegpad ConstraintValues = "begPad"
+	ConstraintValuesB ConstraintValues = "b"
+	ConstraintValuesBmarg ConstraintValues = "bMarg"
+	ConstraintValuesBoff ConstraintValues = "bOff"
+	ConstraintValuesCtrx ConstraintValues = "ctrX"
+	ConstraintValuesCtrxoff ConstraintValues = "ctrXOff"
+	ConstraintValuesCtry ConstraintValues = "ctrY"
+	ConstraintValuesCtryoff ConstraintValues = "ctrYOff"
+	ConstraintValuesConndist ConstraintValues = "connDist"
+	ConstraintValuesDiam ConstraintValues = "diam"
+	ConstraintValuesEndmarg ConstraintValues = "endMarg"
+	ConstraintValuesEndpad ConstraintValues = "endPad"
+	ConstraintValuesH ConstraintValues = "h"
+	ConstraintValuesHarh ConstraintValues = "hArH"
+	ConstraintValuesHoff ConstraintValues = "hOff"
+	ConstraintValuesL ConstraintValues = "l"
+	ConstraintValuesLmarg ConstraintValues = "lMarg"
+	ConstraintValuesLoff ConstraintValues = "lOff"
+	ConstraintValuesR ConstraintValues = "r"
+	ConstraintValuesRmarg ConstraintValues = "rMarg"
+	ConstraintValuesRoff ConstraintValues = "rOff"
+	ConstraintValuesPrimfontsz ConstraintValues = "primFontSz"
+	ConstraintValuesPyraacctratio ConstraintValues = "pyraAcctRatio"
+	ConstraintValuesSecfontsz ConstraintValues = "secFontSz"
+	ConstraintValuesSibsp ConstraintValues = "sibSp"
+	ConstraintValuesSecsibsp ConstraintValues = "secSibSp"
+	ConstraintValuesSp ConstraintValues = "sp"
+	ConstraintValuesStemthick ConstraintValues = "stemThick"
+	ConstraintValuesT ConstraintValues = "t"
+	ConstraintValuesTmarg ConstraintValues = "tMarg"
+	ConstraintValuesToff ConstraintValues = "tOff"
+	ConstraintValuesUsera ConstraintValues = "userA"
+	ConstraintValuesUserb ConstraintValues = "userB"
+	ConstraintValuesUserc ConstraintValues = "userC"
+	ConstraintValuesUserd ConstraintValues = "userD"
+	ConstraintValuesUsere ConstraintValues = "userE"
+	ConstraintValuesUserf ConstraintValues = "userF"
+	ConstraintValuesUserg ConstraintValues = "userG"
+	ConstraintValuesUserh ConstraintValues = "userH"
+	ConstraintValuesUseri ConstraintValues = "userI"
+	ConstraintValuesUserj ConstraintValues = "userJ"
+	ConstraintValuesUserk ConstraintValues = "userK"
+	ConstraintValuesUserl ConstraintValues = "userL"
+	ConstraintValuesUserm ConstraintValues = "userM"
+	ConstraintValuesUsern ConstraintValues = "userN"
+	ConstraintValuesUsero ConstraintValues = "userO"
+	ConstraintValuesUserp ConstraintValues = "userP"
+	ConstraintValuesUserq ConstraintValues = "userQ"
+	ConstraintValuesUserr ConstraintValues = "userR"
+	ConstraintValuesUsers ConstraintValues = "userS"
+	ConstraintValuesUsert ConstraintValues = "userT"
+	ConstraintValuesUseru ConstraintValues = "userU"
+	ConstraintValuesUserv ConstraintValues = "userV"
+	ConstraintValuesUserw ConstraintValues = "userW"
+	ConstraintValuesUserx ConstraintValues = "userX"
+	ConstraintValuesUsery ConstraintValues = "userY"
+	ConstraintValuesUserz ConstraintValues = "userZ"
+	ConstraintValuesW ConstraintValues = "w"
+	ConstraintValuesWarh ConstraintValues = "wArH"
+	ConstraintValuesWoff ConstraintValues = "wOff"
+)
+
+func (e ConstraintValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ConstraintValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ConstraintValues(attr.Value)
+		return nil
+}
+
+// VisibilityValues
+type VisibilityValues string
+const (
+	VisibilityValuesVisible VisibilityValues = "visible"
+	VisibilityValuesHidden VisibilityValues = "hidden"
+	VisibilityValuesVeryhidden VisibilityValues = "veryHidden"
+)
+
+func (e VisibilityValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *VisibilityValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = VisibilityValues(attr.Value)
+		return nil
+}
+
+// ConnectorDimensionValues
+type ConnectorDimensionValues string
+const (
+	ConnectorDimensionValuesConnectorDimensionValues1D ConnectorDimensionValues = "1D"
+	ConnectorDimensionValuesConnectorDimensionValues2D ConnectorDimensionValues = "2D"
+	ConnectorDimensionValuesCust ConnectorDimensionValues = "cust"
+)
+
+func (e ConnectorDimensionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ConnectorDimensionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ConnectorDimensionValues(attr.Value)
+		return nil
+}
+
+// EditAsValues
+type EditAsValues string
+const (
+	EditAsValuesTwocell EditAsValues = "twoCell"
+	EditAsValuesOnecell EditAsValues = "oneCell"
+	EditAsValuesAbsolute EditAsValues = "absolute"
+)
+
+func (e EditAsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *EditAsValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = EditAsValues(attr.Value)
+		return nil
+}
+
+// ObjectDisplayValues
+type ObjectDisplayValues string
+const (
+	ObjectDisplayValuesAll ObjectDisplayValues = "all"
+	ObjectDisplayValuesPlaceholders ObjectDisplayValues = "placeholders"
+	ObjectDisplayValuesNone ObjectDisplayValues = "none"
+)
+
+func (e ObjectDisplayValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ObjectDisplayValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ObjectDisplayValues(attr.Value)
+		return nil
+}
+
+// FeatureType
+type FeatureType string
+const (
+	FeatureTypeDatavalidation FeatureType = "dataValidation"
+	FeatureTypeHyperlink FeatureType = "hyperlink"
+	FeatureTypeRowcolvisualops FeatureType = "rowColVisualOps"
+	FeatureTypeFreezepanes FeatureType = "freezePanes"
+	FeatureTypeSparklines FeatureType = "sparklines"
+	FeatureTypeHideunhidesheet FeatureType = "hideUnhideSheet"
+	FeatureTypeShowgridlinesheadings FeatureType = "showGridlinesHeadings"
+	FeatureTypeComment FeatureType = "comment"
+	FeatureTypeOutlines FeatureType = "outlines"
+	FeatureTypeDrawingelement FeatureType = "drawingElement"
+	FeatureTypeAutofilter FeatureType = "autoFilter"
+	FeatureTypePivottable FeatureType = "pivotTable"
+	FeatureTypeFuture FeatureType = "future"
+)
+
+func (e FeatureType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *FeatureType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FeatureType(attr.Value)
+		return nil
+}
+
+// PictureFormatValues
+type PictureFormatValues string
+const (
+	PictureFormatValuesStretch PictureFormatValues = "stretch"
+	PictureFormatValuesStack PictureFormatValues = "stack"
+	PictureFormatValuesStackscale PictureFormatValues = "stackScale"
+)
+
+func (e PictureFormatValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *PictureFormatValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PictureFormatValues(attr.Value)
+		return nil
+}
+
+// AlgorithmValues
+type AlgorithmValues string
+const (
+	AlgorithmValuesComposite AlgorithmValues = "composite"
+	AlgorithmValuesConn AlgorithmValues = "conn"
+	AlgorithmValuesCycle AlgorithmValues = "cycle"
+	AlgorithmValuesHierchild AlgorithmValues = "hierChild"
+	AlgorithmValuesHierroot AlgorithmValues = "hierRoot"
+	AlgorithmValuesPyra AlgorithmValues = "pyra"
+	AlgorithmValuesLin AlgorithmValues = "lin"
+	AlgorithmValuesSp AlgorithmValues = "sp"
+	AlgorithmValuesTx AlgorithmValues = "tx"
+	AlgorithmValuesSnake AlgorithmValues = "snake"
+)
+
+func (e AlgorithmValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AlgorithmValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AlgorithmValues(attr.Value)
+		return nil
+}
+
+// CalculatedMemberNumberFormat
+type CalculatedMemberNumberFormat string
+const (
+	CalculatedMemberNumberFormatDefault CalculatedMemberNumberFormat = "default"
+	CalculatedMemberNumberFormatNumber CalculatedMemberNumberFormat = "number"
+	CalculatedMemberNumberFormatPercent CalculatedMemberNumberFormat = "percent"
+)
+
+func (e CalculatedMemberNumberFormat) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *CalculatedMemberNumberFormat) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CalculatedMemberNumberFormat(attr.Value)
 		return nil
 }
 
@@ -1943,83 +5325,116 @@ func (e *FunctionValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// SortByValues
-type SortByValues string
+// FallbackDimensionValues
+type FallbackDimensionValues string
 const (
-	SortByValuesValue SortByValues = "value"
-	SortByValuesCellcolor SortByValues = "cellColor"
-	SortByValuesFontcolor SortByValues = "fontColor"
-	SortByValuesIcon SortByValues = "icon"
+	FallbackDimensionValuesFallbackDimensionValues1D FallbackDimensionValues = "1D"
+	FallbackDimensionValuesFallbackDimensionValues2D FallbackDimensionValues = "2D"
 )
 
-func (e SortByValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e FallbackDimensionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *SortByValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SortByValues(attr.Value)
+func (e *FallbackDimensionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FallbackDimensionValues(attr.Value)
 		return nil
 }
 
-// DataValidationValues
-type DataValidationValues string
+// PresetMaterialTypeValues
+type PresetMaterialTypeValues string
 const (
-	DataValidationValuesNone DataValidationValues = "none"
-	DataValidationValuesWhole DataValidationValues = "whole"
-	DataValidationValuesDecimal DataValidationValues = "decimal"
-	DataValidationValuesList DataValidationValues = "list"
-	DataValidationValuesDate DataValidationValues = "date"
-	DataValidationValuesTime DataValidationValues = "time"
-	DataValidationValuesTextlength DataValidationValues = "textLength"
-	DataValidationValuesCustom DataValidationValues = "custom"
+	PresetMaterialTypeValuesLegacymatte PresetMaterialTypeValues = "legacyMatte"
+	PresetMaterialTypeValuesLegacyplastic PresetMaterialTypeValues = "legacyPlastic"
+	PresetMaterialTypeValuesLegacymetal PresetMaterialTypeValues = "legacyMetal"
+	PresetMaterialTypeValuesLegacywireframe PresetMaterialTypeValues = "legacyWireframe"
+	PresetMaterialTypeValuesMatte PresetMaterialTypeValues = "matte"
+	PresetMaterialTypeValuesPlastic PresetMaterialTypeValues = "plastic"
+	PresetMaterialTypeValuesMetal PresetMaterialTypeValues = "metal"
+	PresetMaterialTypeValuesWarmmatte PresetMaterialTypeValues = "warmMatte"
+	PresetMaterialTypeValuesTranslucentpowder PresetMaterialTypeValues = "translucentPowder"
+	PresetMaterialTypeValuesPowder PresetMaterialTypeValues = "powder"
+	PresetMaterialTypeValuesDkedge PresetMaterialTypeValues = "dkEdge"
+	PresetMaterialTypeValuesSoftedge PresetMaterialTypeValues = "softEdge"
+	PresetMaterialTypeValuesClear PresetMaterialTypeValues = "clear"
+	PresetMaterialTypeValuesFlat PresetMaterialTypeValues = "flat"
+	PresetMaterialTypeValuesSoftmetal PresetMaterialTypeValues = "softmetal"
 )
 
-func (e DataValidationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PresetMaterialTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *DataValidationValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataValidationValues(attr.Value)
+func (e *PresetMaterialTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PresetMaterialTypeValues(attr.Value)
 		return nil
 }
 
-// TotalsRowFunctionValues
-type TotalsRowFunctionValues string
+// PresetPatternValues
+type PresetPatternValues string
 const (
-	TotalsRowFunctionValuesNone TotalsRowFunctionValues = "none"
-	TotalsRowFunctionValuesSum TotalsRowFunctionValues = "sum"
-	TotalsRowFunctionValuesMin TotalsRowFunctionValues = "min"
-	TotalsRowFunctionValuesMax TotalsRowFunctionValues = "max"
-	TotalsRowFunctionValuesAverage TotalsRowFunctionValues = "average"
-	TotalsRowFunctionValuesCount TotalsRowFunctionValues = "count"
-	TotalsRowFunctionValuesCountnums TotalsRowFunctionValues = "countNums"
-	TotalsRowFunctionValuesStddev TotalsRowFunctionValues = "stdDev"
-	TotalsRowFunctionValuesVar TotalsRowFunctionValues = "var"
-	TotalsRowFunctionValuesCustom TotalsRowFunctionValues = "custom"
+	PresetPatternValuesPct5 PresetPatternValues = "pct5"
+	PresetPatternValuesPct10 PresetPatternValues = "pct10"
+	PresetPatternValuesPct20 PresetPatternValues = "pct20"
+	PresetPatternValuesPct25 PresetPatternValues = "pct25"
+	PresetPatternValuesPct30 PresetPatternValues = "pct30"
+	PresetPatternValuesPct40 PresetPatternValues = "pct40"
+	PresetPatternValuesPct50 PresetPatternValues = "pct50"
+	PresetPatternValuesPct60 PresetPatternValues = "pct60"
+	PresetPatternValuesPct70 PresetPatternValues = "pct70"
+	PresetPatternValuesPct75 PresetPatternValues = "pct75"
+	PresetPatternValuesPct80 PresetPatternValues = "pct80"
+	PresetPatternValuesPct90 PresetPatternValues = "pct90"
+	PresetPatternValuesHorz PresetPatternValues = "horz"
+	PresetPatternValuesVert PresetPatternValues = "vert"
+	PresetPatternValuesLthorz PresetPatternValues = "ltHorz"
+	PresetPatternValuesLtvert PresetPatternValues = "ltVert"
+	PresetPatternValuesDkhorz PresetPatternValues = "dkHorz"
+	PresetPatternValuesDkvert PresetPatternValues = "dkVert"
+	PresetPatternValuesNarhorz PresetPatternValues = "narHorz"
+	PresetPatternValuesNarvert PresetPatternValues = "narVert"
+	PresetPatternValuesDashhorz PresetPatternValues = "dashHorz"
+	PresetPatternValuesDashvert PresetPatternValues = "dashVert"
+	PresetPatternValuesCross PresetPatternValues = "cross"
+	PresetPatternValuesDndiag PresetPatternValues = "dnDiag"
+	PresetPatternValuesUpdiag PresetPatternValues = "upDiag"
+	PresetPatternValuesLtdndiag PresetPatternValues = "ltDnDiag"
+	PresetPatternValuesLtupdiag PresetPatternValues = "ltUpDiag"
+	PresetPatternValuesDkdndiag PresetPatternValues = "dkDnDiag"
+	PresetPatternValuesDkupdiag PresetPatternValues = "dkUpDiag"
+	PresetPatternValuesWddndiag PresetPatternValues = "wdDnDiag"
+	PresetPatternValuesWdupdiag PresetPatternValues = "wdUpDiag"
+	PresetPatternValuesDashdndiag PresetPatternValues = "dashDnDiag"
+	PresetPatternValuesDashupdiag PresetPatternValues = "dashUpDiag"
+	PresetPatternValuesDiagcross PresetPatternValues = "diagCross"
+	PresetPatternValuesSmcheck PresetPatternValues = "smCheck"
+	PresetPatternValuesLgcheck PresetPatternValues = "lgCheck"
+	PresetPatternValuesSmgrid PresetPatternValues = "smGrid"
+	PresetPatternValuesLggrid PresetPatternValues = "lgGrid"
+	PresetPatternValuesDotgrid PresetPatternValues = "dotGrid"
+	PresetPatternValuesSmconfetti PresetPatternValues = "smConfetti"
+	PresetPatternValuesLgconfetti PresetPatternValues = "lgConfetti"
+	PresetPatternValuesHorzbrick PresetPatternValues = "horzBrick"
+	PresetPatternValuesDiagbrick PresetPatternValues = "diagBrick"
+	PresetPatternValuesSoliddmnd PresetPatternValues = "solidDmnd"
+	PresetPatternValuesOpendmnd PresetPatternValues = "openDmnd"
+	PresetPatternValuesDotdmnd PresetPatternValues = "dotDmnd"
+	PresetPatternValuesPlaid PresetPatternValues = "plaid"
+	PresetPatternValuesSphere PresetPatternValues = "sphere"
+	PresetPatternValuesWeave PresetPatternValues = "weave"
+	PresetPatternValuesDivot PresetPatternValues = "divot"
+	PresetPatternValuesShingle PresetPatternValues = "shingle"
+	PresetPatternValuesWave PresetPatternValues = "wave"
+	PresetPatternValuesTrellis PresetPatternValues = "trellis"
+	PresetPatternValuesZigzag PresetPatternValues = "zigZag"
 )
 
-func (e TotalsRowFunctionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PresetPatternValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TotalsRowFunctionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TotalsRowFunctionValues(attr.Value)
-		return nil
-}
-
-// DiagramBuildStepValues
-type DiagramBuildStepValues string
-const (
-	DiagramBuildStepValuesSp DiagramBuildStepValues = "sp"
-	DiagramBuildStepValuesBg DiagramBuildStepValues = "bg"
-)
-
-func (e DiagramBuildStepValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DiagramBuildStepValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DiagramBuildStepValues(attr.Value)
+func (e *PresetPatternValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PresetPatternValues(attr.Value)
 		return nil
 }
 
@@ -2227,176 +5642,107 @@ func (e *PresetColorValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// DataValidationOperatorValues
-type DataValidationOperatorValues string
+// DataValidationErrorStyleValues
+type DataValidationErrorStyleValues string
 const (
-	DataValidationOperatorValuesBetween DataValidationOperatorValues = "between"
-	DataValidationOperatorValuesNotbetween DataValidationOperatorValues = "notBetween"
-	DataValidationOperatorValuesEqual DataValidationOperatorValues = "equal"
-	DataValidationOperatorValuesNotequal DataValidationOperatorValues = "notEqual"
-	DataValidationOperatorValuesLessthan DataValidationOperatorValues = "lessThan"
-	DataValidationOperatorValuesLessthanorequal DataValidationOperatorValues = "lessThanOrEqual"
-	DataValidationOperatorValuesGreaterthan DataValidationOperatorValues = "greaterThan"
-	DataValidationOperatorValuesGreaterthanorequal DataValidationOperatorValues = "greaterThanOrEqual"
+	DataValidationErrorStyleValuesStop DataValidationErrorStyleValues = "stop"
+	DataValidationErrorStyleValuesWarning DataValidationErrorStyleValues = "warning"
+	DataValidationErrorStyleValuesInformation DataValidationErrorStyleValues = "information"
 )
 
-func (e DataValidationOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e DataValidationErrorStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *DataValidationOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataValidationOperatorValues(attr.Value)
+func (e *DataValidationErrorStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataValidationErrorStyleValues(attr.Value)
 		return nil
 }
 
-// PageOrderValues
-type PageOrderValues string
+// PatternValues
+type PatternValues string
 const (
-	PageOrderValuesDownthenover PageOrderValues = "downThenOver"
-	PageOrderValuesOverthendown PageOrderValues = "overThenDown"
+	PatternValuesNone PatternValues = "none"
+	PatternValuesSolid PatternValues = "solid"
+	PatternValuesMediumgray PatternValues = "mediumGray"
+	PatternValuesDarkgray PatternValues = "darkGray"
+	PatternValuesLightgray PatternValues = "lightGray"
+	PatternValuesDarkhorizontal PatternValues = "darkHorizontal"
+	PatternValuesDarkvertical PatternValues = "darkVertical"
+	PatternValuesDarkdown PatternValues = "darkDown"
+	PatternValuesDarkup PatternValues = "darkUp"
+	PatternValuesDarkgrid PatternValues = "darkGrid"
+	PatternValuesDarktrellis PatternValues = "darkTrellis"
+	PatternValuesLighthorizontal PatternValues = "lightHorizontal"
+	PatternValuesLightvertical PatternValues = "lightVertical"
+	PatternValuesLightdown PatternValues = "lightDown"
+	PatternValuesLightup PatternValues = "lightUp"
+	PatternValuesLightgrid PatternValues = "lightGrid"
+	PatternValuesLighttrellis PatternValues = "lightTrellis"
+	PatternValuesGray125 PatternValues = "gray125"
+	PatternValuesGray0625 PatternValues = "gray0625"
 )
 
-func (e PageOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PatternValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *PageOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PageOrderValues(attr.Value)
+func (e *PatternValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PatternValues(attr.Value)
 		return nil
 }
 
-// TableValues
-type TableValues string
+// GradientValues
+type GradientValues string
 const (
-	TableValuesWorksheet TableValues = "worksheet"
-	TableValuesXml TableValues = "xml"
-	TableValuesQuerytable TableValues = "queryTable"
+	GradientValuesLinear GradientValues = "linear"
+	GradientValuesPath GradientValues = "path"
 )
 
-func (e TableValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e GradientValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TableValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TableValues(attr.Value)
+func (e *GradientValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = GradientValues(attr.Value)
 		return nil
 }
 
-// DataBarAxisPositionValues
-type DataBarAxisPositionValues string
+// ClipboardFormatValues
+type ClipboardFormatValues string
 const (
-	DataBarAxisPositionValuesAutomatic DataBarAxisPositionValues = "automatic"
-	DataBarAxisPositionValuesMiddle DataBarAxisPositionValues = "middle"
-	DataBarAxisPositionValuesNone DataBarAxisPositionValues = "none"
+	ClipboardFormatValuesPictold ClipboardFormatValues = "PictOld"
+	ClipboardFormatValuesPict ClipboardFormatValues = "Pict"
+	ClipboardFormatValuesBitmap ClipboardFormatValues = "Bitmap"
+	ClipboardFormatValuesPictprint ClipboardFormatValues = "PictPrint"
+	ClipboardFormatValuesPictscreen ClipboardFormatValues = "PictScreen"
 )
 
-func (e DataBarAxisPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ClipboardFormatValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *DataBarAxisPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataBarAxisPositionValues(attr.Value)
+func (e *ClipboardFormatValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ClipboardFormatValues(attr.Value)
 		return nil
 }
 
-// IntervalClosedSide
-type IntervalClosedSide string
+// LegendPositionValues
+type LegendPositionValues string
 const (
-	IntervalClosedSideL IntervalClosedSide = "l"
-	IntervalClosedSideR IntervalClosedSide = "r"
+	LegendPositionValuesB LegendPositionValues = "b"
+	LegendPositionValuesTr LegendPositionValues = "tr"
+	LegendPositionValuesL LegendPositionValues = "l"
+	LegendPositionValuesR LegendPositionValues = "r"
+	LegendPositionValuesT LegendPositionValues = "t"
 )
 
-func (e IntervalClosedSide) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e LegendPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *IntervalClosedSide) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = IntervalClosedSide(attr.Value)
-		return nil
-}
-
-// QuartileMethod
-type QuartileMethod string
-const (
-	QuartileMethodInclusive QuartileMethod = "inclusive"
-	QuartileMethodExclusive QuartileMethod = "exclusive"
-)
-
-func (e QuartileMethod) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *QuartileMethod) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = QuartileMethod(attr.Value)
-		return nil
-}
-
-// ParameterIdValues
-type ParameterIdValues string
-const (
-	ParameterIdValuesHorzalign ParameterIdValues = "horzAlign"
-	ParameterIdValuesVertalign ParameterIdValues = "vertAlign"
-	ParameterIdValuesChdir ParameterIdValues = "chDir"
-	ParameterIdValuesChalign ParameterIdValues = "chAlign"
-	ParameterIdValuesSecchalign ParameterIdValues = "secChAlign"
-	ParameterIdValuesLindir ParameterIdValues = "linDir"
-	ParameterIdValuesSeclindir ParameterIdValues = "secLinDir"
-	ParameterIdValuesStelem ParameterIdValues = "stElem"
-	ParameterIdValuesBendpt ParameterIdValues = "bendPt"
-	ParameterIdValuesConnrout ParameterIdValues = "connRout"
-	ParameterIdValuesBegsty ParameterIdValues = "begSty"
-	ParameterIdValuesEndsty ParameterIdValues = "endSty"
-	ParameterIdValuesDim ParameterIdValues = "dim"
-	ParameterIdValuesRotpath ParameterIdValues = "rotPath"
-	ParameterIdValuesCtrshpmap ParameterIdValues = "ctrShpMap"
-	ParameterIdValuesNodehorzalign ParameterIdValues = "nodeHorzAlign"
-	ParameterIdValuesNodevertalign ParameterIdValues = "nodeVertAlign"
-	ParameterIdValuesFallback ParameterIdValues = "fallback"
-	ParameterIdValuesTxdir ParameterIdValues = "txDir"
-	ParameterIdValuesPyraacctpos ParameterIdValues = "pyraAcctPos"
-	ParameterIdValuesPyraaccttxmar ParameterIdValues = "pyraAcctTxMar"
-	ParameterIdValuesTxbldir ParameterIdValues = "txBlDir"
-	ParameterIdValuesTxanchorhorz ParameterIdValues = "txAnchorHorz"
-	ParameterIdValuesTxanchorvert ParameterIdValues = "txAnchorVert"
-	ParameterIdValuesTxanchorhorzch ParameterIdValues = "txAnchorHorzCh"
-	ParameterIdValuesTxanchorvertch ParameterIdValues = "txAnchorVertCh"
-	ParameterIdValuesPartxltralign ParameterIdValues = "parTxLTRAlign"
-	ParameterIdValuesPartxrtlalign ParameterIdValues = "parTxRTLAlign"
-	ParameterIdValuesShptxltralignch ParameterIdValues = "shpTxLTRAlignCh"
-	ParameterIdValuesShptxrtlalignch ParameterIdValues = "shpTxRTLAlignCh"
-	ParameterIdValuesAutotxrot ParameterIdValues = "autoTxRot"
-	ParameterIdValuesGrdir ParameterIdValues = "grDir"
-	ParameterIdValuesFlowdir ParameterIdValues = "flowDir"
-	ParameterIdValuesContdir ParameterIdValues = "contDir"
-	ParameterIdValuesBkpt ParameterIdValues = "bkpt"
-	ParameterIdValuesOff ParameterIdValues = "off"
-	ParameterIdValuesHieralign ParameterIdValues = "hierAlign"
-	ParameterIdValuesBkptfixedval ParameterIdValues = "bkPtFixedVal"
-	ParameterIdValuesStbulletlvl ParameterIdValues = "stBulletLvl"
-	ParameterIdValuesStang ParameterIdValues = "stAng"
-	ParameterIdValuesSpanang ParameterIdValues = "spanAng"
-	ParameterIdValuesAr ParameterIdValues = "ar"
-	ParameterIdValuesLnsppar ParameterIdValues = "lnSpPar"
-	ParameterIdValuesLnspafparp ParameterIdValues = "lnSpAfParP"
-	ParameterIdValuesLnspch ParameterIdValues = "lnSpCh"
-	ParameterIdValuesLnspafchp ParameterIdValues = "lnSpAfChP"
-	ParameterIdValuesRtshortdist ParameterIdValues = "rtShortDist"
-	ParameterIdValuesAligntx ParameterIdValues = "alignTx"
-	ParameterIdValuesPyralvlnode ParameterIdValues = "pyraLvlNode"
-	ParameterIdValuesPyraacctbkgdnode ParameterIdValues = "pyraAcctBkgdNode"
-	ParameterIdValuesPyraaccttxnode ParameterIdValues = "pyraAcctTxNode"
-	ParameterIdValuesSrcnode ParameterIdValues = "srcNode"
-	ParameterIdValuesDstnode ParameterIdValues = "dstNode"
-	ParameterIdValuesBegpts ParameterIdValues = "begPts"
-	ParameterIdValuesEndpts ParameterIdValues = "endPts"
-)
-
-func (e ParameterIdValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ParameterIdValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ParameterIdValues(attr.Value)
+func (e *LegendPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LegendPositionValues(attr.Value)
 		return nil
 }
 
@@ -2425,733 +5771,150 @@ func (e *ConnectorPointValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// VerticalAlignmentRunValues
-type VerticalAlignmentRunValues string
+// OffsetValues
+type OffsetValues string
 const (
-	VerticalAlignmentRunValuesBaseline VerticalAlignmentRunValues = "baseline"
-	VerticalAlignmentRunValuesSuperscript VerticalAlignmentRunValues = "superscript"
-	VerticalAlignmentRunValuesSubscript VerticalAlignmentRunValues = "subscript"
+	OffsetValuesCtr OffsetValues = "ctr"
+	OffsetValuesOff OffsetValues = "off"
 )
 
-func (e VerticalAlignmentRunValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e OffsetValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *VerticalAlignmentRunValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = VerticalAlignmentRunValues(attr.Value)
+func (e *OffsetValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = OffsetValues(attr.Value)
 		return nil
 }
 
-// AllocationMethodValues
-type AllocationMethodValues string
+// ColorSchemeIndexValues
+type ColorSchemeIndexValues string
 const (
-	AllocationMethodValuesEqualallocation AllocationMethodValues = "equalAllocation"
-	AllocationMethodValuesEqualincrement AllocationMethodValues = "equalIncrement"
-	AllocationMethodValuesWeightedallocation AllocationMethodValues = "weightedAllocation"
-	AllocationMethodValuesWeightedincrement AllocationMethodValues = "weightedIncrement"
+	ColorSchemeIndexValuesDk1 ColorSchemeIndexValues = "dk1"
+	ColorSchemeIndexValuesLt1 ColorSchemeIndexValues = "lt1"
+	ColorSchemeIndexValuesDk2 ColorSchemeIndexValues = "dk2"
+	ColorSchemeIndexValuesLt2 ColorSchemeIndexValues = "lt2"
+	ColorSchemeIndexValuesAccent1 ColorSchemeIndexValues = "accent1"
+	ColorSchemeIndexValuesAccent2 ColorSchemeIndexValues = "accent2"
+	ColorSchemeIndexValuesAccent3 ColorSchemeIndexValues = "accent3"
+	ColorSchemeIndexValuesAccent4 ColorSchemeIndexValues = "accent4"
+	ColorSchemeIndexValuesAccent5 ColorSchemeIndexValues = "accent5"
+	ColorSchemeIndexValuesAccent6 ColorSchemeIndexValues = "accent6"
+	ColorSchemeIndexValuesHlink ColorSchemeIndexValues = "hlink"
+	ColorSchemeIndexValuesFolhlink ColorSchemeIndexValues = "folHlink"
 )
 
-func (e AllocationMethodValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ColorSchemeIndexValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *AllocationMethodValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AllocationMethodValues(attr.Value)
+func (e *ColorSchemeIndexValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ColorSchemeIndexValues(attr.Value)
 		return nil
 }
 
-// ObjectTypeValues
-type ObjectTypeValues string
+// LightRigDirectionValues
+type LightRigDirectionValues string
 const (
-	ObjectTypeValuesButton ObjectTypeValues = "Button"
-	ObjectTypeValuesCheckbox ObjectTypeValues = "CheckBox"
-	ObjectTypeValuesDrop ObjectTypeValues = "Drop"
-	ObjectTypeValuesGbox ObjectTypeValues = "GBox"
-	ObjectTypeValuesLabel ObjectTypeValues = "Label"
-	ObjectTypeValuesList ObjectTypeValues = "List"
-	ObjectTypeValuesRadio ObjectTypeValues = "Radio"
-	ObjectTypeValuesScroll ObjectTypeValues = "Scroll"
-	ObjectTypeValuesSpin ObjectTypeValues = "Spin"
-	ObjectTypeValuesEditbox ObjectTypeValues = "EditBox"
-	ObjectTypeValuesDialog ObjectTypeValues = "Dialog"
+	LightRigDirectionValuesTl LightRigDirectionValues = "tl"
+	LightRigDirectionValuesT LightRigDirectionValues = "t"
+	LightRigDirectionValuesTr LightRigDirectionValues = "tr"
+	LightRigDirectionValuesL LightRigDirectionValues = "l"
+	LightRigDirectionValuesR LightRigDirectionValues = "r"
+	LightRigDirectionValuesBl LightRigDirectionValues = "bl"
+	LightRigDirectionValuesB LightRigDirectionValues = "b"
+	LightRigDirectionValuesBr LightRigDirectionValues = "br"
 )
 
-func (e ObjectTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e LightRigDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ObjectTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ObjectTypeValues(attr.Value)
+func (e *LightRigDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LightRigDirectionValues(attr.Value)
 		return nil
 }
 
-// MdxFunctionValues
-type MdxFunctionValues string
+// DynamicFilterValues
+type DynamicFilterValues string
 const (
-	MdxFunctionValuesM MdxFunctionValues = "m"
-	MdxFunctionValuesV MdxFunctionValues = "v"
-	MdxFunctionValuesS MdxFunctionValues = "s"
-	MdxFunctionValuesC MdxFunctionValues = "c"
-	MdxFunctionValuesR MdxFunctionValues = "r"
-	MdxFunctionValuesP MdxFunctionValues = "p"
-	MdxFunctionValuesK MdxFunctionValues = "k"
+	DynamicFilterValuesNull DynamicFilterValues = "null"
+	DynamicFilterValuesAboveaverage DynamicFilterValues = "aboveAverage"
+	DynamicFilterValuesBelowaverage DynamicFilterValues = "belowAverage"
+	DynamicFilterValuesTomorrow DynamicFilterValues = "tomorrow"
+	DynamicFilterValuesToday DynamicFilterValues = "today"
+	DynamicFilterValuesYesterday DynamicFilterValues = "yesterday"
+	DynamicFilterValuesNextweek DynamicFilterValues = "nextWeek"
+	DynamicFilterValuesThisweek DynamicFilterValues = "thisWeek"
+	DynamicFilterValuesLastweek DynamicFilterValues = "lastWeek"
+	DynamicFilterValuesNextmonth DynamicFilterValues = "nextMonth"
+	DynamicFilterValuesThismonth DynamicFilterValues = "thisMonth"
+	DynamicFilterValuesLastmonth DynamicFilterValues = "lastMonth"
+	DynamicFilterValuesNextquarter DynamicFilterValues = "nextQuarter"
+	DynamicFilterValuesThisquarter DynamicFilterValues = "thisQuarter"
+	DynamicFilterValuesLastquarter DynamicFilterValues = "lastQuarter"
+	DynamicFilterValuesNextyear DynamicFilterValues = "nextYear"
+	DynamicFilterValuesThisyear DynamicFilterValues = "thisYear"
+	DynamicFilterValuesLastyear DynamicFilterValues = "lastYear"
+	DynamicFilterValuesYeartodate DynamicFilterValues = "yearToDate"
+	DynamicFilterValuesQ1 DynamicFilterValues = "Q1"
+	DynamicFilterValuesQ2 DynamicFilterValues = "Q2"
+	DynamicFilterValuesQ3 DynamicFilterValues = "Q3"
+	DynamicFilterValuesQ4 DynamicFilterValues = "Q4"
+	DynamicFilterValuesM1 DynamicFilterValues = "M1"
+	DynamicFilterValuesM2 DynamicFilterValues = "M2"
+	DynamicFilterValuesM3 DynamicFilterValues = "M3"
+	DynamicFilterValuesM4 DynamicFilterValues = "M4"
+	DynamicFilterValuesM5 DynamicFilterValues = "M5"
+	DynamicFilterValuesM6 DynamicFilterValues = "M6"
+	DynamicFilterValuesM7 DynamicFilterValues = "M7"
+	DynamicFilterValuesM8 DynamicFilterValues = "M8"
+	DynamicFilterValuesM9 DynamicFilterValues = "M9"
+	DynamicFilterValuesM10 DynamicFilterValues = "M10"
+	DynamicFilterValuesM11 DynamicFilterValues = "M11"
+	DynamicFilterValuesM12 DynamicFilterValues = "M12"
 )
 
-func (e MdxFunctionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e DynamicFilterValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *MdxFunctionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = MdxFunctionValues(attr.Value)
+func (e *DynamicFilterValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DynamicFilterValues(attr.Value)
 		return nil
 }
 
-// StartingElementValues
-type StartingElementValues string
+// SortMethodValues
+type SortMethodValues string
 const (
-	StartingElementValuesNode StartingElementValues = "node"
-	StartingElementValuesTrans StartingElementValues = "trans"
+	SortMethodValuesStroke SortMethodValues = "stroke"
+	SortMethodValuesPinyin SortMethodValues = "pinYin"
+	SortMethodValuesNone SortMethodValues = "none"
 )
 
-func (e StartingElementValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e SortMethodValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *StartingElementValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = StartingElementValues(attr.Value)
+func (e *SortMethodValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SortMethodValues(attr.Value)
 		return nil
 }
 
-// ParameterValues
-type ParameterValues string
+// FontCollectionIndexValues
+type FontCollectionIndexValues string
 const (
-	ParameterValuesPrompt ParameterValues = "prompt"
-	ParameterValuesValue ParameterValues = "value"
-	ParameterValuesCell ParameterValues = "cell"
+	FontCollectionIndexValuesMajor FontCollectionIndexValues = "major"
+	FontCollectionIndexValuesMinor FontCollectionIndexValues = "minor"
+	FontCollectionIndexValuesNone FontCollectionIndexValues = "none"
 )
 
-func (e ParameterValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e FontCollectionIndexValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ParameterValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ParameterValues(attr.Value)
-		return nil
-}
-
-// QualifierValues
-type QualifierValues string
-const (
-	QualifierValuesDoublequote QualifierValues = "doubleQuote"
-	QualifierValuesSinglequote QualifierValues = "singleQuote"
-	QualifierValuesNone QualifierValues = "none"
-)
-
-func (e QualifierValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *QualifierValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = QualifierValues(attr.Value)
-		return nil
-}
-
-// ConditionalFormatValueObjectValues
-type ConditionalFormatValueObjectValues string
-const (
-	ConditionalFormatValueObjectValuesNum ConditionalFormatValueObjectValues = "num"
-	ConditionalFormatValueObjectValuesPercent ConditionalFormatValueObjectValues = "percent"
-	ConditionalFormatValueObjectValuesMax ConditionalFormatValueObjectValues = "max"
-	ConditionalFormatValueObjectValuesMin ConditionalFormatValueObjectValues = "min"
-	ConditionalFormatValueObjectValuesFormula ConditionalFormatValueObjectValues = "formula"
-	ConditionalFormatValueObjectValuesPercentile ConditionalFormatValueObjectValues = "percentile"
-)
-
-func (e ConditionalFormatValueObjectValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ConditionalFormatValueObjectValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ConditionalFormatValueObjectValues(attr.Value)
-		return nil
-}
-
-// SparklineTypeValues
-type SparklineTypeValues string
-const (
-	SparklineTypeValuesLine SparklineTypeValues = "line"
-	SparklineTypeValuesColumn SparklineTypeValues = "column"
-	SparklineTypeValuesStacked SparklineTypeValues = "stacked"
-)
-
-func (e SparklineTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SparklineTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SparklineTypeValues(attr.Value)
-		return nil
-}
-
-// SystemColorValues
-type SystemColorValues string
-const (
-	SystemColorValuesScrollbar SystemColorValues = "scrollBar"
-	SystemColorValuesBackground SystemColorValues = "background"
-	SystemColorValuesActivecaption SystemColorValues = "activeCaption"
-	SystemColorValuesInactivecaption SystemColorValues = "inactiveCaption"
-	SystemColorValuesMenu SystemColorValues = "menu"
-	SystemColorValuesWindow SystemColorValues = "window"
-	SystemColorValuesWindowframe SystemColorValues = "windowFrame"
-	SystemColorValuesMenutext SystemColorValues = "menuText"
-	SystemColorValuesWindowtext SystemColorValues = "windowText"
-	SystemColorValuesCaptiontext SystemColorValues = "captionText"
-	SystemColorValuesActiveborder SystemColorValues = "activeBorder"
-	SystemColorValuesInactiveborder SystemColorValues = "inactiveBorder"
-	SystemColorValuesAppworkspace SystemColorValues = "appWorkspace"
-	SystemColorValuesHighlight SystemColorValues = "highlight"
-	SystemColorValuesHighlighttext SystemColorValues = "highlightText"
-	SystemColorValuesBtnface SystemColorValues = "btnFace"
-	SystemColorValuesBtnshadow SystemColorValues = "btnShadow"
-	SystemColorValuesGraytext SystemColorValues = "grayText"
-	SystemColorValuesBtntext SystemColorValues = "btnText"
-	SystemColorValuesInactivecaptiontext SystemColorValues = "inactiveCaptionText"
-	SystemColorValuesBtnhighlight SystemColorValues = "btnHighlight"
-	SystemColorValuesSystemColorValues3Ddkshadow SystemColorValues = "3dDkShadow"
-	SystemColorValuesSystemColorValues3Dlight SystemColorValues = "3dLight"
-	SystemColorValuesInfotext SystemColorValues = "infoText"
-	SystemColorValuesInfobk SystemColorValues = "infoBk"
-	SystemColorValuesHotlight SystemColorValues = "hotLight"
-	SystemColorValuesGradientactivecaption SystemColorValues = "gradientActiveCaption"
-	SystemColorValuesGradientinactivecaption SystemColorValues = "gradientInactiveCaption"
-	SystemColorValuesMenuhighlight SystemColorValues = "menuHighlight"
-	SystemColorValuesMenubar SystemColorValues = "menuBar"
-)
-
-func (e SystemColorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SystemColorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SystemColorValues(attr.Value)
-		return nil
-}
-
-// SheetViewValues
-type SheetViewValues string
-const (
-	SheetViewValuesNormal SheetViewValues = "normal"
-	SheetViewValuesPagebreakpreview SheetViewValues = "pageBreakPreview"
-	SheetViewValuesPagelayout SheetViewValues = "pageLayout"
-)
-
-func (e SheetViewValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SheetViewValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SheetViewValues(attr.Value)
-		return nil
-}
-
-// SelectionTypeValues
-type SelectionTypeValues string
-const (
-	SelectionTypeValuesSingle SelectionTypeValues = "single"
-	SelectionTypeValuesMulti SelectionTypeValues = "multi"
-	SelectionTypeValuesExtended SelectionTypeValues = "extended"
-)
-
-func (e SelectionTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SelectionTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SelectionTypeValues(attr.Value)
-		return nil
-}
-
-// RotationPathValues
-type RotationPathValues string
-const (
-	RotationPathValuesNone RotationPathValues = "none"
-	RotationPathValuesAlongpath RotationPathValues = "alongPath"
-)
-
-func (e RotationPathValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RotationPathValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RotationPathValues(attr.Value)
-		return nil
-}
-
-// PhoneticValues
-type PhoneticValues string
-const (
-	PhoneticValuesHalfwidthkatakana PhoneticValues = "halfwidthKatakana"
-	PhoneticValuesFullwidthkatakana PhoneticValues = "fullwidthKatakana"
-	PhoneticValuesHiragana PhoneticValues = "Hiragana"
-	PhoneticValuesNoconversion PhoneticValues = "noConversion"
-)
-
-func (e PhoneticValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PhoneticValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PhoneticValues(attr.Value)
-		return nil
-}
-
-// OartAnchorType
-type OartAnchorType string
-const (
-	OartAnchorTypeTwocell OartAnchorType = "twoCell"
-	OartAnchorTypeOnecell OartAnchorType = "oneCell"
-	OartAnchorTypeAbsolute OartAnchorType = "absolute"
-)
-
-func (e OartAnchorType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *OartAnchorType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = OartAnchorType(attr.Value)
-		return nil
-}
-
-// TickMarksType
-type TickMarksType string
-const (
-	TickMarksTypeIn TickMarksType = "in"
-	TickMarksTypeOut TickMarksType = "out"
-	TickMarksTypeCross TickMarksType = "cross"
-	TickMarksTypeNone TickMarksType = "none"
-)
-
-func (e TickMarksType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TickMarksType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TickMarksType(attr.Value)
-		return nil
-}
-
-// MovingPeriodStep
-type MovingPeriodStep string
-const (
-	MovingPeriodStepYear MovingPeriodStep = "year"
-	MovingPeriodStepQuarter MovingPeriodStep = "quarter"
-	MovingPeriodStepMonth MovingPeriodStep = "month"
-	MovingPeriodStepWeek MovingPeriodStep = "week"
-	MovingPeriodStepDay MovingPeriodStep = "day"
-)
-
-func (e MovingPeriodStep) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *MovingPeriodStep) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = MovingPeriodStep(attr.Value)
-		return nil
-}
-
-// DataValidationImeModeValues
-type DataValidationImeModeValues string
-const (
-	DataValidationImeModeValuesNocontrol DataValidationImeModeValues = "noControl"
-	DataValidationImeModeValuesOff DataValidationImeModeValues = "off"
-	DataValidationImeModeValuesOn DataValidationImeModeValues = "on"
-	DataValidationImeModeValuesDisabled DataValidationImeModeValues = "disabled"
-	DataValidationImeModeValuesHiragana DataValidationImeModeValues = "hiragana"
-	DataValidationImeModeValuesFullkatakana DataValidationImeModeValues = "fullKatakana"
-	DataValidationImeModeValuesHalfkatakana DataValidationImeModeValues = "halfKatakana"
-	DataValidationImeModeValuesFullalpha DataValidationImeModeValues = "fullAlpha"
-	DataValidationImeModeValuesHalfalpha DataValidationImeModeValues = "halfAlpha"
-	DataValidationImeModeValuesFullhangul DataValidationImeModeValues = "fullHangul"
-	DataValidationImeModeValuesHalfhangul DataValidationImeModeValues = "halfHangul"
-)
-
-func (e DataValidationImeModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DataValidationImeModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataValidationImeModeValues(attr.Value)
-		return nil
-}
-
-// HierarchyAlignmentValues
-type HierarchyAlignmentValues string
-const (
-	HierarchyAlignmentValuesTl HierarchyAlignmentValues = "tL"
-	HierarchyAlignmentValuesTr HierarchyAlignmentValues = "tR"
-	HierarchyAlignmentValuesTctrch HierarchyAlignmentValues = "tCtrCh"
-	HierarchyAlignmentValuesTctrdes HierarchyAlignmentValues = "tCtrDes"
-	HierarchyAlignmentValuesBl HierarchyAlignmentValues = "bL"
-	HierarchyAlignmentValuesBr HierarchyAlignmentValues = "bR"
-	HierarchyAlignmentValuesBctrch HierarchyAlignmentValues = "bCtrCh"
-	HierarchyAlignmentValuesBctrdes HierarchyAlignmentValues = "bCtrDes"
-	HierarchyAlignmentValuesLt HierarchyAlignmentValues = "lT"
-	HierarchyAlignmentValuesLb HierarchyAlignmentValues = "lB"
-	HierarchyAlignmentValuesLctrch HierarchyAlignmentValues = "lCtrCh"
-	HierarchyAlignmentValuesLctrdes HierarchyAlignmentValues = "lCtrDes"
-	HierarchyAlignmentValuesRt HierarchyAlignmentValues = "rT"
-	HierarchyAlignmentValuesRb HierarchyAlignmentValues = "rB"
-	HierarchyAlignmentValuesRctrch HierarchyAlignmentValues = "rCtrCh"
-	HierarchyAlignmentValuesRctrdes HierarchyAlignmentValues = "rCtrDes"
-)
-
-func (e HierarchyAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *HierarchyAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = HierarchyAlignmentValues(attr.Value)
-		return nil
-}
-
-// BooleanEntryWithBlankValues
-type BooleanEntryWithBlankValues string
-const (
-	BooleanEntryWithBlankValuesTrue BooleanEntryWithBlankValues = "True"
-	BooleanEntryWithBlankValuesT BooleanEntryWithBlankValues = "t"
-	BooleanEntryWithBlankValuesFalse BooleanEntryWithBlankValues = "False"
-	BooleanEntryWithBlankValuesF BooleanEntryWithBlankValues = "f"
-	BooleanEntryWithBlankValuesNone BooleanEntryWithBlankValues = ""
-)
-
-func (e BooleanEntryWithBlankValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BooleanEntryWithBlankValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BooleanEntryWithBlankValues(attr.Value)
-		return nil
-}
-
-// ConstraintValues
-type ConstraintValues string
-const (
-	ConstraintValuesNone ConstraintValues = "none"
-	ConstraintValuesAlignoff ConstraintValues = "alignOff"
-	ConstraintValuesBegmarg ConstraintValues = "begMarg"
-	ConstraintValuesBenddist ConstraintValues = "bendDist"
-	ConstraintValuesBegpad ConstraintValues = "begPad"
-	ConstraintValuesB ConstraintValues = "b"
-	ConstraintValuesBmarg ConstraintValues = "bMarg"
-	ConstraintValuesBoff ConstraintValues = "bOff"
-	ConstraintValuesCtrx ConstraintValues = "ctrX"
-	ConstraintValuesCtrxoff ConstraintValues = "ctrXOff"
-	ConstraintValuesCtry ConstraintValues = "ctrY"
-	ConstraintValuesCtryoff ConstraintValues = "ctrYOff"
-	ConstraintValuesConndist ConstraintValues = "connDist"
-	ConstraintValuesDiam ConstraintValues = "diam"
-	ConstraintValuesEndmarg ConstraintValues = "endMarg"
-	ConstraintValuesEndpad ConstraintValues = "endPad"
-	ConstraintValuesH ConstraintValues = "h"
-	ConstraintValuesHarh ConstraintValues = "hArH"
-	ConstraintValuesHoff ConstraintValues = "hOff"
-	ConstraintValuesL ConstraintValues = "l"
-	ConstraintValuesLmarg ConstraintValues = "lMarg"
-	ConstraintValuesLoff ConstraintValues = "lOff"
-	ConstraintValuesR ConstraintValues = "r"
-	ConstraintValuesRmarg ConstraintValues = "rMarg"
-	ConstraintValuesRoff ConstraintValues = "rOff"
-	ConstraintValuesPrimfontsz ConstraintValues = "primFontSz"
-	ConstraintValuesPyraacctratio ConstraintValues = "pyraAcctRatio"
-	ConstraintValuesSecfontsz ConstraintValues = "secFontSz"
-	ConstraintValuesSibsp ConstraintValues = "sibSp"
-	ConstraintValuesSecsibsp ConstraintValues = "secSibSp"
-	ConstraintValuesSp ConstraintValues = "sp"
-	ConstraintValuesStemthick ConstraintValues = "stemThick"
-	ConstraintValuesT ConstraintValues = "t"
-	ConstraintValuesTmarg ConstraintValues = "tMarg"
-	ConstraintValuesToff ConstraintValues = "tOff"
-	ConstraintValuesUsera ConstraintValues = "userA"
-	ConstraintValuesUserb ConstraintValues = "userB"
-	ConstraintValuesUserc ConstraintValues = "userC"
-	ConstraintValuesUserd ConstraintValues = "userD"
-	ConstraintValuesUsere ConstraintValues = "userE"
-	ConstraintValuesUserf ConstraintValues = "userF"
-	ConstraintValuesUserg ConstraintValues = "userG"
-	ConstraintValuesUserh ConstraintValues = "userH"
-	ConstraintValuesUseri ConstraintValues = "userI"
-	ConstraintValuesUserj ConstraintValues = "userJ"
-	ConstraintValuesUserk ConstraintValues = "userK"
-	ConstraintValuesUserl ConstraintValues = "userL"
-	ConstraintValuesUserm ConstraintValues = "userM"
-	ConstraintValuesUsern ConstraintValues = "userN"
-	ConstraintValuesUsero ConstraintValues = "userO"
-	ConstraintValuesUserp ConstraintValues = "userP"
-	ConstraintValuesUserq ConstraintValues = "userQ"
-	ConstraintValuesUserr ConstraintValues = "userR"
-	ConstraintValuesUsers ConstraintValues = "userS"
-	ConstraintValuesUsert ConstraintValues = "userT"
-	ConstraintValuesUseru ConstraintValues = "userU"
-	ConstraintValuesUserv ConstraintValues = "userV"
-	ConstraintValuesUserw ConstraintValues = "userW"
-	ConstraintValuesUserx ConstraintValues = "userX"
-	ConstraintValuesUsery ConstraintValues = "userY"
-	ConstraintValuesUserz ConstraintValues = "userZ"
-	ConstraintValuesW ConstraintValues = "w"
-	ConstraintValuesWarh ConstraintValues = "wArH"
-	ConstraintValuesWoff ConstraintValues = "wOff"
-)
-
-func (e ConstraintValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ConstraintValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ConstraintValues(attr.Value)
-		return nil
-}
-
-// ContinueDirectionValues
-type ContinueDirectionValues string
-const (
-	ContinueDirectionValuesRevdir ContinueDirectionValues = "revDir"
-	ContinueDirectionValuesSamedir ContinueDirectionValues = "sameDir"
-)
-
-func (e ContinueDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ContinueDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ContinueDirectionValues(attr.Value)
-		return nil
-}
-
-// EffectContainerValues
-type EffectContainerValues string
-const (
-	EffectContainerValuesSib EffectContainerValues = "sib"
-	EffectContainerValuesTree EffectContainerValues = "tree"
-)
-
-func (e EffectContainerValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *EffectContainerValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = EffectContainerValues(attr.Value)
-		return nil
-}
-
-// LineEndLengthValues
-type LineEndLengthValues string
-const (
-	LineEndLengthValuesSm LineEndLengthValues = "sm"
-	LineEndLengthValuesMed LineEndLengthValues = "med"
-	LineEndLengthValuesLg LineEndLengthValues = "lg"
-)
-
-func (e LineEndLengthValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *LineEndLengthValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LineEndLengthValues(attr.Value)
-		return nil
-}
-
-// FeatureType
-type FeatureType string
-const (
-	FeatureTypeDatavalidation FeatureType = "dataValidation"
-	FeatureTypeHyperlink FeatureType = "hyperlink"
-	FeatureTypeRowcolvisualops FeatureType = "rowColVisualOps"
-	FeatureTypeFreezepanes FeatureType = "freezePanes"
-	FeatureTypeSparklines FeatureType = "sparklines"
-	FeatureTypeHideunhidesheet FeatureType = "hideUnhideSheet"
-	FeatureTypeShowgridlinesheadings FeatureType = "showGridlinesHeadings"
-	FeatureTypeComment FeatureType = "comment"
-	FeatureTypeOutlines FeatureType = "outlines"
-	FeatureTypeDrawingelement FeatureType = "drawingElement"
-	FeatureTypeAutofilter FeatureType = "autoFilter"
-	FeatureTypePivottable FeatureType = "pivotTable"
-	FeatureTypeFuture FeatureType = "future"
-)
-
-func (e FeatureType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FeatureType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FeatureType(attr.Value)
-		return nil
-}
-
-// ExtendedBrushPropertyName
-type ExtendedBrushPropertyName string
-const (
-	ExtendedBrushPropertyNameInkeffects ExtendedBrushPropertyName = "inkEffects"
-	ExtendedBrushPropertyNameAnchorx ExtendedBrushPropertyName = "anchorX"
-	ExtendedBrushPropertyNameAnchory ExtendedBrushPropertyName = "anchorY"
-	ExtendedBrushPropertyNameScalefactor ExtendedBrushPropertyName = "scaleFactor"
-)
-
-func (e ExtendedBrushPropertyName) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ExtendedBrushPropertyName) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ExtendedBrushPropertyName(attr.Value)
-		return nil
-}
-
-// ParentLabelLayoutVal
-type ParentLabelLayoutVal string
-const (
-	ParentLabelLayoutValNone ParentLabelLayoutVal = "none"
-	ParentLabelLayoutValBanner ParentLabelLayoutVal = "banner"
-	ParentLabelLayoutValOverlapping ParentLabelLayoutVal = "overlapping"
-)
-
-func (e ParentLabelLayoutVal) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ParentLabelLayoutVal) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ParentLabelLayoutVal(attr.Value)
-		return nil
-}
-
-// ArrowheadStyleValues
-type ArrowheadStyleValues string
-const (
-	ArrowheadStyleValuesAuto ArrowheadStyleValues = "auto"
-	ArrowheadStyleValuesArr ArrowheadStyleValues = "arr"
-	ArrowheadStyleValuesNoarr ArrowheadStyleValues = "noArr"
-)
-
-func (e ArrowheadStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ArrowheadStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ArrowheadStyleValues(attr.Value)
-		return nil
-}
-
-// HtmlFormattingValues
-type HtmlFormattingValues string
-const (
-	HtmlFormattingValuesNone HtmlFormattingValues = "none"
-	HtmlFormattingValuesRtf HtmlFormattingValues = "rtf"
-	HtmlFormattingValuesAll HtmlFormattingValues = "all"
-)
-
-func (e HtmlFormattingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *HtmlFormattingValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = HtmlFormattingValues(attr.Value)
-		return nil
-}
-
-// PivotTableAxisValues
-type PivotTableAxisValues string
-const (
-	PivotTableAxisValuesAxisrow PivotTableAxisValues = "axisRow"
-	PivotTableAxisValuesAxiscol PivotTableAxisValues = "axisCol"
-	PivotTableAxisValuesAxispage PivotTableAxisValues = "axisPage"
-	PivotTableAxisValuesAxisvalues PivotTableAxisValues = "axisValues"
-)
-
-func (e PivotTableAxisValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PivotTableAxisValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PivotTableAxisValues(attr.Value)
-		return nil
-}
-
-// PivotEditValueTypeValues
-type PivotEditValueTypeValues string
-const (
-	PivotEditValueTypeValuesNumber PivotEditValueTypeValues = "number"
-	PivotEditValueTypeValuesDatetime PivotEditValueTypeValues = "dateTime"
-	PivotEditValueTypeValuesString PivotEditValueTypeValues = "string"
-	PivotEditValueTypeValuesBoolean PivotEditValueTypeValues = "boolean"
-	PivotEditValueTypeValuesError PivotEditValueTypeValues = "error"
-)
-
-func (e PivotEditValueTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PivotEditValueTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PivotEditValueTypeValues(attr.Value)
-		return nil
-}
-
-// TickLabelPositionNinch
-type TickLabelPositionNinch string
-const (
-	TickLabelPositionNinchHigh TickLabelPositionNinch = "high"
-	TickLabelPositionNinchLow TickLabelPositionNinch = "low"
-	TickLabelPositionNinchNexttoaxis TickLabelPositionNinch = "nextToAxis"
-	TickLabelPositionNinchNone TickLabelPositionNinch = "none"
-	TickLabelPositionNinchNinch TickLabelPositionNinch = "ninch"
-)
-
-func (e TickLabelPositionNinch) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TickLabelPositionNinch) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TickLabelPositionNinch(attr.Value)
-		return nil
-}
-
-// EntityTypeEnum
-type EntityTypeEnum string
-const (
-	EntityTypeEnumAddress EntityTypeEnum = "Address"
-	EntityTypeEnumAdmindistrict EntityTypeEnum = "AdminDistrict"
-	EntityTypeEnumAdmindistrict2 EntityTypeEnum = "AdminDistrict2"
-	EntityTypeEnumAdmindistrict3 EntityTypeEnum = "AdminDistrict3"
-	EntityTypeEnumContinent EntityTypeEnum = "Continent"
-	EntityTypeEnumCountryregion EntityTypeEnum = "CountryRegion"
-	EntityTypeEnumLocality EntityTypeEnum = "Locality"
-	EntityTypeEnumOcean EntityTypeEnum = "Ocean"
-	EntityTypeEnumPlanet EntityTypeEnum = "Planet"
-	EntityTypeEnumPostalcode EntityTypeEnum = "PostalCode"
-	EntityTypeEnumRegion EntityTypeEnum = "Region"
-	EntityTypeEnumUnsupported EntityTypeEnum = "Unsupported"
-)
-
-func (e EntityTypeEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *EntityTypeEnum) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = EntityTypeEnum(attr.Value)
-		return nil
-}
-
-// PageOrientation
-type PageOrientation string
-const (
-	PageOrientationDefault PageOrientation = "default"
-	PageOrientationPortrait PageOrientation = "portrait"
-	PageOrientationLandscape PageOrientation = "landscape"
-)
-
-func (e PageOrientation) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PageOrientation) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PageOrientation(attr.Value)
+func (e *FontCollectionIndexValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FontCollectionIndexValues(attr.Value)
 		return nil
 }
 
@@ -3210,770 +5973,35 @@ func (e *TextAutoNumberSchemeValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// QuestionType
-type QuestionType string
+// ReferenceModeValues
+type ReferenceModeValues string
 const (
-	QuestionTypeCheckbox QuestionType = "checkBox"
-	QuestionTypeChoice QuestionType = "choice"
-	QuestionTypeDate QuestionType = "date"
-	QuestionTypeTime QuestionType = "time"
-	QuestionTypeMultiplelinesoftext QuestionType = "multipleLinesOfText"
-	QuestionTypeNumber QuestionType = "number"
-	QuestionTypeSinglelineoftext QuestionType = "singleLineOfText"
+	ReferenceModeValuesA1 ReferenceModeValues = "A1"
+	ReferenceModeValuesR1c1 ReferenceModeValues = "R1C1"
 )
 
-func (e QuestionType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ReferenceModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *QuestionType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = QuestionType(attr.Value)
+func (e *ReferenceModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ReferenceModeValues(attr.Value)
 		return nil
 }
 
-// AdjustTypeExt
-type AdjustTypeExt string
+// TabularSlicerCacheSortOrderValues
+type TabularSlicerCacheSortOrderValues string
 const (
-	AdjustTypeExtTest AdjustTypeExt = "test"
+	TabularSlicerCacheSortOrderValuesAscending TabularSlicerCacheSortOrderValues = "ascending"
+	TabularSlicerCacheSortOrderValuesDescending TabularSlicerCacheSortOrderValues = "descending"
 )
 
-func (e AdjustTypeExt) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TabularSlicerCacheSortOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *AdjustTypeExt) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AdjustTypeExt(attr.Value)
-		return nil
-}
-
-// ErrorBarDirectionValues
-type ErrorBarDirectionValues string
-const (
-	ErrorBarDirectionValuesX ErrorBarDirectionValues = "x"
-	ErrorBarDirectionValuesY ErrorBarDirectionValues = "y"
-)
-
-func (e ErrorBarDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ErrorBarDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ErrorBarDirectionValues(attr.Value)
-		return nil
-}
-
-// PivotFilterValues
-type PivotFilterValues string
-const (
-	PivotFilterValuesUnknown PivotFilterValues = "unknown"
-	PivotFilterValuesCount PivotFilterValues = "count"
-	PivotFilterValuesPercent PivotFilterValues = "percent"
-	PivotFilterValuesSum PivotFilterValues = "sum"
-	PivotFilterValuesCaptionequal PivotFilterValues = "captionEqual"
-	PivotFilterValuesCaptionnotequal PivotFilterValues = "captionNotEqual"
-	PivotFilterValuesCaptionbeginswith PivotFilterValues = "captionBeginsWith"
-	PivotFilterValuesCaptionnotbeginswith PivotFilterValues = "captionNotBeginsWith"
-	PivotFilterValuesCaptionendswith PivotFilterValues = "captionEndsWith"
-	PivotFilterValuesCaptionnotendswith PivotFilterValues = "captionNotEndsWith"
-	PivotFilterValuesCaptioncontains PivotFilterValues = "captionContains"
-	PivotFilterValuesCaptionnotcontains PivotFilterValues = "captionNotContains"
-	PivotFilterValuesCaptiongreaterthan PivotFilterValues = "captionGreaterThan"
-	PivotFilterValuesCaptiongreaterthanorequal PivotFilterValues = "captionGreaterThanOrEqual"
-	PivotFilterValuesCaptionlessthan PivotFilterValues = "captionLessThan"
-	PivotFilterValuesCaptionlessthanorequal PivotFilterValues = "captionLessThanOrEqual"
-	PivotFilterValuesCaptionbetween PivotFilterValues = "captionBetween"
-	PivotFilterValuesCaptionnotbetween PivotFilterValues = "captionNotBetween"
-	PivotFilterValuesValueequal PivotFilterValues = "valueEqual"
-	PivotFilterValuesValuenotequal PivotFilterValues = "valueNotEqual"
-	PivotFilterValuesValuegreaterthan PivotFilterValues = "valueGreaterThan"
-	PivotFilterValuesValuegreaterthanorequal PivotFilterValues = "valueGreaterThanOrEqual"
-	PivotFilterValuesValuelessthan PivotFilterValues = "valueLessThan"
-	PivotFilterValuesValuelessthanorequal PivotFilterValues = "valueLessThanOrEqual"
-	PivotFilterValuesValuebetween PivotFilterValues = "valueBetween"
-	PivotFilterValuesValuenotbetween PivotFilterValues = "valueNotBetween"
-	PivotFilterValuesDateequal PivotFilterValues = "dateEqual"
-	PivotFilterValuesDatenotequal PivotFilterValues = "dateNotEqual"
-	PivotFilterValuesDateolderthan PivotFilterValues = "dateOlderThan"
-	PivotFilterValuesDateolderthanorequal PivotFilterValues = "dateOlderThanOrEqual"
-	PivotFilterValuesDatenewerthan PivotFilterValues = "dateNewerThan"
-	PivotFilterValuesDatenewerthanorequal PivotFilterValues = "dateNewerThanOrEqual"
-	PivotFilterValuesDatebetween PivotFilterValues = "dateBetween"
-	PivotFilterValuesDatenotbetween PivotFilterValues = "dateNotBetween"
-	PivotFilterValuesTomorrow PivotFilterValues = "tomorrow"
-	PivotFilterValuesToday PivotFilterValues = "today"
-	PivotFilterValuesYesterday PivotFilterValues = "yesterday"
-	PivotFilterValuesNextweek PivotFilterValues = "nextWeek"
-	PivotFilterValuesThisweek PivotFilterValues = "thisWeek"
-	PivotFilterValuesLastweek PivotFilterValues = "lastWeek"
-	PivotFilterValuesNextmonth PivotFilterValues = "nextMonth"
-	PivotFilterValuesThismonth PivotFilterValues = "thisMonth"
-	PivotFilterValuesLastmonth PivotFilterValues = "lastMonth"
-	PivotFilterValuesNextquarter PivotFilterValues = "nextQuarter"
-	PivotFilterValuesThisquarter PivotFilterValues = "thisQuarter"
-	PivotFilterValuesLastquarter PivotFilterValues = "lastQuarter"
-	PivotFilterValuesNextyear PivotFilterValues = "nextYear"
-	PivotFilterValuesThisyear PivotFilterValues = "thisYear"
-	PivotFilterValuesLastyear PivotFilterValues = "lastYear"
-	PivotFilterValuesYeartodate PivotFilterValues = "yearToDate"
-	PivotFilterValuesQ1 PivotFilterValues = "Q1"
-	PivotFilterValuesQ2 PivotFilterValues = "Q2"
-	PivotFilterValuesQ3 PivotFilterValues = "Q3"
-	PivotFilterValuesQ4 PivotFilterValues = "Q4"
-	PivotFilterValuesM1 PivotFilterValues = "M1"
-	PivotFilterValuesM2 PivotFilterValues = "M2"
-	PivotFilterValuesM3 PivotFilterValues = "M3"
-	PivotFilterValuesM4 PivotFilterValues = "M4"
-	PivotFilterValuesM5 PivotFilterValues = "M5"
-	PivotFilterValuesM6 PivotFilterValues = "M6"
-	PivotFilterValuesM7 PivotFilterValues = "M7"
-	PivotFilterValuesM8 PivotFilterValues = "M8"
-	PivotFilterValuesM9 PivotFilterValues = "M9"
-	PivotFilterValuesM10 PivotFilterValues = "M10"
-	PivotFilterValuesM11 PivotFilterValues = "M11"
-	PivotFilterValuesM12 PivotFilterValues = "M12"
-)
-
-func (e PivotFilterValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PivotFilterValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PivotFilterValues(attr.Value)
-		return nil
-}
-
-// PaneStateValues
-type PaneStateValues string
-const (
-	PaneStateValuesSplit PaneStateValues = "split"
-	PaneStateValuesFrozen PaneStateValues = "frozen"
-	PaneStateValuesFrozensplit PaneStateValues = "frozenSplit"
-)
-
-func (e PaneStateValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PaneStateValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PaneStateValues(attr.Value)
-		return nil
-}
-
-// BlendModeValues
-type BlendModeValues string
-const (
-	BlendModeValuesOver BlendModeValues = "over"
-	BlendModeValuesMult BlendModeValues = "mult"
-	BlendModeValuesScreen BlendModeValues = "screen"
-	BlendModeValuesDarken BlendModeValues = "darken"
-	BlendModeValuesLighten BlendModeValues = "lighten"
-)
-
-func (e BlendModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BlendModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BlendModeValues(attr.Value)
-		return nil
-}
-
-// TextWrappingValues
-type TextWrappingValues string
-const (
-	TextWrappingValuesNone TextWrappingValues = "none"
-	TextWrappingValuesSquare TextWrappingValues = "square"
-)
-
-func (e TextWrappingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextWrappingValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextWrappingValues(attr.Value)
-		return nil
-}
-
-// FileTypeValues
-type FileTypeValues string
-const (
-	FileTypeValuesMac FileTypeValues = "mac"
-	FileTypeValuesWin FileTypeValues = "win"
-	FileTypeValuesDos FileTypeValues = "dos"
-)
-
-func (e FileTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FileTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FileTypeValues(attr.Value)
-		return nil
-}
-
-// GeoProjectionType
-type GeoProjectionType string
-const (
-	GeoProjectionTypeMercator GeoProjectionType = "mercator"
-	GeoProjectionTypeMiller GeoProjectionType = "miller"
-	GeoProjectionTypeRobinson GeoProjectionType = "robinson"
-	GeoProjectionTypeAlbers GeoProjectionType = "albers"
-)
-
-func (e GeoProjectionType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *GeoProjectionType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = GeoProjectionType(attr.Value)
-		return nil
-}
-
-// DataLabelPos
-type DataLabelPos string
-const (
-	DataLabelPosBestfit DataLabelPos = "bestFit"
-	DataLabelPosB DataLabelPos = "b"
-	DataLabelPosCtr DataLabelPos = "ctr"
-	DataLabelPosInbase DataLabelPos = "inBase"
-	DataLabelPosInend DataLabelPos = "inEnd"
-	DataLabelPosL DataLabelPos = "l"
-	DataLabelPosOutend DataLabelPos = "outEnd"
-	DataLabelPosR DataLabelPos = "r"
-	DataLabelPosT DataLabelPos = "t"
-)
-
-func (e DataLabelPos) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DataLabelPos) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataLabelPos(attr.Value)
-		return nil
-}
-
-// NodeVerticalAlignmentValues
-type NodeVerticalAlignmentValues string
-const (
-	NodeVerticalAlignmentValuesT NodeVerticalAlignmentValues = "t"
-	NodeVerticalAlignmentValuesMid NodeVerticalAlignmentValues = "mid"
-	NodeVerticalAlignmentValuesB NodeVerticalAlignmentValues = "b"
-)
-
-func (e NodeVerticalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *NodeVerticalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = NodeVerticalAlignmentValues(attr.Value)
-		return nil
-}
-
-// PatternValues
-type PatternValues string
-const (
-	PatternValuesNone PatternValues = "none"
-	PatternValuesSolid PatternValues = "solid"
-	PatternValuesMediumgray PatternValues = "mediumGray"
-	PatternValuesDarkgray PatternValues = "darkGray"
-	PatternValuesLightgray PatternValues = "lightGray"
-	PatternValuesDarkhorizontal PatternValues = "darkHorizontal"
-	PatternValuesDarkvertical PatternValues = "darkVertical"
-	PatternValuesDarkdown PatternValues = "darkDown"
-	PatternValuesDarkup PatternValues = "darkUp"
-	PatternValuesDarkgrid PatternValues = "darkGrid"
-	PatternValuesDarktrellis PatternValues = "darkTrellis"
-	PatternValuesLighthorizontal PatternValues = "lightHorizontal"
-	PatternValuesLightvertical PatternValues = "lightVertical"
-	PatternValuesLightdown PatternValues = "lightDown"
-	PatternValuesLightup PatternValues = "lightUp"
-	PatternValuesLightgrid PatternValues = "lightGrid"
-	PatternValuesLighttrellis PatternValues = "lightTrellis"
-	PatternValuesGray125 PatternValues = "gray125"
-	PatternValuesGray0625 PatternValues = "gray0625"
-)
-
-func (e PatternValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PatternValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PatternValues(attr.Value)
-		return nil
-}
-
-// CellValues
-type CellValues string
-const (
-	CellValuesB CellValues = "b"
-	CellValuesN CellValues = "n"
-	CellValuesE CellValues = "e"
-	CellValuesS CellValues = "s"
-	CellValuesStr CellValues = "str"
-	CellValuesInlinestr CellValues = "inlineStr"
-	CellValuesD CellValues = "d"
-)
-
-func (e CellValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CellValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CellValues(attr.Value)
-		return nil
-}
-
-// ColorStyleMethodEnum
-type ColorStyleMethodEnum string
-const (
-	ColorStyleMethodEnumCycle ColorStyleMethodEnum = "cycle"
-	ColorStyleMethodEnumWithinlinear ColorStyleMethodEnum = "withinLinear"
-	ColorStyleMethodEnumAcrosslinear ColorStyleMethodEnum = "acrossLinear"
-	ColorStyleMethodEnumWithinlinearreversed ColorStyleMethodEnum = "withinLinearReversed"
-	ColorStyleMethodEnumAcrosslinearreversed ColorStyleMethodEnum = "acrossLinearReversed"
-)
-
-func (e ColorStyleMethodEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ColorStyleMethodEnum) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ColorStyleMethodEnum(attr.Value)
-		return nil
-}
-
-// RwColAction
-type RwColAction string
-const (
-	RwColActionInsr RwColAction = "insr"
-	RwColActionDelr RwColAction = "delr"
-	RwColActionInsc RwColAction = "insc"
-	RwColActionDelc RwColAction = "delc"
-)
-
-func (e RwColAction) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RwColAction) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RwColAction(attr.Value)
-		return nil
-}
-
-// RichFormatPropertyType
-type RichFormatPropertyType string
-const (
-	RichFormatPropertyTypeB RichFormatPropertyType = "b"
-	RichFormatPropertyTypeN RichFormatPropertyType = "n"
-	RichFormatPropertyTypeI RichFormatPropertyType = "i"
-	RichFormatPropertyTypeS RichFormatPropertyType = "s"
-)
-
-func (e RichFormatPropertyType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RichFormatPropertyType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RichFormatPropertyType(attr.Value)
-		return nil
-}
-
-// SubFeatureType
-type SubFeatureType string
-const (
-	SubFeatureTypeNone SubFeatureType = "none"
-	SubFeatureTypeFuture SubFeatureType = "future"
-)
-
-func (e SubFeatureType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SubFeatureType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SubFeatureType(attr.Value)
-		return nil
-}
-
-// RowColVisualOp
-type RowColVisualOp string
-const (
-	RowColVisualOpHide RowColVisualOp = "hide"
-	RowColVisualOpUnhide RowColVisualOp = "unhide"
-	RowColVisualOpResize RowColVisualOp = "resize"
-	RowColVisualOpAutosize RowColVisualOp = "autosize"
-)
-
-func (e RowColVisualOp) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RowColVisualOp) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RowColVisualOp(attr.Value)
-		return nil
-}
-
-// FormulaDirection
-type FormulaDirection string
-const (
-	FormulaDirectionCol FormulaDirection = "col"
-	FormulaDirectionRow FormulaDirection = "row"
-)
-
-func (e FormulaDirection) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FormulaDirection) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FormulaDirection(attr.Value)
-		return nil
-}
-
-// BarDirectionValues
-type BarDirectionValues string
-const (
-	BarDirectionValuesBar BarDirectionValues = "bar"
-	BarDirectionValuesCol BarDirectionValues = "col"
-)
-
-func (e BarDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BarDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BarDirectionValues(attr.Value)
-		return nil
-}
-
-// ShapeValues
-type ShapeValues string
-const (
-	ShapeValuesCone ShapeValues = "cone"
-	ShapeValuesConetomax ShapeValues = "coneToMax"
-	ShapeValuesBox ShapeValues = "box"
-	ShapeValuesCylinder ShapeValues = "cylinder"
-	ShapeValuesPyramid ShapeValues = "pyramid"
-	ShapeValuesPyramidtomax ShapeValues = "pyramidToMax"
-)
-
-func (e ShapeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ShapeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ShapeValues(attr.Value)
-		return nil
-}
-
-// AxisValues
-type AxisValues string
-const (
-	AxisValuesSelf AxisValues = "self"
-	AxisValuesCh AxisValues = "ch"
-	AxisValuesDes AxisValues = "des"
-	AxisValuesDesorself AxisValues = "desOrSelf"
-	AxisValuesPar AxisValues = "par"
-	AxisValuesAncst AxisValues = "ancst"
-	AxisValuesAncstorself AxisValues = "ancstOrSelf"
-	AxisValuesFollowsib AxisValues = "followSib"
-	AxisValuesPrecedsib AxisValues = "precedSib"
-	AxisValuesFollow AxisValues = "follow"
-	AxisValuesPreced AxisValues = "preced"
-	AxisValuesRoot AxisValues = "root"
-	AxisValuesNone AxisValues = "none"
-)
-
-func (e AxisValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *AxisValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AxisValues(attr.Value)
-		return nil
-}
-
-// PresetPatternValues
-type PresetPatternValues string
-const (
-	PresetPatternValuesPct5 PresetPatternValues = "pct5"
-	PresetPatternValuesPct10 PresetPatternValues = "pct10"
-	PresetPatternValuesPct20 PresetPatternValues = "pct20"
-	PresetPatternValuesPct25 PresetPatternValues = "pct25"
-	PresetPatternValuesPct30 PresetPatternValues = "pct30"
-	PresetPatternValuesPct40 PresetPatternValues = "pct40"
-	PresetPatternValuesPct50 PresetPatternValues = "pct50"
-	PresetPatternValuesPct60 PresetPatternValues = "pct60"
-	PresetPatternValuesPct70 PresetPatternValues = "pct70"
-	PresetPatternValuesPct75 PresetPatternValues = "pct75"
-	PresetPatternValuesPct80 PresetPatternValues = "pct80"
-	PresetPatternValuesPct90 PresetPatternValues = "pct90"
-	PresetPatternValuesHorz PresetPatternValues = "horz"
-	PresetPatternValuesVert PresetPatternValues = "vert"
-	PresetPatternValuesLthorz PresetPatternValues = "ltHorz"
-	PresetPatternValuesLtvert PresetPatternValues = "ltVert"
-	PresetPatternValuesDkhorz PresetPatternValues = "dkHorz"
-	PresetPatternValuesDkvert PresetPatternValues = "dkVert"
-	PresetPatternValuesNarhorz PresetPatternValues = "narHorz"
-	PresetPatternValuesNarvert PresetPatternValues = "narVert"
-	PresetPatternValuesDashhorz PresetPatternValues = "dashHorz"
-	PresetPatternValuesDashvert PresetPatternValues = "dashVert"
-	PresetPatternValuesCross PresetPatternValues = "cross"
-	PresetPatternValuesDndiag PresetPatternValues = "dnDiag"
-	PresetPatternValuesUpdiag PresetPatternValues = "upDiag"
-	PresetPatternValuesLtdndiag PresetPatternValues = "ltDnDiag"
-	PresetPatternValuesLtupdiag PresetPatternValues = "ltUpDiag"
-	PresetPatternValuesDkdndiag PresetPatternValues = "dkDnDiag"
-	PresetPatternValuesDkupdiag PresetPatternValues = "dkUpDiag"
-	PresetPatternValuesWddndiag PresetPatternValues = "wdDnDiag"
-	PresetPatternValuesWdupdiag PresetPatternValues = "wdUpDiag"
-	PresetPatternValuesDashdndiag PresetPatternValues = "dashDnDiag"
-	PresetPatternValuesDashupdiag PresetPatternValues = "dashUpDiag"
-	PresetPatternValuesDiagcross PresetPatternValues = "diagCross"
-	PresetPatternValuesSmcheck PresetPatternValues = "smCheck"
-	PresetPatternValuesLgcheck PresetPatternValues = "lgCheck"
-	PresetPatternValuesSmgrid PresetPatternValues = "smGrid"
-	PresetPatternValuesLggrid PresetPatternValues = "lgGrid"
-	PresetPatternValuesDotgrid PresetPatternValues = "dotGrid"
-	PresetPatternValuesSmconfetti PresetPatternValues = "smConfetti"
-	PresetPatternValuesLgconfetti PresetPatternValues = "lgConfetti"
-	PresetPatternValuesHorzbrick PresetPatternValues = "horzBrick"
-	PresetPatternValuesDiagbrick PresetPatternValues = "diagBrick"
-	PresetPatternValuesSoliddmnd PresetPatternValues = "solidDmnd"
-	PresetPatternValuesOpendmnd PresetPatternValues = "openDmnd"
-	PresetPatternValuesDotdmnd PresetPatternValues = "dotDmnd"
-	PresetPatternValuesPlaid PresetPatternValues = "plaid"
-	PresetPatternValuesSphere PresetPatternValues = "sphere"
-	PresetPatternValuesWeave PresetPatternValues = "weave"
-	PresetPatternValuesDivot PresetPatternValues = "divot"
-	PresetPatternValuesShingle PresetPatternValues = "shingle"
-	PresetPatternValuesWave PresetPatternValues = "wave"
-	PresetPatternValuesTrellis PresetPatternValues = "trellis"
-	PresetPatternValuesZigzag PresetPatternValues = "zigZag"
-)
-
-func (e PresetPatternValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PresetPatternValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PresetPatternValues(attr.Value)
-		return nil
-}
-
-// ShapeTypeValues
-type ShapeTypeValues string
-const (
-	ShapeTypeValuesLine ShapeTypeValues = "line"
-	ShapeTypeValuesLineinv ShapeTypeValues = "lineInv"
-	ShapeTypeValuesTriangle ShapeTypeValues = "triangle"
-	ShapeTypeValuesRttriangle ShapeTypeValues = "rtTriangle"
-	ShapeTypeValuesRect ShapeTypeValues = "rect"
-	ShapeTypeValuesDiamond ShapeTypeValues = "diamond"
-	ShapeTypeValuesParallelogram ShapeTypeValues = "parallelogram"
-	ShapeTypeValuesTrapezoid ShapeTypeValues = "trapezoid"
-	ShapeTypeValuesNonisoscelestrapezoid ShapeTypeValues = "nonIsoscelesTrapezoid"
-	ShapeTypeValuesPentagon ShapeTypeValues = "pentagon"
-	ShapeTypeValuesHexagon ShapeTypeValues = "hexagon"
-	ShapeTypeValuesHeptagon ShapeTypeValues = "heptagon"
-	ShapeTypeValuesOctagon ShapeTypeValues = "octagon"
-	ShapeTypeValuesDecagon ShapeTypeValues = "decagon"
-	ShapeTypeValuesDodecagon ShapeTypeValues = "dodecagon"
-	ShapeTypeValuesStar4 ShapeTypeValues = "star4"
-	ShapeTypeValuesStar5 ShapeTypeValues = "star5"
-	ShapeTypeValuesStar6 ShapeTypeValues = "star6"
-	ShapeTypeValuesStar7 ShapeTypeValues = "star7"
-	ShapeTypeValuesStar8 ShapeTypeValues = "star8"
-	ShapeTypeValuesStar10 ShapeTypeValues = "star10"
-	ShapeTypeValuesStar12 ShapeTypeValues = "star12"
-	ShapeTypeValuesStar16 ShapeTypeValues = "star16"
-	ShapeTypeValuesStar24 ShapeTypeValues = "star24"
-	ShapeTypeValuesStar32 ShapeTypeValues = "star32"
-	ShapeTypeValuesRoundrect ShapeTypeValues = "roundRect"
-	ShapeTypeValuesRound1rect ShapeTypeValues = "round1Rect"
-	ShapeTypeValuesRound2samerect ShapeTypeValues = "round2SameRect"
-	ShapeTypeValuesRound2diagrect ShapeTypeValues = "round2DiagRect"
-	ShapeTypeValuesSniproundrect ShapeTypeValues = "snipRoundRect"
-	ShapeTypeValuesSnip1rect ShapeTypeValues = "snip1Rect"
-	ShapeTypeValuesSnip2samerect ShapeTypeValues = "snip2SameRect"
-	ShapeTypeValuesSnip2diagrect ShapeTypeValues = "snip2DiagRect"
-	ShapeTypeValuesPlaque ShapeTypeValues = "plaque"
-	ShapeTypeValuesEllipse ShapeTypeValues = "ellipse"
-	ShapeTypeValuesTeardrop ShapeTypeValues = "teardrop"
-	ShapeTypeValuesHomeplate ShapeTypeValues = "homePlate"
-	ShapeTypeValuesChevron ShapeTypeValues = "chevron"
-	ShapeTypeValuesPiewedge ShapeTypeValues = "pieWedge"
-	ShapeTypeValuesPie ShapeTypeValues = "pie"
-	ShapeTypeValuesBlockarc ShapeTypeValues = "blockArc"
-	ShapeTypeValuesDonut ShapeTypeValues = "donut"
-	ShapeTypeValuesNosmoking ShapeTypeValues = "noSmoking"
-	ShapeTypeValuesRightarrow ShapeTypeValues = "rightArrow"
-	ShapeTypeValuesLeftarrow ShapeTypeValues = "leftArrow"
-	ShapeTypeValuesUparrow ShapeTypeValues = "upArrow"
-	ShapeTypeValuesDownarrow ShapeTypeValues = "downArrow"
-	ShapeTypeValuesStripedrightarrow ShapeTypeValues = "stripedRightArrow"
-	ShapeTypeValuesNotchedrightarrow ShapeTypeValues = "notchedRightArrow"
-	ShapeTypeValuesBentuparrow ShapeTypeValues = "bentUpArrow"
-	ShapeTypeValuesLeftrightarrow ShapeTypeValues = "leftRightArrow"
-	ShapeTypeValuesUpdownarrow ShapeTypeValues = "upDownArrow"
-	ShapeTypeValuesLeftuparrow ShapeTypeValues = "leftUpArrow"
-	ShapeTypeValuesLeftrightuparrow ShapeTypeValues = "leftRightUpArrow"
-	ShapeTypeValuesQuadarrow ShapeTypeValues = "quadArrow"
-	ShapeTypeValuesLeftarrowcallout ShapeTypeValues = "leftArrowCallout"
-	ShapeTypeValuesRightarrowcallout ShapeTypeValues = "rightArrowCallout"
-	ShapeTypeValuesUparrowcallout ShapeTypeValues = "upArrowCallout"
-	ShapeTypeValuesDownarrowcallout ShapeTypeValues = "downArrowCallout"
-	ShapeTypeValuesLeftrightarrowcallout ShapeTypeValues = "leftRightArrowCallout"
-	ShapeTypeValuesUpdownarrowcallout ShapeTypeValues = "upDownArrowCallout"
-	ShapeTypeValuesQuadarrowcallout ShapeTypeValues = "quadArrowCallout"
-	ShapeTypeValuesBentarrow ShapeTypeValues = "bentArrow"
-	ShapeTypeValuesUturnarrow ShapeTypeValues = "uturnArrow"
-	ShapeTypeValuesCirculararrow ShapeTypeValues = "circularArrow"
-	ShapeTypeValuesLeftcirculararrow ShapeTypeValues = "leftCircularArrow"
-	ShapeTypeValuesLeftrightcirculararrow ShapeTypeValues = "leftRightCircularArrow"
-	ShapeTypeValuesCurvedrightarrow ShapeTypeValues = "curvedRightArrow"
-	ShapeTypeValuesCurvedleftarrow ShapeTypeValues = "curvedLeftArrow"
-	ShapeTypeValuesCurveduparrow ShapeTypeValues = "curvedUpArrow"
-	ShapeTypeValuesCurveddownarrow ShapeTypeValues = "curvedDownArrow"
-	ShapeTypeValuesSwoosharrow ShapeTypeValues = "swooshArrow"
-	ShapeTypeValuesCube ShapeTypeValues = "cube"
-	ShapeTypeValuesCan ShapeTypeValues = "can"
-	ShapeTypeValuesLightningbolt ShapeTypeValues = "lightningBolt"
-	ShapeTypeValuesHeart ShapeTypeValues = "heart"
-	ShapeTypeValuesSun ShapeTypeValues = "sun"
-	ShapeTypeValuesMoon ShapeTypeValues = "moon"
-	ShapeTypeValuesSmileyface ShapeTypeValues = "smileyFace"
-	ShapeTypeValuesIrregularseal1 ShapeTypeValues = "irregularSeal1"
-	ShapeTypeValuesIrregularseal2 ShapeTypeValues = "irregularSeal2"
-	ShapeTypeValuesFoldedcorner ShapeTypeValues = "foldedCorner"
-	ShapeTypeValuesBevel ShapeTypeValues = "bevel"
-	ShapeTypeValuesFrame ShapeTypeValues = "frame"
-	ShapeTypeValuesHalfframe ShapeTypeValues = "halfFrame"
-	ShapeTypeValuesCorner ShapeTypeValues = "corner"
-	ShapeTypeValuesDiagstripe ShapeTypeValues = "diagStripe"
-	ShapeTypeValuesChord ShapeTypeValues = "chord"
-	ShapeTypeValuesArc ShapeTypeValues = "arc"
-	ShapeTypeValuesLeftbracket ShapeTypeValues = "leftBracket"
-	ShapeTypeValuesRightbracket ShapeTypeValues = "rightBracket"
-	ShapeTypeValuesLeftbrace ShapeTypeValues = "leftBrace"
-	ShapeTypeValuesRightbrace ShapeTypeValues = "rightBrace"
-	ShapeTypeValuesBracketpair ShapeTypeValues = "bracketPair"
-	ShapeTypeValuesBracepair ShapeTypeValues = "bracePair"
-	ShapeTypeValuesStraightconnector1 ShapeTypeValues = "straightConnector1"
-	ShapeTypeValuesBentconnector2 ShapeTypeValues = "bentConnector2"
-	ShapeTypeValuesBentconnector3 ShapeTypeValues = "bentConnector3"
-	ShapeTypeValuesBentconnector4 ShapeTypeValues = "bentConnector4"
-	ShapeTypeValuesBentconnector5 ShapeTypeValues = "bentConnector5"
-	ShapeTypeValuesCurvedconnector2 ShapeTypeValues = "curvedConnector2"
-	ShapeTypeValuesCurvedconnector3 ShapeTypeValues = "curvedConnector3"
-	ShapeTypeValuesCurvedconnector4 ShapeTypeValues = "curvedConnector4"
-	ShapeTypeValuesCurvedconnector5 ShapeTypeValues = "curvedConnector5"
-	ShapeTypeValuesCallout1 ShapeTypeValues = "callout1"
-	ShapeTypeValuesCallout2 ShapeTypeValues = "callout2"
-	ShapeTypeValuesCallout3 ShapeTypeValues = "callout3"
-	ShapeTypeValuesAccentcallout1 ShapeTypeValues = "accentCallout1"
-	ShapeTypeValuesAccentcallout2 ShapeTypeValues = "accentCallout2"
-	ShapeTypeValuesAccentcallout3 ShapeTypeValues = "accentCallout3"
-	ShapeTypeValuesBordercallout1 ShapeTypeValues = "borderCallout1"
-	ShapeTypeValuesBordercallout2 ShapeTypeValues = "borderCallout2"
-	ShapeTypeValuesBordercallout3 ShapeTypeValues = "borderCallout3"
-	ShapeTypeValuesAccentbordercallout1 ShapeTypeValues = "accentBorderCallout1"
-	ShapeTypeValuesAccentbordercallout2 ShapeTypeValues = "accentBorderCallout2"
-	ShapeTypeValuesAccentbordercallout3 ShapeTypeValues = "accentBorderCallout3"
-	ShapeTypeValuesWedgerectcallout ShapeTypeValues = "wedgeRectCallout"
-	ShapeTypeValuesWedgeroundrectcallout ShapeTypeValues = "wedgeRoundRectCallout"
-	ShapeTypeValuesWedgeellipsecallout ShapeTypeValues = "wedgeEllipseCallout"
-	ShapeTypeValuesCloudcallout ShapeTypeValues = "cloudCallout"
-	ShapeTypeValuesCloud ShapeTypeValues = "cloud"
-	ShapeTypeValuesRibbon ShapeTypeValues = "ribbon"
-	ShapeTypeValuesRibbon2 ShapeTypeValues = "ribbon2"
-	ShapeTypeValuesEllipseribbon ShapeTypeValues = "ellipseRibbon"
-	ShapeTypeValuesEllipseribbon2 ShapeTypeValues = "ellipseRibbon2"
-	ShapeTypeValuesLeftrightribbon ShapeTypeValues = "leftRightRibbon"
-	ShapeTypeValuesVerticalscroll ShapeTypeValues = "verticalScroll"
-	ShapeTypeValuesHorizontalscroll ShapeTypeValues = "horizontalScroll"
-	ShapeTypeValuesWave ShapeTypeValues = "wave"
-	ShapeTypeValuesDoublewave ShapeTypeValues = "doubleWave"
-	ShapeTypeValuesPlus ShapeTypeValues = "plus"
-	ShapeTypeValuesFlowchartprocess ShapeTypeValues = "flowChartProcess"
-	ShapeTypeValuesFlowchartdecision ShapeTypeValues = "flowChartDecision"
-	ShapeTypeValuesFlowchartinputoutput ShapeTypeValues = "flowChartInputOutput"
-	ShapeTypeValuesFlowchartpredefinedprocess ShapeTypeValues = "flowChartPredefinedProcess"
-	ShapeTypeValuesFlowchartinternalstorage ShapeTypeValues = "flowChartInternalStorage"
-	ShapeTypeValuesFlowchartdocument ShapeTypeValues = "flowChartDocument"
-	ShapeTypeValuesFlowchartmultidocument ShapeTypeValues = "flowChartMultidocument"
-	ShapeTypeValuesFlowchartterminator ShapeTypeValues = "flowChartTerminator"
-	ShapeTypeValuesFlowchartpreparation ShapeTypeValues = "flowChartPreparation"
-	ShapeTypeValuesFlowchartmanualinput ShapeTypeValues = "flowChartManualInput"
-	ShapeTypeValuesFlowchartmanualoperation ShapeTypeValues = "flowChartManualOperation"
-	ShapeTypeValuesFlowchartconnector ShapeTypeValues = "flowChartConnector"
-	ShapeTypeValuesFlowchartpunchedcard ShapeTypeValues = "flowChartPunchedCard"
-	ShapeTypeValuesFlowchartpunchedtape ShapeTypeValues = "flowChartPunchedTape"
-	ShapeTypeValuesFlowchartsummingjunction ShapeTypeValues = "flowChartSummingJunction"
-	ShapeTypeValuesFlowchartor ShapeTypeValues = "flowChartOr"
-	ShapeTypeValuesFlowchartcollate ShapeTypeValues = "flowChartCollate"
-	ShapeTypeValuesFlowchartsort ShapeTypeValues = "flowChartSort"
-	ShapeTypeValuesFlowchartextract ShapeTypeValues = "flowChartExtract"
-	ShapeTypeValuesFlowchartmerge ShapeTypeValues = "flowChartMerge"
-	ShapeTypeValuesFlowchartofflinestorage ShapeTypeValues = "flowChartOfflineStorage"
-	ShapeTypeValuesFlowchartonlinestorage ShapeTypeValues = "flowChartOnlineStorage"
-	ShapeTypeValuesFlowchartmagnetictape ShapeTypeValues = "flowChartMagneticTape"
-	ShapeTypeValuesFlowchartmagneticdisk ShapeTypeValues = "flowChartMagneticDisk"
-	ShapeTypeValuesFlowchartmagneticdrum ShapeTypeValues = "flowChartMagneticDrum"
-	ShapeTypeValuesFlowchartdisplay ShapeTypeValues = "flowChartDisplay"
-	ShapeTypeValuesFlowchartdelay ShapeTypeValues = "flowChartDelay"
-	ShapeTypeValuesFlowchartalternateprocess ShapeTypeValues = "flowChartAlternateProcess"
-	ShapeTypeValuesFlowchartoffpageconnector ShapeTypeValues = "flowChartOffpageConnector"
-	ShapeTypeValuesActionbuttonblank ShapeTypeValues = "actionButtonBlank"
-	ShapeTypeValuesActionbuttonhome ShapeTypeValues = "actionButtonHome"
-	ShapeTypeValuesActionbuttonhelp ShapeTypeValues = "actionButtonHelp"
-	ShapeTypeValuesActionbuttoninformation ShapeTypeValues = "actionButtonInformation"
-	ShapeTypeValuesActionbuttonforwardnext ShapeTypeValues = "actionButtonForwardNext"
-	ShapeTypeValuesActionbuttonbackprevious ShapeTypeValues = "actionButtonBackPrevious"
-	ShapeTypeValuesActionbuttonend ShapeTypeValues = "actionButtonEnd"
-	ShapeTypeValuesActionbuttonbeginning ShapeTypeValues = "actionButtonBeginning"
-	ShapeTypeValuesActionbuttonreturn ShapeTypeValues = "actionButtonReturn"
-	ShapeTypeValuesActionbuttondocument ShapeTypeValues = "actionButtonDocument"
-	ShapeTypeValuesActionbuttonsound ShapeTypeValues = "actionButtonSound"
-	ShapeTypeValuesActionbuttonmovie ShapeTypeValues = "actionButtonMovie"
-	ShapeTypeValuesGear6 ShapeTypeValues = "gear6"
-	ShapeTypeValuesGear9 ShapeTypeValues = "gear9"
-	ShapeTypeValuesFunnel ShapeTypeValues = "funnel"
-	ShapeTypeValuesMathplus ShapeTypeValues = "mathPlus"
-	ShapeTypeValuesMathminus ShapeTypeValues = "mathMinus"
-	ShapeTypeValuesMathmultiply ShapeTypeValues = "mathMultiply"
-	ShapeTypeValuesMathdivide ShapeTypeValues = "mathDivide"
-	ShapeTypeValuesMathequal ShapeTypeValues = "mathEqual"
-	ShapeTypeValuesMathnotequal ShapeTypeValues = "mathNotEqual"
-	ShapeTypeValuesCornertabs ShapeTypeValues = "cornerTabs"
-	ShapeTypeValuesSquaretabs ShapeTypeValues = "squareTabs"
-	ShapeTypeValuesPlaquetabs ShapeTypeValues = "plaqueTabs"
-	ShapeTypeValuesChartx ShapeTypeValues = "chartX"
-	ShapeTypeValuesChartstar ShapeTypeValues = "chartStar"
-	ShapeTypeValuesChartplus ShapeTypeValues = "chartPlus"
-)
-
-func (e ShapeTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ShapeTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ShapeTypeValues(attr.Value)
-		return nil
-}
-
-// SparklineAxisMinMaxValues
-type SparklineAxisMinMaxValues string
-const (
-	SparklineAxisMinMaxValuesIndividual SparklineAxisMinMaxValues = "individual"
-	SparklineAxisMinMaxValuesGroup SparklineAxisMinMaxValues = "group"
-	SparklineAxisMinMaxValuesCustom SparklineAxisMinMaxValues = "custom"
-)
-
-func (e SparklineAxisMinMaxValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SparklineAxisMinMaxValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SparklineAxisMinMaxValues(attr.Value)
+func (e *TabularSlicerCacheSortOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TabularSlicerCacheSortOrderValues(attr.Value)
 		return nil
 }
 
@@ -3995,776 +6023,6 @@ func (e *SidePos) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// ObjectValues
-type ObjectValues string
-const (
-	ObjectValuesButton ObjectValues = "Button"
-	ObjectValuesCheckbox ObjectValues = "Checkbox"
-	ObjectValuesDialog ObjectValues = "Dialog"
-	ObjectValuesDrop ObjectValues = "Drop"
-	ObjectValuesEdit ObjectValues = "Edit"
-	ObjectValuesGbox ObjectValues = "GBox"
-	ObjectValuesLabel ObjectValues = "Label"
-	ObjectValuesLinea ObjectValues = "LineA"
-	ObjectValuesList ObjectValues = "List"
-	ObjectValuesMovie ObjectValues = "Movie"
-	ObjectValuesNote ObjectValues = "Note"
-	ObjectValuesPict ObjectValues = "Pict"
-	ObjectValuesRadio ObjectValues = "Radio"
-	ObjectValuesRecta ObjectValues = "RectA"
-	ObjectValuesScroll ObjectValues = "Scroll"
-	ObjectValuesSpin ObjectValues = "Spin"
-	ObjectValuesShape ObjectValues = "Shape"
-	ObjectValuesGroup ObjectValues = "Group"
-	ObjectValuesRect ObjectValues = "Rect"
-)
-
-func (e ObjectValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ObjectValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ObjectValues(attr.Value)
-		return nil
-}
-
-// BarGroupingValues
-type BarGroupingValues string
-const (
-	BarGroupingValuesPercentstacked BarGroupingValues = "percentStacked"
-	BarGroupingValuesClustered BarGroupingValues = "clustered"
-	BarGroupingValuesStandard BarGroupingValues = "standard"
-	BarGroupingValuesStacked BarGroupingValues = "stacked"
-)
-
-func (e BarGroupingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BarGroupingValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BarGroupingValues(attr.Value)
-		return nil
-}
-
-// AnimateOneByOneValues
-type AnimateOneByOneValues string
-const (
-	AnimateOneByOneValuesNone AnimateOneByOneValues = "none"
-	AnimateOneByOneValuesOne AnimateOneByOneValues = "one"
-	AnimateOneByOneValuesBranch AnimateOneByOneValues = "branch"
-)
-
-func (e AnimateOneByOneValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *AnimateOneByOneValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AnimateOneByOneValues(attr.Value)
-		return nil
-}
-
-// BlipCompressionValues
-type BlipCompressionValues string
-const (
-	BlipCompressionValuesEmail BlipCompressionValues = "email"
-	BlipCompressionValuesScreen BlipCompressionValues = "screen"
-	BlipCompressionValuesPrint BlipCompressionValues = "print"
-	BlipCompressionValuesHqprint BlipCompressionValues = "hqprint"
-	BlipCompressionValuesNone BlipCompressionValues = "none"
-)
-
-func (e BlipCompressionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BlipCompressionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BlipCompressionValues(attr.Value)
-		return nil
-}
-
-// MdxKPIPropertyValues
-type MdxKPIPropertyValues string
-const (
-	MdxKPIPropertyValuesV MdxKPIPropertyValues = "v"
-	MdxKPIPropertyValuesG MdxKPIPropertyValues = "g"
-	MdxKPIPropertyValuesS MdxKPIPropertyValues = "s"
-	MdxKPIPropertyValuesT MdxKPIPropertyValues = "t"
-	MdxKPIPropertyValuesW MdxKPIPropertyValues = "w"
-	MdxKPIPropertyValuesM MdxKPIPropertyValues = "m"
-)
-
-func (e MdxKPIPropertyValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *MdxKPIPropertyValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = MdxKPIPropertyValues(attr.Value)
-		return nil
-}
-
-// GradientValues
-type GradientValues string
-const (
-	GradientValuesLinear GradientValues = "linear"
-	GradientValuesPath GradientValues = "path"
-)
-
-func (e GradientValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *GradientValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = GradientValues(attr.Value)
-		return nil
-}
-
-// LayoutModeValues
-type LayoutModeValues string
-const (
-	LayoutModeValuesEdge LayoutModeValues = "edge"
-	LayoutModeValuesFactor LayoutModeValues = "factor"
-)
-
-func (e LayoutModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *LayoutModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LayoutModeValues(attr.Value)
-		return nil
-}
-
-// ColorSchemeIndexValues
-type ColorSchemeIndexValues string
-const (
-	ColorSchemeIndexValuesDk1 ColorSchemeIndexValues = "dk1"
-	ColorSchemeIndexValuesLt1 ColorSchemeIndexValues = "lt1"
-	ColorSchemeIndexValuesDk2 ColorSchemeIndexValues = "dk2"
-	ColorSchemeIndexValuesLt2 ColorSchemeIndexValues = "lt2"
-	ColorSchemeIndexValuesAccent1 ColorSchemeIndexValues = "accent1"
-	ColorSchemeIndexValuesAccent2 ColorSchemeIndexValues = "accent2"
-	ColorSchemeIndexValuesAccent3 ColorSchemeIndexValues = "accent3"
-	ColorSchemeIndexValuesAccent4 ColorSchemeIndexValues = "accent4"
-	ColorSchemeIndexValuesAccent5 ColorSchemeIndexValues = "accent5"
-	ColorSchemeIndexValuesAccent6 ColorSchemeIndexValues = "accent6"
-	ColorSchemeIndexValuesHlink ColorSchemeIndexValues = "hlink"
-	ColorSchemeIndexValuesFolhlink ColorSchemeIndexValues = "folHlink"
-)
-
-func (e ColorSchemeIndexValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ColorSchemeIndexValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ColorSchemeIndexValues(attr.Value)
-		return nil
-}
-
-// StyleEntryModifierEnum
-type StyleEntryModifierEnum string
-const (
-	StyleEntryModifierEnumAllownofilloverride StyleEntryModifierEnum = "allowNoFillOverride"
-	StyleEntryModifierEnumAllownolineoverride StyleEntryModifierEnum = "allowNoLineOverride"
-)
-
-func (e StyleEntryModifierEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *StyleEntryModifierEnum) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = StyleEntryModifierEnum(attr.Value)
-		return nil
-}
-
-// AlgorithmValues
-type AlgorithmValues string
-const (
-	AlgorithmValuesComposite AlgorithmValues = "composite"
-	AlgorithmValuesConn AlgorithmValues = "conn"
-	AlgorithmValuesCycle AlgorithmValues = "cycle"
-	AlgorithmValuesHierchild AlgorithmValues = "hierChild"
-	AlgorithmValuesHierroot AlgorithmValues = "hierRoot"
-	AlgorithmValuesPyra AlgorithmValues = "pyra"
-	AlgorithmValuesLin AlgorithmValues = "lin"
-	AlgorithmValuesSp AlgorithmValues = "sp"
-	AlgorithmValuesTx AlgorithmValues = "tx"
-	AlgorithmValuesSnake AlgorithmValues = "snake"
-)
-
-func (e AlgorithmValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *AlgorithmValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AlgorithmValues(attr.Value)
-		return nil
-}
-
-// TextAnchorVerticalValues
-type TextAnchorVerticalValues string
-const (
-	TextAnchorVerticalValuesT TextAnchorVerticalValues = "t"
-	TextAnchorVerticalValuesMid TextAnchorVerticalValues = "mid"
-	TextAnchorVerticalValuesB TextAnchorVerticalValues = "b"
-)
-
-func (e TextAnchorVerticalValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextAnchorVerticalValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextAnchorVerticalValues(attr.Value)
-		return nil
-}
-
-// RectangleAlignmentValues
-type RectangleAlignmentValues string
-const (
-	RectangleAlignmentValuesTl RectangleAlignmentValues = "tl"
-	RectangleAlignmentValuesT RectangleAlignmentValues = "t"
-	RectangleAlignmentValuesTr RectangleAlignmentValues = "tr"
-	RectangleAlignmentValuesL RectangleAlignmentValues = "l"
-	RectangleAlignmentValuesCtr RectangleAlignmentValues = "ctr"
-	RectangleAlignmentValuesR RectangleAlignmentValues = "r"
-	RectangleAlignmentValuesBl RectangleAlignmentValues = "bl"
-	RectangleAlignmentValuesB RectangleAlignmentValues = "b"
-	RectangleAlignmentValuesBr RectangleAlignmentValues = "br"
-)
-
-func (e RectangleAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RectangleAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RectangleAlignmentValues(attr.Value)
-		return nil
-}
-
-// SlicerStyleTypeValues
-type SlicerStyleTypeValues string
-const (
-	SlicerStyleTypeValuesUnselecteditemwithdata SlicerStyleTypeValues = "unselectedItemWithData"
-	SlicerStyleTypeValuesSelecteditemwithdata SlicerStyleTypeValues = "selectedItemWithData"
-	SlicerStyleTypeValuesUnselecteditemwithnodata SlicerStyleTypeValues = "unselectedItemWithNoData"
-	SlicerStyleTypeValuesSelecteditemwithnodata SlicerStyleTypeValues = "selectedItemWithNoData"
-	SlicerStyleTypeValuesHoveredunselecteditemwithdata SlicerStyleTypeValues = "hoveredUnselectedItemWithData"
-	SlicerStyleTypeValuesHoveredselecteditemwithdata SlicerStyleTypeValues = "hoveredSelectedItemWithData"
-	SlicerStyleTypeValuesHoveredunselecteditemwithnodata SlicerStyleTypeValues = "hoveredUnselectedItemWithNoData"
-	SlicerStyleTypeValuesHoveredselecteditemwithnodata SlicerStyleTypeValues = "hoveredSelectedItemWithNoData"
-)
-
-func (e SlicerStyleTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SlicerStyleTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SlicerStyleTypeValues(attr.Value)
-		return nil
-}
-
-// AnimationBuildValues
-type AnimationBuildValues string
-const (
-	AnimationBuildValuesAllatonce AnimationBuildValues = "allAtOnce"
-)
-
-func (e AnimationBuildValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *AnimationBuildValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AnimationBuildValues(attr.Value)
-		return nil
-}
-
-// ExtSubFeatureType
-type ExtSubFeatureType string
-const (
-	ExtSubFeatureTypeReserved ExtSubFeatureType = "reserved"
-)
-
-func (e ExtSubFeatureType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ExtSubFeatureType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ExtSubFeatureType(attr.Value)
-		return nil
-}
-
-// AxisPositionValues
-type AxisPositionValues string
-const (
-	AxisPositionValuesB AxisPositionValues = "b"
-	AxisPositionValuesL AxisPositionValues = "l"
-	AxisPositionValuesR AxisPositionValues = "r"
-	AxisPositionValuesT AxisPositionValues = "t"
-)
-
-func (e AxisPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *AxisPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AxisPositionValues(attr.Value)
-		return nil
-}
-
-// ReferenceModeValues
-type ReferenceModeValues string
-const (
-	ReferenceModeValuesA1 ReferenceModeValues = "A1"
-	ReferenceModeValuesR1c1 ReferenceModeValues = "R1C1"
-)
-
-func (e ReferenceModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ReferenceModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ReferenceModeValues(attr.Value)
-		return nil
-}
-
-// NodeHorizontalAlignmentValues
-type NodeHorizontalAlignmentValues string
-const (
-	NodeHorizontalAlignmentValuesL NodeHorizontalAlignmentValues = "l"
-	NodeHorizontalAlignmentValuesCtr NodeHorizontalAlignmentValues = "ctr"
-	NodeHorizontalAlignmentValuesR NodeHorizontalAlignmentValues = "r"
-)
-
-func (e NodeHorizontalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *NodeHorizontalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = NodeHorizontalAlignmentValues(attr.Value)
-		return nil
-}
-
-// PenAlignmentValues
-type PenAlignmentValues string
-const (
-	PenAlignmentValuesCtr PenAlignmentValues = "ctr"
-	PenAlignmentValuesIn PenAlignmentValues = "in"
-)
-
-func (e PenAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PenAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PenAlignmentValues(attr.Value)
-		return nil
-}
-
-// DataBarDirectionValues
-type DataBarDirectionValues string
-const (
-	DataBarDirectionValuesContext DataBarDirectionValues = "context"
-	DataBarDirectionValuesLefttoright DataBarDirectionValues = "leftToRight"
-	DataBarDirectionValuesRighttoleft DataBarDirectionValues = "rightToLeft"
-)
-
-func (e DataBarDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DataBarDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataBarDirectionValues(attr.Value)
-		return nil
-}
-
-// RuleValues
-type RuleValues string
-const (
-	RuleValuesNone RuleValues = "none"
-	RuleValuesAll RuleValues = "all"
-	RuleValuesRow RuleValues = "row"
-	RuleValuesColumn RuleValues = "column"
-)
-
-func (e RuleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RuleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RuleValues(attr.Value)
-		return nil
-}
-
-// DetachConnection
-type DetachConnection string
-const (
-	DetachConnectionStart DetachConnection = "start"
-	DetachConnectionEnd DetachConnection = "end"
-	DetachConnectionBoth DetachConnection = "both"
-)
-
-func (e DetachConnection) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DetachConnection) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DetachConnection(attr.Value)
-		return nil
-}
-
-// InkEffectsType
-type InkEffectsType string
-const (
-	InkEffectsTypeNone InkEffectsType = "none"
-	InkEffectsTypePencil InkEffectsType = "pencil"
-	InkEffectsTypeRainbow InkEffectsType = "rainbow"
-	InkEffectsTypeGalaxy InkEffectsType = "galaxy"
-	InkEffectsTypeGold InkEffectsType = "gold"
-	InkEffectsTypeSilver InkEffectsType = "silver"
-	InkEffectsTypeLava InkEffectsType = "lava"
-	InkEffectsTypeOcean InkEffectsType = "ocean"
-	InkEffectsTypeRosegold InkEffectsType = "rosegold"
-	InkEffectsTypeBronze InkEffectsType = "bronze"
-)
-
-func (e InkEffectsType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *InkEffectsType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = InkEffectsType(attr.Value)
-		return nil
-}
-
-// CommentsValues
-type CommentsValues string
-const (
-	CommentsValuesCommnone CommentsValues = "commNone"
-	CommentsValuesCommindicator CommentsValues = "commIndicator"
-	CommentsValuesCommindandcomment CommentsValues = "commIndAndComment"
-)
-
-func (e CommentsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CommentsValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CommentsValues(attr.Value)
-		return nil
-}
-
-// ObjectDisplayValues
-type ObjectDisplayValues string
-const (
-	ObjectDisplayValuesAll ObjectDisplayValues = "all"
-	ObjectDisplayValuesPlaceholders ObjectDisplayValues = "placeholders"
-	ObjectDisplayValuesNone ObjectDisplayValues = "none"
-)
-
-func (e ObjectDisplayValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ObjectDisplayValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ObjectDisplayValues(attr.Value)
-		return nil
-}
-
-// TextHorizontalAlignmentValues
-type TextHorizontalAlignmentValues string
-const (
-	TextHorizontalAlignmentValuesLeft TextHorizontalAlignmentValues = "left"
-	TextHorizontalAlignmentValuesCenter TextHorizontalAlignmentValues = "center"
-	TextHorizontalAlignmentValuesRight TextHorizontalAlignmentValues = "right"
-	TextHorizontalAlignmentValuesJustify TextHorizontalAlignmentValues = "justify"
-	TextHorizontalAlignmentValuesDistributed TextHorizontalAlignmentValues = "distributed"
-)
-
-func (e TextHorizontalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextHorizontalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextHorizontalAlignmentValues(attr.Value)
-		return nil
-}
-
-// BooleanStyleValues
-type BooleanStyleValues string
-const (
-	BooleanStyleValuesOn BooleanStyleValues = "on"
-	BooleanStyleValuesOff BooleanStyleValues = "off"
-	BooleanStyleValuesDef BooleanStyleValues = "def"
-)
-
-func (e BooleanStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BooleanStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BooleanStyleValues(attr.Value)
-		return nil
-}
-
-// CalendarValues
-type CalendarValues string
-const (
-	CalendarValuesNone CalendarValues = "none"
-	CalendarValuesGregorian CalendarValues = "gregorian"
-	CalendarValuesGregorianus CalendarValues = "gregorianUs"
-	CalendarValuesJapan CalendarValues = "japan"
-	CalendarValuesTaiwan CalendarValues = "taiwan"
-	CalendarValuesKorea CalendarValues = "korea"
-	CalendarValuesHijri CalendarValues = "hijri"
-	CalendarValuesThai CalendarValues = "thai"
-	CalendarValuesHebrew CalendarValues = "hebrew"
-	CalendarValuesGregorianmefrench CalendarValues = "gregorianMeFrench"
-	CalendarValuesGregorianarabic CalendarValues = "gregorianArabic"
-	CalendarValuesGregorianxlitenglish CalendarValues = "gregorianXlitEnglish"
-	CalendarValuesGregorianxlitfrench CalendarValues = "gregorianXlitFrench"
-)
-
-func (e CalendarValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CalendarValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CalendarValues(attr.Value)
-		return nil
-}
-
-// RichValueValueType
-type RichValueValueType string
-const (
-	RichValueValueTypeD RichValueValueType = "d"
-	RichValueValueTypeI RichValueValueType = "i"
-	RichValueValueTypeB RichValueValueType = "b"
-	RichValueValueTypeE RichValueValueType = "e"
-	RichValueValueTypeS RichValueValueType = "s"
-	RichValueValueTypeR RichValueValueType = "r"
-	RichValueValueTypeA RichValueValueType = "a"
-	RichValueValueTypeSpb RichValueValueType = "spb"
-)
-
-func (e RichValueValueType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RichValueValueType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RichValueValueType(attr.Value)
-		return nil
-}
-
-// TrendlineValues
-type TrendlineValues string
-const (
-	TrendlineValuesExp TrendlineValues = "exp"
-	TrendlineValuesLinear TrendlineValues = "linear"
-	TrendlineValuesLog TrendlineValues = "log"
-	TrendlineValuesMovingavg TrendlineValues = "movingAvg"
-	TrendlineValuesPoly TrendlineValues = "poly"
-	TrendlineValuesPower TrendlineValues = "power"
-)
-
-func (e TrendlineValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TrendlineValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TrendlineValues(attr.Value)
-		return nil
-}
-
-// MdxSetOrderValues
-type MdxSetOrderValues string
-const (
-	MdxSetOrderValuesU MdxSetOrderValues = "u"
-	MdxSetOrderValuesA MdxSetOrderValues = "a"
-	MdxSetOrderValuesD MdxSetOrderValues = "d"
-	MdxSetOrderValuesAa MdxSetOrderValues = "aa"
-	MdxSetOrderValuesAd MdxSetOrderValues = "ad"
-	MdxSetOrderValuesNa MdxSetOrderValues = "na"
-	MdxSetOrderValuesNd MdxSetOrderValues = "nd"
-)
-
-func (e MdxSetOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *MdxSetOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = MdxSetOrderValues(attr.Value)
-		return nil
-}
-
-// IconSetTypeValues
-type IconSetTypeValues string
-const (
-	IconSetTypeValuesIconSetTypeValues3Arrows IconSetTypeValues = "3Arrows"
-	IconSetTypeValuesIconSetTypeValues3Arrowsgray IconSetTypeValues = "3ArrowsGray"
-	IconSetTypeValuesIconSetTypeValues3Flags IconSetTypeValues = "3Flags"
-	IconSetTypeValuesIconSetTypeValues3Trafficlights1 IconSetTypeValues = "3TrafficLights1"
-	IconSetTypeValuesIconSetTypeValues3Trafficlights2 IconSetTypeValues = "3TrafficLights2"
-	IconSetTypeValuesIconSetTypeValues3Signs IconSetTypeValues = "3Signs"
-	IconSetTypeValuesIconSetTypeValues3Symbols IconSetTypeValues = "3Symbols"
-	IconSetTypeValuesIconSetTypeValues3Symbols2 IconSetTypeValues = "3Symbols2"
-	IconSetTypeValuesIconSetTypeValues4Arrows IconSetTypeValues = "4Arrows"
-	IconSetTypeValuesIconSetTypeValues4Arrowsgray IconSetTypeValues = "4ArrowsGray"
-	IconSetTypeValuesIconSetTypeValues4Redtoblack IconSetTypeValues = "4RedToBlack"
-	IconSetTypeValuesIconSetTypeValues4Rating IconSetTypeValues = "4Rating"
-	IconSetTypeValuesIconSetTypeValues4Trafficlights IconSetTypeValues = "4TrafficLights"
-	IconSetTypeValuesIconSetTypeValues5Arrows IconSetTypeValues = "5Arrows"
-	IconSetTypeValuesIconSetTypeValues5Arrowsgray IconSetTypeValues = "5ArrowsGray"
-	IconSetTypeValuesIconSetTypeValues5Rating IconSetTypeValues = "5Rating"
-	IconSetTypeValuesIconSetTypeValues5Quarters IconSetTypeValues = "5Quarters"
-	IconSetTypeValuesIconSetTypeValues3Stars IconSetTypeValues = "3Stars"
-	IconSetTypeValuesIconSetTypeValues3Triangles IconSetTypeValues = "3Triangles"
-	IconSetTypeValuesIconSetTypeValues5Boxes IconSetTypeValues = "5Boxes"
-	IconSetTypeValuesNoicons IconSetTypeValues = "NoIcons"
-)
-
-func (e IconSetTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *IconSetTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = IconSetTypeValues(attr.Value)
-		return nil
-}
-
-// FilterOperatorValues
-type FilterOperatorValues string
-const (
-	FilterOperatorValuesEqual FilterOperatorValues = "equal"
-	FilterOperatorValuesLessthan FilterOperatorValues = "lessThan"
-	FilterOperatorValuesLessthanorequal FilterOperatorValues = "lessThanOrEqual"
-	FilterOperatorValuesNotequal FilterOperatorValues = "notEqual"
-	FilterOperatorValuesGreaterthanorequal FilterOperatorValues = "greaterThanOrEqual"
-	FilterOperatorValuesGreaterthan FilterOperatorValues = "greaterThan"
-)
-
-func (e FilterOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FilterOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FilterOperatorValues(attr.Value)
-		return nil
-}
-
-// DataConsolidateFunctionValues
-type DataConsolidateFunctionValues string
-const (
-	DataConsolidateFunctionValuesAverage DataConsolidateFunctionValues = "average"
-	DataConsolidateFunctionValuesCount DataConsolidateFunctionValues = "count"
-	DataConsolidateFunctionValuesCountnums DataConsolidateFunctionValues = "countNums"
-	DataConsolidateFunctionValuesMax DataConsolidateFunctionValues = "max"
-	DataConsolidateFunctionValuesMin DataConsolidateFunctionValues = "min"
-	DataConsolidateFunctionValuesProduct DataConsolidateFunctionValues = "product"
-	DataConsolidateFunctionValuesStddev DataConsolidateFunctionValues = "stdDev"
-	DataConsolidateFunctionValuesStddevp DataConsolidateFunctionValues = "stdDevp"
-	DataConsolidateFunctionValuesSum DataConsolidateFunctionValues = "sum"
-	DataConsolidateFunctionValuesVar DataConsolidateFunctionValues = "var"
-	DataConsolidateFunctionValuesVarp DataConsolidateFunctionValues = "varp"
-)
-
-func (e DataConsolidateFunctionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DataConsolidateFunctionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataConsolidateFunctionValues(attr.Value)
-		return nil
-}
-
-// DataLabelPositionValues
-type DataLabelPositionValues string
-const (
-	DataLabelPositionValuesBestfit DataLabelPositionValues = "bestFit"
-	DataLabelPositionValuesB DataLabelPositionValues = "b"
-	DataLabelPositionValuesCtr DataLabelPositionValues = "ctr"
-	DataLabelPositionValuesInbase DataLabelPositionValues = "inBase"
-	DataLabelPositionValuesInend DataLabelPositionValues = "inEnd"
-	DataLabelPositionValuesL DataLabelPositionValues = "l"
-	DataLabelPositionValuesOutend DataLabelPositionValues = "outEnd"
-	DataLabelPositionValuesR DataLabelPositionValues = "r"
-	DataLabelPositionValuesT DataLabelPositionValues = "t"
-)
-
-func (e DataLabelPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DataLabelPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataLabelPositionValues(attr.Value)
-		return nil
-}
-
-// RadarStyleValues
-type RadarStyleValues string
-const (
-	RadarStyleValuesStandard RadarStyleValues = "standard"
-	RadarStyleValuesMarker RadarStyleValues = "marker"
-	RadarStyleValuesFilled RadarStyleValues = "filled"
-)
-
-func (e RadarStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RadarStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RadarStyleValues(attr.Value)
-		return nil
-}
-
-// TickLabelPositionValues
-type TickLabelPositionValues string
-const (
-	TickLabelPositionValuesHigh TickLabelPositionValues = "high"
-	TickLabelPositionValuesLow TickLabelPositionValues = "low"
-	TickLabelPositionValuesNextto TickLabelPositionValues = "nextTo"
-	TickLabelPositionValuesNone TickLabelPositionValues = "none"
-)
-
-func (e TickLabelPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TickLabelPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TickLabelPositionValues(attr.Value)
-		return nil
-}
-
-// ChildDirectionValues
-type ChildDirectionValues string
-const (
-	ChildDirectionValuesHorz ChildDirectionValues = "horz"
-	ChildDirectionValuesVert ChildDirectionValues = "vert"
-)
-
-func (e ChildDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ChildDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ChildDirectionValues(attr.Value)
-		return nil
-}
-
-// ChildOrderValues
-type ChildOrderValues string
-const (
-	ChildOrderValuesB ChildOrderValues = "b"
-	ChildOrderValuesT ChildOrderValues = "t"
-)
-
-func (e ChildOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ChildOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ChildOrderValues(attr.Value)
-		return nil
-}
-
 // ConstraintRelationshipValues
 type ConstraintRelationshipValues string
 const (
@@ -4782,136 +6040,19 @@ func (e *ConstraintRelationshipValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// ConnectorRoutingValues
-type ConnectorRoutingValues string
+// PyramidAccentTextMarginValues
+type PyramidAccentTextMarginValues string
 const (
-	ConnectorRoutingValuesStra ConnectorRoutingValues = "stra"
-	ConnectorRoutingValuesBend ConnectorRoutingValues = "bend"
-	ConnectorRoutingValuesCurve ConnectorRoutingValues = "curve"
-	ConnectorRoutingValuesLongcurve ConnectorRoutingValues = "longCurve"
+	PyramidAccentTextMarginValuesStep PyramidAccentTextMarginValues = "step"
+	PyramidAccentTextMarginValuesStack PyramidAccentTextMarginValues = "stack"
 )
 
-func (e ConnectorRoutingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PyramidAccentTextMarginValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ConnectorRoutingValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ConnectorRoutingValues(attr.Value)
-		return nil
-}
-
-// PresetShadowValues
-type PresetShadowValues string
-const (
-	PresetShadowValuesShdw1 PresetShadowValues = "shdw1"
-	PresetShadowValuesShdw2 PresetShadowValues = "shdw2"
-	PresetShadowValuesShdw3 PresetShadowValues = "shdw3"
-	PresetShadowValuesShdw4 PresetShadowValues = "shdw4"
-	PresetShadowValuesShdw5 PresetShadowValues = "shdw5"
-	PresetShadowValuesShdw6 PresetShadowValues = "shdw6"
-	PresetShadowValuesShdw7 PresetShadowValues = "shdw7"
-	PresetShadowValuesShdw8 PresetShadowValues = "shdw8"
-	PresetShadowValuesShdw9 PresetShadowValues = "shdw9"
-	PresetShadowValuesShdw10 PresetShadowValues = "shdw10"
-	PresetShadowValuesShdw11 PresetShadowValues = "shdw11"
-	PresetShadowValuesShdw12 PresetShadowValues = "shdw12"
-	PresetShadowValuesShdw13 PresetShadowValues = "shdw13"
-	PresetShadowValuesShdw14 PresetShadowValues = "shdw14"
-	PresetShadowValuesShdw15 PresetShadowValues = "shdw15"
-	PresetShadowValuesShdw16 PresetShadowValues = "shdw16"
-	PresetShadowValuesShdw17 PresetShadowValues = "shdw17"
-	PresetShadowValuesShdw18 PresetShadowValues = "shdw18"
-	PresetShadowValuesShdw19 PresetShadowValues = "shdw19"
-	PresetShadowValuesShdw20 PresetShadowValues = "shdw20"
-)
-
-func (e PresetShadowValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PresetShadowValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PresetShadowValues(attr.Value)
-		return nil
-}
-
-// TextShapeValues
-type TextShapeValues string
-const (
-	TextShapeValuesTextnoshape TextShapeValues = "textNoShape"
-	TextShapeValuesTextplain TextShapeValues = "textPlain"
-	TextShapeValuesTextstop TextShapeValues = "textStop"
-	TextShapeValuesTexttriangle TextShapeValues = "textTriangle"
-	TextShapeValuesTexttriangleinverted TextShapeValues = "textTriangleInverted"
-	TextShapeValuesTextchevron TextShapeValues = "textChevron"
-	TextShapeValuesTextchevroninverted TextShapeValues = "textChevronInverted"
-	TextShapeValuesTextringinside TextShapeValues = "textRingInside"
-	TextShapeValuesTextringoutside TextShapeValues = "textRingOutside"
-	TextShapeValuesTextarchup TextShapeValues = "textArchUp"
-	TextShapeValuesTextarchdown TextShapeValues = "textArchDown"
-	TextShapeValuesTextcircle TextShapeValues = "textCircle"
-	TextShapeValuesTextbutton TextShapeValues = "textButton"
-	TextShapeValuesTextarchuppour TextShapeValues = "textArchUpPour"
-	TextShapeValuesTextarchdownpour TextShapeValues = "textArchDownPour"
-	TextShapeValuesTextcirclepour TextShapeValues = "textCirclePour"
-	TextShapeValuesTextbuttonpour TextShapeValues = "textButtonPour"
-	TextShapeValuesTextcurveup TextShapeValues = "textCurveUp"
-	TextShapeValuesTextcurvedown TextShapeValues = "textCurveDown"
-	TextShapeValuesTextcanup TextShapeValues = "textCanUp"
-	TextShapeValuesTextcandown TextShapeValues = "textCanDown"
-	TextShapeValuesTextwave1 TextShapeValues = "textWave1"
-	TextShapeValuesTextwave2 TextShapeValues = "textWave2"
-	TextShapeValuesTextdoublewave1 TextShapeValues = "textDoubleWave1"
-	TextShapeValuesTextwave4 TextShapeValues = "textWave4"
-	TextShapeValuesTextinflate TextShapeValues = "textInflate"
-	TextShapeValuesTextdeflate TextShapeValues = "textDeflate"
-	TextShapeValuesTextinflatebottom TextShapeValues = "textInflateBottom"
-	TextShapeValuesTextdeflatebottom TextShapeValues = "textDeflateBottom"
-	TextShapeValuesTextinflatetop TextShapeValues = "textInflateTop"
-	TextShapeValuesTextdeflatetop TextShapeValues = "textDeflateTop"
-	TextShapeValuesTextdeflateinflate TextShapeValues = "textDeflateInflate"
-	TextShapeValuesTextdeflateinflatedeflate TextShapeValues = "textDeflateInflateDeflate"
-	TextShapeValuesTextfaderight TextShapeValues = "textFadeRight"
-	TextShapeValuesTextfadeleft TextShapeValues = "textFadeLeft"
-	TextShapeValuesTextfadeup TextShapeValues = "textFadeUp"
-	TextShapeValuesTextfadedown TextShapeValues = "textFadeDown"
-	TextShapeValuesTextslantup TextShapeValues = "textSlantUp"
-	TextShapeValuesTextslantdown TextShapeValues = "textSlantDown"
-	TextShapeValuesTextcascadeup TextShapeValues = "textCascadeUp"
-	TextShapeValuesTextcascadedown TextShapeValues = "textCascadeDown"
-)
-
-func (e TextShapeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextShapeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextShapeValues(attr.Value)
-		return nil
-}
-
-// BevelPresetValues
-type BevelPresetValues string
-const (
-	BevelPresetValuesRelaxedinset BevelPresetValues = "relaxedInset"
-	BevelPresetValuesCircle BevelPresetValues = "circle"
-	BevelPresetValuesSlope BevelPresetValues = "slope"
-	BevelPresetValuesCross BevelPresetValues = "cross"
-	BevelPresetValuesAngle BevelPresetValues = "angle"
-	BevelPresetValuesSoftround BevelPresetValues = "softRound"
-	BevelPresetValuesConvex BevelPresetValues = "convex"
-	BevelPresetValuesCoolslant BevelPresetValues = "coolSlant"
-	BevelPresetValuesDivot BevelPresetValues = "divot"
-	BevelPresetValuesRiblet BevelPresetValues = "riblet"
-	BevelPresetValuesHardedge BevelPresetValues = "hardEdge"
-	BevelPresetValuesArtdeco BevelPresetValues = "artDeco"
-)
-
-func (e BevelPresetValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BevelPresetValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BevelPresetValues(attr.Value)
+func (e *PyramidAccentTextMarginValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PyramidAccentTextMarginValues(attr.Value)
 		return nil
 }
 
@@ -4940,202 +6081,281 @@ func (e *PresetLineDashValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// CredentialsMethodValues
-type CredentialsMethodValues string
+// TextWrappingValues
+type TextWrappingValues string
 const (
-	CredentialsMethodValuesIntegrated CredentialsMethodValues = "integrated"
-	CredentialsMethodValuesNone CredentialsMethodValues = "none"
-	CredentialsMethodValuesStored CredentialsMethodValues = "stored"
+	TextWrappingValuesNone TextWrappingValues = "none"
+	TextWrappingValuesSquare TextWrappingValues = "square"
 )
 
-func (e CredentialsMethodValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TextWrappingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *CredentialsMethodValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CredentialsMethodValues(attr.Value)
+func (e *TextWrappingValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextWrappingValues(attr.Value)
 		return nil
 }
 
-// RowColumnActionValues
-type RowColumnActionValues string
+// TableValues
+type TableValues string
 const (
-	RowColumnActionValuesInsertrow RowColumnActionValues = "insertRow"
-	RowColumnActionValuesDeleterow RowColumnActionValues = "deleteRow"
-	RowColumnActionValuesInsertcol RowColumnActionValues = "insertCol"
-	RowColumnActionValuesDeletecol RowColumnActionValues = "deleteCol"
+	TableValuesWorksheet TableValues = "worksheet"
+	TableValuesXml TableValues = "xml"
+	TableValuesQuerytable TableValues = "queryTable"
 )
 
-func (e RowColumnActionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TableValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *RowColumnActionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RowColumnActionValues(attr.Value)
+func (e *TableValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TableValues(attr.Value)
 		return nil
 }
 
-// RevisionContext
-type RevisionContext string
+// CheckedValues
+type CheckedValues string
 const (
-	RevisionContextNormal RevisionContext = "normal"
-	RevisionContextUndo RevisionContext = "undo"
-	RevisionContextRedo RevisionContext = "redo"
-	RevisionContextCopy RevisionContext = "copy"
+	CheckedValuesUnchecked CheckedValues = "Unchecked"
+	CheckedValuesChecked CheckedValues = "Checked"
+	CheckedValuesMixed CheckedValues = "Mixed"
 )
 
-func (e RevisionContext) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e CheckedValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *RevisionContext) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RevisionContext(attr.Value)
+func (e *CheckedValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = CheckedValues(attr.Value)
 		return nil
 }
 
-// FallbackDimensionValues
-type FallbackDimensionValues string
+// ColorStyleMethodEnum
+type ColorStyleMethodEnum string
 const (
-	FallbackDimensionValuesFallbackDimensionValues1D FallbackDimensionValues = "1D"
-	FallbackDimensionValuesFallbackDimensionValues2D FallbackDimensionValues = "2D"
+	ColorStyleMethodEnumCycle ColorStyleMethodEnum = "cycle"
+	ColorStyleMethodEnumWithinlinear ColorStyleMethodEnum = "withinLinear"
+	ColorStyleMethodEnumAcrosslinear ColorStyleMethodEnum = "acrossLinear"
+	ColorStyleMethodEnumWithinlinearreversed ColorStyleMethodEnum = "withinLinearReversed"
+	ColorStyleMethodEnumAcrosslinearreversed ColorStyleMethodEnum = "acrossLinearReversed"
 )
 
-func (e FallbackDimensionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ColorStyleMethodEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *FallbackDimensionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FallbackDimensionValues(attr.Value)
+func (e *ColorStyleMethodEnum) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ColorStyleMethodEnum(attr.Value)
 		return nil
 }
 
-// PaneValues
-type PaneValues string
+// SubFeatureType
+type SubFeatureType string
 const (
-	PaneValuesBottomright PaneValues = "bottomRight"
-	PaneValuesTopright PaneValues = "topRight"
-	PaneValuesBottomleft PaneValues = "bottomLeft"
-	PaneValuesTopleft PaneValues = "topLeft"
+	SubFeatureTypeNone SubFeatureType = "none"
+	SubFeatureTypeFuture SubFeatureType = "future"
 )
 
-func (e PaneValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e SubFeatureType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *PaneValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PaneValues(attr.Value)
+func (e *SubFeatureType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SubFeatureType(attr.Value)
 		return nil
 }
 
-// StyleReferenceModifierEnum
-type StyleReferenceModifierEnum string
+// SplitValues
+type SplitValues string
 const (
-	StyleReferenceModifierEnumIgnorecstransforms StyleReferenceModifierEnum = "ignoreCSTransforms"
+	SplitValuesCust SplitValues = "cust"
+	SplitValuesPercent SplitValues = "percent"
+	SplitValuesPos SplitValues = "pos"
+	SplitValuesVal SplitValues = "val"
 )
 
-func (e StyleReferenceModifierEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e SplitValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *StyleReferenceModifierEnum) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = StyleReferenceModifierEnum(attr.Value)
+func (e *SplitValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = SplitValues(attr.Value)
 		return nil
 }
 
-// ConditionalFormatValues
-type ConditionalFormatValues string
+// DiagramBuildStepValues
+type DiagramBuildStepValues string
 const (
-	ConditionalFormatValuesExpression ConditionalFormatValues = "expression"
-	ConditionalFormatValuesCellis ConditionalFormatValues = "cellIs"
-	ConditionalFormatValuesColorscale ConditionalFormatValues = "colorScale"
-	ConditionalFormatValuesDatabar ConditionalFormatValues = "dataBar"
-	ConditionalFormatValuesIconset ConditionalFormatValues = "iconSet"
-	ConditionalFormatValuesTop10 ConditionalFormatValues = "top10"
-	ConditionalFormatValuesUniquevalues ConditionalFormatValues = "uniqueValues"
-	ConditionalFormatValuesDuplicatevalues ConditionalFormatValues = "duplicateValues"
-	ConditionalFormatValuesContainstext ConditionalFormatValues = "containsText"
-	ConditionalFormatValuesNotcontainstext ConditionalFormatValues = "notContainsText"
-	ConditionalFormatValuesBeginswith ConditionalFormatValues = "beginsWith"
-	ConditionalFormatValuesEndswith ConditionalFormatValues = "endsWith"
-	ConditionalFormatValuesContainsblanks ConditionalFormatValues = "containsBlanks"
-	ConditionalFormatValuesNotcontainsblanks ConditionalFormatValues = "notContainsBlanks"
-	ConditionalFormatValuesContainserrors ConditionalFormatValues = "containsErrors"
-	ConditionalFormatValuesNotcontainserrors ConditionalFormatValues = "notContainsErrors"
-	ConditionalFormatValuesTimeperiod ConditionalFormatValues = "timePeriod"
-	ConditionalFormatValuesAboveaverage ConditionalFormatValues = "aboveAverage"
+	DiagramBuildStepValuesSp DiagramBuildStepValues = "sp"
+	DiagramBuildStepValuesBg DiagramBuildStepValues = "bg"
 )
 
-func (e ConditionalFormatValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e DiagramBuildStepValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ConditionalFormatValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ConditionalFormatValues(attr.Value)
+func (e *DiagramBuildStepValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DiagramBuildStepValues(attr.Value)
 		return nil
 }
 
-// GroupingValues
-type GroupingValues string
+// PaneStateValues
+type PaneStateValues string
 const (
-	GroupingValuesPercentstacked GroupingValues = "percentStacked"
-	GroupingValuesStandard GroupingValues = "standard"
-	GroupingValuesStacked GroupingValues = "stacked"
+	PaneStateValuesSplit PaneStateValues = "split"
+	PaneStateValuesFrozen PaneStateValues = "frozen"
+	PaneStateValuesFrozensplit PaneStateValues = "frozenSplit"
 )
 
-func (e GroupingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e PaneStateValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *GroupingValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = GroupingValues(attr.Value)
+func (e *PaneStateValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = PaneStateValues(attr.Value)
 		return nil
 }
 
-// AnimationLevelStringValues
-type AnimationLevelStringValues string
+// FillTypeExt
+type FillTypeExt string
 const (
-	AnimationLevelStringValuesNone AnimationLevelStringValues = "none"
-	AnimationLevelStringValuesLvl AnimationLevelStringValues = "lvl"
-	AnimationLevelStringValuesCtr AnimationLevelStringValues = "ctr"
+	FillTypeExtTest FillTypeExt = "test"
 )
 
-func (e AnimationLevelStringValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e FillTypeExt) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *AnimationLevelStringValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AnimationLevelStringValues(attr.Value)
+func (e *FillTypeExt) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FillTypeExt(attr.Value)
 		return nil
 }
 
-// SchemeColorValues
-type SchemeColorValues string
+// HierarchyBranchStyleValues
+type HierarchyBranchStyleValues string
 const (
-	SchemeColorValuesBg1 SchemeColorValues = "bg1"
-	SchemeColorValuesTx1 SchemeColorValues = "tx1"
-	SchemeColorValuesBg2 SchemeColorValues = "bg2"
-	SchemeColorValuesTx2 SchemeColorValues = "tx2"
-	SchemeColorValuesAccent1 SchemeColorValues = "accent1"
-	SchemeColorValuesAccent2 SchemeColorValues = "accent2"
-	SchemeColorValuesAccent3 SchemeColorValues = "accent3"
-	SchemeColorValuesAccent4 SchemeColorValues = "accent4"
-	SchemeColorValuesAccent5 SchemeColorValues = "accent5"
-	SchemeColorValuesAccent6 SchemeColorValues = "accent6"
-	SchemeColorValuesHlink SchemeColorValues = "hlink"
-	SchemeColorValuesFolhlink SchemeColorValues = "folHlink"
-	SchemeColorValuesPhclr SchemeColorValues = "phClr"
-	SchemeColorValuesDk1 SchemeColorValues = "dk1"
-	SchemeColorValuesLt1 SchemeColorValues = "lt1"
-	SchemeColorValuesDk2 SchemeColorValues = "dk2"
-	SchemeColorValuesLt2 SchemeColorValues = "lt2"
+	HierarchyBranchStyleValuesL HierarchyBranchStyleValues = "l"
+	HierarchyBranchStyleValuesR HierarchyBranchStyleValues = "r"
+	HierarchyBranchStyleValuesHang HierarchyBranchStyleValues = "hang"
+	HierarchyBranchStyleValuesStd HierarchyBranchStyleValues = "std"
+	HierarchyBranchStyleValuesInit HierarchyBranchStyleValues = "init"
 )
 
-func (e SchemeColorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e HierarchyBranchStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *SchemeColorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SchemeColorValues(attr.Value)
+func (e *HierarchyBranchStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = HierarchyBranchStyleValues(attr.Value)
+		return nil
+}
+
+// TextHorizontalOverflowValues
+type TextHorizontalOverflowValues string
+const (
+	TextHorizontalOverflowValuesOverflow TextHorizontalOverflowValues = "overflow"
+	TextHorizontalOverflowValuesClip TextHorizontalOverflowValues = "clip"
+)
+
+func (e TextHorizontalOverflowValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *TextHorizontalOverflowValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TextHorizontalOverflowValues(attr.Value)
+		return nil
+}
+
+// RuleValues
+type RuleValues string
+const (
+	RuleValuesNone RuleValues = "none"
+	RuleValuesAll RuleValues = "all"
+	RuleValuesRow RuleValues = "row"
+	RuleValuesColumn RuleValues = "column"
+)
+
+func (e RuleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *RuleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RuleValues(attr.Value)
+		return nil
+}
+
+// ShowDataAsValues
+type ShowDataAsValues string
+const (
+	ShowDataAsValuesNormal ShowDataAsValues = "normal"
+	ShowDataAsValuesDifference ShowDataAsValues = "difference"
+	ShowDataAsValuesPercent ShowDataAsValues = "percent"
+	ShowDataAsValuesPercentdiff ShowDataAsValues = "percentDiff"
+	ShowDataAsValuesRuntotal ShowDataAsValues = "runTotal"
+	ShowDataAsValuesPercentofrow ShowDataAsValues = "percentOfRow"
+	ShowDataAsValuesPercentofcol ShowDataAsValues = "percentOfCol"
+	ShowDataAsValuesPercentoftotal ShowDataAsValues = "percentOfTotal"
+	ShowDataAsValuesIndex ShowDataAsValues = "index"
+)
+
+func (e ShowDataAsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *ShowDataAsValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ShowDataAsValues(attr.Value)
+		return nil
+}
+
+// DataViewAspectValues
+type DataViewAspectValues string
+const (
+	DataViewAspectValuesDvaspectContent DataViewAspectValues = "DVASPECT_CONTENT"
+	DataViewAspectValuesDvaspectIcon DataViewAspectValues = "DVASPECT_ICON"
+)
+
+func (e DataViewAspectValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *DataViewAspectValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = DataViewAspectValues(attr.Value)
+		return nil
+}
+
+// OleUpdateValues
+type OleUpdateValues string
+const (
+	OleUpdateValuesOleupdateAlways OleUpdateValues = "OLEUPDATE_ALWAYS"
+	OleUpdateValuesOleupdateOncall OleUpdateValues = "OLEUPDATE_ONCALL"
+)
+
+func (e OleUpdateValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *OleUpdateValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = OleUpdateValues(attr.Value)
+		return nil
+}
+
+// AggregationType
+type AggregationType string
+const (
+	AggregationTypeDistinctcount AggregationType = "distinctCount"
+	AggregationTypeMedian AggregationType = "median"
+	AggregationTypeDistinctduplicates AggregationType = "distinctDuplicates"
+	AggregationTypeCountvaluesduplicated AggregationType = "countValuesDuplicated"
+	AggregationTypeCountrepeatvalues AggregationType = "countRepeatValues"
+)
+
+func (e AggregationType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	return xml.Attr{Name: name, Value: string(e)}, nil
+}
+
+func (e *AggregationType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = AggregationType(attr.Value)
 		return nil
 }
 
@@ -5160,1386 +6380,166 @@ func (e *TextVerticalValues) UnmarshalXMLAttr(attr xml.Attr) error {
 		return nil
 }
 
-// ChildAlignmentValues
-type ChildAlignmentValues string
+// FieldSortValues
+type FieldSortValues string
 const (
-	ChildAlignmentValuesT ChildAlignmentValues = "t"
-	ChildAlignmentValuesB ChildAlignmentValues = "b"
-	ChildAlignmentValuesL ChildAlignmentValues = "l"
-	ChildAlignmentValuesR ChildAlignmentValues = "r"
+	FieldSortValuesManual FieldSortValues = "manual"
+	FieldSortValuesAscending FieldSortValues = "ascending"
+	FieldSortValuesDescending FieldSortValues = "descending"
 )
 
-func (e ChildAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e FieldSortValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ChildAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ChildAlignmentValues(attr.Value)
+func (e *FieldSortValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FieldSortValues(attr.Value)
 		return nil
 }
 
-// VariableValues
-type VariableValues string
+// TableStyleValues
+type TableStyleValues string
 const (
-	VariableValuesNone VariableValues = "none"
-	VariableValuesOrgchart VariableValues = "orgChart"
-	VariableValuesChmax VariableValues = "chMax"
-	VariableValuesChpref VariableValues = "chPref"
-	VariableValuesBulenabled VariableValues = "bulEnabled"
-	VariableValuesDir VariableValues = "dir"
-	VariableValuesHierbranch VariableValues = "hierBranch"
-	VariableValuesAnimone VariableValues = "animOne"
-	VariableValuesAnimlvl VariableValues = "animLvl"
-	VariableValuesResizehandles VariableValues = "resizeHandles"
+	TableStyleValuesWholetable TableStyleValues = "wholeTable"
+	TableStyleValuesHeaderrow TableStyleValues = "headerRow"
+	TableStyleValuesTotalrow TableStyleValues = "totalRow"
+	TableStyleValuesFirstcolumn TableStyleValues = "firstColumn"
+	TableStyleValuesLastcolumn TableStyleValues = "lastColumn"
+	TableStyleValuesFirstrowstripe TableStyleValues = "firstRowStripe"
+	TableStyleValuesSecondrowstripe TableStyleValues = "secondRowStripe"
+	TableStyleValuesFirstcolumnstripe TableStyleValues = "firstColumnStripe"
+	TableStyleValuesSecondcolumnstripe TableStyleValues = "secondColumnStripe"
+	TableStyleValuesFirstheadercell TableStyleValues = "firstHeaderCell"
+	TableStyleValuesLastheadercell TableStyleValues = "lastHeaderCell"
+	TableStyleValuesFirsttotalcell TableStyleValues = "firstTotalCell"
+	TableStyleValuesLasttotalcell TableStyleValues = "lastTotalCell"
+	TableStyleValuesFirstsubtotalcolumn TableStyleValues = "firstSubtotalColumn"
+	TableStyleValuesSecondsubtotalcolumn TableStyleValues = "secondSubtotalColumn"
+	TableStyleValuesThirdsubtotalcolumn TableStyleValues = "thirdSubtotalColumn"
+	TableStyleValuesFirstsubtotalrow TableStyleValues = "firstSubtotalRow"
+	TableStyleValuesSecondsubtotalrow TableStyleValues = "secondSubtotalRow"
+	TableStyleValuesThirdsubtotalrow TableStyleValues = "thirdSubtotalRow"
+	TableStyleValuesBlankrow TableStyleValues = "blankRow"
+	TableStyleValuesFirstcolumnsubheading TableStyleValues = "firstColumnSubheading"
+	TableStyleValuesSecondcolumnsubheading TableStyleValues = "secondColumnSubheading"
+	TableStyleValuesThirdcolumnsubheading TableStyleValues = "thirdColumnSubheading"
+	TableStyleValuesFirstrowsubheading TableStyleValues = "firstRowSubheading"
+	TableStyleValuesSecondrowsubheading TableStyleValues = "secondRowSubheading"
+	TableStyleValuesThirdrowsubheading TableStyleValues = "thirdRowSubheading"
+	TableStyleValuesPagefieldlabels TableStyleValues = "pageFieldLabels"
+	TableStyleValuesPagefieldvalues TableStyleValues = "pageFieldValues"
 )
 
-func (e VariableValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e TableStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *VariableValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = VariableValues(attr.Value)
+func (e *TableStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = TableStyleValues(attr.Value)
 		return nil
 }
 
-// TextHorizontalOverflowValues
-type TextHorizontalOverflowValues string
+// VolatileValues
+type VolatileValues string
 const (
-	TextHorizontalOverflowValuesOverflow TextHorizontalOverflowValues = "overflow"
-	TextHorizontalOverflowValuesClip TextHorizontalOverflowValues = "clip"
+	VolatileValuesB VolatileValues = "b"
+	VolatileValuesN VolatileValues = "n"
+	VolatileValuesE VolatileValues = "e"
+	VolatileValuesS VolatileValues = "s"
 )
 
-func (e TextHorizontalOverflowValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e VolatileValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *TextHorizontalOverflowValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextHorizontalOverflowValues(attr.Value)
+func (e *VolatileValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = VolatileValues(attr.Value)
 		return nil
 }
 
-// ConditionalFormattingOperatorValues
-type ConditionalFormattingOperatorValues string
+// LegendPosition
+type LegendPosition string
 const (
-	ConditionalFormattingOperatorValuesLessthan ConditionalFormattingOperatorValues = "lessThan"
-	ConditionalFormattingOperatorValuesLessthanorequal ConditionalFormattingOperatorValues = "lessThanOrEqual"
-	ConditionalFormattingOperatorValuesEqual ConditionalFormattingOperatorValues = "equal"
-	ConditionalFormattingOperatorValuesNotequal ConditionalFormattingOperatorValues = "notEqual"
-	ConditionalFormattingOperatorValuesGreaterthanorequal ConditionalFormattingOperatorValues = "greaterThanOrEqual"
-	ConditionalFormattingOperatorValuesGreaterthan ConditionalFormattingOperatorValues = "greaterThan"
-	ConditionalFormattingOperatorValuesBetween ConditionalFormattingOperatorValues = "between"
-	ConditionalFormattingOperatorValuesNotbetween ConditionalFormattingOperatorValues = "notBetween"
-	ConditionalFormattingOperatorValuesContainstext ConditionalFormattingOperatorValues = "containsText"
-	ConditionalFormattingOperatorValuesNotcontains ConditionalFormattingOperatorValues = "notContains"
-	ConditionalFormattingOperatorValuesBeginswith ConditionalFormattingOperatorValues = "beginsWith"
-	ConditionalFormattingOperatorValuesEndswith ConditionalFormattingOperatorValues = "endsWith"
+	LegendPositionRight LegendPosition = "right"
+	LegendPositionTop LegendPosition = "top"
+	LegendPositionLeft LegendPosition = "left"
+	LegendPositionBottom LegendPosition = "bottom"
+	LegendPositionNinch LegendPosition = "ninch"
 )
 
-func (e ConditionalFormattingOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e LegendPosition) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ConditionalFormattingOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ConditionalFormattingOperatorValues(attr.Value)
+func (e *LegendPosition) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = LegendPosition(attr.Value)
 		return nil
 }
 
-// UpdateLinksBehaviorValues
-type UpdateLinksBehaviorValues string
+// FormulaDirection
+type FormulaDirection string
 const (
-	UpdateLinksBehaviorValuesUserset UpdateLinksBehaviorValues = "userSet"
-	UpdateLinksBehaviorValuesNever UpdateLinksBehaviorValues = "never"
-	UpdateLinksBehaviorValuesAlways UpdateLinksBehaviorValues = "always"
+	FormulaDirectionCol FormulaDirection = "col"
+	FormulaDirectionRow FormulaDirection = "row"
 )
 
-func (e UpdateLinksBehaviorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e FormulaDirection) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *UpdateLinksBehaviorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = UpdateLinksBehaviorValues(attr.Value)
+func (e *FormulaDirection) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = FormulaDirection(attr.Value)
 		return nil
 }
 
-// PivotAreaValues
-type PivotAreaValues string
+// RichValueFallbackType
+type RichValueFallbackType string
 const (
-	PivotAreaValuesNone PivotAreaValues = "none"
-	PivotAreaValuesNormal PivotAreaValues = "normal"
-	PivotAreaValuesData PivotAreaValues = "data"
-	PivotAreaValuesAll PivotAreaValues = "all"
-	PivotAreaValuesOrigin PivotAreaValues = "origin"
-	PivotAreaValuesButton PivotAreaValues = "button"
-	PivotAreaValuesTopright PivotAreaValues = "topRight"
-	PivotAreaValuesTopend PivotAreaValues = "topEnd"
+	RichValueFallbackTypeB RichValueFallbackType = "b"
+	RichValueFallbackTypeN RichValueFallbackType = "n"
+	RichValueFallbackTypeE RichValueFallbackType = "e"
+	RichValueFallbackTypeS RichValueFallbackType = "s"
 )
 
-func (e PivotAreaValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e RichValueFallbackType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *PivotAreaValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PivotAreaValues(attr.Value)
+func (e *RichValueFallbackType) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = RichValueFallbackType(attr.Value)
 		return nil
 }
 
-// ModelTimeGroupingContentType
-type ModelTimeGroupingContentType string
+// OfPieValues
+type OfPieValues string
 const (
-	ModelTimeGroupingContentTypeYears ModelTimeGroupingContentType = "years"
-	ModelTimeGroupingContentTypeQuarters ModelTimeGroupingContentType = "quarters"
-	ModelTimeGroupingContentTypeMonthsindex ModelTimeGroupingContentType = "monthsindex"
-	ModelTimeGroupingContentTypeMonths ModelTimeGroupingContentType = "months"
-	ModelTimeGroupingContentTypeDaysindex ModelTimeGroupingContentType = "daysindex"
-	ModelTimeGroupingContentTypeDays ModelTimeGroupingContentType = "days"
-	ModelTimeGroupingContentTypeHours ModelTimeGroupingContentType = "hours"
-	ModelTimeGroupingContentTypeMinutes ModelTimeGroupingContentType = "minutes"
-	ModelTimeGroupingContentTypeSeconds ModelTimeGroupingContentType = "seconds"
+	OfPieValuesPie OfPieValues = "pie"
+	OfPieValuesBar OfPieValues = "bar"
 )
 
-func (e ModelTimeGroupingContentType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e OfPieValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *ModelTimeGroupingContentType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ModelTimeGroupingContentType(attr.Value)
+func (e *OfPieValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = OfPieValues(attr.Value)
 		return nil
 }
 
-// LayoutTargetValues
-type LayoutTargetValues string
+// ScopeValues
+type ScopeValues string
 const (
-	LayoutTargetValuesInner LayoutTargetValues = "inner"
-	LayoutTargetValuesOuter LayoutTargetValues = "outer"
+	ScopeValuesSelection ScopeValues = "selection"
+	ScopeValuesData ScopeValues = "data"
+	ScopeValuesField ScopeValues = "field"
 )
 
-func (e LayoutTargetValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+func (e ScopeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
 	return xml.Attr{Name: name, Value: string(e)}, nil
 }
 
-func (e *LayoutTargetValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LayoutTargetValues(attr.Value)
-		return nil
-}
-
-// TickMarkNinch
-type TickMarkNinch string
-const (
-	TickMarkNinchCross TickMarkNinch = "cross"
-	TickMarkNinchInside TickMarkNinch = "inside"
-	TickMarkNinchNone TickMarkNinch = "none"
-	TickMarkNinchOutside TickMarkNinch = "outside"
-	TickMarkNinchNinch TickMarkNinch = "ninch"
-)
-
-func (e TickMarkNinch) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TickMarkNinch) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TickMarkNinch(attr.Value)
-		return nil
-}
-
-// RegionLabelLayoutEnum
-type RegionLabelLayoutEnum string
-const (
-	RegionLabelLayoutEnumNone RegionLabelLayoutEnum = "none"
-	RegionLabelLayoutEnumBestfitonly RegionLabelLayoutEnum = "bestFitOnly"
-	RegionLabelLayoutEnumShowall RegionLabelLayoutEnum = "showAll"
-)
-
-func (e RegionLabelLayoutEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *RegionLabelLayoutEnum) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = RegionLabelLayoutEnum(attr.Value)
-		return nil
-}
-
-// SupportingPropertyBagValueType
-type SupportingPropertyBagValueType string
-const (
-	SupportingPropertyBagValueTypeD SupportingPropertyBagValueType = "d"
-	SupportingPropertyBagValueTypeI SupportingPropertyBagValueType = "i"
-	SupportingPropertyBagValueTypeB SupportingPropertyBagValueType = "b"
-	SupportingPropertyBagValueTypeS SupportingPropertyBagValueType = "s"
-	SupportingPropertyBagValueTypeSpb SupportingPropertyBagValueType = "spb"
-	SupportingPropertyBagValueTypeSpba SupportingPropertyBagValueType = "spba"
-)
-
-func (e SupportingPropertyBagValueType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SupportingPropertyBagValueType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SupportingPropertyBagValueType(attr.Value)
-		return nil
-}
-
-// CalculatedMemberNumberFormat
-type CalculatedMemberNumberFormat string
-const (
-	CalculatedMemberNumberFormatDefault CalculatedMemberNumberFormat = "default"
-	CalculatedMemberNumberFormatNumber CalculatedMemberNumberFormat = "number"
-	CalculatedMemberNumberFormatPercent CalculatedMemberNumberFormat = "percent"
-)
-
-func (e CalculatedMemberNumberFormat) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CalculatedMemberNumberFormat) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CalculatedMemberNumberFormat(attr.Value)
-		return nil
-}
-
-// FunctionOperatorValues
-type FunctionOperatorValues string
-const (
-	FunctionOperatorValuesEqu FunctionOperatorValues = "equ"
-	FunctionOperatorValuesNeq FunctionOperatorValues = "neq"
-	FunctionOperatorValuesGt FunctionOperatorValues = "gt"
-	FunctionOperatorValuesLt FunctionOperatorValues = "lt"
-	FunctionOperatorValuesGte FunctionOperatorValues = "gte"
-	FunctionOperatorValuesLte FunctionOperatorValues = "lte"
-)
-
-func (e FunctionOperatorValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FunctionOperatorValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FunctionOperatorValues(attr.Value)
-		return nil
-}
-
-// CenterShapeMappingValues
-type CenterShapeMappingValues string
-const (
-	CenterShapeMappingValuesNone CenterShapeMappingValues = "none"
-	CenterShapeMappingValuesFnode CenterShapeMappingValues = "fNode"
-)
-
-func (e CenterShapeMappingValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CenterShapeMappingValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CenterShapeMappingValues(attr.Value)
-		return nil
-}
-
-// TextAlignmentValues
-type TextAlignmentValues string
-const (
-	TextAlignmentValuesL TextAlignmentValues = "l"
-	TextAlignmentValuesCtr TextAlignmentValues = "ctr"
-	TextAlignmentValuesR TextAlignmentValues = "r"
-)
-
-func (e TextAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextAlignmentValues(attr.Value)
-		return nil
-}
-
-// LineCapValues
-type LineCapValues string
-const (
-	LineCapValuesRnd LineCapValues = "rnd"
-	LineCapValuesSq LineCapValues = "sq"
-	LineCapValuesFlat LineCapValues = "flat"
-)
-
-func (e LineCapValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *LineCapValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LineCapValues(attr.Value)
-		return nil
-}
-
-// TextAnchoringTypeValues
-type TextAnchoringTypeValues string
-const (
-	TextAnchoringTypeValuesT TextAnchoringTypeValues = "t"
-	TextAnchoringTypeValuesCtr TextAnchoringTypeValues = "ctr"
-	TextAnchoringTypeValuesB TextAnchoringTypeValues = "b"
-)
-
-func (e TextAnchoringTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextAnchoringTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextAnchoringTypeValues(attr.Value)
-		return nil
-}
-
-// ConditionalFormattingValueObjectTypeValues
-type ConditionalFormattingValueObjectTypeValues string
-const (
-	ConditionalFormattingValueObjectTypeValuesNum ConditionalFormattingValueObjectTypeValues = "num"
-	ConditionalFormattingValueObjectTypeValuesPercent ConditionalFormattingValueObjectTypeValues = "percent"
-	ConditionalFormattingValueObjectTypeValuesMax ConditionalFormattingValueObjectTypeValues = "max"
-	ConditionalFormattingValueObjectTypeValuesMin ConditionalFormattingValueObjectTypeValues = "min"
-	ConditionalFormattingValueObjectTypeValuesFormula ConditionalFormattingValueObjectTypeValues = "formula"
-	ConditionalFormattingValueObjectTypeValuesPercentile ConditionalFormattingValueObjectTypeValues = "percentile"
-	ConditionalFormattingValueObjectTypeValuesAutomin ConditionalFormattingValueObjectTypeValues = "autoMin"
-	ConditionalFormattingValueObjectTypeValuesAutomax ConditionalFormattingValueObjectTypeValues = "autoMax"
-)
-
-func (e ConditionalFormattingValueObjectTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ConditionalFormattingValueObjectTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ConditionalFormattingValueObjectTypeValues(attr.Value)
-		return nil
-}
-
-// StyleColorEnum
-type StyleColorEnum string
-const (
-	StyleColorEnumAuto StyleColorEnum = "auto"
-)
-
-func (e StyleColorEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *StyleColorEnum) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = StyleColorEnum(attr.Value)
-		return nil
-}
-
-// SortMethodValues
-type SortMethodValues string
-const (
-	SortMethodValuesStroke SortMethodValues = "stroke"
-	SortMethodValuesPinyin SortMethodValues = "pinYin"
-	SortMethodValuesNone SortMethodValues = "none"
-)
-
-func (e SortMethodValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SortMethodValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SortMethodValues(attr.Value)
-		return nil
-}
-
-// XmlDataValues
-type XmlDataValues string
-const (
-	XmlDataValuesString XmlDataValues = "string"
-	XmlDataValuesNormalizedstring XmlDataValues = "normalizedString"
-	XmlDataValuesToken XmlDataValues = "token"
-	XmlDataValuesByte XmlDataValues = "byte"
-	XmlDataValuesUnsignedbyte XmlDataValues = "unsignedByte"
-	XmlDataValuesBase64binary XmlDataValues = "base64Binary"
-	XmlDataValuesHexbinary XmlDataValues = "hexBinary"
-	XmlDataValuesInteger XmlDataValues = "integer"
-	XmlDataValuesPositiveinteger XmlDataValues = "positiveInteger"
-	XmlDataValuesNegativeinteger XmlDataValues = "negativeInteger"
-	XmlDataValuesNonpositiveinteger XmlDataValues = "nonPositiveInteger"
-	XmlDataValuesNonnegativeinteger XmlDataValues = "nonNegativeInteger"
-	XmlDataValuesInt XmlDataValues = "int"
-	XmlDataValuesUnsignedint XmlDataValues = "unsignedInt"
-	XmlDataValuesLong XmlDataValues = "long"
-	XmlDataValuesUnsignedlong XmlDataValues = "unsignedLong"
-	XmlDataValuesShort XmlDataValues = "short"
-	XmlDataValuesUnsignedshort XmlDataValues = "unsignedShort"
-	XmlDataValuesDecimal XmlDataValues = "decimal"
-	XmlDataValuesFloat XmlDataValues = "float"
-	XmlDataValuesDouble XmlDataValues = "double"
-	XmlDataValuesBoolean XmlDataValues = "boolean"
-	XmlDataValuesTime XmlDataValues = "time"
-	XmlDataValuesDatetime XmlDataValues = "dateTime"
-	XmlDataValuesDuration XmlDataValues = "duration"
-	XmlDataValuesDate XmlDataValues = "date"
-	XmlDataValuesGmonth XmlDataValues = "gMonth"
-	XmlDataValuesGyear XmlDataValues = "gYear"
-	XmlDataValuesGyearmonth XmlDataValues = "gYearMonth"
-	XmlDataValuesGday XmlDataValues = "gDay"
-	XmlDataValuesGmonthday XmlDataValues = "gMonthDay"
-	XmlDataValuesName XmlDataValues = "Name"
-	XmlDataValuesQname XmlDataValues = "QName"
-	XmlDataValuesNcname XmlDataValues = "NCName"
-	XmlDataValuesAnyuri XmlDataValues = "anyURI"
-	XmlDataValuesLanguage XmlDataValues = "language"
-	XmlDataValuesId XmlDataValues = "ID"
-	XmlDataValuesIdref XmlDataValues = "IDREF"
-	XmlDataValuesIdrefs XmlDataValues = "IDREFS"
-	XmlDataValuesEntity XmlDataValues = "ENTITY"
-	XmlDataValuesEntities XmlDataValues = "ENTITIES"
-	XmlDataValuesNotation XmlDataValues = "NOTATION"
-	XmlDataValuesNmtoken XmlDataValues = "NMTOKEN"
-	XmlDataValuesNmtokens XmlDataValues = "NMTOKENS"
-	XmlDataValuesAnytype XmlDataValues = "anyType"
-)
-
-func (e XmlDataValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *XmlDataValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = XmlDataValues(attr.Value)
-		return nil
-}
-
-// PosAlign
-type PosAlign string
-const (
-	PosAlignMin PosAlign = "min"
-	PosAlignCtr PosAlign = "ctr"
-	PosAlignMax PosAlign = "max"
-)
-
-func (e PosAlign) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PosAlign) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PosAlign(attr.Value)
-		return nil
-}
-
-// CrossesValues
-type CrossesValues string
-const (
-	CrossesValuesAutozero CrossesValues = "autoZero"
-	CrossesValuesMax CrossesValues = "max"
-	CrossesValuesMin CrossesValues = "min"
-)
-
-func (e CrossesValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CrossesValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CrossesValues(attr.Value)
-		return nil
-}
-
-// DisplayBlanksAsValues
-type DisplayBlanksAsValues string
-const (
-	DisplayBlanksAsValuesSpan DisplayBlanksAsValues = "span"
-	DisplayBlanksAsValuesGap DisplayBlanksAsValues = "gap"
-	DisplayBlanksAsValuesZero DisplayBlanksAsValues = "zero"
-)
-
-func (e DisplayBlanksAsValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DisplayBlanksAsValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DisplayBlanksAsValues(attr.Value)
-		return nil
-}
-
-// PointValues
-type PointValues string
-const (
-	PointValuesNode PointValues = "node"
-	PointValuesAsst PointValues = "asst"
-	PointValuesDoc PointValues = "doc"
-	PointValuesPres PointValues = "pres"
-	PointValuesPartrans PointValues = "parTrans"
-	PointValuesSibtrans PointValues = "sibTrans"
-)
-
-func (e PointValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PointValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PointValues(attr.Value)
-		return nil
-}
-
-// PyramidAccentTextMarginValues
-type PyramidAccentTextMarginValues string
-const (
-	PyramidAccentTextMarginValuesStep PyramidAccentTextMarginValues = "step"
-	PyramidAccentTextMarginValuesStack PyramidAccentTextMarginValues = "stack"
-)
-
-func (e PyramidAccentTextMarginValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PyramidAccentTextMarginValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PyramidAccentTextMarginValues(attr.Value)
-		return nil
-}
-
-// LightRigDirectionValues
-type LightRigDirectionValues string
-const (
-	LightRigDirectionValuesTl LightRigDirectionValues = "tl"
-	LightRigDirectionValuesT LightRigDirectionValues = "t"
-	LightRigDirectionValuesTr LightRigDirectionValues = "tr"
-	LightRigDirectionValuesL LightRigDirectionValues = "l"
-	LightRigDirectionValuesR LightRigDirectionValues = "r"
-	LightRigDirectionValuesBl LightRigDirectionValues = "bl"
-	LightRigDirectionValuesB LightRigDirectionValues = "b"
-	LightRigDirectionValuesBr LightRigDirectionValues = "br"
-)
-
-func (e LightRigDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *LightRigDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LightRigDirectionValues(attr.Value)
-		return nil
-}
-
-// TextUnderlineValues
-type TextUnderlineValues string
-const (
-	TextUnderlineValuesNone TextUnderlineValues = "none"
-	TextUnderlineValuesWords TextUnderlineValues = "words"
-	TextUnderlineValuesSng TextUnderlineValues = "sng"
-	TextUnderlineValuesDbl TextUnderlineValues = "dbl"
-	TextUnderlineValuesHeavy TextUnderlineValues = "heavy"
-	TextUnderlineValuesDotted TextUnderlineValues = "dotted"
-	TextUnderlineValuesDottedheavy TextUnderlineValues = "dottedHeavy"
-	TextUnderlineValuesDash TextUnderlineValues = "dash"
-	TextUnderlineValuesDashheavy TextUnderlineValues = "dashHeavy"
-	TextUnderlineValuesDashlong TextUnderlineValues = "dashLong"
-	TextUnderlineValuesDashlongheavy TextUnderlineValues = "dashLongHeavy"
-	TextUnderlineValuesDotdash TextUnderlineValues = "dotDash"
-	TextUnderlineValuesDotdashheavy TextUnderlineValues = "dotDashHeavy"
-	TextUnderlineValuesDotdotdash TextUnderlineValues = "dotDotDash"
-	TextUnderlineValuesDotdotdashheavy TextUnderlineValues = "dotDotDashHeavy"
-	TextUnderlineValuesWavy TextUnderlineValues = "wavy"
-	TextUnderlineValuesWavyheavy TextUnderlineValues = "wavyHeavy"
-	TextUnderlineValuesWavydbl TextUnderlineValues = "wavyDbl"
-)
-
-func (e TextUnderlineValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextUnderlineValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextUnderlineValues(attr.Value)
-		return nil
-}
-
-// TextAlignmentTypeValues
-type TextAlignmentTypeValues string
-const (
-	TextAlignmentTypeValuesL TextAlignmentTypeValues = "l"
-	TextAlignmentTypeValuesCtr TextAlignmentTypeValues = "ctr"
-	TextAlignmentTypeValuesR TextAlignmentTypeValues = "r"
-	TextAlignmentTypeValuesJust TextAlignmentTypeValues = "just"
-	TextAlignmentTypeValuesJustlow TextAlignmentTypeValues = "justLow"
-	TextAlignmentTypeValuesDist TextAlignmentTypeValues = "dist"
-	TextAlignmentTypeValuesThaidist TextAlignmentTypeValues = "thaiDist"
-)
-
-func (e TextAlignmentTypeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextAlignmentTypeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextAlignmentTypeValues(attr.Value)
-		return nil
-}
-
-// VerticalRelativePositionValues
-type VerticalRelativePositionValues string
-const (
-	VerticalRelativePositionValuesMargin VerticalRelativePositionValues = "margin"
-	VerticalRelativePositionValuesPage VerticalRelativePositionValues = "page"
-	VerticalRelativePositionValuesParagraph VerticalRelativePositionValues = "paragraph"
-	VerticalRelativePositionValuesLine VerticalRelativePositionValues = "line"
-	VerticalRelativePositionValuesTopmargin VerticalRelativePositionValues = "topMargin"
-	VerticalRelativePositionValuesBottommargin VerticalRelativePositionValues = "bottomMargin"
-	VerticalRelativePositionValuesInsidemargin VerticalRelativePositionValues = "insideMargin"
-	VerticalRelativePositionValuesOutsidemargin VerticalRelativePositionValues = "outsideMargin"
-)
-
-func (e VerticalRelativePositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *VerticalRelativePositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = VerticalRelativePositionValues(attr.Value)
-		return nil
-}
-
-// UnderlineValues
-type UnderlineValues string
-const (
-	UnderlineValuesSingle UnderlineValues = "single"
-	UnderlineValuesDouble UnderlineValues = "double"
-	UnderlineValuesSingleaccounting UnderlineValues = "singleAccounting"
-	UnderlineValuesDoubleaccounting UnderlineValues = "doubleAccounting"
-	UnderlineValuesNone UnderlineValues = "none"
-)
-
-func (e UnderlineValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *UnderlineValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = UnderlineValues(attr.Value)
-		return nil
-}
-
-// CrossBetweenValues
-type CrossBetweenValues string
-const (
-	CrossBetweenValuesBetween CrossBetweenValues = "between"
-	CrossBetweenValuesMidcat CrossBetweenValues = "midCat"
-)
-
-func (e CrossBetweenValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CrossBetweenValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CrossBetweenValues(attr.Value)
-		return nil
-}
-
-// GrowDirectionValues
-type GrowDirectionValues string
-const (
-	GrowDirectionValuesTl GrowDirectionValues = "tL"
-	GrowDirectionValuesTr GrowDirectionValues = "tR"
-	GrowDirectionValuesBl GrowDirectionValues = "bL"
-	GrowDirectionValuesBr GrowDirectionValues = "bR"
-)
-
-func (e GrowDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *GrowDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = GrowDirectionValues(attr.Value)
-		return nil
-}
-
-// VerticalAlignmentValues
-type VerticalAlignmentValues string
-const (
-	VerticalAlignmentValuesTop VerticalAlignmentValues = "top"
-	VerticalAlignmentValuesCenter VerticalAlignmentValues = "center"
-	VerticalAlignmentValuesBottom VerticalAlignmentValues = "bottom"
-	VerticalAlignmentValuesJustify VerticalAlignmentValues = "justify"
-	VerticalAlignmentValuesDistributed VerticalAlignmentValues = "distributed"
-)
-
-func (e VerticalAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *VerticalAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = VerticalAlignmentValues(attr.Value)
-		return nil
-}
-
-// FormatActionValues
-type FormatActionValues string
-const (
-	FormatActionValuesBlank FormatActionValues = "blank"
-	FormatActionValuesFormatting FormatActionValues = "formatting"
-)
-
-func (e FormatActionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FormatActionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FormatActionValues(attr.Value)
-		return nil
-}
-
-// PhoneticAlignmentValues
-type PhoneticAlignmentValues string
-const (
-	PhoneticAlignmentValuesNocontrol PhoneticAlignmentValues = "noControl"
-	PhoneticAlignmentValuesLeft PhoneticAlignmentValues = "left"
-	PhoneticAlignmentValuesCenter PhoneticAlignmentValues = "center"
-	PhoneticAlignmentValuesDistributed PhoneticAlignmentValues = "distributed"
-)
-
-func (e PhoneticAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PhoneticAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PhoneticAlignmentValues(attr.Value)
-		return nil
-}
-
-// DropStyleValues
-type DropStyleValues string
-const (
-	DropStyleValuesCombo DropStyleValues = "combo"
-	DropStyleValuesComboedit DropStyleValues = "comboedit"
-	DropStyleValuesSimple DropStyleValues = "simple"
-)
-
-func (e DropStyleValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DropStyleValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DropStyleValues(attr.Value)
-		return nil
-}
-
-// STorageType
-type STorageType string
-const (
-	STorageTypeSibtrans STorageType = "sibTrans"
-	STorageTypePartrans STorageType = "parTrans"
-)
-
-func (e STorageType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *STorageType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = STorageType(attr.Value)
-		return nil
-}
-
-// BendPointValues
-type BendPointValues string
-const (
-	BendPointValuesBeg BendPointValues = "beg"
-	BendPointValuesDef BendPointValues = "def"
-	BendPointValuesEnd BendPointValues = "end"
-)
-
-func (e BendPointValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BendPointValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BendPointValues(attr.Value)
-		return nil
-}
-
-// AnimationChartOnlyBuildValues
-type AnimationChartOnlyBuildValues string
-const (
-	AnimationChartOnlyBuildValuesSeries AnimationChartOnlyBuildValues = "series"
-	AnimationChartOnlyBuildValuesCategory AnimationChartOnlyBuildValues = "category"
-	AnimationChartOnlyBuildValuesSeriesel AnimationChartOnlyBuildValues = "seriesEl"
-	AnimationChartOnlyBuildValuesCategoryel AnimationChartOnlyBuildValues = "categoryEl"
-)
-
-func (e AnimationChartOnlyBuildValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *AnimationChartOnlyBuildValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AnimationChartOnlyBuildValues(attr.Value)
-		return nil
-}
-
-// DataLabelsPosition
-type DataLabelsPosition string
-const (
-	DataLabelsPositionCenter DataLabelsPosition = "center"
-	DataLabelsPositionInsideend DataLabelsPosition = "insideEnd"
-	DataLabelsPositionInsidebase DataLabelsPosition = "insideBase"
-	DataLabelsPositionOutsideend DataLabelsPosition = "outsideEnd"
-	DataLabelsPositionNinch DataLabelsPosition = "ninch"
-)
-
-func (e DataLabelsPosition) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DataLabelsPosition) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataLabelsPosition(attr.Value)
-		return nil
-}
-
-// HueDirectionValues
-type HueDirectionValues string
-const (
-	HueDirectionValuesCw HueDirectionValues = "cw"
-	HueDirectionValuesCcw HueDirectionValues = "ccw"
-)
-
-func (e HueDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *HueDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = HueDirectionValues(attr.Value)
-		return nil
-}
-
-// BreakpointValues
-type BreakpointValues string
-const (
-	BreakpointValuesEndcnv BreakpointValues = "endCnv"
-	BreakpointValuesBal BreakpointValues = "bal"
-	BreakpointValuesFixed BreakpointValues = "fixed"
-)
-
-func (e BreakpointValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *BreakpointValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = BreakpointValues(attr.Value)
-		return nil
-}
-
-// LineEndWidthValues
-type LineEndWidthValues string
-const (
-	LineEndWidthValuesSm LineEndWidthValues = "sm"
-	LineEndWidthValuesMed LineEndWidthValues = "med"
-	LineEndWidthValuesLg LineEndWidthValues = "lg"
-)
-
-func (e LineEndWidthValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *LineEndWidthValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LineEndWidthValues(attr.Value)
-		return nil
-}
-
-// TextStrikeValues
-type TextStrikeValues string
-const (
-	TextStrikeValuesNostrike TextStrikeValues = "noStrike"
-	TextStrikeValuesSngstrike TextStrikeValues = "sngStrike"
-	TextStrikeValuesDblstrike TextStrikeValues = "dblStrike"
-)
-
-func (e TextStrikeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TextStrikeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TextStrikeValues(attr.Value)
-		return nil
-}
-
-// HorizontalRelativePositionValues
-type HorizontalRelativePositionValues string
-const (
-	HorizontalRelativePositionValuesMargin HorizontalRelativePositionValues = "margin"
-	HorizontalRelativePositionValuesPage HorizontalRelativePositionValues = "page"
-	HorizontalRelativePositionValuesColumn HorizontalRelativePositionValues = "column"
-	HorizontalRelativePositionValuesCharacter HorizontalRelativePositionValues = "character"
-	HorizontalRelativePositionValuesLeftmargin HorizontalRelativePositionValues = "leftMargin"
-	HorizontalRelativePositionValuesRightmargin HorizontalRelativePositionValues = "rightMargin"
-	HorizontalRelativePositionValuesInsidemargin HorizontalRelativePositionValues = "insideMargin"
-	HorizontalRelativePositionValuesOutsidemargin HorizontalRelativePositionValues = "outsideMargin"
-)
-
-func (e HorizontalRelativePositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *HorizontalRelativePositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = HorizontalRelativePositionValues(attr.Value)
-		return nil
-}
-
-// GroupByValues
-type GroupByValues string
-const (
-	GroupByValuesRange GroupByValues = "range"
-	GroupByValuesSeconds GroupByValues = "seconds"
-	GroupByValuesMinutes GroupByValues = "minutes"
-	GroupByValuesHours GroupByValues = "hours"
-	GroupByValuesDays GroupByValues = "days"
-	GroupByValuesMonths GroupByValues = "months"
-	GroupByValuesQuarters GroupByValues = "quarters"
-	GroupByValuesYears GroupByValues = "years"
-)
-
-func (e GroupByValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *GroupByValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = GroupByValues(attr.Value)
-		return nil
-}
-
-// DataViewAspectValues
-type DataViewAspectValues string
-const (
-	DataViewAspectValuesDvaspectContent DataViewAspectValues = "DVASPECT_CONTENT"
-	DataViewAspectValuesDvaspectIcon DataViewAspectValues = "DVASPECT_ICON"
-)
-
-func (e DataViewAspectValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DataViewAspectValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DataViewAspectValues(attr.Value)
-		return nil
-}
-
-// Boolean
-type Boolean string
-const (
-	BooleanFalse Boolean = "false"
-	BooleanTrue Boolean = "true"
-	BooleanNinch Boolean = "ninch"
-)
-
-func (e Boolean) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *Boolean) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = Boolean(attr.Value)
-		return nil
-}
-
-// LegendPositionValues
-type LegendPositionValues string
-const (
-	LegendPositionValuesB LegendPositionValues = "b"
-	LegendPositionValuesTr LegendPositionValues = "tr"
-	LegendPositionValuesL LegendPositionValues = "l"
-	LegendPositionValuesR LegendPositionValues = "r"
-	LegendPositionValuesT LegendPositionValues = "t"
-)
-
-func (e LegendPositionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *LegendPositionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LegendPositionValues(attr.Value)
-		return nil
-}
-
-// ConnectorDimensionValues
-type ConnectorDimensionValues string
-const (
-	ConnectorDimensionValuesConnectorDimensionValues1D ConnectorDimensionValues = "1D"
-	ConnectorDimensionValuesConnectorDimensionValues2D ConnectorDimensionValues = "2D"
-	ConnectorDimensionValuesCust ConnectorDimensionValues = "cust"
-)
-
-func (e ConnectorDimensionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ConnectorDimensionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ConnectorDimensionValues(attr.Value)
-		return nil
-}
-
-// PresetCameraValues
-type PresetCameraValues string
-const (
-	PresetCameraValuesLegacyobliquetopleft PresetCameraValues = "legacyObliqueTopLeft"
-	PresetCameraValuesLegacyobliquetop PresetCameraValues = "legacyObliqueTop"
-	PresetCameraValuesLegacyobliquetopright PresetCameraValues = "legacyObliqueTopRight"
-	PresetCameraValuesLegacyobliqueleft PresetCameraValues = "legacyObliqueLeft"
-	PresetCameraValuesLegacyobliquefront PresetCameraValues = "legacyObliqueFront"
-	PresetCameraValuesLegacyobliqueright PresetCameraValues = "legacyObliqueRight"
-	PresetCameraValuesLegacyobliquebottomleft PresetCameraValues = "legacyObliqueBottomLeft"
-	PresetCameraValuesLegacyobliquebottom PresetCameraValues = "legacyObliqueBottom"
-	PresetCameraValuesLegacyobliquebottomright PresetCameraValues = "legacyObliqueBottomRight"
-	PresetCameraValuesLegacyperspectivetopleft PresetCameraValues = "legacyPerspectiveTopLeft"
-	PresetCameraValuesLegacyperspectivetop PresetCameraValues = "legacyPerspectiveTop"
-	PresetCameraValuesLegacyperspectivetopright PresetCameraValues = "legacyPerspectiveTopRight"
-	PresetCameraValuesLegacyperspectiveleft PresetCameraValues = "legacyPerspectiveLeft"
-	PresetCameraValuesLegacyperspectivefront PresetCameraValues = "legacyPerspectiveFront"
-	PresetCameraValuesLegacyperspectiveright PresetCameraValues = "legacyPerspectiveRight"
-	PresetCameraValuesLegacyperspectivebottomleft PresetCameraValues = "legacyPerspectiveBottomLeft"
-	PresetCameraValuesLegacyperspectivebottom PresetCameraValues = "legacyPerspectiveBottom"
-	PresetCameraValuesLegacyperspectivebottomright PresetCameraValues = "legacyPerspectiveBottomRight"
-	PresetCameraValuesOrthographicfront PresetCameraValues = "orthographicFront"
-	PresetCameraValuesIsometrictopup PresetCameraValues = "isometricTopUp"
-	PresetCameraValuesIsometrictopdown PresetCameraValues = "isometricTopDown"
-	PresetCameraValuesIsometricbottomup PresetCameraValues = "isometricBottomUp"
-	PresetCameraValuesIsometricbottomdown PresetCameraValues = "isometricBottomDown"
-	PresetCameraValuesIsometricleftup PresetCameraValues = "isometricLeftUp"
-	PresetCameraValuesIsometricleftdown PresetCameraValues = "isometricLeftDown"
-	PresetCameraValuesIsometricrightup PresetCameraValues = "isometricRightUp"
-	PresetCameraValuesIsometricrightdown PresetCameraValues = "isometricRightDown"
-	PresetCameraValuesIsometricoffaxis1left PresetCameraValues = "isometricOffAxis1Left"
-	PresetCameraValuesIsometricoffaxis1right PresetCameraValues = "isometricOffAxis1Right"
-	PresetCameraValuesIsometricoffaxis1top PresetCameraValues = "isometricOffAxis1Top"
-	PresetCameraValuesIsometricoffaxis2left PresetCameraValues = "isometricOffAxis2Left"
-	PresetCameraValuesIsometricoffaxis2right PresetCameraValues = "isometricOffAxis2Right"
-	PresetCameraValuesIsometricoffaxis2top PresetCameraValues = "isometricOffAxis2Top"
-	PresetCameraValuesIsometricoffaxis3left PresetCameraValues = "isometricOffAxis3Left"
-	PresetCameraValuesIsometricoffaxis3right PresetCameraValues = "isometricOffAxis3Right"
-	PresetCameraValuesIsometricoffaxis3bottom PresetCameraValues = "isometricOffAxis3Bottom"
-	PresetCameraValuesIsometricoffaxis4left PresetCameraValues = "isometricOffAxis4Left"
-	PresetCameraValuesIsometricoffaxis4right PresetCameraValues = "isometricOffAxis4Right"
-	PresetCameraValuesIsometricoffaxis4bottom PresetCameraValues = "isometricOffAxis4Bottom"
-	PresetCameraValuesObliquetopleft PresetCameraValues = "obliqueTopLeft"
-	PresetCameraValuesObliquetop PresetCameraValues = "obliqueTop"
-	PresetCameraValuesObliquetopright PresetCameraValues = "obliqueTopRight"
-	PresetCameraValuesObliqueleft PresetCameraValues = "obliqueLeft"
-	PresetCameraValuesObliqueright PresetCameraValues = "obliqueRight"
-	PresetCameraValuesObliquebottomleft PresetCameraValues = "obliqueBottomLeft"
-	PresetCameraValuesObliquebottom PresetCameraValues = "obliqueBottom"
-	PresetCameraValuesObliquebottomright PresetCameraValues = "obliqueBottomRight"
-	PresetCameraValuesPerspectivefront PresetCameraValues = "perspectiveFront"
-	PresetCameraValuesPerspectiveleft PresetCameraValues = "perspectiveLeft"
-	PresetCameraValuesPerspectiveright PresetCameraValues = "perspectiveRight"
-	PresetCameraValuesPerspectiveabove PresetCameraValues = "perspectiveAbove"
-	PresetCameraValuesPerspectivebelow PresetCameraValues = "perspectiveBelow"
-	PresetCameraValuesPerspectiveaboveleftfacing PresetCameraValues = "perspectiveAboveLeftFacing"
-	PresetCameraValuesPerspectiveaboverightfacing PresetCameraValues = "perspectiveAboveRightFacing"
-	PresetCameraValuesPerspectivecontrastingleftfacing PresetCameraValues = "perspectiveContrastingLeftFacing"
-	PresetCameraValuesPerspectivecontrastingrightfacing PresetCameraValues = "perspectiveContrastingRightFacing"
-	PresetCameraValuesPerspectiveheroicleftfacing PresetCameraValues = "perspectiveHeroicLeftFacing"
-	PresetCameraValuesPerspectiveheroicrightfacing PresetCameraValues = "perspectiveHeroicRightFacing"
-	PresetCameraValuesPerspectiveheroicextremeleftfacing PresetCameraValues = "perspectiveHeroicExtremeLeftFacing"
-	PresetCameraValuesPerspectiveheroicextremerightfacing PresetCameraValues = "perspectiveHeroicExtremeRightFacing"
-	PresetCameraValuesPerspectiverelaxed PresetCameraValues = "perspectiveRelaxed"
-	PresetCameraValuesPerspectiverelaxedmoderately PresetCameraValues = "perspectiveRelaxedModerately"
-)
-
-func (e PresetCameraValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PresetCameraValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PresetCameraValues(attr.Value)
-		return nil
-}
-
-// GeoMappingLevel
-type GeoMappingLevel string
-const (
-	GeoMappingLevelDataonly GeoMappingLevel = "dataOnly"
-	GeoMappingLevelPostalcode GeoMappingLevel = "postalCode"
-	GeoMappingLevelCounty GeoMappingLevel = "county"
-	GeoMappingLevelState GeoMappingLevel = "state"
-	GeoMappingLevelCountryregion GeoMappingLevel = "countryRegion"
-	GeoMappingLevelCountryregionlist GeoMappingLevel = "countryRegionList"
-	GeoMappingLevelWorld GeoMappingLevel = "world"
-)
-
-func (e GeoMappingLevel) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *GeoMappingLevel) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = GeoMappingLevel(attr.Value)
-		return nil
-}
-
-// HyperlinkColorEnum
-type HyperlinkColorEnum string
-const (
-	HyperlinkColorEnumHlink HyperlinkColorEnum = "hlink"
-	HyperlinkColorEnumTx HyperlinkColorEnum = "tx"
-)
-
-func (e HyperlinkColorEnum) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *HyperlinkColorEnum) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = HyperlinkColorEnum(attr.Value)
-		return nil
-}
-
-// AutoTextRotationValues
-type AutoTextRotationValues string
-const (
-	AutoTextRotationValuesNone AutoTextRotationValues = "none"
-	AutoTextRotationValuesUpr AutoTextRotationValues = "upr"
-	AutoTextRotationValuesGrav AutoTextRotationValues = "grav"
-)
-
-func (e AutoTextRotationValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *AutoTextRotationValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = AutoTextRotationValues(attr.Value)
-		return nil
-}
-
-// FormulaExpressionValues
-type FormulaExpressionValues string
-const (
-	FormulaExpressionValuesRef FormulaExpressionValues = "ref"
-	FormulaExpressionValuesReferror FormulaExpressionValues = "refError"
-	FormulaExpressionValuesArea FormulaExpressionValues = "area"
-	FormulaExpressionValuesAreaerror FormulaExpressionValues = "areaError"
-	FormulaExpressionValuesComputedarea FormulaExpressionValues = "computedArea"
-)
-
-func (e FormulaExpressionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FormulaExpressionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FormulaExpressionValues(attr.Value)
-		return nil
-}
-
-// CalculateModeValues
-type CalculateModeValues string
-const (
-	CalculateModeValuesManual CalculateModeValues = "manual"
-	CalculateModeValuesAuto CalculateModeValues = "auto"
-	CalculateModeValuesAutonotable CalculateModeValues = "autoNoTable"
-)
-
-func (e CalculateModeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *CalculateModeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = CalculateModeValues(attr.Value)
-		return nil
-}
-
-// OlapSlicerCacheSortOrderValues
-type OlapSlicerCacheSortOrderValues string
-const (
-	OlapSlicerCacheSortOrderValuesNatural OlapSlicerCacheSortOrderValues = "natural"
-	OlapSlicerCacheSortOrderValuesAscending OlapSlicerCacheSortOrderValues = "ascending"
-	OlapSlicerCacheSortOrderValuesDescending OlapSlicerCacheSortOrderValues = "descending"
-)
-
-func (e OlapSlicerCacheSortOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *OlapSlicerCacheSortOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = OlapSlicerCacheSortOrderValues(attr.Value)
-		return nil
-}
-
-// TabularSlicerCacheSortOrderValues
-type TabularSlicerCacheSortOrderValues string
-const (
-	TabularSlicerCacheSortOrderValuesAscending TabularSlicerCacheSortOrderValues = "ascending"
-	TabularSlicerCacheSortOrderValuesDescending TabularSlicerCacheSortOrderValues = "descending"
-)
-
-func (e TabularSlicerCacheSortOrderValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TabularSlicerCacheSortOrderValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TabularSlicerCacheSortOrderValues(attr.Value)
-		return nil
-}
-
-// SeriesLayout
-type SeriesLayout string
-const (
-	SeriesLayoutBoxwhisker SeriesLayout = "boxWhisker"
-	SeriesLayoutClusteredcolumn SeriesLayout = "clusteredColumn"
-	SeriesLayoutFunnel SeriesLayout = "funnel"
-	SeriesLayoutParetoline SeriesLayout = "paretoLine"
-	SeriesLayoutRegionmap SeriesLayout = "regionMap"
-	SeriesLayoutSunburst SeriesLayout = "sunburst"
-	SeriesLayoutTreemap SeriesLayout = "treemap"
-	SeriesLayoutWaterfall SeriesLayout = "waterfall"
-)
-
-func (e SeriesLayout) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *SeriesLayout) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = SeriesLayout(attr.Value)
-		return nil
-}
-
-// FlowDirectionValues
-type FlowDirectionValues string
-const (
-	FlowDirectionValuesRow FlowDirectionValues = "row"
-	FlowDirectionValuesCol FlowDirectionValues = "col"
-)
-
-func (e FlowDirectionValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *FlowDirectionValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = FlowDirectionValues(attr.Value)
-		return nil
-}
-
-// ChartBuildStepValues
-type ChartBuildStepValues string
-const (
-	ChartBuildStepValuesCategory ChartBuildStepValues = "category"
-	ChartBuildStepValuesPtincategory ChartBuildStepValues = "ptInCategory"
-	ChartBuildStepValuesSeries ChartBuildStepValues = "series"
-	ChartBuildStepValuesPtinseries ChartBuildStepValues = "ptInSeries"
-	ChartBuildStepValuesAllpts ChartBuildStepValues = "allPts"
-	ChartBuildStepValuesGridlegend ChartBuildStepValues = "gridLegend"
-)
-
-func (e ChartBuildStepValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *ChartBuildStepValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = ChartBuildStepValues(attr.Value)
-		return nil
-}
-
-// PictureFormatValues
-type PictureFormatValues string
-const (
-	PictureFormatValuesStretch PictureFormatValues = "stretch"
-	PictureFormatValuesStack PictureFormatValues = "stack"
-	PictureFormatValuesStackscale PictureFormatValues = "stackScale"
-)
-
-func (e PictureFormatValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PictureFormatValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PictureFormatValues(attr.Value)
-		return nil
-}
-
-// PathShadeValues
-type PathShadeValues string
-const (
-	PathShadeValuesShape PathShadeValues = "shape"
-	PathShadeValuesCircle PathShadeValues = "circle"
-	PathShadeValuesRect PathShadeValues = "rect"
-)
-
-func (e PathShadeValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *PathShadeValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = PathShadeValues(attr.Value)
-		return nil
-}
-
-// StringDimensionType
-type StringDimensionType string
-const (
-	StringDimensionTypeCat StringDimensionType = "cat"
-	StringDimensionTypeColorstr StringDimensionType = "colorStr"
-	StringDimensionTypeEntityid StringDimensionType = "entityId"
-)
-
-func (e StringDimensionType) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *StringDimensionType) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = StringDimensionType(attr.Value)
-		return nil
-}
-
-// LabelAlignmentValues
-type LabelAlignmentValues string
-const (
-	LabelAlignmentValuesCtr LabelAlignmentValues = "ctr"
-	LabelAlignmentValuesL LabelAlignmentValues = "l"
-	LabelAlignmentValuesR LabelAlignmentValues = "r"
-)
-
-func (e LabelAlignmentValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *LabelAlignmentValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = LabelAlignmentValues(attr.Value)
-		return nil
-}
-
-// TimeUnitValues
-type TimeUnitValues string
-const (
-	TimeUnitValuesDays TimeUnitValues = "days"
-	TimeUnitValuesMonths TimeUnitValues = "months"
-	TimeUnitValuesYears TimeUnitValues = "years"
-)
-
-func (e TimeUnitValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *TimeUnitValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = TimeUnitValues(attr.Value)
-		return nil
-}
-
-// DynamicFilterValues
-type DynamicFilterValues string
-const (
-	DynamicFilterValuesNull DynamicFilterValues = "null"
-	DynamicFilterValuesAboveaverage DynamicFilterValues = "aboveAverage"
-	DynamicFilterValuesBelowaverage DynamicFilterValues = "belowAverage"
-	DynamicFilterValuesTomorrow DynamicFilterValues = "tomorrow"
-	DynamicFilterValuesToday DynamicFilterValues = "today"
-	DynamicFilterValuesYesterday DynamicFilterValues = "yesterday"
-	DynamicFilterValuesNextweek DynamicFilterValues = "nextWeek"
-	DynamicFilterValuesThisweek DynamicFilterValues = "thisWeek"
-	DynamicFilterValuesLastweek DynamicFilterValues = "lastWeek"
-	DynamicFilterValuesNextmonth DynamicFilterValues = "nextMonth"
-	DynamicFilterValuesThismonth DynamicFilterValues = "thisMonth"
-	DynamicFilterValuesLastmonth DynamicFilterValues = "lastMonth"
-	DynamicFilterValuesNextquarter DynamicFilterValues = "nextQuarter"
-	DynamicFilterValuesThisquarter DynamicFilterValues = "thisQuarter"
-	DynamicFilterValuesLastquarter DynamicFilterValues = "lastQuarter"
-	DynamicFilterValuesNextyear DynamicFilterValues = "nextYear"
-	DynamicFilterValuesThisyear DynamicFilterValues = "thisYear"
-	DynamicFilterValuesLastyear DynamicFilterValues = "lastYear"
-	DynamicFilterValuesYeartodate DynamicFilterValues = "yearToDate"
-	DynamicFilterValuesQ1 DynamicFilterValues = "Q1"
-	DynamicFilterValuesQ2 DynamicFilterValues = "Q2"
-	DynamicFilterValuesQ3 DynamicFilterValues = "Q3"
-	DynamicFilterValuesQ4 DynamicFilterValues = "Q4"
-	DynamicFilterValuesM1 DynamicFilterValues = "M1"
-	DynamicFilterValuesM2 DynamicFilterValues = "M2"
-	DynamicFilterValuesM3 DynamicFilterValues = "M3"
-	DynamicFilterValuesM4 DynamicFilterValues = "M4"
-	DynamicFilterValuesM5 DynamicFilterValues = "M5"
-	DynamicFilterValuesM6 DynamicFilterValues = "M6"
-	DynamicFilterValuesM7 DynamicFilterValues = "M7"
-	DynamicFilterValuesM8 DynamicFilterValues = "M8"
-	DynamicFilterValuesM9 DynamicFilterValues = "M9"
-	DynamicFilterValuesM10 DynamicFilterValues = "M10"
-	DynamicFilterValuesM11 DynamicFilterValues = "M11"
-	DynamicFilterValuesM12 DynamicFilterValues = "M12"
-)
-
-func (e DynamicFilterValues) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
-	return xml.Attr{Name: name, Value: string(e)}, nil
-}
-
-func (e *DynamicFilterValues) UnmarshalXMLAttr(attr xml.Attr) error {
-		*e = DynamicFilterValues(attr.Value)
+func (e *ScopeValues) UnmarshalXMLAttr(attr xml.Attr) error {
+		*e = ScopeValues(attr.Value)
 		return nil
 }
 

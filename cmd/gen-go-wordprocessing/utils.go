@@ -11,6 +11,9 @@ import (
 
 const (
 	booleanValueType = "*types.BooleanValue"
+	// Namespace prefix constants for extension namespaces
+	nsPrefixA16 = "A16"
+	nsPrefixW16 = "W16"
 )
 
 // isStructValueType returns true if the type should be handled as a struct.
@@ -256,4 +259,52 @@ func toPascalCase(s string) string {
 // existsInDrawingML returns true if the type is in DrawingML pkg.
 func existsInDrawingML(name string) bool {
 	return drawingMLTypes[name]
+}
+
+// deriveStructPrefix derives a namespace-aware prefix for struct names
+// to avoid conflicts with enum names. Returns prefix like "A14", "W14", etc.
+// for structures from extension namespaces.
+func deriveStructPrefix(namespace string) string {
+	// For drawing extension namespaces
+	if strings.Contains(namespace, "/drawing/") {
+		switch {
+		case strings.Contains(namespace, "2010"):
+			return "A14"
+		case strings.Contains(namespace, "2012"):
+			return "A15"
+		case strings.Contains(namespace, "2014"),
+			strings.Contains(namespace, "2016"),
+			strings.Contains(namespace, "2017"),
+			strings.Contains(namespace, "2018"):
+			return nsPrefixA16
+		default:
+			return "ADraw"
+		}
+	}
+
+	// For word extension namespaces
+	if strings.Contains(namespace, "/word/") {
+		switch {
+		case strings.Contains(namespace, "2010"):
+			return "W14"
+		case strings.Contains(namespace, "2012"),
+			strings.Contains(namespace, "2015"):
+			return "W15"
+		case strings.Contains(namespace, "2016"),
+			strings.Contains(namespace, "2018"),
+			strings.Contains(namespace, "2020"),
+			strings.Contains(namespace, "2023"),
+			strings.Contains(namespace, "2024"):
+			return nsPrefixW16
+		default:
+			return "WExt"
+		}
+	}
+
+	// For wordprocessingml extension namespaces (if any)
+	if strings.Contains(namespace, "/wordprocessingml/") {
+		return "WExt"
+	}
+
+	return "Ext"
 }

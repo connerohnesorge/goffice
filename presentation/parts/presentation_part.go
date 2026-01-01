@@ -46,6 +46,12 @@ func NewPresentationPart(
 		container,
 	)
 
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewPresentation()
+		},
+	)
+
 	pp := &PresentationPart{
 		OpenXmlPartData: partData,
 		contentType:     contentType,
@@ -69,6 +75,12 @@ func NewPresentationPartFromData(
 	data *openxml.OpenXmlPartData,
 	contentType string,
 ) *PresentationPart {
+	data.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewPresentation()
+		},
+	)
+
 	return &PresentationPart{
 		OpenXmlPartData: data,
 		contentType:     contentType,

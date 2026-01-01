@@ -94,6 +94,7 @@ func generateAttributes(
 // generateChildren writes the child element fields for the struct.
 // It handles optional children and maps them to appropriate Go types.
 func generateChildren(f *os.File, t *SchemaType) {
+	seen := make(map[string]bool)
 	for _, child := range t.Children {
 		info, ok := typeMap[child.Name]
 		if !ok {
@@ -103,6 +104,11 @@ func generateChildren(f *os.File, t *SchemaType) {
 		if propName == "" {
 			propName = info.ClassName
 		}
+
+		if seen[propName] {
+			continue
+		}
+		seen[propName] = true
 
 		childType := info.ClassName
 		if pkg := getGoPackage(info.Namespace); pkg != "" {
@@ -139,6 +145,7 @@ func isPartRootType(name string) bool {
 	roots := []string{
 		"/p:presentation", "/p:sld", "/p:sldLayout", "/p:sldMaster",
 		"/p:notes", "/p:notesMaster", "/p:handoutMaster",
+		"/p:cmAuthorLst", "/p:cmLst",
 	}
 	for _, root := range roots {
 		if strings.HasSuffix(name, root) {
