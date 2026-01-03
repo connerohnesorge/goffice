@@ -40,14 +40,16 @@ func newStylesPart(
 		packPart,
 		mainPart,
 	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewStyles()
+		},
+	)
 	partData.SetRelationshipID(relID)
 
 	sp := &StylesPart{
 		OpenXmlPartData: partData,
 	}
-
-	// Initialize with minimal styles content
-	sp.initializeContent()
 
 	// Add to main part's child parts
 	if err := mainPart.AddPart(sp, relID); err != nil {
@@ -57,8 +59,8 @@ func newStylesPart(
 	return sp, nil
 }
 
-// initializeContent sets up minimal styles content.
-func (sp *StylesPart) initializeContent() {
+// InitializeDefault sets up minimal styles content.
+func (sp *StylesPart) InitializeDefault() {
 	content := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:docDefaults>
@@ -199,6 +201,11 @@ func StylesPartFactory(
 		ContentTypeStyles,
 		packPart,
 		container,
+	)
+	partData.SetRootFactory(
+		func() openxml.PartRootElement {
+			return elements.NewStyles()
+		},
 	)
 
 	return &StylesPart{

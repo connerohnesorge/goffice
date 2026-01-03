@@ -392,6 +392,12 @@ func (d *Document) initializeDocument() error {
 	// Initialize with minimal document content
 	mainPart.InitializeContent()
 
+	stylesPart, err := mainPart.AddStylesPart()
+	if err != nil {
+		return err
+	}
+	stylesPart.InitializeDefault()
+
 	return nil
 }
 

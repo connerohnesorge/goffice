@@ -423,6 +423,10 @@ func (d *Document) initializeDocument() error {
 	// Initialize with minimal presentation content
 	if d.presentationPart != nil {
 		d.presentationPart.InitializeContent()
+
+		if _, err := d.presentationPart.AddThemePart(); err != nil {
+			return err
+		}
 	}
 
 	return nil

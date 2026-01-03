@@ -277,3 +277,9 @@ The system SHALL provide `PresentationPropertiesPart` for presentation settings.
 - WHEN a PresentationPropertiesPart is created
 - THEN slideshow and other settings can be stored
 
+### Requirement: Slide Master Theme Linkage
+Every Slide Master MUST have a relationship to the Theme part.
+
+#### Scenario: Master links to theme
+- WHEN `AddSlideMaster()` is called
+- THEN resulting `SlideMasterPart` MUST have a relationship of type `http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme`

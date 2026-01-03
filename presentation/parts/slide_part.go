@@ -2,12 +2,26 @@
 package parts
 
 import (
+	"fmt"
 	"io"
+	"sync/atomic"
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
 	"github.com/connerohnesorge/goffice/presentation/elements"
 )
+
+// Counter for generating unique diagram filenames.
+var diagramUniqueCounter uint64
+
+// Diagram represents a collection of all 4 diagram parts required for SmartArt.
+// This struct provides convenient access to all diagram components created together.
+type Diagram struct {
+	DataPart   *DiagramDataPart
+	LayoutPart *DiagramLayoutDefinitionPart
+	StylePart  *DiagramStylePart
+	ColorsPart *DiagramColorsPart
+}
 
 // SlidePart represents a slide part (ppt/slides/slide1.xml, etc.).
 type SlidePart struct {
@@ -143,6 +157,44 @@ func (sp *SlidePart) ChartParts() []*ChartPart {
 	}
 
 	return charts
+}
+
+// AddDiagramPart creates and returns all 4 diagram parts required for SmartArt.
+// The parts are created as child parts of the slide.
+func (sp *SlidePart) AddDiagramPart() (*Diagram, error) {
+	num := atomic.AddUint64(&diagramUniqueCounter, 1)
+
+	dataURI := fmt.Sprintf("/ppt/diagrams/data%d.xml", num)
+	layoutURI := fmt.Sprintf("/ppt/diagrams/layout%d.xml", num)
+	styleURI := fmt.Sprintf("/ppt/diagrams/quickStyle%d.xml", num)
+	colorsURI := fmt.Sprintf("/ppt/diagrams/colors%d.xml", num)
+
+	dataPart, err := newDiagramDataPart(sp, dataURI)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create diagram data part: %w", err)
+	}
+
+	layoutPart, err := newDiagramLayoutDefinitionPart(sp, layoutURI)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create diagram layout part: %w", err)
+	}
+
+	stylePart, err := newDiagramStylePart(sp, styleURI)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create diagram style part: %w", err)
+	}
+
+	colorsPart, err := newDiagramColorsPart(sp, colorsURI)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create diagram colors part: %w", err)
+	}
+
+	return &Diagram{
+		DataPart:   dataPart,
+		LayoutPart: layoutPart,
+		StylePart:  stylePart,
+		ColorsPart: colorsPart,
+	}, nil
 }
 
 // GetStream returns a reader for the part content.

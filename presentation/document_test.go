@@ -723,6 +723,49 @@ func TestDocument_Theme(t *testing.T) {
 	}
 }
 
+func TestNewPresentationHasTheme(t *testing.T) {
+	tempDir := t.TempDir()
+	path := filepath.Join(tempDir, "test.pptx")
+
+	doc, err := New(path, DocTypePresentation)
+	if err != nil {
+		t.Fatalf("New() error = %v", err)
+	}
+	defer func() { _ = doc.Close() }()
+
+	theme := doc.PresentationPart().ThemePart()
+	if theme == nil {
+		t.Fatal("PresentationPart().ThemePart() is nil")
+	}
+
+	expectedURI := "/ppt/theme/theme1.xml"
+	if theme.URI() != expectedURI {
+		t.Errorf(
+			"Theme URI = %v, want %v",
+			theme.URI(),
+			expectedURI,
+		)
+	}
+
+	master, err := doc.AddSlideMaster()
+	if err != nil {
+		t.Fatalf("AddSlideMaster() error = %v", err)
+	}
+
+	masterTheme := master.ThemePart()
+	if masterTheme == nil {
+		t.Fatal("SlideMaster.ThemePart() is nil")
+	}
+
+	if masterTheme.URI() != theme.URI() {
+		t.Errorf(
+			"Master theme URI = %v, want %v",
+			masterTheme.URI(),
+			theme.URI(),
+		)
+	}
+}
+
 // TestDocument_ReadOnlyErrors tests that read-only documents return errors.
 func TestDocument_ReadOnlyErrors(t *testing.T) {
 	tempDir := t.TempDir()

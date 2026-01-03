@@ -1450,13 +1450,7 @@ func TestIntegrationWithPhase1to4Components(
 	}
 
 	// Test adding parts (Phase 5 with Phase 3 integration)
-	stylesPart, err := mainPart.AddStylesPart()
-	if err != nil {
-		t.Fatalf(
-			"AddStylesPart() error = %v",
-			err,
-		)
-	}
+	stylesPart := mainPart.StylesPart()
 	if stylesPart == nil {
 		t.Fatal("StylesPart is nil")
 	}
@@ -1662,5 +1656,65 @@ func TestIntegrationGlossaryPart(t *testing.T) {
 	err = doc.SaveAs(testPath)
 	if err != nil {
 		t.Fatalf("SaveAs() error = %v", err)
+	}
+}
+
+// TestDefaultStylesRoundtrip tests that default styles are preserved in a roundtrip.
+func TestDefaultStylesRoundtrip(t *testing.T) {
+	tmpFile, err := os.CreateTemp(
+		"",
+		"styles_test_*.docx",
+	)
+	if err != nil {
+		t.Fatalf(
+			"Failed to create temp file: %v",
+			err,
+		)
+	}
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
+	tmpName := tmpFile.Name()
+	_ = tmpFile.Close()
+
+	doc, err := New(tmpName, DocTypeDocument)
+	if err != nil {
+		t.Fatalf("New() error = %v", err)
+	}
+
+	stylesPart := doc.MainPart().StylesPart()
+	if stylesPart == nil {
+		t.Fatal("StylesPart is nil")
+	}
+
+	normalStyle := stylesPart.GetStyleById("Normal")
+	if normalStyle == nil {
+		t.Error("Expected 'Normal' style to exist")
+	}
+
+	if err := doc.Save(); err != nil {
+		t.Fatalf("Failed to save document: %v", err)
+	}
+
+	if err := doc.Close(); err != nil {
+		t.Errorf("Failed to close document: %v", err)
+	}
+
+	doc2, err := Open(tmpName, true)
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+	defer func() { _ = doc2.Close() }()
+
+	stylesPart2 := doc2.MainPart().StylesPart()
+	if stylesPart2 == nil {
+		t.Fatal(
+			"StylesPart is nil in reopened document",
+		)
+	}
+
+	normalStyle2 := stylesPart2.GetStyleById("Normal")
+	if normalStyle2 == nil {
+		t.Error(
+			"Expected 'Normal' style to exist in reopened document",
+		)
 	}
 }

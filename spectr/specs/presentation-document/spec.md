@@ -198,3 +198,10 @@ The system SHALL provide presentation-specific package features.
 - WHEN accessing main part feature
 - THEN it provides relationship type and content type info
 
+### Requirement: Default Theme Generation
+New Presentation documents MUST contain a `theme1.xml` part to ensure valid visual styling.
+
+#### Scenario: New presentation has theme
+- WHEN a new `presentation.Document` is created via `New()`
+- THEN document package MUST contain a `theme` part (e.g., `/ppt/theme/theme1.xml`)
+- AND `SlideMaster` MUST reference this theme via a relationship

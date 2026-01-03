@@ -521,3 +521,12 @@ The system SHALL handle RunPropertiesChange and ParagraphPropertiesChange revisi
 - THEN the original formatting (non-bold) is restored
 - AND the revision wrapper is removed
 - AND no error is returned
+
+### Requirement: Default Styles Generation
+New Wordprocessing documents MUST contain a `styles.xml` part with essential default styles.
+
+#### Scenario: Create new document has styles
+- WHEN a new `wordprocessing.Document` is created via `New()`
+- THEN the document package MUST contain a `styles.xml` part
+- AND the `styles.xml` part MUST contain `w:docDefaults`
+- AND the `styles.xml` part MUST contain a `w:style` with `w:styleId="Normal"`

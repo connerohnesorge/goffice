@@ -1274,3 +1274,35 @@ func TestHeaderFooterPersistence_Verify(
 		)
 	}
 }
+
+// TestNewDocumentHasDefaultStyles tests that a new document has default styles initialized.
+func TestNewDocumentHasDefaultStyles(t *testing.T) {
+	tmpDir, err := os.MkdirTemp("", "goffice-styles-*")
+	if err != nil {
+		t.Fatalf("Failed to create temp dir: %v", err)
+	}
+	defer func() { _ = os.RemoveAll(tmpDir) }()
+
+	testPath := filepath.Join(tmpDir, "styles.docx")
+
+	doc, err := New(testPath, DocTypeDocument)
+	if err != nil {
+		t.Fatalf("New() error = %v", err)
+	}
+	defer func() { _ = doc.Close() }()
+
+	mainPart := doc.MainPart()
+	if mainPart == nil {
+		t.Fatal("MainPart() returned nil")
+	}
+
+	stylesPart := mainPart.StylesPart()
+	if stylesPart == nil {
+		t.Fatal("StylesPart() returned nil")
+	}
+
+	style := stylesPart.GetStyleById("Normal")
+	if style == nil {
+		t.Error("Expected 'Normal' style to be present in new document")
+	}
+}

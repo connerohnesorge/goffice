@@ -1164,3 +1164,41 @@ func TestImagePart_FeedData(t *testing.T) {
 		)
 	}
 }
+
+// TestSlideMasterPart_AutoLinkTheme tests auto-linking theme to new master.
+func TestSlideMasterPart_AutoLinkTheme(t *testing.T) {
+	presPart, cleanup := createTestPresentationPart(t)
+	defer cleanup()
+
+	// Add a theme to the presentation
+	theme, err := presPart.AddThemePart()
+	if err != nil {
+		t.Fatalf("AddThemePart() error = %v", err)
+	}
+
+	// Add a slide master - should automatically link to the theme
+	master, err := presPart.AddSlideMasterPart()
+	if err != nil {
+		t.Fatalf("AddSlideMasterPart() error = %v", err)
+	}
+
+	// Verify the theme part is accessible via master.ThemePart()
+	if master.ThemePart() == nil {
+		t.Error("Slide master did not automatically link to existing presentation theme (ThemePart() returned nil)")
+	}
+
+	// Verify relationship exists in packaging layer too
+	rels := master.PackagingPart().Relationships()
+	found := false
+	for rel := range rels.All() {
+		if rel.Type() == RelationshipTypeTheme && rel.Target() == theme.URI() {
+			found = true
+
+			break
+		}
+	}
+
+	if !found {
+		t.Error("Slide master relationship to theme not found")
+	}
+}

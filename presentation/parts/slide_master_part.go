@@ -48,6 +48,22 @@ func newSlideMasterPart(
 	// Initialize with minimal slide master content
 	smp.initializeContent()
 
+	if tp := presentationPart.ThemePart(); tp != nil {
+		rel, err := packPart.CreateRelationship(tp.URI(), RelationshipTypeTheme, "")
+		if err != nil {
+			return nil, err
+		}
+
+		linkedTp := ThemePartFactory(tp.URI(), smp)
+		if linkedTp == nil {
+			return nil, fmt.Errorf("failed to create theme part wrapper for %s", tp.URI())
+		}
+
+		if err := smp.AddPart(linkedTp, rel.ID()); err != nil {
+			return nil, err
+		}
+	}
+
 	// Add to presentation part's child parts
 	if err := presentationPart.AddPart(smp, relID); err != nil {
 		return nil, err

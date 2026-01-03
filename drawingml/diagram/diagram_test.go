@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/connerohnesorge/goffice/drawingml/diagram"
+	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/openxml/types"
 )
 
@@ -421,5 +422,430 @@ func TestConnection_Clone(t *testing.T) {
 		t.Error(
 			"Clone should be independent of original",
 		)
+	}
+}
+
+// TestDataModelBuilder_NewDataModelBuilder tests builder creation.
+func TestDataModelBuilder_NewDataModelBuilder(t *testing.T) {
+	builder := diagram.NewDataModelBuilder()
+	if builder == nil {
+		t.Fatal("NewDataModelBuilder returned nil")
+	}
+	if builder.PointCount() != 0 {
+		t.Errorf(
+			"Expected 0 points, got %d",
+			builder.PointCount(),
+		)
+	}
+	if builder.ConnectionCount() != 0 {
+		t.Errorf(
+			"Expected 0 connections, got %d",
+			builder.ConnectionCount(),
+		)
+	}
+}
+
+// TestDataModelBuilder_AddPoint tests adding points.
+func TestDataModelBuilder_AddPoint(t *testing.T) {
+	builder := diagram.NewDataModelBuilder()
+
+	// Add single point
+	builder.AddPoint("node1")
+	if builder.PointCount() != 1 {
+		t.Errorf(
+			"Expected 1 point, got %d",
+			builder.PointCount(),
+		)
+	}
+	if !builder.HasPoints() {
+		t.Error("HasPoints should return true")
+	}
+
+	// Add second point
+	builder.AddPoint("node2")
+	if builder.PointCount() != 2 {
+		t.Errorf(
+			"Expected 2 points, got %d",
+			builder.PointCount(),
+		)
+	}
+
+	// Build and verify
+	dataModel := builder.Build()
+	if dataModel == nil {
+		t.Fatal("Build returned nil")
+	}
+	if dataModel.PointList == nil {
+		t.Fatal("PointList should not be nil")
+	}
+}
+
+// TestDataModelBuilder_AddPointWithType tests adding points with types.
+func TestDataModelBuilder_AddPointWithType(t *testing.T) {
+	builder := diagram.NewDataModelBuilder()
+
+	// Add node
+	builder.AddPoint(
+		"node1",
+		diagram.PointValuesNode,
+	)
+
+	// Add assistant
+	builder.AddPoint(
+		"asst1",
+		diagram.PointValuesAsst,
+	)
+
+	dataModel := builder.Build()
+	if dataModel.PointList == nil {
+		t.Fatal("PointList should not be nil")
+	}
+
+	// Verify points have correct types
+	pointCount := 0
+	for pt := range openxml.Elements[*diagram.Point](
+		dataModel.PointList,
+	) {
+		pointCount++
+		switch pointCount {
+		case 1:
+			if pt.Type == nil ||
+				pt.Type.Value() != diagram.PointValuesNode {
+				t.Errorf(
+					"First point should be node, got %v",
+					pt.Type,
+				)
+			}
+		case 2:
+			if pt.Type == nil ||
+				pt.Type.Value() != diagram.PointValuesAsst {
+				t.Errorf(
+					"Second point should be assistant, got %v",
+					pt.Type,
+				)
+			}
+		}
+	}
+
+	if pointCount != 2 {
+		t.Errorf(
+			"Expected 2 points, got %d",
+			pointCount,
+		)
+	}
+}
+
+// TestDataModelBuilder_AddConnection tests adding connections.
+func TestDataModelBuilder_AddConnection(t *testing.T) {
+	builder := diagram.NewDataModelBuilder()
+
+	// Add points first
+	builder.AddPoint("node1")
+	builder.AddPoint("node2")
+
+	// Add connection
+	builder.AddConnection("node1", "node2")
+
+	if builder.ConnectionCount() != 1 {
+		t.Errorf(
+			"Expected 1 connection, got %d",
+			builder.ConnectionCount(),
+		)
+	}
+	if !builder.HasConnections() {
+		t.Error("HasConnections should return true")
+	}
+
+	dataModel := builder.Build()
+	if dataModel == nil {
+		t.Fatal("Build returned nil")
+	}
+	if dataModel.ConnectionList == nil {
+		t.Fatal("ConnectionList should not be nil")
+	}
+}
+
+// TestDataModelBuilder_AddConnectionWithType tests adding connections with types.
+func TestDataModelBuilder_AddConnectionWithType(t *testing.T) {
+	builder := diagram.NewDataModelBuilder()
+
+	builder.AddPoint("parent")
+	builder.AddPoint("child")
+
+	// Add parent-of connection
+	builder.AddConnection(
+		"parent",
+		"child",
+		diagram.ConnectionValuesParof,
+	)
+
+	dataModel := builder.Build()
+
+	connCount := 0
+	for conn := range openxml.Elements[*diagram.Connection](
+		dataModel.ConnectionList,
+	) {
+		connCount++
+		if conn.Type == nil ||
+			conn.Type.Value() != diagram.ConnectionValuesParof {
+			t.Errorf(
+				"Connection should be parOf, got %v",
+				conn.Type,
+			)
+		}
+		if conn.SourceId == nil ||
+			conn.SourceId.Value() != "parent" {
+			t.Errorf(
+				"Source should be parent, got %v",
+				conn.SourceId,
+			)
+		}
+		if conn.DestinationId == nil ||
+			conn.DestinationId.Value() != "child" {
+			t.Errorf(
+				"Destination should be child, got %v",
+				conn.DestinationId,
+			)
+		}
+	}
+
+	if connCount != 1 {
+		t.Errorf(
+			"Expected 1 connection, got %d",
+			connCount,
+		)
+	}
+}
+
+// TestDataModelBuilder_ConvenienceMethods tests convenience methods.
+func TestDataModelBuilder_ConvenienceMethods(t *testing.T) {
+	builder := diagram.NewDataModelBuilder()
+
+	// Test AddAssistantPoint
+	builder.AddAssistantPoint("asst1")
+	dataModel := builder.Build()
+
+	ptCount := 0
+	for pt := range openxml.Elements[*diagram.Point](
+		dataModel.PointList,
+	) {
+		ptCount++
+		if pt.Type == nil ||
+			pt.Type.Value() != diagram.PointValuesAsst {
+			t.Error("AddAssistantPoint should create assistant type")
+		}
+	}
+	if ptCount != 1 {
+		t.Errorf(
+			"Expected 1 point from AddAssistantPoint, got %d",
+			ptCount,
+		)
+	}
+
+	// Test AddDocumentPoint
+	builder.AddDocumentPoint("doc1")
+	dataModel = builder.Build()
+
+	ptCount = 0
+	for pt := range openxml.Elements[*diagram.Point](
+		dataModel.PointList,
+	) {
+		ptCount++
+		if pt.Type == nil ||
+			pt.Type.Value() != diagram.PointValuesDoc {
+			t.Error("AddDocumentPoint should create doc type")
+		}
+	}
+	if ptCount != 1 {
+		t.Errorf(
+			"Expected 1 point from AddDocumentPoint, got %d",
+			ptCount,
+		)
+	}
+
+	// Test AddParentOfConnection
+	builder.AddPoint("p1")
+	builder.AddPoint("c1")
+	builder.AddParentOfConnection("p1", "c1")
+	dataModel = builder.Build()
+
+	connCount := 0
+	for conn := range openxml.Elements[*diagram.Connection](
+		dataModel.ConnectionList,
+	) {
+		connCount++
+		if conn.Type == nil ||
+			conn.Type.Value() != diagram.ConnectionValuesParof {
+			t.Error("AddParentOfConnection should create parOf type")
+		}
+	}
+	if connCount != 1 {
+		t.Errorf(
+			"Expected 1 connection from AddParentOfConnection, got %d",
+			connCount,
+		)
+	}
+
+	// Test AddPresentationOfConnection
+	builder.AddPoint("pres1")
+	builder.AddPoint("node3")
+	builder.AddPresentationOfConnection("pres1", "node3")
+	dataModel = builder.Build()
+
+	connCount = 0
+	for conn := range openxml.Elements[*diagram.Connection](
+		dataModel.ConnectionList,
+	) {
+		connCount++
+		if conn.Type == nil ||
+			conn.Type.Value() != diagram.ConnectionValuesPresof {
+			t.Error("AddPresentationOfConnection should create presOf type")
+		}
+	}
+	if connCount != 1 {
+		t.Errorf(
+			"Expected 1 connection from AddPresentationOfConnection, got %d",
+			connCount,
+		)
+	}
+}
+
+// TestDataModelBuilder_BuildRetainState tests BuildRetainState.
+func TestDataModelBuilder_BuildRetainState(t *testing.T) {
+	builder := diagram.NewDataModelBuilder()
+
+	builder.AddPoint("node1")
+	model1 := builder.BuildRetainState()
+
+	// Builder should retain state
+	if builder.PointCount() != 1 {
+		t.Errorf(
+			"PointCount should still be 1 after BuildRetainState, got %d",
+			builder.PointCount(),
+		)
+	}
+
+	// Add another point
+	builder.AddPoint("node2")
+	model2 := builder.BuildRetainState()
+
+	// model2 should have 2 points
+	ptCount1 := 0
+	for range openxml.Elements[*diagram.Point](model1.PointList) {
+		ptCount1++
+	}
+	ptCount2 := 0
+	for range openxml.Elements[*diagram.Point](model2.PointList) {
+		ptCount2++
+	}
+
+	if ptCount1 != 1 {
+		t.Errorf("model1 should have 1 point, got %d", ptCount1)
+	}
+	if ptCount2 != 2 {
+		t.Errorf("model2 should have 2 points, got %d", ptCount2)
+	}
+}
+
+// TestDataModelBuilder_Clear tests Clear method.
+func TestDataModelBuilder_Clear(t *testing.T) {
+	builder := diagram.NewDataModelBuilder()
+
+	builder.AddPoint("node1")
+	builder.AddConnection("node1", "node2")
+	builder.Clear()
+
+	if builder.PointCount() != 0 {
+		t.Errorf(
+			"PointCount should be 0 after Clear, got %d",
+			builder.PointCount(),
+		)
+	}
+	if builder.ConnectionCount() != 0 {
+		t.Errorf(
+			"ConnectionCount should be 0 after Clear, got %d",
+			builder.ConnectionCount(),
+		)
+	}
+	if builder.HasPoints() {
+		t.Error("HasPoints should return false after Clear")
+	}
+	if builder.HasConnections() {
+		t.Error("HasConnections should return false after Clear")
+	}
+}
+
+// TestDataModelBuilder_FullDiagram tests building a complete diagram.
+func TestDataModelBuilder_FullDiagram(t *testing.T) {
+	builder := diagram.NewDataModelBuilder()
+
+	// Create a simple hierarchy
+	builder.AddPoint("root")
+	builder.AddPoint("child1")
+	builder.AddPoint("child2")
+	builder.AddAssistantPoint("assistant1")
+
+	// Add connections
+	builder.AddParentOfConnection("root", "child1")
+	builder.AddParentOfConnection("root", "child2")
+	builder.AddParentOfConnection("root", "assistant1")
+
+	// Build
+	dataModel := builder.Build()
+
+	if builder.PointCount() != 0 {
+		t.Errorf(
+			"Builder should be reset after Build, got %d points",
+			builder.PointCount(),
+		)
+	}
+
+	// Verify data model
+	if dataModel == nil {
+		t.Fatal("Build returned nil")
+	}
+
+	ptCount := 0
+	connCount := 0
+
+	for range openxml.Elements[*diagram.Point](dataModel.PointList) {
+		ptCount++
+	}
+	for range openxml.Elements[*diagram.Connection](
+		dataModel.ConnectionList,
+	) {
+		connCount++
+	}
+
+	if ptCount != 4 {
+		t.Errorf("Expected 4 points, got %d", ptCount)
+	}
+	if connCount != 3 {
+		t.Errorf("Expected 3 connections, got %d", connCount)
+	}
+
+	// Verify validation works
+	err := dataModel.Validate()
+	if err != nil {
+		t.Errorf("DataModel validation failed: %v", err)
+	}
+}
+
+// TestDataModelBuilder_Chaining tests method chaining.
+func TestDataModelBuilder_Chaining(t *testing.T) {
+	dataModel := diagram.NewDataModelBuilder().
+		AddPoint("n1").
+		AddPoint("n2").
+		AddConnection("n1", "n2").
+		Build()
+
+	if dataModel == nil {
+		t.Fatal("Chained builder returned nil")
+	}
+	if dataModel.PointList == nil {
+		t.Error("PointList should not be nil")
+	}
+	if dataModel.ConnectionList == nil {
+		t.Error("ConnectionList should not be nil")
 	}
 }
