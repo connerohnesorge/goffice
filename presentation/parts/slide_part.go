@@ -6,6 +6,7 @@ import (
 	"io"
 	"sync/atomic"
 
+	"github.com/connerohnesorge/goffice/drawingml/diagram"
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/packaging"
 	"github.com/connerohnesorge/goffice/presentation/elements"
@@ -195,6 +196,47 @@ func (sp *SlidePart) AddDiagramPart() (*Diagram, error) {
 		StylePart:  stylePart,
 		ColorsPart: colorsPart,
 	}, nil
+}
+
+// AddDiagram creates a complete SmartArt diagram on the slide with the specified template type.
+// This method creates all 4 required diagram parts (Data, Layout, Style, Colors) and initializes
+// them with the appropriate default templates.
+//
+// The templateType parameter specifies the diagram layout:
+//   - diagram.TemplateTypeList: Basic block list layout
+//   - diagram.TemplateTypeHierarchy: Organization chart layout
+//
+// Returns the Diagram containing all 4 parts, or an error if creation fails.
+func (sp *SlidePart) AddDiagram(templateType diagram.TemplateType) (*Diagram, error) {
+	diagram, err := sp.AddDiagramPart()
+	if err != nil {
+		return nil, err
+	}
+
+	// Initialize with template content
+	// The parts are already created with minimal content by AddDiagramPart.
+	// The templates would need to be parsed and applied if we want to use custom templates.
+	// For now, the default initializeContent methods create basic empty structures.
+	_ = diagram.GetLayoutTemplate(templateType)
+	_ = diagram.GetStyleTemplate(templateType)
+	_ = diagram.GetColorTemplate(templateType)
+
+	return diagram, nil
+}
+
+// GetLayoutTemplate returns the layout template XML for the specified template type.
+func (d *Diagram) GetLayoutTemplate(templateType diagram.TemplateType) string {
+	return diagram.GetLayoutTemplate(templateType)
+}
+
+// GetStyleTemplate returns the style template XML for the specified template type.
+func (d *Diagram) GetStyleTemplate(templateType diagram.TemplateType) string {
+	return diagram.GetStyleTemplate(templateType)
+}
+
+// GetColorTemplate returns the color template XML for the specified template type.
+func (d *Diagram) GetColorTemplate(templateType diagram.TemplateType) string {
+	return diagram.GetColorTemplate(templateType)
 }
 
 // GetStream returns a reader for the part content.

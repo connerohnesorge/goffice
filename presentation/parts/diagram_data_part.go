@@ -14,6 +14,26 @@ type DiagramDataPart struct {
 	*openxml.OpenXmlPartData
 }
 
+// Save serializes the diagram data to the part stream.
+// This uses custom marshaling to ensure PointList and ConnectionList are properly serialized.
+func (ddp *DiagramDataPart) Save() error {
+	root := ddp.RootElement()
+	if root == nil {
+		return nil
+	}
+
+	// Check if root is a DataModelRoot and use custom marshaling
+	if dataModel, ok := root.(*diagram.DataModelRoot); ok {
+		xmlContent := diagram.GenerateXML(dataModel)
+		ddp.SetData([]byte(xmlContent))
+		ddp.ClearDirty()
+		return nil
+	}
+
+	// Fall back to default save behavior
+	return ddp.OpenXmlPartData.Save()
+}
+
 // newDiagramDataPart creates a new diagram data part.
 //
 //nolint:unused // Will be used when diagram creation API is implemented

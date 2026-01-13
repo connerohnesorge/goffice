@@ -2,6 +2,64 @@
 
 This directory contains example programs demonstrating the capabilities of the goffice library.
 
+## SmartArt Diagrams Example
+
+The `smartart_example.go` program creates a PowerPoint presentation with various SmartArt diagram types using the goffice library.
+
+### Features Demonstrated
+
+- **Basic List Diagram**: Simple bullet-point style diagram
+- **Hierarchy (Org Chart)**: Organizational structure with managers and reports
+- **Process Flow**: Linear workflow diagram showing sequential stages
+- **Comparison**: Side-by-side comparison structure
+
+### Running the Example
+
+```bash
+go run smartart_example.go
+```
+
+This creates `smartart_example.pptx` with 4 slides, each containing a different SmartArt diagram.
+
+### API Usage
+
+```go
+// Create a new presentation
+doc, _ := presentation.New("output.pptx", presentation.DocTypePresentation)
+defer doc.Close()
+
+// Add a slide with a SmartArt diagram
+slidePart, _ := doc.AddSlide()
+diagram, _ := slidePart.AddDiagram(diagram.TemplateTypeList)
+
+// Use the DataModelBuilder to construct diagram content
+builder := diagram.NewDataModelBuilder()
+builder.AddPoint("root")
+builder.AddPoint("item1")
+builder.AddParentOfConnection("root", "item1")
+
+// Build and set the data model
+dataModel := builder.Build()
+diagram.DataPart.SetRootElement(dataModel)
+
+// Save the presentation
+doc.Save()
+```
+
+### Template Types
+
+- `diagram.TemplateTypeList`: Basic block list layout
+- `diagram.TemplateTypeHierarchy`: Organization chart layout
+
+### Output Structure
+
+The generated PPTX file contains:
+- 4 slides with different diagram types
+- All required diagram parts (data, layout, style, colors)
+- Valid OOXML structure compatible with PowerPoint
+
+---
+
 ## ML Results Spreadsheet Example
 
 The `ml_results/ml_results_example.go` program creates a realistic, complex ML research results spreadsheet in XLSX format.

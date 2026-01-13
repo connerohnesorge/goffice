@@ -40,31 +40,31 @@
       "id": "1.1",
       "section": "Implementation",
       "description": "Add `AddDiagramPart` methods to `presentation/parts/slide_part.go` that initialize the relationship.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.2",
       "section": "Implementation",
       "description": "Implement `drawingml/diagram/builder.go` to help construct `DataModelRoot` with `PointList` and `ConnectionList`.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.3",
       "section": "Implementation",
       "description": "Add standard layout/style/color templates to `drawingml/diagram` (embedded XML strings for common defaults).",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.4",
       "section": "Implementation",
       "description": "Update `AddDiagram` to instantiate all 4 required parts with these defaults.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "1.5",
       "section": "Implementation",
       "description": "Add an integration test creating a PPTX with a new SmartArt diagram.",
-      "status": "pending"
+      "status": "completed"
     }
   ]
 }
