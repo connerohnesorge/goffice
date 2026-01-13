@@ -121,7 +121,7 @@ func NewOpenXmlPartData(
 
 // loadChildParts loads child parts from the underlying packaging part relationships.
 func (p *OpenXmlPartData) loadChildParts() {
-	p.loadChildPartsRecursive(0)
+	p.loadChildPartsRecursive(0, nil)
 }
 
 const maxPartRecursionDepth = 10
@@ -129,9 +129,15 @@ const maxPartRecursionDepth = 10
 // loadChildPartsRecursive loads child parts with a recursion depth limit.
 func (p *OpenXmlPartData) loadChildPartsRecursive(
 	depth int,
+	loadedURIs map[string]bool,
 ) {
 	if depth > maxPartRecursionDepth {
 		return
+	}
+
+	// Initialize loadedURIs map on first call
+	if loadedURIs == nil {
+		loadedURIs = make(map[string]bool)
 	}
 
 	// Check if we're already loading children to prevent infinite recursion
@@ -142,6 +148,14 @@ func (p *OpenXmlPartData) loadChildPartsRecursive(
 		return
 	}
 	p.loadingChildren = true
+
+	// Mark this URI as loaded to prevent circular loads
+	normalizedURI := packaging.NormalizeURI(p.uri)
+	alreadyLoaded := loadedURIs[normalizedURI]
+	if !alreadyLoaded {
+		loadedURIs[normalizedURI] = true
+	}
+
 	p.mu.Unlock()
 
 	defer func() {
@@ -150,11 +164,20 @@ func (p *OpenXmlPartData) loadChildPartsRecursive(
 		p.mu.Unlock()
 	}()
 
-	if p.packagingPart == nil {
+	// If this URI was already loaded, skip its children
+	if alreadyLoaded {
 		return
 	}
 
-	rels := p.packagingPart.Relationships()
+	p.mu.RLock()
+	packagingPart := p.packagingPart
+	p.mu.RUnlock()
+
+	if packagingPart == nil {
+		return
+	}
+
+	rels := packagingPart.Relationships()
 	if rels == nil {
 		return
 	}
@@ -165,6 +188,12 @@ func (p *OpenXmlPartData) loadChildPartsRecursive(
 			p.uri,
 			rel.Target(),
 		)
+
+		// Check if this URI has already been loaded to prevent circular loading
+		normalizedTarget := packaging.NormalizeURI(targetURI)
+		if loadedURIs[normalizedTarget] {
+			continue // Skip already-loaded parts
+		}
 
 		// Get packaging part via container to avoid deadlock
 		packPart := p.GetPackagingPart(targetURI)
@@ -234,6 +263,7 @@ func (p *OpenXmlPartData) loadChildPartsRecursive(
 		if partData != nil {
 			partData.loadChildPartsRecursive(
 				depth + 1,
+				loadedURIs,
 			)
 		}
 	}
