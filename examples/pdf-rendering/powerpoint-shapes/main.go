@@ -32,8 +32,21 @@ func main() {
 		"Creating PowerPoint presentation with shapes...",
 	)
 
-	// Create the PowerPoint presentation
-	if err := createPowerPointPresentation(); err != nil {
+	// Create a new presentation
+	doc, err := presentation.New(
+		pptxFilename,
+		presentation.DocTypePresentation,
+	)
+	if err != nil {
+		log.Fatalf(
+			"Failed to create presentation: %v",
+			err,
+		)
+	}
+	defer doc.Close()
+
+	// Create the slides and content
+	if err := createPowerPointPresentation(doc); err != nil {
 		log.Fatalf(
 			"Failed to create PowerPoint presentation: %v",
 			err,
@@ -43,8 +56,8 @@ func main() {
 	fmt.Printf("Created %s\n", pptxFilename)
 	fmt.Println("Rendering to PDF...")
 
-	// Render to PDF
-	if err := renderToPDF(); err != nil {
+	// Render to PDF (using the open document, before closing)
+	if err := renderToPDF(doc); err != nil {
 		log.Fatalf(
 			"Failed to render PDF: %v",
 			err,
@@ -72,19 +85,7 @@ func main() {
 }
 
 // createPowerPointPresentation creates a PowerPoint presentation with various shapes.
-func createPowerPointPresentation() error {
-	doc, err := presentation.New(
-		pptxFilename,
-		presentation.DocTypePresentation,
-	)
-	if err != nil {
-		return fmt.Errorf(
-			"creating presentation: %w",
-			err,
-		)
-	}
-	defer doc.Close()
-
+func createPowerPointPresentation(doc *presentation.Document) error {
 	// Slide 1: Basic Shapes
 	if err := createBasicShapesSlide(doc); err != nil {
 		return fmt.Errorf(
@@ -338,21 +339,8 @@ func createTextShapesSlide(
 }
 
 // renderToPDF renders the PowerPoint presentation to PDF.
-func renderToPDF() error {
-	// Open the presentation
-	doc, err := presentation.Open(
-		pptxFilename,
-		false,
-	)
-	if err != nil {
-		return fmt.Errorf(
-			"opening presentation: %w",
-			err,
-		)
-	}
-	defer doc.Close()
-
-	// Create renderer
+func renderToPDF(doc *presentation.Document) error {
+	// Create renderer using the already-open document
 	renderer := pdfpresentation.NewPresentationRenderer(
 		doc,
 	)

@@ -2,7 +2,7 @@ module github.com/connerohnesorge/goffice/examples/pdf-rendering/powerpoint-shap
 
 go 1.25.0
 
-replace github.com/connerohnesorge/goffice => ../../../
+replace github.com/connerohnesorge/goffice => ../../..
 
 replace github.com/connerohnesorge/goffice-pdf => ../../../pdf
 
