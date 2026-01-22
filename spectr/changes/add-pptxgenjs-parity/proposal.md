@@ -1,7 +1,7 @@
 # Change: Achieve Full Functional Parity with pptxgenjs
 
 ## Why
-Currently, goffice provides comprehensive PowerPoint support with features like slides, shapes, text, tables, charts, and SmartArt. However, there's a functional gap compared to pptxgenjs - the leading JavaScript PowerPoint generation library. pptxgenjs offers advanced features that goffice lacks, limiting our ability to serve users migrating from JavaScript environments or requiring rich presentation capabilities. Achieving parity will make goffice the definitive Go solution for PowerPoint generation.
+Currently, goffice provides comprehensive PowerPoint support with slides, shapes, text, tables, charts, and SmartArt. However, there's a functional gap compared to pptxgenjs - the leading JavaScript PowerPoint generation library. pptxgenjs offers advanced features that goffice lacks, limiting our ability to serve users migrating from JavaScript environments or requiring rich presentation capabilities. Achieving parity will make goffice the definitive Go solution for PowerPoint generation.
 
 ## What Changes
 This is a multi-faceted enhancement across several capabilities:
@@ -30,12 +30,6 @@ This is a multi-faceted enhancement across several capabilities:
 - **Helper Methods**: Convenience methods for common operations
 - **Better Defaults**: Sensible defaults reducing boilerplate code
 - **Validation**: Enhanced validation with helpful error messages
-
-### Advanced Features
-- **Slide Transitions**: More transition types and options
-- **Animation Support**: Comprehensive animation system
-- **Comment Support**: Add and manage slide comments
-- **Section Support**: Organize slides into sections
 
 ## Impact
 - **Affected specs:** presentation, drawingml, validation, pdf-rendering
