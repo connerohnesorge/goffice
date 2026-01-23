@@ -4,7 +4,6 @@ package parts
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"iter"
 	"testing"
 
@@ -110,19 +109,19 @@ func TestVideoTypeFromMagicBytes(t *testing.T) {
 	}{
 		{
 			name:     "MP4 with ftyp",
-			data:     []byte{0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70}, // "ftyp" at offset 4
+			data:     append(make([]byte, 4), append([]byte("ftyp"), make([]byte, 8)...)...), // "ftyp" at offset 4
 			expected: VideoTypeMp4,
 			found:    true,
 		},
 		{
 			name:     "AVI",
-			data:     []byte{0x52, 0x49, 0x46, 0x46, 0x00, 0x00, 0x00, 0x00, 0x41, 0x56, 0x49, 0x20}, // "RIFF" + "AVI "
+			data:     append([]byte{0x52, 0x49, 0x46, 0x46, 0x00, 0x00, 0x00, 0x00, 0x41, 0x56, 0x49, 0x20}, make([]byte, 4)...), // "RIFF" + "AVI "
 			expected: VideoTypeAvi,
 			found:    true,
 		},
 		{
 			name:     "WMV",
-			data:     []byte{0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11}, // ASF header
+			data:     append([]byte{0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11}, make([]byte, 8)...), // ASF header
 			expected: VideoTypeWmv,
 			found:    true,
 		},
@@ -150,7 +149,7 @@ func TestVideoTypeFromMagicBytes(t *testing.T) {
 // TestDetectVideoType tests the combined detection method.
 func TestDetectVideoType(t *testing.T) {
 	// Test with magic bytes
-	aviData := []byte{0x52, 0x49, 0x46, 0x46, 0x00, 0x00, 0x00, 0x00, 0x41, 0x56, 0x49, 0x20}
+	aviData := append([]byte{0x52, 0x49, 0x46, 0x46, 0x00, 0x00, 0x00, 0x00, 0x41, 0x56, 0x49, 0x20}, make([]byte, 4)...)
 	if got := DetectVideoType(aviData, ""); got != VideoTypeAvi {
 		t.Errorf("DetectVideoType() with magic = %v, want %v", got, VideoTypeAvi)
 	}
@@ -174,7 +173,7 @@ func TestDetectVideoType(t *testing.T) {
 // TestVideoPartBasic tests basic VideoPart functionality without needing a slide.
 func TestVideoPartBasic(t *testing.T) {
 	// Create a packaging part for the video
-	pkg := packaging.Create()
+	pkg, _ := packaging.Create("test.pptx")
 	videoPackPart, err := pkg.CreatePart("/ppt/media/video1.mp4", "video/mp4")
 	if err != nil {
 		t.Fatalf("Failed to create packaging part: %v", err)
@@ -213,7 +212,7 @@ func TestVideoPartBasic(t *testing.T) {
 	videoPart.setSize(int64(len(testData)))
 
 	// Verify data
-	gotData := videoPart.GetData()
+	gotData, _ := videoPart.GetData()
 	if !bytes.Equal(gotData, testData) {
 		t.Errorf("GetData() = %v, want %v", gotData, testData)
 	}
@@ -227,7 +226,7 @@ func TestVideoPartBasic(t *testing.T) {
 // TestVideoPartStreaming tests streaming video part.
 func TestVideoPartStreaming(t *testing.T) {
 	// Create a packaging part for the video
-	pkg := packaging.Create()
+	pkg, _ := packaging.Create("test2.pptx")
 	videoPackPart, err := pkg.CreatePart("/ppt/media/video1.mp4", "video/mp4")
 	if err != nil {
 		t.Fatalf("Failed to create packaging part: %v", err)
@@ -301,7 +300,7 @@ func TestShouldStream(t *testing.T) {
 // TestVideoPartFactory tests the factory function.
 func TestVideoPartFactory(t *testing.T) {
 	// Create a test package with a video part
-	pkg := packaging.Create()
+	pkg, _ := packaging.Create("test3.pptx")
 
 	// Create the video part in the package
 	videoURI := "/ppt/media/video1.mp4"

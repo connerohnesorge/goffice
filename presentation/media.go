@@ -37,7 +37,7 @@ func DefaultAddVideoOptions() *AddVideoOptions {
 }
 
 // AddVideoFromFile adds a video to the presentation from a file path.
-func (p *Presentation) AddVideoFromFile(
+func (d *Document) AddVideoFromFile(
 	slideIndex int,
 	filePath string,
 	opts *AddVideoOptions,
@@ -92,18 +92,17 @@ func (p *Presentation) AddVideoFromFile(
 	}
 
 	// Get the slide
-	slides := p.Slides()
-	if slideIndex < 0 || slideIndex >= len(slides) {
-		return nil, fmt.Errorf("slide index %d out of range", slideIndex)
+	slide, err := d.GetSlide(slideIndex)
+	if err != nil {
+		return nil, err
 	}
-	slide := slides[slideIndex]
 
 	// Create the video part
 	var videoPart parts.MediaPart
 	if useStreaming {
 		// Create streaming video part
 		streamingPart, err := parts.NewStreamingVideoPartForSlide(
-			slide.SlidePart(),
+			slide,
 			videoType,
 		)
 		if err != nil {
@@ -113,7 +112,7 @@ func (p *Presentation) AddVideoFromFile(
 	} else {
 		// Create regular video part
 		regularPart, err := parts.NewVideoPartForSlide(
-			slide.SlidePart(),
+			slide,
 			videoType,
 			false, // no streaming
 		)
@@ -132,7 +131,7 @@ func (p *Presentation) AddVideoFromFile(
 }
 
 // AddVideoFromReader adds a video to the presentation from an io.Reader.
-func (p *Presentation) AddVideoFromReader(
+func (d *Document) AddVideoFromReader(
 	slideIndex int,
 	reader io.Reader,
 	filename string,
@@ -173,18 +172,36 @@ func (p *Presentation) AddVideoFromReader(
 	}
 
 	// Get the slide
-	slides := p.Slides()
-	if slideIndex < 0 || slideIndex >= len(slides) {
-		return nil, fmt.Errorf("slide index %d out of range", slideIndex)
+	slide, err := d.GetSlide(slideIndex)
+	if err != nil {
+		return nil, err
 	}
-	slide := slides[slideIndex]
 
-	// Create the video part (we'll use regular part for reader-based content)
-	videoPart, err := parts.NewVideoPartForSlide(
-		slide.SlidePart(),
-		videoType,
-		false, // no streaming for reader-based content
-	)
+	// Create the video part
+	var videoPart parts.MediaPart
+	useStreaming := false
+	if r, ok := reader.(interface{ Size() int64 }); ok {
+		if r.Size() > opts.StreamingThreshold {
+			useStreaming = true
+		}
+	} else if r, ok := reader.(interface{ Len() int }); ok {
+		if int64(r.Len()) > opts.StreamingThreshold {
+			useStreaming = true
+		}
+	}
+
+	if useStreaming {
+		videoPart, err = parts.NewStreamingVideoPartForSlide(
+			slide,
+			videoType,
+		)
+	} else {
+		videoPart, err = parts.NewVideoPartForSlide(
+			slide,
+			videoType,
+			false,
+		)
+	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to create video part: %w", err)
 	}
@@ -198,7 +215,7 @@ func (p *Presentation) AddVideoFromReader(
 }
 
 // AddVideoFromBytes adds a video to the presentation from a byte slice.
-func (p *Presentation) AddVideoFromBytes(
+func (d *Document) AddVideoFromBytes(
 	slideIndex int,
 	data []byte,
 	filename string,
@@ -213,7 +230,7 @@ func (p *Presentation) AddVideoFromBytes(
 	if opts.AutoDetectType && filename != "" {
 		videoType = parts.DetectVideoType(data, filename)
 	} else if opts.AutoDetectType {
-		videoType = parts.VideoTypeFromMagicBytes(data)
+		videoType, _ = parts.VideoTypeFromMagicBytes(data)
 	} else {
 		videoType = opts.VideoType
 	}
@@ -231,15 +248,14 @@ func (p *Presentation) AddVideoFromBytes(
 	}
 
 	// Get the slide
-	slides := p.Slides()
-	if slideIndex < 0 || slideIndex >= len(slides) {
-		return nil, fmt.Errorf("slide index %d out of range", slideIndex)
+	slide, err := d.GetSlide(slideIndex)
+	if err != nil {
+		return nil, err
 	}
-	slide := slides[slideIndex]
 
 	// Create the video part
 	videoPart, err := parts.NewVideoPartForSlide(
-		slide.SlidePart(),
+		slide,
 		videoType,
 		false, // no streaming for byte-based content
 	)
@@ -256,13 +272,13 @@ func (p *Presentation) AddVideoFromBytes(
 }
 
 // GetVideos returns all video parts in the presentation.
-func (p *Presentation) GetVideos() []parts.MediaPart {
+func (d *Document) GetVideos() []parts.MediaPart {
 	var videos []parts.MediaPart
 
 	// Iterate through all slides
-	for _, slide := range p.Slides() {
+	for slide := range d.Slides() {
 		// Get all parts from the slide
-		for part := range slide.SlidePart().Parts() {
+		for part := range slide.Parts() {
 			if videoPart, ok := part.(parts.MediaPart); ok {
 				// Check if this is a video (not audio)
 				contentType := videoPart.GetContentType()
@@ -277,21 +293,19 @@ func (p *Presentation) GetVideos() []parts.MediaPart {
 }
 
 // RemoveVideo removes a video from the presentation.
-func (p *Presentation) RemoveVideo(video parts.MediaPart) error {
+func (d *Document) RemoveVideo(video parts.MediaPart) error {
 	// Find which slide contains this video
-	for _, slide := range p.Slides() {
-		slidePart := slide.SlidePart()
-
+	for slide := range d.Slides() {
 		// Get the relationships for this slide
-		rels := slidePart.Relationships()
+		rels := slide.PackagingPart().Relationships()
 		if rels == nil {
 			continue
 		}
 
 		// Find the relationship that points to this video
-		for _, rel := range rels.Relationships() {
+		for rel := range rels.All() {
 			// Get the part for this relationship
-			part, err := slidePart.GetPartById(rel.ID())
+			part, err := slide.GetPartById(rel.ID())
 			if err != nil {
 				continue
 			}
@@ -299,7 +313,7 @@ func (p *Presentation) RemoveVideo(video parts.MediaPart) error {
 			// Check if this is our video
 			if part == video {
 				// Remove the relationship
-				return slidePart.DeletePart(rel.ID())
+				return slide.DeletePart(rel.ID())
 			}
 		}
 	}
@@ -360,6 +374,283 @@ func isFormatSupported(contentType string) bool {
 		"video/avi",
 		"video/quicktime",
 		"video/x-ms-wmv",
+	}
+
+	for _, supported := range supportedTypes {
+		if contentType == supported {
+			return true
+		}
+	}
+	return false
+}
+
+// AddAudioOptions contains options for adding audio to a slide.
+type AddAudioOptions struct {
+	StreamingThreshold int64
+	ValidateFormat     bool
+	AutoDetectType     bool
+	AudioType          parts.AudioType
+}
+
+// DefaultAddAudioOptions returns default options for adding audio.
+func DefaultAddAudioOptions() *AddAudioOptions {
+	return &AddAudioOptions{
+		StreamingThreshold: 100 * 1024 * 1024,
+		ValidateFormat:     true,
+		AutoDetectType:     true,
+		AudioType:          parts.AudioTypeMp3,
+	}
+}
+
+// AddAudioFromFile adds an audio file to the presentation.
+func (d *Document) AddAudioFromFile(
+	slideIndex int,
+	filePath string,
+	opts *AddAudioOptions,
+) (parts.MediaPart, error) {
+	if opts == nil {
+		opts = DefaultAddAudioOptions()
+	}
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	useStreaming := fileInfo.Size() > opts.StreamingThreshold
+
+	var audioType parts.AudioType
+	if opts.AutoDetectType {
+		header := make([]byte, 1024)
+		n, _ := file.Read(header)
+		file.Seek(0, 0)
+		audioType = parts.DetectAudioType(header[:n], filePath)
+	} else {
+		audioType = opts.AudioType
+	}
+
+	if opts.ValidateFormat {
+		header := make([]byte, 1024)
+		n, _ := file.Read(header)
+		file.Seek(0, 0)
+		if err := parts.ValidateMedia(header[:n], filePath); err != nil {
+			return nil, err
+		}
+		if !audioType.IsSupported() {
+			return nil, fmt.Errorf("audio format %s is not natively supported", audioType.String())
+		}
+	}
+
+	slide, err := d.GetSlide(slideIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	var audioPart parts.MediaPart
+	if useStreaming {
+		audioPart, err = parts.NewStreamingAudioPartForSlide(slide, audioType)
+	} else {
+		audioPart, err = parts.NewAudioPartForSlide(slide, audioType, false)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	if err := audioPart.SetStream(file); err != nil {
+		return nil, err
+	}
+
+	return audioPart, nil
+}
+
+// AddAudioFromReader adds an audio file to the presentation from an io.Reader.
+func (d *Document) AddAudioFromReader(
+	slideIndex int,
+	reader io.Reader,
+	filename string,
+	opts *AddAudioOptions,
+) (parts.MediaPart, error) {
+	if opts == nil {
+		opts = DefaultAddAudioOptions()
+	}
+
+	var audioType parts.AudioType
+	if opts.AutoDetectType && filename != "" {
+		audioType = parts.AudioTypeFromFilename(filename)
+	} else {
+		audioType = opts.AudioType
+	}
+
+	if opts.ValidateFormat && filename != "" {
+		header := make([]byte, 1024)
+		n, err := reader.Read(header)
+		if err != nil && err != io.EOF {
+			return nil, err
+		}
+		reader = io.MultiReader(bytes.NewReader(header[:n]), reader)
+		if err := parts.ValidateMedia(header[:n], filename); err != nil {
+			return nil, err
+		}
+		if !audioType.IsSupported() {
+			return nil, fmt.Errorf("audio format %s is not natively supported", audioType.String())
+		}
+	}
+
+	slide, err := d.GetSlide(slideIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	var audioPart parts.MediaPart
+	useStreaming := false
+	if r, ok := reader.(interface{ Size() int64 }); ok {
+		if r.Size() > opts.StreamingThreshold {
+			useStreaming = true
+		}
+	} else if r, ok := reader.(interface{ Len() int }); ok {
+		if int64(r.Len()) > opts.StreamingThreshold {
+			useStreaming = true
+		}
+	}
+
+	if useStreaming {
+		audioPart, err = parts.NewStreamingAudioPartForSlide(slide, audioType)
+	} else {
+		audioPart, err = parts.NewAudioPartForSlide(slide, audioType, false)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	if err := audioPart.SetStream(reader); err != nil {
+		return nil, err
+	}
+
+	return audioPart, nil
+}
+
+// AddAudioFromBytes adds an audio file to the presentation from a byte slice.
+func (d *Document) AddAudioFromBytes(
+	slideIndex int,
+	data []byte,
+	filename string,
+	opts *AddAudioOptions,
+) (parts.MediaPart, error) {
+	if opts == nil {
+		opts = DefaultAddAudioOptions()
+	}
+
+	var audioType parts.AudioType
+	if opts.AutoDetectType && filename != "" {
+		audioType = parts.DetectAudioType(data, filename)
+	} else if opts.AutoDetectType {
+		audioType, _ = parts.AudioTypeFromMagicBytes(data)
+	} else {
+		audioType = opts.AudioType
+	}
+
+	if opts.ValidateFormat {
+		if err := parts.ValidateMedia(data, filename); err != nil {
+			return nil, err
+		}
+		if !audioType.IsSupported() {
+			return nil, fmt.Errorf("audio format %s is not natively supported", audioType.String())
+		}
+	}
+
+	slide, err := d.GetSlide(slideIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	audioPart, err := parts.NewAudioPartForSlide(slide, audioType, false)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := audioPart.FeedDataBytes(data); err != nil {
+		return nil, err
+	}
+
+	return audioPart, nil
+}
+
+// DetectAudioType attempts to detect audio type from data or filename.
+func (d *Document) DetectAudioType(data []byte, filename string) parts.AudioType {
+	return parts.DetectAudioType(data, filename)
+}
+
+// GetAudios returns all audio parts in the presentation.
+func (d *Document) GetAudios() []parts.MediaPart {
+	var audios []parts.MediaPart
+	for slide := range d.Slides() {
+		for part := range slide.Parts() {
+			if audioPart, ok := part.(parts.MediaPart); ok {
+				contentType := audioPart.GetContentType()
+				if strings.HasPrefix(contentType, "audio/") {
+					audios = append(audios, audioPart)
+				}
+			}
+		}
+	}
+	return audios
+}
+
+// AudioPartInfo contains information about an audio part.
+type AudioPartInfo struct {
+	URI         string
+	ContentType string
+	Size        int64
+	IsStreaming bool
+	Format      string
+	Supported   bool
+}
+
+// GetAudioInfo returns information about an audio part.
+func GetAudioInfo(audio parts.MediaPart) *AudioPartInfo {
+	return &AudioPartInfo{
+		URI:         audio.URI(),
+		ContentType: audio.GetContentType(),
+		Size:        audio.GetSize(),
+		IsStreaming: audio.IsStreaming(),
+		Format:      getAudioFormatFromContentType(audio.GetContentType()),
+		Supported:   isAudioFormatSupported(audio.GetContentType()),
+	}
+}
+
+// Helper function to get audio format name from content type.
+func getAudioFormatFromContentType(contentType string) string {
+	switch contentType {
+	case "audio/mpeg", "audio/mp3":
+		return "MP3"
+	case "audio/wav":
+		return "WAV"
+	case "audio/x-ms-wma":
+		return "WMA"
+	case "audio/mp4", "audio/x-m4a":
+		return "M4A"
+	case "audio/ogg":
+		return "OGG"
+	case "audio/flac":
+		return "FLAC"
+	default:
+		return "Unknown"
+	}
+}
+
+// Helper function to check if audio format is supported.
+func isAudioFormatSupported(contentType string) bool {
+	supportedTypes := []string{
+		"audio/mpeg", "audio/mp3",
+		"audio/wav",
+		"audio/x-ms-wma",
+		"audio/mp4", "audio/x-m4a",
 	}
 
 	for _, supported := range supportedTypes {

@@ -154,6 +154,33 @@ func (pp *PresentationPart) AddSlidePart() (*SlidePart, error) {
 	return slidePart, nil
 }
 
+// AddSlideWithLayout adds a new slide part with the specified layout.
+func (pp *PresentationPart) AddSlideWithLayout(layout *SlideLayoutPart) (*SlidePart, error) {
+	slidePart, err := pp.AddSlidePart()
+	if err != nil {
+		return nil, err
+	}
+	
+	if layout != nil {
+		// Add relationship from slide to layout
+		rel, err := slidePart.PackagingPart().CreateRelationship(
+			layout.URI(),
+			RelationshipTypeSlideLayout,
+			"",
+		)
+		if err != nil {
+			return nil, err
+		}
+		
+		// Add the layout part to slide's child parts
+		if err := slidePart.AddPart(layout, rel.ID()); err != nil {
+			return nil, err
+		}
+	}
+	
+	return slidePart, nil
+}
+
 // SlideParts returns all slide parts.
 func (pp *PresentationPart) SlideParts() []*SlidePart {
 	var slides []*SlidePart

@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"golang.org/x/text/unicode/bidi"
 )
 
 // TextAlignValue represents text alignment.
@@ -252,6 +253,13 @@ func (tb *TextBody) Paragraphs() []*TextParagraph {
 func (tb *TextBody) ClearParagraphs() {
 	for _, p := range tb.Paragraphs() {
 		tb.RemoveChild(p)
+	}
+}
+
+// AutoDetectRTL automatically detects RTL for all paragraphs in the text body.
+func (tb *TextBody) AutoDetectRTL() {
+	for _, p := range tb.Paragraphs() {
+		p.AutoDetectRTL()
 	}
 }
 
@@ -777,13 +785,7 @@ func (p *TextParagraph) SetAlignment(
 	pp.SetAlignment(align)
 }
 
-// SetLevel sets the paragraph level (0-8).
-func (p *TextParagraph) SetLevel(level int) {
-	pp := p.EnsureProperties()
-	pp.SetLevel(level)
-}
-
-// GetText returns the plain text content of the paragraph.
+// GetText returns the combined text content of all runs in the paragraph.
 func (p *TextParagraph) GetText() string {
 	var text string
 	for _, r := range p.Runs() {
@@ -793,10 +795,82 @@ func (p *TextParagraph) GetText() string {
 	return text
 }
 
-// Clone creates a deep copy of this TextParagraph element.
-func (p *TextParagraph) Clone() openxml.Element {
-	return &TextParagraph{
-		CompositeElementBase: p.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+// AutoDetectRTL automatically detects if the paragraph should be RTL
+// based on its text content.
+func (p *TextParagraph) AutoDetectRTL() {
+	text := p.GetText()
+	if text == "" {
+		return
+	}
+
+	p.EnsureProperties().SetRightToLeft(IsRTL(text))
+}
+
+// IsRTL returns true if the text contains predominantly RTL characters.
+func IsRTL(text string) bool {
+	p := bidi.Paragraph{}
+	p.SetString(text)
+	direction := p.Direction()
+	return direction == bidi.RightToLeft
+}
+
+// SetLevel sets the paragraph level (0-8).
+func (p *TextParagraph) SetLevel(level int) {
+	pp := p.EnsureProperties()
+	pp.SetLevel(level)
+}
+
+// SetCharacterBullet sets the paragraph to use a character bullet.
+func (p *TextParagraph) SetCharacterBullet(char string) {
+	p.EnsureProperties().SetCharacterBullet(char)
+}
+
+// SetAutoNumberedBullet sets the paragraph to use auto-numbered bullets.
+func (p *TextParagraph) SetAutoNumberedBullet(scheme AutoNumberSchemeValue, startAt int) {
+	p.EnsureProperties().SetAutoNumberedBullet(scheme, startAt)
+}
+
+// SetBulletFont sets the bullet font.
+func (p *TextParagraph) SetBulletFont(typeface string) {
+	p.EnsureProperties().SetBulletFont(typeface)
+}
+
+// SetRTLAlignment sets both RTL direction and right alignment.
+func (p *TextParagraph) SetRTLAlignment() {
+	pp := p.EnsureProperties()
+	pp.SetRightToLeft(true)
+	pp.SetAlignment(TextAlignRight)
+}
+
+// Hyperlink represents a hyperlink element (a:hlinkClick).
+type Hyperlink struct {
+	*openxml.CompositeElementBase
+}
+
+// NewHyperlink creates a new Hyperlink element with relationship ID.
+func NewHyperlink(relId string) *Hyperlink {
+	elem := openxml.NewCompositeElement(
+		NamespaceMain,
+		"hlinkClick",
+		PrefixMain,
+	)
+	h := &Hyperlink{CompositeElementBase: elem}
+	h.SetAttribute(
+		openxml.NewAttribute(
+			"http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+			"id",
+			"r",
+			relId,
+		),
+	)
+
+	return h
+}
+
+// Clone creates a deep copy of this Hyperlink element.
+func (h *Hyperlink) Clone() openxml.Element {
+	return &Hyperlink{
+		CompositeElementBase: h.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
 	}
 }
 
@@ -1545,6 +1619,17 @@ func (r *TextRun) SetBold(bold bool) {
 	rp.SetBold(bold)
 }
 
+// SetRightToLeft sets whether the text is right-to-left.
+func (r *TextRun) SetRightToLeft(rtl bool) {
+	rp := r.EnsureProperties()
+	rp.SetRightToLeft(rtl)
+}
+
+// SetHyperlink sets the hyperlink relationship ID.
+func (r *TextRun) SetHyperlink(relId string) {
+	r.EnsureProperties().SetHyperlink(relId)
+}
+
 // SetItalic sets whether the text is italic.
 func (r *TextRun) SetItalic(italic bool) {
 	rp := r.EnsureProperties()
@@ -1918,6 +2003,42 @@ func (rp *TextCharacterProperties) SetBold(
 	rp.SetAttribute(
 		openxml.NewAttribute("", "b", "", "1"),
 	)
+}
+
+// RightToLeft returns whether the text is right-to-left.
+func (rp *TextCharacterProperties) RightToLeft() bool {
+	attr, found := rp.GetAttribute("rtl", "")
+	if !found {
+		return false
+	}
+
+	return attr.Value() == "1" ||
+		attr.Value() == "true"
+}
+
+// SetRightToLeft sets whether the text is right-to-left.
+func (rp *TextCharacterProperties) SetRightToLeft(
+	rtl bool,
+) {
+	if !rtl {
+		rp.RemoveAttribute("rtl", "")
+
+		return
+	}
+	rp.SetAttribute(
+		openxml.NewAttribute("", "rtl", "", "1"),
+	)
+}
+
+// SetHyperlink sets the hyperlink relationship ID.
+func (rp *TextCharacterProperties) SetHyperlink(relId string) {
+	// Remove existing hyperlink if any
+	if existing := rp.GetElement("hlinkClick", NamespaceMain); existing != nil {
+		rp.RemoveChild(existing)
+	}
+	if relId != "" {
+		rp.AppendChild(NewHyperlink(relId))
+	}
 }
 
 // Italic returns whether the text is italic.

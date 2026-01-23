@@ -205,6 +205,28 @@ func (s *Slide) AddPicture(
 	return st.AddPicture(relId)
 }
 
+// AddVideo adds a new video to the slide.
+func (s *Slide) AddVideo(
+	videoRelId string,
+	posterRelId string,
+) *Picture {
+	pic := s.AddPicture(posterRelId)
+	pic.NonVisualPictureProperties().SetVideoFile(videoRelId)
+	
+	return pic
+}
+
+// AddAudio adds a new audio to the slide.
+func (s *Slide) AddAudio(
+	audioRelId string,
+	posterRelId string,
+) *Picture {
+	pic := s.AddPicture(posterRelId)
+	pic.NonVisualPictureProperties().SetAudioFile(audioRelId)
+	
+	return pic
+}
+
 // Clone creates a deep copy of this Slide element.
 func (s *Slide) Clone() openxml.Element {
 	cloned := s.PartRootElementBase.Clone()
@@ -406,6 +428,26 @@ func (sl *SlideLayout) CommonSlideData() *CommonSlideData {
 	}
 
 	return nil
+}
+
+// GetOrCreateCommonSlideData returns or creates the common slide data.
+func (sl *SlideLayout) GetOrCreateCommonSlideData() *CommonSlideData {
+	csd := sl.CommonSlideData()
+	if csd != nil {
+		return csd
+	}
+	csd = NewCommonSlideData()
+	sl.AppendChild(csd)
+	return csd
+}
+
+// AddPlaceholder adds a new placeholder shape to the layout.
+func (sl *SlideLayout) AddPlaceholder(phType PlaceholderType, idx int) *Shape {
+	csd := sl.GetOrCreateCommonSlideData()
+	st := csd.GetOrCreateShapeTree()
+	shape := st.AddShape()
+	shape.NonVisualShapeProperties().SetPlaceholder(phType, idx)
+	return shape
 }
 
 // Clone creates a deep copy of this SlideLayout element.

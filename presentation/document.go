@@ -743,6 +743,20 @@ func (d *Document) AddSlide() (*parts.SlidePart, error) {
 	return presPart.AddSlidePart()
 }
 
+// AddSlideWithLayout adds a new slide to the presentation with the specified layout.
+func (d *Document) AddSlideWithLayout(layout *parts.SlideLayoutPart) (*parts.SlidePart, error) {
+	if !d.isEditable {
+		return nil, ErrReadOnly
+	}
+
+	presPart := d.PresentationPart()
+	if presPart == nil {
+		return nil, ErrNoPresentationPart
+	}
+
+	return presPart.AddSlideWithLayout(layout)
+}
+
 // Slides returns an iterator over all slides in the presentation.
 func (d *Document) Slides() iter.Seq[*parts.SlidePart] {
 	return func(yield func(*parts.SlidePart) bool) {

@@ -238,7 +238,7 @@ func (svp *StreamingVideoPart) Save() error {
 	}
 
 	// Then save the video part (which will save relationships, etc.)
-	if saveable, ok := svp.VideoPart.(openxml.ISaveablePart); ok {
+	if saveable, ok := any(svp.VideoPart).(openxml.ISaveablePart); ok {
 		return saveable.Save()
 	}
 
@@ -288,6 +288,124 @@ func StreamingVideoPartFactory(
 	}
 }
 
+// StreamingAudioPart combines audio part with streaming support.
+type StreamingAudioPart struct {
+	*AudioPart
+	*StreamingPart
+}
+
+// NewStreamingAudioPartForSlide creates a new streaming audio part.
+func NewStreamingAudioPartForSlide(
+	slidePart *SlidePart,
+	audioType AudioType,
+) (*StreamingAudioPart, error) {
+	// Create the base audio part
+	audioPart, err := NewAudioPartForSlide(slidePart, audioType, true)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create the streaming part
+	streamingPart, err := newStreamingPart(
+		audioPart.URI(),
+		audioPart.ContentType(),
+		audioPart.PackagingPart(),
+		slidePart,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &StreamingAudioPart{
+		AudioPart:     audioPart,
+		StreamingPart: streamingPart,
+	}, nil
+}
+
+// SetStream sets the audio content using streaming.
+func (sap *StreamingAudioPart) SetStream(r io.Reader) error {
+	// Use the streaming part's implementation
+	err := sap.StreamingPart.SetStream(r)
+	if err != nil {
+		return err
+	}
+
+	// Update the audio part's size
+	sap.AudioPart.setSize(sap.StreamingPart.GetSize())
+
+	return nil
+}
+
+// GetStream returns a reader for the audio content.
+func (sap *StreamingAudioPart) GetStream() io.Reader {
+	// Use the streaming part's implementation
+	return sap.StreamingPart.GetStream()
+}
+
+// GetSize returns the size of the audio.
+func (sap *StreamingAudioPart) GetSize() int64 {
+	// Use the streaming part's size
+	return sap.StreamingPart.GetSize()
+}
+
+// Save saves both the audio metadata and streaming content.
+func (sap *StreamingAudioPart) Save() error {
+	// Save the streaming content first
+	if err := sap.StreamingPart.Save(); err != nil {
+		return err
+	}
+
+	// Then save the audio part
+	if saveable, ok := any(sap.AudioPart).(openxml.ISaveablePart); ok {
+		return saveable.Save()
+	}
+
+	return nil
+}
+
+// Close closes the streaming audio part.
+func (sap *StreamingAudioPart) Close() error {
+	// Close the streaming part
+	if err := sap.StreamingPart.Close(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Ensure StreamingAudioPart implements MediaPart.
+var _ MediaPart = (*StreamingAudioPart)(nil)
+
+// StreamingAudioPartFactory creates a StreamingAudioPart from a URI and container.
+func StreamingAudioPartFactory(
+	uri string,
+	container openxml.OpenXmlPartContainer,
+) openxml.OpenXmlPart {
+	// First create a regular audio part
+	audioPart := AudioPartFactory(uri, container)
+	if audioPart == nil {
+		return nil
+	}
+
+	ap := audioPart.(*AudioPart)
+
+	// Create the streaming part
+	streamingPart, err := newStreamingPart(
+		ap.URI(),
+		ap.ContentType(),
+		ap.PackagingPart(),
+		container,
+	)
+	if err != nil {
+		return nil
+	}
+
+	return &StreamingAudioPart{
+		AudioPart:     ap,
+		StreamingPart: streamingPart,
+	}
+}
+
 // Helper function to determine if streaming should be used.
 func shouldUseStreamingForSize(size int64) bool {
 	return size > streamingThreshold
@@ -300,9 +418,9 @@ func createVideoPartForSlideWithSize(
 	size int64,
 ) (MediaPart, error) {
 	if shouldUseStreamingForSize(size) {
-		return newStreamingVideoPartForSlide(slidePart, videoType)
+		return NewStreamingVideoPartForSlide(slidePart, videoType)
 	}
 
 	// Use regular video part for smaller files
-	return newVideoPartForSlide(slidePart, videoType, false)
+	return NewVideoPartForSlide(slidePart, videoType, false)
 }

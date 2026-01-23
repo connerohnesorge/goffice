@@ -108,6 +108,24 @@ func (sp *SlidePart) NotesSlidePart() *NotesSlidePart {
 	return nil
 }
 
+// GetOrCreateNotesSlidePart returns or creates the notes slide part.
+func (sp *SlidePart) GetOrCreateNotesSlidePart() (*NotesSlidePart, error) {
+	if nsp := sp.NotesSlidePart(); nsp != nil {
+		return nsp, nil
+	}
+	return sp.AddNotesSlidePart()
+}
+
+// SetNotes sets the plain text notes for this slide.
+func (sp *SlidePart) SetNotes(text string) error {
+	nsp, err := sp.GetOrCreateNotesSlidePart()
+	if err != nil {
+		return err
+	}
+	nsp.SetNotes(text)
+	return nil
+}
+
 // AddSlideCommentsPart adds a comments part to this slide.
 func (sp *SlidePart) AddSlideCommentsPart() (*SlideCommentsPart, error) {
 	return newSlideCommentsPart(sp)
@@ -141,6 +159,29 @@ func (sp *SlidePart) ImageParts() []*ImagePart {
 	}
 
 	return images
+}
+
+// AddPicture adds a new picture to the slide.
+func (sp *SlidePart) AddPicture(
+	relId string,
+) *elements.Picture {
+	return sp.Slide().AddPicture(relId)
+}
+
+// AddVideo adds a new video to the slide.
+func (sp *SlidePart) AddVideo(
+	videoRelId string,
+	posterRelId string,
+) *elements.Picture {
+	return sp.Slide().AddVideo(videoRelId, posterRelId)
+}
+
+// AddAudio adds a new audio to the slide.
+func (sp *SlidePart) AddAudio(
+	audioRelId string,
+	posterRelId string,
+) *elements.Picture {
+	return sp.Slide().AddAudio(audioRelId, posterRelId)
 }
 
 // AddChartPart adds a chart part to this slide.

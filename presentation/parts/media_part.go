@@ -12,6 +12,9 @@ import (
 type MediaPart interface {
 	openxml.OpenXmlPart
 
+	// RelationshipID returns the relationship ID of this part.
+	RelationshipID() string
+
 	// GetStream returns a reader for the media content.
 	GetStream() io.Reader
 
@@ -26,6 +29,12 @@ type MediaPart interface {
 
 	// IsStreaming returns true if this part uses streaming (for large files).
 	IsStreaming() bool
+
+	// GetData returns the raw media data.
+	GetData() ([]byte, error)
+
+	// FeedDataBytes sets the media data from a byte slice.
+	FeedDataBytes(data []byte) error
 }
 
 // baseMediaPart provides common implementation for media parts.
@@ -76,6 +85,18 @@ func (bmp *baseMediaPart) IsStreaming() bool {
 // GetSize returns the size of the media content.
 func (bmp *baseMediaPart) GetSize() int64 {
 	return bmp.size
+}
+
+// GetData returns the raw media data.
+func (bmp *baseMediaPart) GetData() ([]byte, error) {
+	return bmp.OpenXmlPartData.GetData(), nil
+}
+
+// FeedDataBytes sets the media data from a byte slice.
+func (bmp *baseMediaPart) FeedDataBytes(data []byte) error {
+	bmp.SetData(data)
+	bmp.setSize(int64(len(data)))
+	return nil
 }
 
 // setSize sets the size of the media content.

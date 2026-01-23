@@ -89,6 +89,53 @@ func (nsp *NotesSlidePart) NotesSlide() *elements.NotesSlide {
 	return nil
 }
 
+// GetOrCreateCommonSlideData returns or creates the common slide data (p:cSld).
+func (nsp *NotesSlidePart) GetOrCreateCommonSlideData() *elements.CommonSlideData {
+	ns := nsp.NotesSlide()
+	if ns == nil {
+		return nil
+	}
+	
+	// Check if cSld already exists
+	for child := range ns.Children() {
+		if csd, ok := child.(*elements.CommonSlideData); ok {
+			return csd
+		}
+	}
+	
+	csd := elements.NewCommonSlideData()
+	ns.AppendChild(csd)
+	return csd
+}
+
+// SetNotes sets the plain text notes for this slide.
+func (nsp *NotesSlidePart) SetNotes(text string) {
+	tb := nsp.GetOrCreateTextBody()
+	tb.ClearParagraphs()
+	tb.AddParagraph(text)
+}
+
+// GetOrCreateTextBody returns or creates the main text body for notes.
+func (nsp *NotesSlidePart) GetOrCreateTextBody() *elements.TextBody {
+	csd := nsp.GetOrCreateCommonSlideData()
+	st := csd.GetOrCreateShapeTree()
+	
+	// Try to find existing body placeholder
+	for _, shape := range st.Shapes() {
+		if nvsp := shape.NonVisualShapeProperties(); nvsp != nil {
+			// In notes, usually there is a placeholder with type "body"
+			// But for simplicity, we'll just use the first shape with a text body or create one
+			if tb := shape.TextBody(); tb != nil {
+				return tb
+			}
+		}
+	}
+	
+	// Create new shape with text body
+	shape := st.AddShape()
+	return shape.GetOrCreateTextBody()
+}
+
 // GetStream returns a reader for the part content.
 func (nsp *NotesSlidePart) GetStream() io.Reader {
 	return nsp.OpenXmlPartData.GetStream()

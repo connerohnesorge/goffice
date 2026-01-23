@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 	"sync"
-
-	"github.com/connerohnesorge/goffice/openxml"
 )
 
 // MediaType represents the type of media (video or audio).
@@ -71,7 +69,7 @@ func (mr *MediaRegistry) DetectFormat(
 	defer mr.mu.RUnlock()
 
 	// First try magic bytes
-	for name, format := range mr.formats {
+	for _, format := range mr.formats {
 		if len(data) > 0 && len(format.MagicBytes) > 0 {
 			for _, magic := range format.MagicBytes {
 				if len(data) >= len(magic) &&

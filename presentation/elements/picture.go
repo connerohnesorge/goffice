@@ -263,23 +263,204 @@ func (nvpp *NonVisualPictureProperties) Name() string {
 	return attr.Value()
 }
 
-// SetName sets the picture name.
-func (nvpp *NonVisualPictureProperties) SetName(
-	name string,
-) {
-	cNvPr := nvpp.GetElement(
-		"cNvPr",
+// ApplicationNonVisualProperties returns the application non-visual properties (p:nvPr).
+func (nvpp *NonVisualPictureProperties) ApplicationNonVisualProperties() *ApplicationNonVisualProperties {
+	elem := nvpp.GetElement(
+		"nvPr",
 		NamespacePresentationML,
 	)
-	if cNvPr == nil {
+	if elem == nil {
+		return nil
+	}
+	if anvp, ok := elem.(*ApplicationNonVisualProperties); ok {
+		return anvp
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &ApplicationNonVisualProperties{
+			CompositeElementBase: comp,
+		}
+	}
+
+	return nil
+}
+
+// SetVideoFile sets the video file link.
+func (nvpp *NonVisualPictureProperties) SetVideoFile(relId string) {
+	anvp := nvpp.ApplicationNonVisualProperties()
+	if anvp == nil {
 		return
 	}
-	cNvPr.SetAttribute(openxml.NewAttribute(
-		"",
-		"name",
-		"",
-		name,
-	))
+	anvp.SetVideoFile(relId)
+}
+
+// SetAudioFile sets the audio file link.
+func (nvpp *NonVisualPictureProperties) SetAudioFile(relId string) {
+	anvp := nvpp.ApplicationNonVisualProperties()
+	if anvp == nil {
+		return
+	}
+	anvp.SetAudioFile(relId)
+}
+
+// ApplicationNonVisualProperties represents p:nvPr.
+type ApplicationNonVisualProperties struct {
+	*openxml.CompositeElementBase
+}
+
+// SetVideoFile sets the video file link (a:videoFile).
+func (anvp *ApplicationNonVisualProperties) SetVideoFile(relId string) {
+	// Remove existing if any
+	if existing := anvp.GetElement("videoFile", NamespaceDrawingML); existing != nil {
+		anvp.RemoveChild(existing)
+	}
+	
+	vf := openxml.NewLeafElement(NamespaceDrawingML, "videoFile", PrefixA)
+	vf.SetAttribute(openxml.NewAttribute(NamespaceRelationships, "link", PrefixR, relId))
+	
+	// Insert before extLst if present
+	if extLst := anvp.GetElement("extLst", NamespacePresentationML); extLst != nil {
+		anvp.InsertBefore(vf, extLst)
+	} else {
+		anvp.AppendChild(vf)
+	}
+}
+
+// SetAudioFile sets the audio file link (a:audioFile).
+func (anvp *ApplicationNonVisualProperties) SetAudioFile(relId string) {
+	// Remove existing if any
+	if existing := anvp.GetElement("audioFile", NamespaceDrawingML); existing != nil {
+		anvp.RemoveChild(existing)
+	}
+	
+	af := openxml.NewLeafElement(NamespaceDrawingML, "audioFile", PrefixA)
+	af.SetAttribute(openxml.NewAttribute(NamespaceRelationships, "link", PrefixR, relId))
+	
+	// Insert before extLst if present
+	if extLst := anvp.GetElement("extLst", NamespacePresentationML); extLst != nil {
+		anvp.InsertBefore(af, extLst)
+	} else {
+		anvp.AppendChild(af)
+	}
+}
+
+// MediaProperties contains playback options for media.
+type MediaProperties struct {
+	EmbedRelId string
+	AutoStart  bool
+	Loop       bool
+	Muted      bool
+	Volume     int // 0 to 100000
+}
+
+// SetMediaProperties sets the media properties in extLst.
+func (anvp *ApplicationNonVisualProperties) SetMediaProperties(props MediaProperties) {
+	extLst := anvp.GetOrCreateMediaExtensionList()
+	
+	// Media extension URI for Office 2010
+	mediaUri := "{DAA4B4D4-6D71-4841-9C94-3DE7FCFB9230}"
+	ext := extLst.GetOrCreateMediaExtension(mediaUri)
+	
+	// Create p14:media element
+	nsP14 := "http://schemas.microsoft.com/office/powerpoint/2010/main"
+	media := openxml.NewLeafElement(nsP14, "media", "p14")
+	
+	if props.EmbedRelId != "" {
+		media.SetAttribute(openxml.NewAttribute(NamespaceRelationships, "embed", PrefixR, props.EmbedRelId))
+	}
+	
+	if props.AutoStart {
+		media.SetAttribute(openxml.NewAttribute("", "autoStart", "", "1"))
+	}
+	
+	if props.Loop {
+		media.SetAttribute(openxml.NewAttribute("", "loop", "", "1"))
+	}
+	
+	if props.Muted {
+		media.SetAttribute(openxml.NewAttribute("", "mute", "", "1"))
+	}
+	
+	if props.Volume > 0 {
+		media.SetAttribute(openxml.NewAttribute("", "vol", "", strconv.Itoa(props.Volume)))
+	}
+	
+	// Clear existing children of extension and add new media element
+	ext.ClearChildren()
+	ext.AppendChild(media)
+}
+
+// GetOrCreateMediaExtensionList returns or creates the extension list (p:extLst).
+func (anvp *ApplicationNonVisualProperties) GetOrCreateMediaExtensionList() *MediaExtensionList {
+	elem := anvp.GetElement("extLst", NamespacePresentationML)
+	if elem != nil {
+		if extLst, ok := elem.(*MediaExtensionList); ok {
+			return extLst
+		}
+		if comp := wrapCompositeElement(elem); comp != nil {
+			return &MediaExtensionList{CompositeElementBase: comp}
+		}
+	}
+	
+	extLst := NewMediaExtensionList()
+	anvp.AppendChild(extLst)
+	return extLst
+}
+
+// MediaExtensionList represents p:extLst.
+type MediaExtensionList struct {
+	*openxml.CompositeElementBase
+}
+
+// NewMediaExtensionList creates a new MediaExtensionList.
+func NewMediaExtensionList() *MediaExtensionList {
+	return &MediaExtensionList{
+		CompositeElementBase: openxml.NewCompositeElement(NamespacePresentationML, "extLst", PrefixP),
+	}
+}
+
+// GetOrCreateMediaExtension returns or creates an extension (p:ext) with the given URI.
+func (el *MediaExtensionList) GetOrCreateMediaExtension(uri string) *MediaExtension {
+	for child := range el.Children() {
+		if child.LocalName() == "ext" && child.NamespaceURI() == NamespacePresentationML {
+			if attr, ok := child.GetAttribute("uri", ""); ok && attr.Value() == uri {
+				if ext, ok := child.(*MediaExtension); ok {
+					return ext
+				}
+				if comp := wrapCompositeElement(child); comp != nil {
+					return &MediaExtension{CompositeElementBase: comp}
+				}
+			}
+		}
+	}
+	
+	ext := NewMediaExtension(uri)
+	el.AppendChild(ext)
+	return ext
+}
+
+// MediaExtension represents p:ext.
+type MediaExtension struct {
+	*openxml.CompositeElementBase
+}
+
+// NewMediaExtension creates a new MediaExtension with the given URI.
+func NewMediaExtension(uri string) *MediaExtension {
+	ext := &MediaExtension{
+		CompositeElementBase: openxml.NewCompositeElement(NamespacePresentationML, "ext", PrefixP),
+	}
+	ext.SetAttribute(openxml.NewAttribute("", "uri", "", uri))
+	return ext
+}
+
+// ClearChildren removes all child elements.
+func (e *MediaExtension) ClearChildren() {
+	var toRemove []openxml.Element
+	for child := range e.Children() {
+		toRemove = append(toRemove, child)
+	}
+	for _, child := range toRemove {
+		e.RemoveChild(child)
+	}
 }
 
 // Clone creates a deep copy of this NonVisualPictureProperties element.

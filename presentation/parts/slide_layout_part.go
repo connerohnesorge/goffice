@@ -127,6 +127,11 @@ func (slp *SlideLayoutPart) SlideLayout() *elements.SlideLayout {
 	return nil
 }
 
+// AddPlaceholder adds a placeholder to the layout.
+func (slp *SlideLayoutPart) AddPlaceholder(phType elements.PlaceholderType, idx int) *elements.Shape {
+	return slp.SlideLayout().AddPlaceholder(phType, idx)
+}
+
 // GetStream returns a reader for the part content.
 func (slp *SlideLayoutPart) GetStream() io.Reader {
 	return slp.OpenXmlPartData.GetStream()
