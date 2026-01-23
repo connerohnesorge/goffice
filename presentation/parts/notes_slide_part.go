@@ -110,8 +110,19 @@ func (nsp *NotesSlidePart) GetOrCreateCommonSlideData() *elements.CommonSlideDat
 
 // SetNotes sets the plain text notes for this slide.
 func (nsp *NotesSlidePart) SetNotes(text string) {
-	tb := nsp.GetOrCreateTextBody()
-	tb.ClearParagraphs()
+	csd := nsp.GetOrCreateCommonSlideData()
+	st := csd.GetOrCreateShapeTree()
+	
+	// Notes usually have a body placeholder for text
+	// For now, we'll just add a shape with the text
+	shape := st.AddShape()
+	tb := shape.GetOrCreateTextBody()
+	if tb == nil {
+		panic("GetOrCreateTextBody returned nil")
+	}
+	if tb.CompositeElementBase == nil {
+		panic("TextBody.CompositeElementBase is nil")
+	}
 	tb.AddParagraph(text)
 }
 

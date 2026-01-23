@@ -842,6 +842,13 @@ func (p *TextParagraph) SetRTLAlignment() {
 	pp.SetAlignment(TextAlignRight)
 }
 
+// Clone creates a deep copy of this TextParagraph element.
+func (p *TextParagraph) Clone() openxml.Element {
+	return &TextParagraph{
+		CompositeElementBase: p.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
+	}
+}
+
 // Hyperlink represents a hyperlink element (a:hlinkClick).
 type Hyperlink struct {
 	*openxml.CompositeElementBase
