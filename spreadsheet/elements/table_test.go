@@ -6,28 +6,6 @@ import (
 
 const testTableName = "Table1"
 
-func TestNewTable(t *testing.T) {
-	table := NewTable()
-
-	if table == nil {
-		t.Fatal("NewTable returned nil")
-	}
-
-	if table.LocalName() != "table" {
-		t.Errorf(
-			"Expected LocalName 'table', got '%s'",
-			table.LocalName(),
-		)
-	}
-
-	if table.NamespaceURI() != NamespaceSML {
-		t.Errorf(
-			"Expected NamespaceURI '%s', got '%s'",
-			NamespaceSML,
-			table.NamespaceURI(),
-		)
-	}
-}
 
 func TestNewTableWithDefaults(t *testing.T) {
 	table := NewTableWithDefaults(

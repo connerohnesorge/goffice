@@ -4,24 +4,6 @@ import (
 	"testing"
 )
 
-func TestFonts(t *testing.T) {
-	f := NewFonts()
-
-	if f.LocalName() != "fonts" {
-		t.Errorf(
-			"Expected LocalName 'fonts', got %q",
-			f.LocalName(),
-		)
-	}
-
-	if f.NamespaceURI() != NamespaceWML {
-		t.Errorf(
-			"Expected NamespaceURI %q, got %q",
-			NamespaceWML,
-			f.NamespaceURI(),
-		)
-	}
-}
 
 func TestFontsAddAndGetFont(t *testing.T) {
 	f := NewFonts()

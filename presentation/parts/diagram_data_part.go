@@ -27,6 +27,7 @@ func (ddp *DiagramDataPart) Save() error {
 		xmlContent := diagram.GenerateXML(dataModel)
 		ddp.SetData([]byte(xmlContent))
 		ddp.ClearDirty()
+
 		return nil
 	}
 

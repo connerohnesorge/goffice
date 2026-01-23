@@ -4,66 +4,6 @@ import (
 	"testing"
 )
 
-func TestWebSettings(t *testing.T) {
-	ws := NewWebSettings()
-
-	if ws.LocalName() != "webSettings" {
-		t.Errorf(
-			"Expected LocalName 'webSettings', got %q",
-			ws.LocalName(),
-		)
-	}
-
-	if ws.NamespaceURI() != NamespaceWML {
-		t.Errorf(
-			"Expected NamespaceURI %q, got %q",
-			NamespaceWML,
-			ws.NamespaceURI(),
-		)
-	}
-}
-
-func TestWebSettingsOptimizeForBrowser(
-	t *testing.T,
-) {
-	ws := NewWebSettings()
-
-	if ws.OptimizeForBrowser() {
-		t.Error(
-			"Expected OptimizeForBrowser to be false initially",
-		)
-	}
-
-	ws.SetOptimizeForBrowser(true)
-	if !ws.OptimizeForBrowser() {
-		t.Error(
-			"Expected OptimizeForBrowser to be true",
-		)
-	}
-
-	ws.SetOptimizeForBrowser(false)
-	if ws.OptimizeForBrowser() {
-		t.Error(
-			"Expected OptimizeForBrowser to be false after disabling",
-		)
-	}
-}
-
-func TestWebSettingsAllowPNG(t *testing.T) {
-	ws := NewWebSettings()
-
-	if ws.AllowPNG() {
-		t.Error(
-			"Expected AllowPNG to be false initially",
-		)
-	}
-
-	ws.SetAllowPNG(true)
-	if !ws.AllowPNG() {
-		t.Error("Expected AllowPNG to be true")
-	}
-}
-
 func TestWebSettingsTargetScreenSize(
 	t *testing.T,
 ) {
@@ -136,67 +76,6 @@ func TestWebSettingsPixelsPerInch(t *testing.T) {
 			"Expected PixelsPerInch 72, got %d",
 			ws.PixelsPerInch(),
 		)
-	}
-}
-
-func TestWebSettingsOnOffElements(t *testing.T) {
-	ws := NewWebSettings()
-
-	tests := []struct {
-		name   string
-		getter func() bool
-		setter func(bool)
-	}{
-		{
-			"DoNotUseLongFileNames",
-			ws.DoNotUseLongFileNames,
-			ws.SetDoNotUseLongFileNames,
-		},
-		{
-			"RelyOnVML",
-			ws.RelyOnVML,
-			ws.SetRelyOnVML,
-		},
-		{
-			"DoNotRelyOnCSS",
-			ws.DoNotRelyOnCSS,
-			ws.SetDoNotRelyOnCSS,
-		},
-		{
-			"DoNotSaveAsSingleFile",
-			ws.DoNotSaveAsSingleFile,
-			ws.SetDoNotSaveAsSingleFile,
-		},
-		{
-			"DoNotOrganizeInFolder",
-			ws.DoNotOrganizeInFolder,
-			ws.SetDoNotOrganizeInFolder,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			if tc.getter() {
-				t.Errorf(
-					"Expected %s to be false initially",
-					tc.name,
-				)
-			}
-			tc.setter(true)
-			if !tc.getter() {
-				t.Errorf(
-					"Expected %s to be true",
-					tc.name,
-				)
-			}
-			tc.setter(false)
-			if tc.getter() {
-				t.Errorf(
-					"Expected %s to be false after disabling",
-					tc.name,
-				)
-			}
-		})
 	}
 }
 

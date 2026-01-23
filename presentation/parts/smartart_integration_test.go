@@ -65,36 +65,36 @@ func TestSlidePart_AddDiagram(t *testing.T) {
 	}
 
 	// Test creating diagram with list template
-	diagram, err := slidePart.AddDiagram(diagram.TemplateTypeList)
+	diagramResult, err := slidePart.AddDiagram(diagram.TemplateTypeList)
 	if err != nil {
 		t.Fatalf("AddDiagram(list) error = %v", err)
 	}
 
 	// Verify all parts are created
-	if diagram.DataPart == nil {
+	if diagramResult.DataPart == nil {
 		t.Error("AddDiagram() returned Diagram with nil DataPart")
 	}
-	if diagram.LayoutPart == nil {
+	if diagramResult.LayoutPart == nil {
 		t.Error("AddDiagram() returned Diagram with nil LayoutPart")
 	}
-	if diagram.StylePart == nil {
+	if diagramResult.StylePart == nil {
 		t.Error("AddDiagram() returned Diagram with nil StylePart")
 	}
-	if diagram.ColorsPart == nil {
+	if diagramResult.ColorsPart == nil {
 		t.Error("AddDiagram() returned Diagram with nil ColorsPart")
 	}
 
 	// Verify parts have root elements
-	if diagram.DataPart.DataModel() == nil {
+	if diagramResult.DataPart.DataModel() == nil {
 		t.Error("Diagram DataPart has no DataModel root element")
 	}
-	if diagram.LayoutPart.LayoutDefinition() == nil {
+	if diagramResult.LayoutPart.LayoutDefinition() == nil {
 		t.Error("Diagram LayoutPart has no LayoutDefinition root element")
 	}
-	if diagram.StylePart.StyleDefinition() == nil {
+	if diagramResult.StylePart.StyleDefinition() == nil {
 		t.Error("Diagram StylePart has no StyleDefinition root element")
 	}
-	if diagram.ColorsPart.ColorsDefinition() == nil {
+	if diagramResult.ColorsPart.ColorsDefinition() == nil {
 		t.Error("Diagram ColorsPart has no ColorsDefinition root element")
 	}
 }
@@ -109,22 +109,22 @@ func TestSlidePart_AddDiagram_Hierarchy(t *testing.T) {
 	}
 
 	// Test creating diagram with hierarchy template
-	diagram, err := slidePart.AddDiagram(diagram.TemplateTypeHierarchy)
+	diagramResult, err := slidePart.AddDiagram(diagram.TemplateTypeHierarchy)
 	if err != nil {
 		t.Fatalf("AddDiagram(hierarchy) error = %v", err)
 	}
 
 	// Verify all parts are created
-	if diagram.DataPart == nil {
+	if diagramResult.DataPart == nil {
 		t.Error("AddDiagram() with hierarchy returned Diagram with nil DataPart")
 	}
-	if diagram.LayoutPart == nil {
+	if diagramResult.LayoutPart == nil {
 		t.Error("AddDiagram() with hierarchy returned Diagram with nil LayoutPart")
 	}
-	if diagram.StylePart == nil {
+	if diagramResult.StylePart == nil {
 		t.Error("AddDiagram() with hierarchy returned Diagram with nil StylePart")
 	}
-	if diagram.ColorsPart == nil {
+	if diagramResult.ColorsPart == nil {
 		t.Error("AddDiagram() with hierarchy returned Diagram with nil ColorsPart")
 	}
 }

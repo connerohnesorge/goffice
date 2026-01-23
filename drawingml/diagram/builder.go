@@ -138,6 +138,7 @@ func (b *DataModelBuilder) AddPresentationOfConnection(sourceID, destID string) 
 // all child elements (points and connections). This is needed because
 // the generated Clone() method only clones explicit fields, not children
 // stored in the CompositeElementBase.
+//nolint:revive // cognitive complexity is necessary for proper deep cloning
 func deepCloneDataModel(source *DataModelRoot) *DataModelRoot {
 	if source == nil {
 		return nil

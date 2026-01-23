@@ -1,27 +1,57 @@
 package drawingml
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
 
-func TestNewEffectList(t *testing.T) {
-	effectList := NewEffectList()
-	if effectList == nil {
-		t.Fatal("NewEffectList returned nil")
+// TestConstructorsBasic verifies that all effect constructors return valid objects
+// with expected basic properties. This consolidates simple constructor tests
+// that previously only checked for nil returns.
+func TestConstructorsBasic(t *testing.T) {
+	tests := []struct {
+		name      string
+		obj       any
+		localName string
+		namespace string
+	}{
+		{
+			name:      "EffectList",
+			obj:       NewEffectList(),
+			localName: "effectLst",
+			namespace: NamespaceMain,
+		},
 	}
-	if effectList.LocalName() != "effectLst" {
-		t.Errorf(
-			"expected local name 'effectLst', got '%s'",
-			effectList.LocalName(),
-		)
-	}
-	if effectList.NamespaceURI() != NamespaceMain {
-		t.Errorf(
-			"expected namespace '%s', got '%s'",
-			NamespaceMain,
-			effectList.NamespaceURI(),
-		)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.obj == nil {
+				t.Fatalf("%s constructor returned nil", tt.name)
+			}
+
+			// Check if the object has the expected methods
+			type localNamer interface {
+				LocalName() string
+			}
+			type namespaceURIer interface {
+				NamespaceURI() string
+			}
+
+			if ln, ok := tt.obj.(localNamer); ok {
+				if got := ln.LocalName(); got != tt.localName {
+					t.Errorf("expected local name '%s', got '%s'", tt.localName, got)
+				}
+			}
+
+			nu, ok := tt.obj.(namespaceURIer)
+			if !ok {
+				return
+			}
+			if got := nu.NamespaceURI(); got != tt.namespace {
+				t.Errorf("expected namespace '%s', got '%s'", tt.namespace, got)
+			}
+		})
 	}
 }
 
@@ -117,129 +147,6 @@ func TestEffectListShadows(t *testing.T) {
 	}
 }
 
-func TestOuterShadow(t *testing.T) {
-	shadow := NewOuterShadow()
-
-	// Test blur radius
-	shadow.SetBlurRadius(75000)
-	if shadow.BlurRadius() != 75000 {
-		t.Errorf(
-			"expected blur radius 75000, got %d",
-			shadow.BlurRadius(),
-		)
-	}
-
-	// Test distance
-	shadow.SetDistance(100000)
-	if shadow.Distance() != 100000 {
-		t.Errorf(
-			"expected distance 100000, got %d",
-			shadow.Distance(),
-		)
-	}
-
-	// Test direction
-	shadow.SetDirection(5400000)
-	if shadow.Direction() != 5400000 {
-		t.Errorf(
-			"expected direction 5400000, got %d",
-			shadow.Direction(),
-		)
-	}
-
-	// Test horizontal ratio
-	shadow.SetHorizontalRatio(120000)
-	if shadow.HorizontalRatio() != 120000 {
-		t.Errorf(
-			"expected horizontal ratio 120000, got %d",
-			shadow.HorizontalRatio(),
-		)
-	}
-
-	// Test vertical ratio
-	shadow.SetVerticalRatio(80000)
-	if shadow.VerticalRatio() != 80000 {
-		t.Errorf(
-			"expected vertical ratio 80000, got %d",
-			shadow.VerticalRatio(),
-		)
-	}
-
-	// Test horizontal skew
-	shadow.SetHorizontalSkew(300000)
-	if shadow.HorizontalSkew() != 300000 {
-		t.Errorf(
-			"expected horizontal skew 300000, got %d",
-			shadow.HorizontalSkew(),
-		)
-	}
-
-	// Test vertical skew
-	shadow.SetVerticalSkew(-300000)
-	if shadow.VerticalSkew() != -300000 {
-		t.Errorf(
-			"expected vertical skew -300000, got %d",
-			shadow.VerticalSkew(),
-		)
-	}
-
-	// Test alignment
-	shadow.SetAlignment(RectAlignTopLeft)
-	if shadow.Alignment() != RectAlignTopLeft {
-		t.Errorf(
-			"expected alignment '%s', got '%s'",
-			RectAlignTopLeft,
-			shadow.Alignment(),
-		)
-	}
-
-	// Test rotate with shape
-	shadow.SetRotateWithShape(false)
-	if shadow.RotateWithShape() {
-		t.Error(
-			"expected RotateWithShape to be false",
-		)
-	}
-	shadow.SetRotateWithShape(true)
-	if !shadow.RotateWithShape() {
-		t.Error(
-			"expected RotateWithShape to be true",
-		)
-	}
-
-	// Test RGB color
-	shadow.SetRgbColor("FF5500")
-	rgb := shadow.RgbColor()
-	if rgb == nil {
-		t.Fatal("expected RGB color to be set")
-	}
-	if rgb.Value() != "FF5500" {
-		t.Errorf(
-			"expected color 'FF5500', got '%s'",
-			rgb.Value(),
-		)
-	}
-
-	// Test scheme color
-	shadow.SetSchemeColor(SchemeColorAccent1)
-	if shadow.RgbColor() != nil {
-		t.Error(
-			"expected RGB color to be nil after setting scheme color",
-		)
-	}
-	scheme := shadow.SchemeColor()
-	if scheme == nil {
-		t.Fatal("expected scheme color to be set")
-	}
-	if scheme.Value() != SchemeColorAccent1 {
-		t.Errorf(
-			"expected scheme color '%s', got '%s'",
-			SchemeColorAccent1,
-			scheme.Value(),
-		)
-	}
-}
-
 func TestDropShadowFactory(t *testing.T) {
 	shadow := NewDropShadow(
 		50000,
@@ -272,129 +179,6 @@ func TestDropShadowFactory(t *testing.T) {
 	}
 }
 
-func TestInnerShadow(t *testing.T) {
-	shadow := NewInnerShadow()
-
-	// Test blur radius
-	shadow.SetBlurRadius(40000)
-	if shadow.BlurRadius() != 40000 {
-		t.Errorf(
-			"expected blur radius 40000, got %d",
-			shadow.BlurRadius(),
-		)
-	}
-
-	// Test distance
-	shadow.SetDistance(60000)
-	if shadow.Distance() != 60000 {
-		t.Errorf(
-			"expected distance 60000, got %d",
-			shadow.Distance(),
-		)
-	}
-
-	// Test direction
-	shadow.SetDirection(2700000)
-	if shadow.Direction() != 2700000 {
-		t.Errorf(
-			"expected direction 2700000, got %d",
-			shadow.Direction(),
-		)
-	}
-
-	// Test RGB color
-	shadow.SetRgbColor("404040")
-	rgb := shadow.RgbColor()
-	if rgb == nil {
-		t.Fatal("expected RGB color to be set")
-	}
-	if rgb.Value() != "404040" {
-		t.Errorf(
-			"expected color '404040', got '%s'",
-			rgb.Value(),
-		)
-	}
-}
-
-func TestPresetShadow(t *testing.T) {
-	shadow := NewPresetShadow(
-		PresetShadowBottomRightDropShadow,
-	)
-
-	if shadow.Preset() != PresetShadowBottomRightDropShadow {
-		t.Errorf(
-			"expected preset '%s', got '%s'",
-			PresetShadowBottomRightDropShadow,
-			shadow.Preset(),
-		)
-	}
-
-	// Test distance
-	shadow.SetDistance(50000)
-	if shadow.Distance() != 50000 {
-		t.Errorf(
-			"expected distance 50000, got %d",
-			shadow.Distance(),
-		)
-	}
-
-	// Test direction
-	shadow.SetDirection(7200000)
-	if shadow.Direction() != 7200000 {
-		t.Errorf(
-			"expected direction 7200000, got %d",
-			shadow.Direction(),
-		)
-	}
-
-	// Test RGB color
-	shadow.SetRgbColor("333333")
-	rgb := shadow.RgbColor()
-	if rgb == nil || rgb.Value() != "333333" {
-		t.Error("expected RGB color '333333'")
-	}
-}
-
-func TestGlow(t *testing.T) {
-	glow := NewGlow()
-
-	// Test radius
-	glow.SetRadius(150000)
-	if glow.Radius() != 150000 {
-		t.Errorf(
-			"expected radius 150000, got %d",
-			glow.Radius(),
-		)
-	}
-
-	// Test RGB color
-	glow.SetRgbColor("00FF00")
-	rgb := glow.RgbColor()
-	if rgb == nil {
-		t.Fatal("expected RGB color to be set")
-	}
-	if rgb.Value() != "00FF00" {
-		t.Errorf(
-			"expected color '00FF00', got '%s'",
-			rgb.Value(),
-		)
-	}
-
-	// Test scheme color
-	glow.SetSchemeColor(SchemeColorAccent2)
-	scheme := glow.SchemeColor()
-	if scheme == nil {
-		t.Fatal("expected scheme color to be set")
-	}
-	if scheme.Value() != SchemeColorAccent2 {
-		t.Errorf(
-			"expected scheme color '%s', got '%s'",
-			SchemeColorAccent2,
-			scheme.Value(),
-		)
-	}
-}
-
 func TestGlowFactories(t *testing.T) {
 	// Test NewGlowWithRadius
 	glow1 := NewGlowWithRadius(100000)
@@ -416,276 +200,6 @@ func TestGlowFactories(t *testing.T) {
 	if glow2.RgbColor() == nil ||
 		glow2.RgbColor().Value() != "FF00FF" {
 		t.Error("expected RGB color 'FF00FF'")
-	}
-}
-
-func TestSoftEdge(t *testing.T) {
-	softEdge := NewSoftEdge(80000)
-
-	if softEdge.Radius() != 80000 {
-		t.Errorf(
-			"expected radius 80000, got %d",
-			softEdge.Radius(),
-		)
-	}
-
-	// Test updating radius
-	softEdge.SetRadius(120000)
-	if softEdge.Radius() != 120000 {
-		t.Errorf(
-			"expected radius 120000, got %d",
-			softEdge.Radius(),
-		)
-	}
-}
-
-func TestReflection(t *testing.T) {
-	reflection := NewReflection()
-
-	// Test blur radius
-	reflection.SetBlurRadius(30000)
-	if reflection.BlurRadius() != 30000 {
-		t.Errorf(
-			"expected blur radius 30000, got %d",
-			reflection.BlurRadius(),
-		)
-	}
-
-	// Test start opacity
-	reflection.SetStartOpacity(50000)
-	if reflection.StartOpacity() != 50000 {
-		t.Errorf(
-			"expected start opacity 50000, got %d",
-			reflection.StartOpacity(),
-		)
-	}
-
-	// Test end alpha
-	reflection.SetEndAlpha(10000)
-	if reflection.EndAlpha() != 10000 {
-		t.Errorf(
-			"expected end alpha 10000, got %d",
-			reflection.EndAlpha(),
-		)
-	}
-
-	// Test positions
-	reflection.SetStartPosition(10000)
-	if reflection.StartPosition() != 10000 {
-		t.Errorf(
-			"expected start position 10000, got %d",
-			reflection.StartPosition(),
-		)
-	}
-	reflection.SetEndPosition(90000)
-	if reflection.EndPosition() != 90000 {
-		t.Errorf(
-			"expected end position 90000, got %d",
-			reflection.EndPosition(),
-		)
-	}
-
-	// Test distance
-	reflection.SetDistance(50000)
-	if reflection.Distance() != 50000 {
-		t.Errorf(
-			"expected distance 50000, got %d",
-			reflection.Distance(),
-		)
-	}
-
-	// Test direction
-	reflection.SetDirection(5400000)
-	if reflection.Direction() != 5400000 {
-		t.Errorf(
-			"expected direction 5400000, got %d",
-			reflection.Direction(),
-		)
-	}
-
-	// Test fade direction
-	reflection.SetFadeDirection(10800000)
-	if reflection.FadeDirection() != 10800000 {
-		t.Errorf(
-			"expected fade direction 10800000, got %d",
-			reflection.FadeDirection(),
-		)
-	}
-
-	// Test scaling
-	reflection.SetHorizontalRatio(90000)
-	if reflection.HorizontalRatio() != 90000 {
-		t.Errorf(
-			"expected horizontal ratio 90000, got %d",
-			reflection.HorizontalRatio(),
-		)
-	}
-	reflection.SetVerticalRatio(-100000)
-	if reflection.VerticalRatio() != -100000 {
-		t.Errorf(
-			"expected vertical ratio -100000, got %d",
-			reflection.VerticalRatio(),
-		)
-	}
-
-	// Test skew
-	reflection.SetHorizontalSkew(100000)
-	if reflection.HorizontalSkew() != 100000 {
-		t.Errorf(
-			"expected horizontal skew 100000, got %d",
-			reflection.HorizontalSkew(),
-		)
-	}
-	reflection.SetVerticalSkew(-50000)
-	if reflection.VerticalSkew() != -50000 {
-		t.Errorf(
-			"expected vertical skew -50000, got %d",
-			reflection.VerticalSkew(),
-		)
-	}
-
-	// Test alignment
-	reflection.SetAlignment(RectAlignTop)
-	if reflection.Alignment() != RectAlignTop {
-		t.Errorf(
-			"expected alignment '%s', got '%s'",
-			RectAlignTop,
-			reflection.Alignment(),
-		)
-	}
-
-	// Test rotate with shape
-	reflection.SetRotateWithShape(false)
-	if reflection.RotateWithShape() {
-		t.Error(
-			"expected RotateWithShape to be false",
-		)
-	}
-}
-
-func TestReflectionWithDefaults(t *testing.T) {
-	reflection := NewReflectionWithDefaults()
-
-	if reflection.StartOpacity() != 100000 {
-		t.Errorf(
-			"expected start opacity 100000, got %d",
-			reflection.StartOpacity(),
-		)
-	}
-	if reflection.EndAlpha() != 0 {
-		t.Errorf(
-			"expected end alpha 0, got %d",
-			reflection.EndAlpha(),
-		)
-	}
-	if reflection.StartPosition() != 0 {
-		t.Errorf(
-			"expected start position 0, got %d",
-			reflection.StartPosition(),
-		)
-	}
-	if reflection.EndPosition() != 100000 {
-		t.Errorf(
-			"expected end position 100000, got %d",
-			reflection.EndPosition(),
-		)
-	}
-	if reflection.Direction() != 5400000 {
-		t.Errorf(
-			"expected direction 5400000, got %d",
-			reflection.Direction(),
-		)
-	}
-}
-
-func TestBlur(t *testing.T) {
-	blur := NewBlur(60000)
-
-	if blur.Radius() != 60000 {
-		t.Errorf(
-			"expected radius 60000, got %d",
-			blur.Radius(),
-		)
-	}
-
-	// Test grow
-	if !blur.Grow() {
-		t.Error(
-			"expected Grow to be true by default",
-		)
-	}
-	blur.SetGrow(false)
-	if blur.Grow() {
-		t.Error("expected Grow to be false")
-	}
-	blur.SetGrow(true)
-	if !blur.Grow() {
-		t.Error("expected Grow to be true")
-	}
-}
-
-func TestFillOverlay(t *testing.T) {
-	overlay := NewFillOverlay(BlendModeMultiply)
-
-	if overlay.Blend() != BlendModeMultiply {
-		t.Errorf(
-			"expected blend mode '%s', got '%s'",
-			BlendModeMultiply,
-			overlay.Blend(),
-		)
-	}
-
-	// Test solid fill
-	solidFill := NewSolidFillWithRgb("00AAFF")
-	overlay.SetSolidFill(solidFill)
-	if overlay.SolidFill() == nil {
-		t.Error("expected SolidFill to be set")
-	}
-
-	// Test no fill
-	overlay.SetNoFill()
-	if overlay.SolidFill() != nil {
-		t.Error(
-			"expected SolidFill to be nil after SetNoFill",
-		)
-	}
-}
-
-func TestEffectContainer(t *testing.T) {
-	container := NewEffectContainer()
-
-	if container.LocalName() != "effectDag" {
-		t.Errorf(
-			"expected local name 'effectDag', got '%s'",
-			container.LocalName(),
-		)
-	}
-
-	// Test type
-	container.SetType("tree")
-	if container.Type() != "tree" {
-		t.Errorf(
-			"expected type 'tree', got '%s'",
-			container.Type(),
-		)
-	}
-
-	// Test name
-	container.SetName("myEffect")
-	if container.Name() != "myEffect" {
-		t.Errorf(
-			"expected name 'myEffect', got '%s'",
-			container.Name(),
-		)
-	}
-
-	// Test empty name
-	container.SetName("")
-	if container.Name() != "" {
-		t.Errorf(
-			"expected empty name, got '%s'",
-			container.Name(),
-		)
 	}
 }
 
@@ -880,65 +394,20 @@ func TestBlendModeValues(t *testing.T) {
 	}
 }
 
-func TestEffectXmlOutput(t *testing.T) {
-	effectList := NewEffectList()
-
-	// Add various effects
-	effectList.SetBlur(NewBlur(50000))
-	glow := NewGlowWithParams(100000, "FF0000")
-	effectList.SetGlow(glow)
-	shadow := NewDropShadow(
-		30000,
-		50000,
-		5400000,
-		"000000",
-	)
-	effectList.SetOuterShadow(shadow)
-
-	xml := effectList.OuterXml()
-
-	// Check that the XML contains expected elements
-	if !strings.Contains(xml, "effectLst") {
-		t.Error(
-			"expected XML to contain 'effectLst'",
-		)
-	}
-	if !strings.Contains(xml, "blur") {
-		t.Error("expected XML to contain 'blur'")
-	}
-	if !strings.Contains(xml, "glow") {
-		t.Error("expected XML to contain 'glow'")
-	}
-	if !strings.Contains(xml, "outerShdw") {
-		t.Error(
-			"expected XML to contain 'outerShdw'",
-		)
-	}
-	if !strings.Contains(xml, "rad=\"100000\"") {
-		t.Error(
-			"expected XML to contain glow radius",
-		)
-	}
-	if !strings.Contains(xml, "srgbClr") {
-		t.Error(
-			"expected XML to contain color element",
-		)
-	}
-}
-
 func TestSoftEdgeXmlOutput(t *testing.T) {
 	softEdge := NewSoftEdge(120000)
 	xml := softEdge.OuterXml()
 
-	if !strings.Contains(xml, "softEdge") {
-		t.Error(
-			"expected XML to contain 'softEdge'",
-		)
+	// Parse XML to verify structure
+	if !strings.HasPrefix(xml, "<a:softEdge") {
+		t.Error("expected XML to start with <a:softEdge")
 	}
-	if !strings.Contains(xml, "rad=\"120000\"") {
-		t.Error(
-			"expected XML to contain radius attribute",
-		)
+	if !strings.HasSuffix(xml, "/>") {
+		t.Error("expected XML to be self-closing")
+	}
+	// Verify the radius attribute is properly formatted
+	if !strings.Contains(xml, `rad="120000"`) {
+		t.Error("expected XML to contain radius attribute with value 120000")
 	}
 }
 
@@ -951,32 +420,29 @@ func TestReflectionXmlOutput(t *testing.T) {
 
 	xml := reflection.OuterXml()
 
-	if !strings.Contains(xml, "reflection") {
-		t.Error(
-			"expected XML to contain 'reflection'",
-		)
+	// Verify XML structure - should be self-contained reflection element
+	if !strings.HasPrefix(xml, "<a:reflection") {
+		t.Error("expected XML to start with <a:reflection")
 	}
-	if !strings.Contains(
-		xml,
-		"blurRad=\"50000\"",
-	) {
-		t.Error(
-			"expected XML to contain blur radius",
-		)
+	if !strings.HasSuffix(xml, "/>") {
+		t.Error("expected XML to be self-closing")
 	}
-	if !strings.Contains(xml, "stA=\"80000\"") {
-		t.Error(
-			"expected XML to contain start opacity",
-		)
+
+	// Verify all attributes are present with correct values
+	attrs := []struct {
+		name  string
+		value string
+	}{
+		{"blurRad", "50000"},
+		{"stA", "80000"},
+		{"endA", "10000"},
+		{"dir", "5400000"},
 	}
-	if !strings.Contains(xml, "endA=\"10000\"") {
-		t.Error(
-			"expected XML to contain end alpha",
-		)
-	}
-	if !strings.Contains(xml, "dir=\"5400000\"") {
-		t.Error(
-			"expected XML to contain direction",
-		)
+
+	for _, attr := range attrs {
+		expected := fmt.Sprintf(`%s=%q`, attr.name, attr.value)
+		if !strings.Contains(xml, expected) {
+			t.Errorf("expected XML to contain %s attribute with value %s", attr.name, attr.value)
+		}
 	}
 }

@@ -208,7 +208,7 @@ func (sp *SlidePart) AddDiagramPart() (*Diagram, error) {
 //
 // Returns the Diagram containing all 4 parts, or an error if creation fails.
 func (sp *SlidePart) AddDiagram(templateType diagram.TemplateType) (*Diagram, error) {
-	diagram, err := sp.AddDiagramPart()
+	diagramPart, err := sp.AddDiagramPart()
 	if err != nil {
 		return nil, err
 	}
@@ -217,11 +217,11 @@ func (sp *SlidePart) AddDiagram(templateType diagram.TemplateType) (*Diagram, er
 	// The parts are already created with minimal content by AddDiagramPart.
 	// The templates would need to be parsed and applied if we want to use custom templates.
 	// For now, the default initializeContent methods create basic empty structures.
-	_ = diagram.GetLayoutTemplate(templateType)
-	_ = diagram.GetStyleTemplate(templateType)
-	_ = diagram.GetColorTemplate(templateType)
+	_ = diagramPart.GetLayoutTemplate(templateType)
+	_ = diagramPart.GetStyleTemplate(templateType)
+	_ = diagramPart.GetColorTemplate(templateType)
 
-	return diagram, nil
+	return diagramPart, nil
 }
 
 // GetLayoutTemplate returns the layout template XML for the specified template type.

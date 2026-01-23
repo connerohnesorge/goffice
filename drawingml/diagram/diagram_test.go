@@ -13,58 +13,6 @@ const (
 	testConn1ID = "conn1"
 )
 
-// TestNewDataModelRoot verifies that DataModelRoot can be created.
-func TestNewDataModelRoot(t *testing.T) {
-	dm := diagram.NewDataModelRoot()
-	if dm == nil {
-		t.Fatal("NewDataModelRoot returned nil")
-	}
-}
-
-// TestNewPoint verifies that Point can be created.
-func TestNewPoint(t *testing.T) {
-	pt := diagram.NewPoint()
-	if pt == nil {
-		t.Fatal("NewPoint returned nil")
-	}
-}
-
-// TestNewConnection verifies that Connection can be created.
-func TestNewConnection(t *testing.T) {
-	conn := diagram.NewConnection()
-	if conn == nil {
-		t.Fatal("NewConnection returned nil")
-	}
-}
-
-// TestNewLayoutDefinition verifies that LayoutDefinition can be created.
-func TestNewLayoutDefinition(t *testing.T) {
-	layout := diagram.NewLayoutDefinition()
-	if layout == nil {
-		t.Fatal(
-			"NewLayoutDefinition returned nil",
-		)
-	}
-}
-
-// TestNewStyleDefinition verifies that StyleDefinition can be created.
-func TestNewStyleDefinition(t *testing.T) {
-	style := diagram.NewStyleDefinition()
-	if style == nil {
-		t.Fatal("NewStyleDefinition returned nil")
-	}
-}
-
-// TestNewColorsDefinition verifies that ColorsDefinition can be created.
-func TestNewColorsDefinition(t *testing.T) {
-	colors := diagram.NewColorsDefinition()
-	if colors == nil {
-		t.Fatal(
-			"NewColorsDefinition returned nil",
-		)
-	}
-}
-
 // TestDataModelStructure verifies the basic structure of DataModelRoot.
 func TestDataModelStructure(t *testing.T) {
 	dm := diagram.NewDataModelRoot()

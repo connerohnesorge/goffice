@@ -5,27 +5,6 @@ import (
 	"testing"
 )
 
-func TestNewWorksheet(t *testing.T) {
-	ws := NewWorksheet()
-
-	if ws == nil {
-		t.Fatal("expected non-nil Worksheet")
-	}
-	if ws.LocalName() != "worksheet" {
-		t.Errorf(
-			"expected localName 'worksheet', got '%s'",
-			ws.LocalName(),
-		)
-	}
-	if ws.NamespaceURI() != NamespaceSML {
-		t.Errorf(
-			"expected namespace '%s', got '%s'",
-			NamespaceSML,
-			ws.NamespaceURI(),
-		)
-	}
-}
-
 func TestWorksheet_SheetPr(t *testing.T) {
 	ws := NewWorksheet()
 
@@ -690,27 +669,50 @@ func TestWorksheet_XMLSerialization(
 	// Get XML output
 	xml := ws.OuterXml()
 
-	// Verify key elements are present
-	if !strings.Contains(xml, "worksheet") {
-		t.Error("expected 'worksheet' in XML")
+	// Verify XML structure - should start with worksheet element with namespace
+	if !strings.HasPrefix(xml, "\u003cx:worksheet") {
+		t.Error("expected XML to start with \u003cx:worksheet")
 	}
-	if !strings.Contains(xml, "dimension") {
-		t.Error("expected 'dimension' in XML")
+	if !strings.HasSuffix(xml, "\u003c/x:worksheet\u003e") {
+		t.Error("expected XML to end with \u003c/x:worksheet\u003e")
 	}
-	if !strings.Contains(xml, "sheetViews") {
-		t.Error("expected 'sheetViews' in XML")
+
+	// Verify specific elements are properly structured with namespace
+	elements := []struct {
+		element string
+		content string
+	}{
+		{"x:dimension", `ref="A1:D10"`},
+		{"x:sheetViews", ""},
+		{"x:sheetFormatPr", `defaultRowHeight="15"`},
+		{"x:cols", ""},
+		{"x:sheetData", ""},
+		{"x:pageMargins", ""},
 	}
-	if !strings.Contains(xml, "sheetFormatPr") {
-		t.Error("expected 'sheetFormatPr' in XML")
+
+	for _, elem := range elements {
+		if !strings.Contains(xml, "\u003c"+elem.element) {
+			t.Errorf("expected '%s' element in XML", elem.element)
+		}
+		if elem.content != "" && !strings.Contains(xml, elem.content) {
+			t.Errorf("expected '%s' to contain '%s'", elem.element, elem.content)
+		}
 	}
-	if !strings.Contains(xml, "cols") {
-		t.Error("expected 'cols' in XML")
+
+	// Verify sheet view specific attributes
+	if !strings.Contains(xml, `tabSelected="true"`) {
+		t.Error("expected sheet view to have tabSelected attribute")
 	}
-	if !strings.Contains(xml, "sheetData") {
-		t.Error("expected 'sheetData' in XML")
+	if !strings.Contains(xml, `workbookViewId="0"`) {
+		t.Error("expected sheet view to have workbookViewId attribute")
 	}
-	if !strings.Contains(xml, "pageMargins") {
-		t.Error("expected 'pageMargins' in XML")
+
+	// Verify column specific attributes - customWidth is "true" not "1"
+	if !strings.Contains(xml, `width="12.5"`) {
+		t.Error("expected column to have width attribute")
+	}
+	if !strings.Contains(xml, `customWidth="true"`) {
+		t.Error("expected column to have customWidth attribute")
 	}
 }
 

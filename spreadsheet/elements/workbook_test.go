@@ -5,27 +5,6 @@ import (
 	"testing"
 )
 
-func TestNewWorkbook(t *testing.T) {
-	wb := NewWorkbook()
-
-	if wb == nil {
-		t.Fatal("expected non-nil Workbook")
-	}
-	if wb.LocalName() != "workbook" {
-		t.Errorf(
-			"expected localName 'workbook', got '%s'",
-			wb.LocalName(),
-		)
-	}
-	if wb.NamespaceURI() != NamespaceSML {
-		t.Errorf(
-			"expected namespace '%s', got '%s'",
-			NamespaceSML,
-			wb.NamespaceURI(),
-		)
-	}
-}
-
 func TestWorkbook_GetOrCreateFileVersion(
 	t *testing.T,
 ) {

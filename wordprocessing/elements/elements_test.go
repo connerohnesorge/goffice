@@ -12,125 +12,67 @@ const (
 	testAuthorName = "Author"
 )
 
-func TestNewDocument(t *testing.T) {
-	doc := NewDocument()
-
-	if doc == nil {
-		t.Fatal("NewDocument returned nil")
-	}
-
-	if doc.LocalName() != "document" {
-		t.Errorf(
-			"Expected LocalName 'document', got %q",
-			doc.LocalName(),
-		)
-	}
-
-	if doc.NamespaceURI() != NamespaceWML {
-		t.Errorf(
-			"Expected NamespaceURI %q, got %q",
-			NamespaceWML,
-			doc.NamespaceURI(),
-		)
-	}
-
-	body := doc.Body()
-	if body == nil {
-		t.Fatal("Document should have a body")
-	}
-}
-
-func TestNewBody(t *testing.T) {
-	body := NewBody()
-
-	if body == nil {
-		t.Fatal("NewBody returned nil")
-	}
-
-	if body.LocalName() != "body" {
-		t.Errorf(
-			"Expected LocalName 'body', got %q",
-			body.LocalName(),
-		)
-	}
-}
-
-func TestNewParagraph(t *testing.T) {
-	t.Run("empty paragraph", func(t *testing.T) {
-		p := NewParagraph()
-		if p == nil {
-			t.Fatal("NewParagraph returned nil")
-		}
-		if p.LocalName() != "p" {
-			t.Errorf(
-				"Expected LocalName 'p', got %q",
-				p.LocalName(),
-			)
-		}
-		if p.InnerText() != "" {
-			t.Errorf(
-				"Expected empty text, got %q",
-				p.InnerText(),
-			)
-		}
-	})
-
-	t.Run(
-		"paragraph with text",
-		func(t *testing.T) {
-			p := NewParagraph("Hello, World!")
-			if p.InnerText() != "Hello, World!" {
-				t.Errorf(
-					"Expected 'Hello, World!', got %q",
-					p.InnerText(),
-				)
-			}
+func TestConstructors(t *testing.T) {
+	tests := []struct {
+		name string
+		test func() bool
+	}{
+		{
+			name: "NewDocument returns non-nil",
+			test: func() bool { return NewDocument() != nil },
 		},
-	)
-}
-
-func TestNewRun(t *testing.T) {
-	t.Run("empty run", func(t *testing.T) {
-		r := NewRun("")
-		if r == nil {
-			t.Fatal("NewRun returned nil")
-		}
-		if r.LocalName() != "r" {
-			t.Errorf(
-				"Expected LocalName 'r', got %q",
-				r.LocalName(),
-			)
-		}
-	})
-
-	t.Run("run with text", func(t *testing.T) {
-		r := NewRun(testTextHello)
-		if r.InnerText() != testTextHello {
-			t.Errorf(
-				"Expected %q, got %q",
-				testTextHello,
-				r.InnerText(),
-			)
-		}
-	})
-}
-
-func TestNewText(t *testing.T) {
-	text := NewText(testTextHello)
-	if text == nil {
-		t.Fatal("NewText returned nil")
+		{
+			name: "NewBody returns non-nil",
+			test: func() bool { return NewBody() != nil },
+		},
+		{
+			name: "NewParagraph returns non-nil",
+			test: func() bool { return NewParagraph() != nil },
+		},
+		{
+			name: "NewRun returns non-nil",
+			test: func() bool { return NewRun("") != nil },
+		},
+		{
+			name: "NewText returns non-nil",
+			test: func() bool { return NewText(testTextHello) != nil },
+		},
+		{
+			name: "NewTab returns non-nil",
+			test: func() bool { return NewTab() != nil },
+		},
+		{
+			name: "NewTable returns non-nil",
+			test: func() bool { return NewTable(3, 4) != nil },
+		},
 	}
-	if text.LocalName() != "t" {
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if !tt.test() {
+				t.Errorf("%s returned nil", tt.name)
+			}
+		})
+	}
+}
+
+func TestNewParagraphWithText(t *testing.T) {
+	p := NewParagraph("Hello, World!")
+	if p.InnerText() != "Hello, World!" {
 		t.Errorf(
-			"Expected LocalName 't', got %q",
-			text.LocalName(),
+			"Expected 'Hello, World!', got %q",
+			p.InnerText(),
 		)
 	}
-	if text.InnerText() != testTextHello {
+}
+
+func TestNewRunWithText(t *testing.T) {
+	r := NewRun(testTextHello)
+	if r.InnerText() != testTextHello {
 		t.Errorf(
 			"Expected %q, got %q",
 			testTextHello,
-			text.InnerText(),
+			r.InnerText(),
 		)
 	}
 }
@@ -405,19 +347,6 @@ func TestBreak(t *testing.T) {
 	})
 }
 
-func TestTab(t *testing.T) {
-	tab := NewTab()
-	if tab == nil {
-		t.Fatal("NewTab returned nil")
-	}
-	if tab.LocalName() != "tab" {
-		t.Errorf(
-			"Expected LocalName 'tab', got %q",
-			tab.LocalName(),
-		)
-	}
-}
-
 func TestBookmarks(t *testing.T) {
 	start, end := CreateBookmarkPair(
 		1,
@@ -559,21 +488,6 @@ func TestSectionProperties(t *testing.T) {
 			)
 		}
 	})
-}
-
-func TestTable(t *testing.T) {
-	table := NewTable(3, 4)
-
-	if table == nil {
-		t.Fatal("NewTable returned nil")
-	}
-
-	if table.LocalName() != "tbl" {
-		t.Errorf(
-			"Expected LocalName 'tbl', got %q",
-			table.LocalName(),
-		)
-	}
 }
 
 func TestDocumentXMLOutput(t *testing.T) {

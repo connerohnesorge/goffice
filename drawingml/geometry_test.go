@@ -41,11 +41,19 @@ func TestPresetGeometry(t *testing.T) {
 		geom.AddAdjustValue("adj", "val 16667")
 
 		xml := geom.OuterXml()
-		if !strings.Contains(xml, "avLst") {
-			t.Error("Expected avLst element")
+		// Verify the XML structure contains proper adjustment list
+		if !strings.Contains(xml, "<a:avLst>") {
+			t.Error("Expected avLst element with proper namespace")
 		}
-		if !strings.Contains(xml, "gd") {
-			t.Error("Expected gd element")
+		if !strings.Contains(xml, "<a:gd") {
+			t.Error("Expected gd element with proper namespace")
+		}
+		// Verify the gd element has both name and formula attributes
+		if !strings.Contains(xml, `name="adj"`) {
+			t.Error("Expected gd element to have name attribute with value 'adj'")
+		}
+		if !strings.Contains(xml, `fmla="val 16667"`) {
+			t.Error("Expected gd element to have fmla attribute with value 'val 16667'")
 		}
 	})
 
@@ -56,8 +64,13 @@ func TestPresetGeometry(t *testing.T) {
 		geom.SetAdjustValue("adj", 16667)
 
 		xml := geom.OuterXml()
-		if !strings.Contains(xml, "val 16667") {
-			t.Error("Expected value formula")
+		// Verify the XML contains the adjustment value properly formatted
+		if !strings.Contains(xml, `fmla="val 16667"`) {
+			t.Error("Expected gd element to have fmla attribute with value 'val 16667'")
+		}
+		// Also verify it's within an avLst element
+		if !strings.Contains(xml, "<a:avLst>") {
+			t.Error("Expected avLst element with proper namespace")
 		}
 	})
 
@@ -82,11 +95,17 @@ func TestPresetGeometry(t *testing.T) {
 	t.Run("XML output", func(t *testing.T) {
 		geom := NewPresetGeometry(ShapeTypeStar5)
 		xml := geom.OuterXml()
-		if !strings.Contains(xml, "prstGeom") {
-			t.Error("Expected prstGeom element")
+		// Verify the XML structure
+		if !strings.HasPrefix(xml, "<a:prstGeom") {
+			t.Error("Expected XML to start with <a:prstGeom")
 		}
-		if !strings.Contains(xml, "star5") {
-			t.Error("Expected star5 preset")
+		// Verify the prst attribute contains the correct shape type
+		if !strings.Contains(xml, `prst="star5"`) {
+			t.Error("Expected prst attribute with value 'star5'")
+		}
+		// Verify it's properly closed
+		if !strings.HasSuffix(xml, ">") {
+			t.Error("Expected properly closed XML element")
 		}
 	})
 
@@ -110,22 +129,6 @@ func TestPresetGeometry(t *testing.T) {
 }
 
 func TestShapeGuide(t *testing.T) {
-	t.Run("NewShapeGuide", func(t *testing.T) {
-		guide := NewShapeGuide("adj", "val 50000")
-		if guide.Name() != "adj" {
-			t.Errorf(
-				"Expected adj, got %s",
-				guide.Name(),
-			)
-		}
-		if guide.Formula() != "val 50000" {
-			t.Errorf(
-				"Expected val 50000, got %s",
-				guide.Formula(),
-			)
-		}
-	})
-
 	t.Run(
 		"SetName and SetFormula",
 		func(t *testing.T) {
@@ -146,8 +149,13 @@ func TestPath2D(t *testing.T) {
 	t.Run("NewPath2D", func(t *testing.T) {
 		path := NewPath2D()
 		xml := path.OuterXml()
-		if !strings.Contains(xml, "path") {
-			t.Error("Expected path element")
+		// Verify XML structure
+		if !strings.HasPrefix(xml, "<a:path") {
+			t.Error("Expected XML to start with <a:path")
+		}
+		// Path should be self-closing when empty
+		if !strings.HasSuffix(xml, "/>") {
+			t.Error("Expected self-closing path element")
 		}
 	})
 
@@ -198,11 +206,19 @@ func TestPath2D(t *testing.T) {
 		path := NewPath2D()
 		path.AddMoveTo(0, 0)
 		xml := path.OuterXml()
-		if !strings.Contains(xml, "moveTo") {
-			t.Error("Expected moveTo element")
+		// Verify moveTo element structure
+		if !strings.Contains(xml, "<a:moveTo>") {
+			t.Error("Expected moveTo element with proper namespace")
 		}
-		if !strings.Contains(xml, "pt") {
-			t.Error("Expected pt element")
+		if !strings.Contains(xml, "<a:pt") {
+			t.Error("Expected pt element with proper namespace")
+		}
+		// Verify pt element has correct coordinates
+		if !strings.Contains(xml, `x="0"`) {
+			t.Error("Expected pt element to have x coordinate of 0")
+		}
+		if !strings.Contains(xml, `y="0"`) {
+			t.Error("Expected pt element to have y coordinate of 0")
 		}
 	})
 
@@ -211,8 +227,15 @@ func TestPath2D(t *testing.T) {
 		path.AddMoveTo(0, 0)
 		path.AddLineTo(100000, 100000)
 		xml := path.OuterXml()
-		if !strings.Contains(xml, "lnTo") {
-			t.Error("Expected lnTo element")
+		// Verify lineTo element structure
+		if !strings.Contains(xml, "<a:lnTo>") {
+			t.Error("Expected lnTo element with proper namespace")
+		}
+		// Verify it comes after moveTo (proper order)
+		moveToIndex := strings.Index(xml, "<a:moveTo>")
+		lnToIndex := strings.Index(xml, "<a:lnTo>")
+		if moveToIndex == -1 || lnToIndex == -1 || lnToIndex < moveToIndex {
+			t.Error("Expected lnTo to come after moveTo in XML")
 		}
 	})
 

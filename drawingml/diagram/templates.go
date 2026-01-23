@@ -1,3 +1,4 @@
+//nolint:revive // Template files contain large constants and generated content
 package diagram
 
 import "strings"

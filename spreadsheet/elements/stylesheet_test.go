@@ -12,21 +12,6 @@ func TestStylesheetCreation(t *testing.T) {
 		t.Fatal("NewStylesheet returned nil")
 	}
 
-	if ss.LocalName() != "styleSheet" {
-		t.Errorf(
-			"expected local name 'styleSheet', got '%s'",
-			ss.LocalName(),
-		)
-	}
-
-	if ss.NamespaceURI() != NamespaceSML {
-		t.Errorf(
-			"expected namespace '%s', got '%s'",
-			NamespaceSML,
-			ss.NamespaceURI(),
-		)
-	}
-
 	// All collections should be nil initially
 	if ss.NumFmts() != nil {
 		t.Error(

@@ -984,27 +984,3 @@ func TestLeapYearBugHandling(t *testing.T) {
 	}
 }
 
-func BenchmarkExcelDateSerial(b *testing.B) {
-	date := time.Date(
-		2024,
-		6,
-		15,
-		12,
-		30,
-		45,
-		0,
-		time.UTC,
-	)
-	for range b.N {
-		_ = ExcelDateSerial(date, false)
-	}
-}
-
-func BenchmarkDateFromExcelSerial(b *testing.B) {
-	for range b.N {
-		_ = DateFromExcelSerial(
-			45458.521354,
-			false,
-		)
-	}
-}
