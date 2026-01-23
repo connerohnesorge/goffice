@@ -112,6 +112,10 @@ const (
 
 	// Hyperlink
 	RelationshipTypeHyperlink = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"
+
+	// Media relationships
+	RelationshipTypeVideo = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"
+	RelationshipTypeAudio = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"
 )
 
 // ErrNilPackage is returned when the package is nil.
