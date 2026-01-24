@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package formula provides formula parsing and evaluation for Excel-compatible formulas.
 //
 // # Overview

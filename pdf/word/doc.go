@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package word provides PDF rendering for WordprocessingML (DOCX) documents.
 //
 // This package converts parsed Word documents from the goffice/wordprocessing

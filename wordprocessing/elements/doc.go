@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package elements provides Word document element types for WordprocessingML.
 //
 // This package contains the core elements used in WordprocessingML documents,

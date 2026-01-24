@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package parts provides Excel document part types.
 //
 // Parts are the individual XML files within an .xlsx package. Each part

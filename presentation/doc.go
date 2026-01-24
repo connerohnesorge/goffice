@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package presentation provides PresentationML support for PowerPoint documents.
 //
 // This package implements the document-level API for creating, reading, and

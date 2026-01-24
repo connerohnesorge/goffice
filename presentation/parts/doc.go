@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package parts provides PowerPoint presentation part types.
 //
 // Parts are the individual XML files within a .pptx package. Each part

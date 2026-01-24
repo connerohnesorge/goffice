@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package layout provides text layout algorithms for PDF rendering.
 //
 // This package implements the text layout engine required for rendering

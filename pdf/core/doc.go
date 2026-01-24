@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package core provides PDF document creation and low-level PDF primitives.
 //
 // This package contains the fundamental building blocks for PDF generation:

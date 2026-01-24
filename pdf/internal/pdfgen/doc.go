@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package pdfgen provides a PDF generation abstraction layer over pdfcpu.
 //
 // This internal package isolates the dependency on pdfcpu and provides a

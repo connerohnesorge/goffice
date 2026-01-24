@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package presentation provides PresentationML to PDF rendering capabilities.
 //
 // This package converts PowerPoint presentations (.pptx files) to PDF format,

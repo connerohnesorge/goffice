@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package elements provides Excel document element types for SpreadsheetML.
 //
 // This package contains the core elements used in SpreadsheetML documents,

@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package drawingml provides shared DrawingML types for shapes, images,
 // charts, diagrams, and effects used across Office Open XML documents.
 //

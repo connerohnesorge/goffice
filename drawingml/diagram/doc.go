@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package diagram provides types and functions for working with SmartArt diagrams
 // in Office Open XML documents.
 //

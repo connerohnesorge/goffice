@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package parts provides Word document part types.
 //
 // Parts are the individual XML files within a .docx package. Each part

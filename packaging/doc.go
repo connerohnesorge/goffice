@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package packaging provides the OPC (Open Packaging Conventions) layer
 // for Office Open XML document handling.
 //

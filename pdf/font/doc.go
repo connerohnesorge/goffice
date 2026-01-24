@@ -1,3 +1,7 @@
+//go:generate gomarkdoc -u -o CLAUDE.md .
+
+//go:generate gomarkdoc -u -o AGENTS.md .
+
 // Package font provides font loading, metrics extraction, and subsetting for PDF generation.
 //
 // This package handles all font-related operations required for high-fidelity PDF rendering:
