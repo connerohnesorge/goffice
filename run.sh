@@ -80,7 +80,8 @@ for change_path in $CHANGE_DIRS; do
 
         # Run the command and capture output
         set +e  # Don't exit on error
-        output=$(gemini --yolo -o text "/spectr:apply $change_id" 2>&1)
+        # output=$(gemini --yolo -o text "/spectr:apply $change_id" 2>&1)
+        output=$(copilot --allow-all-tools -p "/spectr:apply $change_id" 2>&1)
         exit_code=$?
         set -e
 

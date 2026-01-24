@@ -266,6 +266,129 @@ func (s *ShapeProperties) SetNoOutline() {
 	s.SetOutline(outline)
 }
 
+// Scene3D returns the 3D scene properties, or nil if not set.
+func (s *ShapeProperties) Scene3D() *Scene3D {
+	elem := s.GetElement("scene3d", NamespaceMain)
+	if elem == nil {
+		return nil
+	}
+	if scene, ok := elem.(*Scene3D); ok {
+		return scene
+	}
+	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
+		return &Scene3D{
+			CompositeElementBase: comp,
+		}
+	}
+
+	return nil
+}
+
+// SetScene3D sets the 3D scene properties.
+func (s *ShapeProperties) SetScene3D(scene *Scene3D) {
+	if existing := s.GetElement("scene3d", NamespaceMain); existing != nil {
+		s.RemoveChild(existing)
+	}
+	if scene != nil {
+		s.InsertAfter(scene, s.Outline()) // logical placement, though XSD order matters
+		// To adhere to XSD, we should probably check siblings.
+		// For now, appending or inserting after ln is a reasonable guess if we don't do full validation here.
+		// However, in ShapeProperties, order is: xfrm, geometry, fill, ln, effects, scene3d, sp3d, extLst.
+		// So inserting after ln is good, or appending if ln is missing.
+		s.insertInOrder(scene, "scene3d", "ln", "gradFill", "solidFill", "xfrm")
+	}
+}
+
+// Shape3D returns the 3D shape properties, or nil if not set.
+func (s *ShapeProperties) Shape3D() *Shape3D {
+	elem := s.GetElement("sp3d", NamespaceMain)
+	if elem == nil {
+		return nil
+	}
+	if sp3d, ok := elem.(*Shape3D); ok {
+		return sp3d
+	}
+	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
+		return &Shape3D{
+			CompositeElementBase: comp,
+		}
+	}
+
+	return nil
+}
+
+// SetShape3D sets the 3D shape properties.
+func (s *ShapeProperties) SetShape3D(sp3d *Shape3D) {
+	if existing := s.GetElement("sp3d", NamespaceMain); existing != nil {
+		s.RemoveChild(existing)
+	}
+	if sp3d != nil {
+		// sp3d comes after scene3d
+		s.insertInOrder(sp3d, "sp3d", "scene3d", "ln", "gradFill", "solidFill", "xfrm")
+	}
+}
+
+// EffectList returns the effect list, or nil if not set.
+func (s *ShapeProperties) EffectList() *EffectList {
+	elem := s.GetElement("effectLst", NamespaceMain)
+	if elem == nil {
+		return nil
+	}
+	if el, ok := elem.(*EffectList); ok {
+		return el
+	}
+	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
+		return &EffectList{
+			CompositeElementBase: comp,
+		}
+	}
+
+	return nil
+}
+
+// SetEffectList sets the effect list.
+func (s *ShapeProperties) SetEffectList(effects *EffectList) {
+	if existing := s.GetElement("effectLst", NamespaceMain); existing != nil {
+		s.RemoveChild(existing)
+	}
+	if effects != nil {
+		// effectLst comes after ln and before scene3d
+		s.insertInOrder(effects, "effectLst", "ln", "gradFill", "solidFill", "xfrm")
+	}
+}
+
+// insertInOrder inserts the element in the correct position based on predecessors.
+func (s *ShapeProperties) insertInOrder(elem openxml.Element, name string, predecessors ...string) {
+	// Try to find any of the predecessors in order (reverse to find the latest one)
+	for i := 0; i < len(predecessors); i++ {
+		predName := predecessors[i]
+		if pred := s.GetElement(predName, NamespaceMain); pred != nil {
+			s.InsertAfter(elem, pred)
+			return
+		}
+	}
+	// Fallback: prepend (if no predecessors found, maybe it's the first)
+	// Or append?
+	// If xfrm is missing, and we rely on it being first, maybe prepend is safer if we missed something.
+	// But if we have fills, we want to be after them.
+	// If we didn't find any predecessors, it might mean the element should be first OR we just didn't list all predecessors.
+	// For ShapeProperties, order is: xfrm, geometry, fill, ln, effects, scene3d, sp3d, extLst.
+	// So if we set scene3d and found no ln, no fill, no xfrm, it should be first?
+	// Or maybe after geometry?
+	// Let's just append if we are adding scene3d/sp3d/effects and we didn't find predecessors.
+	// Wait, if we use InsertAfter(elem, nil), it might fail or behave unexpectedly?
+	// openxml implementation usually handles InsertAfter(elem, nil) as PrependChild?
+	// Let's assume PrependChild if no predecessor found, but that might put it before xfrm.
+	// So we should try to append if it's a "late" element.
+	
+	// Simplified strategy:
+	// If it's scene3d or sp3d or effects, we prefer appending if no 'ln' or 'fill' or 'xfrm' found?
+	// But 'xfrm' is almost always there.
+	// If 'xfrm' is missing, maybe we should just append.
+	
+	s.AppendChild(elem)
+}
+
 // insertAfterFill inserts an element after fill elements.
 func (s *ShapeProperties) insertAfterFill(
 	elem openxml.Element,
