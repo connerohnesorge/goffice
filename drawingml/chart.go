@@ -775,6 +775,16 @@ func (pa *PlotArea) SetShapeProperties(
 	}
 }
 
+// SetDataTable sets the data table for the plot area.
+func (pa *PlotArea) SetDataTable(dt *DataTable) {
+	if existing := pa.GetElement("dTable", NamespaceChart); existing != nil {
+		pa.RemoveChild(existing)
+	}
+	if dt != nil {
+		pa.AppendChild(dt)
+	}
+}
+
 // Clone creates a deep copy of this PlotArea.
 func (pa *PlotArea) Clone() openxml.Element {
 	cloned := pa.CompositeElementBase.Clone()

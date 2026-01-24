@@ -105,4 +105,32 @@ func TestShape3D(t *testing.T) {
 			t.Errorf("Expected slope bevel, got %s", sp3d.BevelBottom().Preset())
 		}
 	})
+
+	t.Run("Colors", func(t *testing.T) {
+		sp3d := NewShape3D()
+		
+		// Test RGB extrusion color
+		sp3d.SetExtrusionColorRgb("FF0000")
+		if sp3d.ExtrusionColor() == nil {
+			t.Error("Expected extrusion color")
+		}
+		
+		// Test scheme extrusion color
+		sp3d.SetExtrusionColorScheme(SchemeColorAccent1)
+		if sp3d.ExtrusionColor() == nil {
+			t.Error("Expected extrusion color")
+		}
+		
+		// Test RGB contour color
+		sp3d.SetContourColorRgb("0000FF")
+		if sp3d.ContourColor() == nil {
+			t.Error("Expected contour color")
+		}
+		
+		// Test scheme contour color
+		sp3d.SetContourColorScheme(SchemeColorAccent2)
+		if sp3d.ContourColor() == nil {
+			t.Error("Expected contour color")
+		}
+	})
 }

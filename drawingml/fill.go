@@ -652,41 +652,43 @@ func NewBlipFillWithEmbed(
 
 // SetEmbed sets the embedded relationship ID for the image.
 func (b *BlipFill) SetEmbed(embedId string) {
-	// Find or create the blip element
-	blip := b.GetElement("blip", NamespaceMain)
-	if blip == nil {
-		blip = openxml.NewLeafElement(
-			NamespaceMain,
-			"blip",
-			PrefixMain,
-		)
-		b.PrependChild(blip)
-	}
+	blip := b.Blip()
+	blip.SetEmbed(embedId)
+}
 
-	// Set the r:embed attribute
-	blip.SetAttribute(openxml.NewAttribute(
-		"http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-		"embed",
-		"r",
-		embedId,
-	))
+// Blip returns the Blip element, creating it if necessary.
+func (b *BlipFill) Blip() *Blip {
+	elem := b.GetElement("blip", NamespaceMain)
+	if elem == nil {
+		blip := NewBlip()
+		b.PrependChild(blip)
+		return blip
+	}
+	if blip, ok := elem.(*Blip); ok {
+		return blip
+	}
+	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
+		return &Blip{CompositeElementBase: comp}
+	}
+	// If it's a leaf element (legacy), we need to replace it with composite to support effects
+	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
+		comp := openxml.NewCompositeElement(NamespaceMain, "blip", PrefixMain)
+		// Copy attributes
+		for _, attr := range leaf.Attributes() {
+			comp.SetAttribute(attr)
+		}
+		// Replace in parent
+		b.RemoveChild(leaf)
+		b.PrependChild(comp)
+		return &Blip{CompositeElementBase: comp}
+	}
+	return nil
 }
 
 // Embed returns the embedded relationship ID.
 func (b *BlipFill) Embed() string {
-	blip := b.GetElement("blip", NamespaceMain)
-	if blip == nil {
-		return ""
-	}
-	attr, found := blip.GetAttribute(
-		"embed",
-		"http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-	)
-	if !found {
-		return ""
-	}
-
-	return attr.Value()
+	blip := b.Blip()
+	return blip.Embed()
 }
 
 // SetStretch sets the fill to stretch mode (fills entire shape).
@@ -813,6 +815,84 @@ func (b *BlipFill) SetRotateWithShape(
 			"0",
 		),
 	)
+}
+
+// SourceRect represents the portion of the image to display (cropping).
+// Values are percentages (0-100000 where 100000 = 100%).
+type SourceRect struct {
+	Left   int // Left crop percentage
+	Top    int // Top crop percentage
+	Right  int // Right crop percentage
+	Bottom int // Bottom crop percentage
+}
+
+// SetSourceRect sets the source rectangle for cropping the image.
+// All values are percentages where 100000 = 100%.
+// For example, Left=10000 crops 10% from the left side.
+func (b *BlipFill) SetSourceRect(rect SourceRect) {
+	// Remove existing srcRect
+	if existing := b.GetElement("srcRect", NamespaceMain); existing != nil {
+		b.RemoveChild(existing)
+	}
+
+	// Create new srcRect element
+	srcRect := openxml.NewLeafElement(
+		NamespaceMain,
+		"srcRect",
+		PrefixMain,
+	)
+
+	// Set attributes only if non-zero
+	if rect.Left != 0 {
+		srcRect.SetAttribute(openxml.NewAttribute("", "l", "", strconv.Itoa(rect.Left)))
+	}
+	if rect.Top != 0 {
+		srcRect.SetAttribute(openxml.NewAttribute("", "t", "", strconv.Itoa(rect.Top)))
+	}
+	if rect.Right != 0 {
+		srcRect.SetAttribute(openxml.NewAttribute("", "r", "", strconv.Itoa(rect.Right)))
+	}
+	if rect.Bottom != 0 {
+		srcRect.SetAttribute(openxml.NewAttribute("", "b", "", strconv.Itoa(rect.Bottom)))
+	}
+
+	// Insert after blip element if it exists
+	if blip := b.GetElement("blip", NamespaceMain); blip != nil {
+		b.InsertAfter(srcRect, blip)
+	} else {
+		b.PrependChild(srcRect)
+	}
+}
+
+// SourceRect returns the source rectangle for cropping, or nil if not set.
+func (b *BlipFill) SourceRect() *SourceRect {
+	srcRect := b.GetElement("srcRect", NamespaceMain)
+	if srcRect == nil {
+		return nil
+	}
+
+	rect := &SourceRect{}
+	if attr, found := srcRect.GetAttribute("l", ""); found {
+		rect.Left, _ = strconv.Atoi(attr.Value())
+	}
+	if attr, found := srcRect.GetAttribute("t", ""); found {
+		rect.Top, _ = strconv.Atoi(attr.Value())
+	}
+	if attr, found := srcRect.GetAttribute("r", ""); found {
+		rect.Right, _ = strconv.Atoi(attr.Value())
+	}
+	if attr, found := srcRect.GetAttribute("b", ""); found {
+		rect.Bottom, _ = strconv.Atoi(attr.Value())
+	}
+
+	return rect
+}
+
+// ClearSourceRect removes the source rectangle (removes cropping).
+func (b *BlipFill) ClearSourceRect() {
+	if srcRect := b.GetElement("srcRect", NamespaceMain); srcRect != nil {
+		b.RemoveChild(srcRect)
+	}
 }
 
 // Clone creates a deep copy of this BlipFill element.

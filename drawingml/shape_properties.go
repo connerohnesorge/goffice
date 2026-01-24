@@ -413,6 +413,34 @@ func (s *ShapeProperties) insertAfterFill(
 	s.insertAfterGeometry(elem)
 }
 
+// ShapeLocks returns the shape locks, or nil if not set.
+func (s *ShapeProperties) ShapeLocks() *ShapeLocks {
+	elem := s.GetElement("spLocks", NamespaceMain)
+	if elem == nil {
+		return nil
+	}
+	if locks, ok := elem.(*ShapeLocks); ok {
+		return locks
+	}
+	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
+		return &ShapeLocks{
+			LeafElementBase: leaf,
+		}
+	}
+	return nil
+}
+
+// SetShapeLocks sets the shape locks.
+func (s *ShapeProperties) SetShapeLocks(locks *ShapeLocks) {
+	if existing := s.GetElement("spLocks", NamespaceMain); existing != nil {
+		s.RemoveChild(existing)
+	}
+	if locks != nil {
+		// spLocks comes after sp3d, before extLst
+		s.insertInOrder(locks, "spLocks", "sp3d", "scene3d", "ln", "gradFill", "solidFill", "xfrm")
+	}
+}
+
 // Clone creates a deep copy of this ShapeProperties element.
 func (s *ShapeProperties) Clone() openxml.Element {
 	cloned := s.CompositeElementBase.Clone()

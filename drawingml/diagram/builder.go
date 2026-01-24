@@ -25,6 +25,7 @@ type DataModelBuilder struct {
 	connectionList    *ConnectionList
 	pointCounter      int
 	connectionCounter int
+	lastPoint         *Point
 }
 
 // NewDataModelBuilder creates a new DataModelBuilder initialized with
@@ -63,7 +64,42 @@ func (b *DataModelBuilder) AddPoint(modelID string, pointType ...PointValues) *D
 	// Append point to point list
 	b.pointList.AppendChild(pt)
 	b.pointCounter++
+	b.lastPoint = pt
 
+	return b
+}
+
+// WithText sets the text body of the last added point.
+//
+// Returns builder for method chaining.
+func (b *DataModelBuilder) WithText(text string) *DataModelBuilder {
+	if b.lastPoint == nil {
+		return b
+	}
+	
+	// Create text body if needed
+	if b.lastPoint.TextBody == nil {
+		b.lastPoint.TextBody = NewTextBody()
+	}
+	
+	// Add paragraph with text
+	b.lastPoint.TextBody.AddParagraph(text)
+	
+	return b
+}
+
+// WithShapeProperties sets the shape properties of the last added point.
+//
+// Returns builder for method chaining.
+func (b *DataModelBuilder) WithShapeProperties(spPr *ShapeProperties) *DataModelBuilder {
+	if b.lastPoint == nil {
+		return b
+	}
+	
+	if spPr != nil {
+		b.lastPoint.ShapeProperties = spPr
+	}
+	
 	return b
 }
 

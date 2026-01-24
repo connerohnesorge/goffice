@@ -764,6 +764,31 @@ func (s *Scaling) SetMaximum(val float64) {
 	s.AppendChild(maxElem)
 }
 
+// SetLogBase sets the logarithmic base for the axis scaling.
+// Typical values are 10 or 2. Range 2-1000.
+func (s *Scaling) SetLogBase(val float64) {
+	if existing := s.GetElement("logBase", NamespaceChart); existing != nil {
+		s.RemoveChild(existing)
+	}
+	elem := openxml.NewLeafElement(
+		NamespaceChart,
+		"logBase",
+		PrefixChart,
+	)
+	elem.SetAttribute(
+		openxml.NewSimpleAttribute(
+			attrVal,
+			strconv.FormatFloat(
+				val,
+				'f',
+				-1,
+				axesBitSize64,
+			),
+		),
+	)
+	s.AppendChild(elem)
+}
+
 // Clone creates a deep copy of this Scaling.
 func (s *Scaling) Clone() openxml.Element {
 	clonedBase := s.CompositeElementBase.Clone()

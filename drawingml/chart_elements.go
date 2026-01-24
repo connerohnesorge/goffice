@@ -100,6 +100,41 @@ func NewTitleWithText(text string) *Title {
 	return t
 }
 
+// SetOverlay sets whether the title overlays the chart.
+//
+//nolint:revive // flag-parameter: bool setter is the standard pattern
+func (t *Title) SetOverlay(overlay bool) {
+	if existing := t.GetElement("overlay", NamespaceChart); existing != nil {
+		t.RemoveChild(existing)
+	}
+	elem := openxml.NewLeafElement(
+		NamespaceChart,
+		"overlay",
+		PrefixChart,
+	)
+	if overlay {
+		elem.SetAttribute(
+			openxml.NewSimpleAttribute(
+				"val",
+				"1",
+			),
+		)
+	} else {
+		elem.SetAttribute(openxml.NewSimpleAttribute(attrVal, "0"))
+	}
+	t.AppendChild(elem)
+}
+
+// SetLayout sets the layout for the title.
+func (t *Title) SetLayout(layout *Layout) {
+	if existing := t.GetElement("layout", NamespaceChart); existing != nil {
+		t.RemoveChild(existing)
+	}
+	if layout != nil {
+		t.AppendChild(layout)
+	}
+}
+
 // Clone creates a deep copy of this Title.
 func (t *Title) Clone() openxml.Element {
 	clonedBase := t.CompositeElementBase.Clone()
@@ -223,6 +258,36 @@ func (l *Legend) SetOverlay(overlay bool) {
 	l.AppendChild(elem)
 }
 
+// SetLayout sets the layout for the legend.
+func (l *Legend) SetLayout(layout *Layout) {
+	if existing := l.GetElement("layout", NamespaceChart); existing != nil {
+		l.RemoveChild(existing)
+	}
+	if layout != nil {
+		l.AppendChild(layout)
+	}
+}
+
+// SetShapeProperties sets the shape properties for the legend.
+func (l *Legend) SetShapeProperties(props *ChartShapeProperties) {
+	if existing := l.GetElement("spPr", NamespaceChart); existing != nil {
+		l.RemoveChild(existing)
+	}
+	if props != nil {
+		l.AppendChild(props)
+	}
+}
+
+// SetTextProperties sets the text properties for the legend.
+func (l *Legend) SetTextProperties(props *ChartText) {
+	if existing := l.GetElement("txPr", NamespaceChart); existing != nil {
+		l.RemoveChild(existing)
+	}
+	if props != nil {
+		l.AppendChild(props)
+	}
+}
+
 // Clone creates a deep copy of this Legend.
 func (l *Legend) Clone() openxml.Element {
 	clonedBase := l.CompositeElementBase.Clone()
@@ -248,6 +313,76 @@ func NewDataLabels() *DataLabels {
 	)
 
 	return &DataLabels{CompositeElementBase: elem}
+}
+
+// SetPosition sets the position of the data labels.
+func (d *DataLabels) SetPosition(pos DataLabelPositionValue) {
+	if existing := d.GetElement("dLblPos", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	elem := openxml.NewLeafElement(
+		NamespaceChart,
+		"dLblPos",
+		PrefixChart,
+	)
+	elem.SetAttribute(
+		openxml.NewSimpleAttribute(
+			attrVal,
+			string(pos),
+		),
+	)
+	d.AppendChild(elem)
+}
+
+// SetNumberFormat sets the number format for the data labels.
+//
+//nolint:revive // flag-parameter: bool setter is the standard pattern
+func (d *DataLabels) SetNumberFormat(formatCode string, sourceLinked bool) {
+	if existing := d.GetElement("numFmt", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	numFmt := openxml.NewLeafElement(
+		NamespaceChart,
+		"numFmt",
+		PrefixChart,
+	)
+	numFmt.SetAttribute(
+		openxml.NewSimpleAttribute(
+			"formatCode",
+			formatCode,
+		),
+	)
+	if sourceLinked {
+		numFmt.SetAttribute(
+			openxml.NewSimpleAttribute(
+				"sourceLinked",
+				"1",
+			),
+		)
+	} else {
+		numFmt.SetAttribute(openxml.NewSimpleAttribute("sourceLinked", "0"))
+	}
+	d.AppendChild(numFmt)
+}
+
+// SetShapeProperties sets the shape properties for the data labels.
+func (d *DataLabels) SetShapeProperties(props *ChartShapeProperties) {
+	if existing := d.GetElement("spPr", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	if props != nil {
+		d.AppendChild(props)
+	}
+}
+
+// SetTextProperties sets the text properties for the data labels.
+func (d *DataLabels) SetTextProperties(props *ChartText) {
+	if existing := d.GetElement("txPr", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	if props != nil {
+		d.AppendChild(props)
+	}
 }
 
 // SetShowValue sets whether to show the value.
@@ -402,6 +537,131 @@ func (d *DataLabels) Clone() openxml.Element {
 	return &DataLabels{
 		CompositeElementBase: cloned,
 	}
+}
+
+// DataTable represents the c:dTable element for the data table.
+type DataTable struct {
+	*openxml.CompositeElementBase
+}
+
+// NewDataTable creates a new data table element.
+func NewDataTable() *DataTable {
+	elem := openxml.NewCompositeElement(
+		NamespaceChart,
+		"dTable",
+		PrefixChart,
+	)
+	return &DataTable{CompositeElementBase: elem}
+}
+
+// SetShowHorizontalBorder sets whether to show horizontal borders.
+//
+//nolint:revive // flag-parameter: bool setter is the standard pattern
+func (d *DataTable) SetShowHorizontalBorder(show bool) {
+	if existing := d.GetElement("showHorzBorder", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	elem := openxml.NewLeafElement(
+		NamespaceChart,
+		"showHorzBorder",
+		PrefixChart,
+	)
+	if show {
+		elem.SetAttribute(openxml.NewSimpleAttribute("val", "1"))
+	} else {
+		elem.SetAttribute(openxml.NewSimpleAttribute("val", "0"))
+	}
+	d.AppendChild(elem)
+}
+
+// SetShowVerticalBorder sets whether to show vertical borders.
+//
+//nolint:revive // flag-parameter: bool setter is the standard pattern
+func (d *DataTable) SetShowVerticalBorder(show bool) {
+	if existing := d.GetElement("showVertBorder", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	elem := openxml.NewLeafElement(
+		NamespaceChart,
+		"showVertBorder",
+		PrefixChart,
+	)
+	if show {
+		elem.SetAttribute(openxml.NewSimpleAttribute("val", "1"))
+	} else {
+		elem.SetAttribute(openxml.NewSimpleAttribute("val", "0"))
+	}
+	d.AppendChild(elem)
+}
+
+// SetShowOutline sets whether to show the outline border.
+//
+//nolint:revive // flag-parameter: bool setter is the standard pattern
+func (d *DataTable) SetShowOutline(show bool) {
+	if existing := d.GetElement("showOutline", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	elem := openxml.NewLeafElement(
+		NamespaceChart,
+		"showOutline",
+		PrefixChart,
+	)
+	if show {
+		elem.SetAttribute(openxml.NewSimpleAttribute("val", "1"))
+	} else {
+		elem.SetAttribute(openxml.NewSimpleAttribute("val", "0"))
+	}
+	d.AppendChild(elem)
+}
+
+// SetShowKeys sets whether to show legend keys.
+//
+//nolint:revive // flag-parameter: bool setter is the standard pattern
+func (d *DataTable) SetShowKeys(show bool) {
+	if existing := d.GetElement("showKeys", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	elem := openxml.NewLeafElement(
+		NamespaceChart,
+		"showKeys",
+		PrefixChart,
+	)
+	if show {
+		elem.SetAttribute(openxml.NewSimpleAttribute("val", "1"))
+	} else {
+		elem.SetAttribute(openxml.NewSimpleAttribute("val", "0"))
+	}
+	d.AppendChild(elem)
+}
+
+// SetShapeProperties sets the shape properties for the data table.
+func (d *DataTable) SetShapeProperties(props *ChartShapeProperties) {
+	if existing := d.GetElement("spPr", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	if props != nil {
+		d.AppendChild(props)
+	}
+}
+
+// SetTextProperties sets the text properties for the data table.
+func (d *DataTable) SetTextProperties(props *ChartText) {
+	if existing := d.GetElement("txPr", NamespaceChart); existing != nil {
+		d.RemoveChild(existing)
+	}
+	if props != nil {
+		d.AppendChild(props)
+	}
+}
+
+// Clone creates a deep copy of this DataTable.
+func (d *DataTable) Clone() openxml.Element {
+	clonedBase := d.CompositeElementBase.Clone()
+	cloned, ok := clonedBase.(*openxml.CompositeElementBase)
+	if !ok {
+		return nil
+	}
+	return &DataTable{CompositeElementBase: cloned}
 }
 
 // Marker represents the c:marker element for data point markers.
@@ -1034,4 +1294,43 @@ func (t *Trendline) Clone() openxml.Element {
 	return &Trendline{
 		CompositeElementBase: cloned,
 	}
+}
+
+// ChartText represents a text body in chart context (c:rich or c:txPr).
+type ChartText struct {
+	*TextBody
+}
+
+// NewChartText creates a new ChartText element with the given local name.
+// name should be "rich" (for title) or "txPr" (for legend/datalabels).
+func NewChartText(name string) *ChartText {
+	elem := openxml.NewCompositeElement(
+		NamespaceChart,
+		name,
+		PrefixChart,
+	)
+	tb := &TextBody{CompositeElementBase: elem}
+	// Add default body properties
+	tb.AppendChild(NewTextBodyProperties())
+	// Add default list style
+	lstStyle := openxml.NewCompositeElement(
+		NamespaceMain,
+		"lstStyle",
+		PrefixMain,
+	)
+	tb.AppendChild(lstStyle)
+
+	return &ChartText{TextBody: tb}
+}
+
+// Clone creates a deep copy of this ChartText.
+func (ct *ChartText) Clone() openxml.Element {
+	clonedBase := ct.CompositeElementBase.Clone()
+	cloned, ok := clonedBase.(*openxml.CompositeElementBase)
+	if !ok {
+		return nil
+	}
+	// Re-wrap in TextBody
+	tb := &TextBody{CompositeElementBase: cloned}
+	return &ChartText{TextBody: tb}
 }

@@ -148,23 +148,62 @@ func (s *Shape3D) SetBevelBottom(b *Bevel) {
 	}
 }
 
-// ExtrusionColor returns the extrusion color.
-func (s *Shape3D) ExtrusionColor() *Color {
-	// Extrusion color can be any color element
-	// This is a simplification, ideally we check for specific color types
-	if elem := s.GetElement("extrusionClr", NamespaceMain); elem != nil {
-		// return wrapper
-		return nil // TODO: Implement color wrapper retrieval
-	}
-	return nil
+// ExtrusionColor returns the extrusion color container element.
+func (s *Shape3D) ExtrusionColor() openxml.Element {
+	return s.GetElement("extrusionClr", NamespaceMain)
 }
 
-// ContourColor returns the contour color.
-func (s *Shape3D) ContourColor() *Color {
-	if elem := s.GetElement("contourClr", NamespaceMain); elem != nil {
-		return nil // TODO
+// SetExtrusionColorRgb sets the extrusion color to an RGB color.
+func (s *Shape3D) SetExtrusionColorRgb(hex string) {
+	s.removeExtrusionColor()
+	clr := NewRgbColor(hex)
+	wrapper := openxml.NewCompositeElement(NamespaceMain, "extrusionClr", PrefixMain)
+	wrapper.AppendChild(clr)
+	s.AppendChild(wrapper)
+}
+
+// SetExtrusionColorScheme sets the extrusion color to a scheme color.
+func (s *Shape3D) SetExtrusionColorScheme(color SchemeColorValue) {
+	s.removeExtrusionColor()
+	clr := NewSchemeColor(color)
+	wrapper := openxml.NewCompositeElement(NamespaceMain, "extrusionClr", PrefixMain)
+	wrapper.AppendChild(clr)
+	s.AppendChild(wrapper)
+}
+
+func (s *Shape3D) removeExtrusionColor() {
+	if elem := s.GetElement("extrusionClr", NamespaceMain); elem != nil {
+		s.RemoveChild(elem)
 	}
-	return nil
+}
+
+// ContourColor returns the contour color container element.
+func (s *Shape3D) ContourColor() openxml.Element {
+	return s.GetElement("contourClr", NamespaceMain)
+}
+
+// SetContourColorRgb sets the contour color to an RGB color.
+func (s *Shape3D) SetContourColorRgb(hex string) {
+	s.removeContourColor()
+	clr := NewRgbColor(hex)
+	wrapper := openxml.NewCompositeElement(NamespaceMain, "contourClr", PrefixMain)
+	wrapper.AppendChild(clr)
+	s.AppendChild(wrapper)
+}
+
+// SetContourColorScheme sets the contour color to a scheme color.
+func (s *Shape3D) SetContourColorScheme(color SchemeColorValue) {
+	s.removeContourColor()
+	clr := NewSchemeColor(color)
+	wrapper := openxml.NewCompositeElement(NamespaceMain, "contourClr", PrefixMain)
+	wrapper.AppendChild(clr)
+	s.AppendChild(wrapper)
+}
+
+func (s *Shape3D) removeContourColor() {
+	if elem := s.GetElement("contourClr", NamespaceMain); elem != nil {
+		s.RemoveChild(elem)
+	}
 }
 
 // Z returns the z-coordinate in EMUs.

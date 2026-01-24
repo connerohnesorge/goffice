@@ -7,6 +7,7 @@ replace github.com/connerohnesorge/goffice => ../
 require (
 	github.com/connerohnesorge/goffice v0.0.0-00010101000000-000000000000
 	github.com/pdfcpu/pdfcpu v0.9.1
+	golang.org/x/text v0.33.0
 )
 
 require (
@@ -16,6 +17,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	golang.org/x/image v0.21.0 // indirect
-	golang.org/x/text v0.32.0 // indirect
+	golang.org/x/net v0.49.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

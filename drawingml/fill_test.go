@@ -245,6 +245,49 @@ func TestBlipFill(t *testing.T) {
 			t.Error("Expected tile element")
 		}
 	})
+
+	t.Run("SourceRect", func(t *testing.T) {
+		fill := NewBlipFill()
+		fill.SetEmbed("rId4")
+
+		// Initially no source rect
+		if fill.SourceRect() != nil {
+			t.Error("Expected no source rect initially")
+		}
+
+		// Set source rect with cropping
+		rect := SourceRect{
+			Left:   10000, // 10% from left
+			Top:    15000, // 15% from top
+			Right:  5000,  // 5% from right
+			Bottom: 8000,  // 8% from bottom
+		}
+		fill.SetSourceRect(rect)
+
+		// Retrieve and verify
+		retrieved := fill.SourceRect()
+		if retrieved == nil {
+			t.Fatal("Expected source rect to be set")
+		}
+		if retrieved.Left != 10000 {
+			t.Errorf("Expected Left=10000, got %d", retrieved.Left)
+		}
+		if retrieved.Top != 15000 {
+			t.Errorf("Expected Top=15000, got %d", retrieved.Top)
+		}
+		if retrieved.Right != 5000 {
+			t.Errorf("Expected Right=5000, got %d", retrieved.Right)
+		}
+		if retrieved.Bottom != 8000 {
+			t.Errorf("Expected Bottom=8000, got %d", retrieved.Bottom)
+		}
+
+		// Clear source rect
+		fill.ClearSourceRect()
+		if fill.SourceRect() != nil {
+			t.Error("Expected source rect to be cleared")
+		}
+	})
 }
 
 func TestGroupFill(t *testing.T) {

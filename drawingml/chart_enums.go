@@ -168,3 +168,19 @@ const (
 	OfPieTypePie OfPieTypeValue = "pie"
 	OfPieTypeBar OfPieTypeValue = "bar"
 )
+
+// DataLabelPositionValue represents data label position.
+type DataLabelPositionValue string
+
+// Data label position values.
+const (
+	DataLabelPositionBestFit DataLabelPositionValue = "bestFit"
+	DataLabelPositionBottom  DataLabelPositionValue = "b"
+	DataLabelPositionCenter  DataLabelPositionValue = "ctr"
+	DataLabelPositionInBase  DataLabelPositionValue = "inBase"
+	DataLabelPositionInEnd   DataLabelPositionValue = "inEnd"
+	DataLabelPositionLeft    DataLabelPositionValue = "l"
+	DataLabelPositionOutEnd  DataLabelPositionValue = "outEnd"
+	DataLabelPositionRight   DataLabelPositionValue = "r"
+	DataLabelPositionTop     DataLabelPositionValue = "t"
+)
