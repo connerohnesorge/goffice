@@ -1,92 +1,80 @@
-# Design: ADD VALIDATION AND COMPLIANCE
+# Design: Validation and Compliance
 
 ## Overview
-Implementation of ADDVALIDATIONANDCOMPLIANCE capability matching Open-XML-SDK feature parity.
+Comprehensive validation framework for ISO/IEC 29500 compliance, including schema validation, semantic constraints, and document repair capabilities.
 
 ## Core Types & Interfaces
 
-### Primary Types
+### Validator
 ```go
-type ADD VALIDATION AND COMPLIANCE interface {
-    // Primary interface methods
+type ValidationLevel int
+
+const (
+    LevelInfo ValidationLevel = iota
+    LevelWarning
+    LevelError
+    LevelCritical
+)
+
+type ValidationError struct {
+    Level   ValidationLevel
+    Path    string // XPath or part URI
+    Message string
+    RuleID  string
 }
 
-type ADD VALIDATION AND COMPLIANCEConfig struct {
-    // Configuration options
+type Validator interface {
+    Validate(pkg *Package) ([]ValidationError, error)
+}
+```
+
+### Compliance Profiles
+```go
+type Profile interface {
+    Name() string
+    Rules() []Rule
 }
 
-type ADD VALIDATION AND COMPLIANCEManager struct {
-    // Manager state
-}
+// e.g., Strict, Transitional, Office2010, etc.
 ```
 
 ## Architectural Decisions
 
-### 1. Design Pattern Selection
-**Decision**: Implement using appropriate design pattern
+### 1. Rule Engine
+**Decision**: Pluggable rule engine pattern
 
 **Rationale**:
-- Follows goffice conventions
-- Integrates with existing systems
-- Maintains Go idioms
-- Enables testing
+- Extensible for new constraints
+- Configurable severity levels
+- Separation of structural vs semantic rules
 
-**Implementation**:
-- Clear separation of concerns
-- Interface-based design
-- Minimal dependencies
-- Composable components
-
-### 2. Integration Strategy
-**Decision**: Minimal coupling to existing systems
+### 2. Schema Validation
+**Decision**: Generated XSD validators vs Manual checks
 
 **Rationale**:
-- Reduces cascading changes
-- Easier testing
-- Cleaner API
-- Better maintainability
+- Use manual checks for critical structural constraints (performance)
+- Use lightweight schema validation for simple types
+- Avoid full XSD engine overhead if possible
 
 ## Implementation Strategy
 
-### Phase 1: Core Implementation (1-2 weeks)
-- [ ] Core interfaces and types
-- [ ] Primary functionality
-- [ ] Error handling
-- [ ] Basic tests
+### Phase 1: Structural Validation
+- [ ] Part existence and relationships
+- [ ] Content-Type verification
+- [ ] XML well-formedness checks
 
-### Phase 2: Feature Completion (1-2 weeks)
-- [ ] Advanced features
-- [ ] Edge cases
-- [ ] Comprehensive tests
-- [ ] Documentation
+### Phase 2: Semantic Validation
+- [ ] ST_ types validation (patterns, enums)
+- [ ] Parent-child containment rules
+- [ ] Cross-reference integrity
 
-### Phase 3: Integration (1 week)
-- [ ] System integration
-- [ ] Performance optimization
-- [ ] Final testing
-- [ ] Examples
-
-## Error Handling
-
-```go
-type ADDVALIDATIONANDCOMPLIANCEError struct {
-    Op  string
-    Err error
-}
-```
+### Phase 3: Repair
+- [ ] Auto-fixer for common issues
+- [ ] Orphan part cleanup
+- [ ] Relationship healing
 
 ## Performance Considerations
 
-1. Caching strategies
-2. Memory efficiency
-3. Concurrent access
-4. Batch operations
-5. Lazy evaluation
-
-## Testing Strategy
-
-- Unit tests for core functionality
-- Integration tests
-- Error case coverage
-- Performance benchmarks
-- Round-trip serialization tests
+- Fail-fast mode for critical errors
+- Lazy validation (validate only accessed parts)
+- Caching validation results if document immutable

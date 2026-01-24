@@ -1,92 +1,73 @@
-# Design: ADD WORD COMMENTS ENHANCEMENTS
+# Design: Word Comments Enhancements
 
 ## Overview
-Implementation of ADDWORDCOMMENTSENHANCEMENTS capability matching Open-XML-SDK feature parity.
+Implementation of comprehensive Word processing comments support, including threaded comments, authors, dates, and range tracking.
 
 ## Core Types & Interfaces
 
-### Primary Types
+### Comment Structure
 ```go
-type ADD WORD COMMENTS ENHANCEMENTS interface {
-    // Primary interface methods
+type Comment struct {
+    ID          int
+    Author      string
+    Initials    string
+    Date        time.Time
+    Content     []BlockElement // Paragraphs, Tables, etc.
+    ParentID    *int          // For threaded replies
 }
 
-type ADD WORD COMMENTS ENHANCEMENTSConfig struct {
-    // Configuration options
+type CommentsPart struct {
+    Comments []*Comment
+}
+```
+
+### Range Tracking
+```go
+type CommentRangeStart struct {
+    ID int
 }
 
-type ADD WORD COMMENTS ENHANCEMENTSManager struct {
-    // Manager state
+type CommentRangeEnd struct {
+    ID int
 }
 ```
 
 ## Architectural Decisions
 
-### 1. Design Pattern Selection
-**Decision**: Implement using appropriate design pattern
+### 1. Comment Storage
+**Decision**: Separate part management for comments
 
 **Rationale**:
-- Follows goffice conventions
-- Integrates with existing systems
-- Maintains Go idioms
-- Enables testing
+- Comments are stored in a separate XML part
+- Reduces main document complexity
+- Enables lazy loading of comments
 
-**Implementation**:
-- Clear separation of concerns
-- Interface-based design
-- Minimal dependencies
-- Composable components
-
-### 2. Integration Strategy
-**Decision**: Minimal coupling to existing systems
+### 2. Threading Model
+**Decision**: Adjacency list with ParentID
 
 **Rationale**:
-- Reduces cascading changes
-- Easier testing
-- Cleaner API
-- Better maintainability
+- Simple to serialize to XML
+- Easy to reconstruct conversation trees
+- Matches OpenXML structure
 
 ## Implementation Strategy
 
-### Phase 1: Core Implementation (1-2 weeks)
-- [ ] Core interfaces and types
-- [ ] Primary functionality
-- [ ] Error handling
-- [ ] Basic tests
+### Phase 1: Basic Comments
+- [ ] Comment part definition
+- [ ] Comment serialization
+- [ ] Author/Date handling
 
-### Phase 2: Feature Completion (1-2 weeks)
-- [ ] Advanced features
-- [ ] Edge cases
-- [ ] Comprehensive tests
-- [ ] Documentation
+### Phase 2: Ranges & Anchors
+- [ ] CommentRangeStart/End elements
+- [ ] Reference integration in document body
+- [ ] Range validation
 
-### Phase 3: Integration (1 week)
-- [ ] System integration
-- [ ] Performance optimization
-- [ ] Final testing
-- [ ] Examples
-
-## Error Handling
-
-```go
-type ADDWORDCOMMENTSENHANCEMENTSError struct {
-    Op  string
-    Err error
-}
-```
-
-## Performance Considerations
-
-1. Caching strategies
-2. Memory efficiency
-3. Concurrent access
-4. Batch operations
-5. Lazy evaluation
+### Phase 3: Advanced Features
+- [ ] Threaded replies
+- [ ] Extended properties
+- [ ] Comment history
 
 ## Testing Strategy
-
-- Unit tests for core functionality
-- Integration tests
-- Error case coverage
-- Performance benchmarks
 - Round-trip serialization tests
+- Multi-author comment scenarios
+- Threaded conversation reconstruction

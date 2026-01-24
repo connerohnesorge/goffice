@@ -1,92 +1,71 @@
-# Design: EXPAND TEST COVERAGE
+# Design: Expand Test Coverage
 
 ## Overview
-Implementation of EXPANDTESTCOVERAGE capability matching Open-XML-SDK feature parity.
+Establishing a comprehensive testing framework matching Open-XML-SDK standards, covering roundtrip fidelity, interoperability, performance, and edge cases.
 
-## Core Types & Interfaces
+## Test Infrastructure
 
-### Primary Types
+### Test Suites
 ```go
-type EXPAND TEST COVERAGE interface {
-    // Primary interface methods
+type TestSuite interface {
+    Name() string
+    Run(t *testing.T)
 }
 
-type EXPAND TEST COVERAGEConfig struct {
-    // Configuration options
+type RoundTripTest struct {
+    File string
+    Validators []Validator
 }
 
-type EXPAND TEST COVERAGEManager struct {
-    // Manager state
+type InteropTest struct {
+    OfficeVersion string
+    Feature       string
 }
+```
+
+### Validation Helpers
+```go
+func ValidateStructure(t *testing.T, doc *Document)
+func CompareFiles(t *testing.T, expected, actual string)
+func AssertPerformance(t *testing.T, fn func(), maxAlloc int64)
 ```
 
 ## Architectural Decisions
 
-### 1. Design Pattern Selection
-**Decision**: Implement using appropriate design pattern
+### 1. Table-Driven Tests
+**Decision**: Extensive use of table-driven tests with external test data
 
 **Rationale**:
-- Follows goffice conventions
-- Integrates with existing systems
-- Maintains Go idioms
-- Enables testing
+- Separation of test logic and data
+- Easy to add new cases without code changes
+- Scalable for large feature sets
 
-**Implementation**:
-- Clear separation of concerns
-- Interface-based design
-- Minimal dependencies
-- Composable components
-
-### 2. Integration Strategy
-**Decision**: Minimal coupling to existing systems
+### 2. Gold Master Testing
+**Decision**: Use "gold master" files for regression testing
 
 **Rationale**:
-- Reduces cascading changes
-- Easier testing
-- Cleaner API
-- Better maintainability
+- Detects unintended visual/structural changes
+- Validates against known good outputs (e.g., from Word)
 
 ## Implementation Strategy
 
-### Phase 1: Core Implementation (1-2 weeks)
-- [ ] Core interfaces and types
-- [ ] Primary functionality
-- [ ] Error handling
-- [ ] Basic tests
+### Phase 1: Core Framework
+- [ ] Set up table-driven runner
+- [ ] Create benchmark harness
+- [ ] Integrate fuzzing tools (Go fuzz)
 
-### Phase 2: Feature Completion (1-2 weeks)
-- [ ] Advanced features
-- [ ] Edge cases
-- [ ] Comprehensive tests
-- [ ] Documentation
+### Phase 2: Scenario Coverage
+- [ ] Implement roundtrip tests for all basic elements
+- [ ] Add max-nesting depth tests
+- [ ] Add empty/nil value tests
 
-### Phase 3: Integration (1 week)
-- [ ] System integration
-- [ ] Performance optimization
-- [ ] Final testing
-- [ ] Examples
-
-## Error Handling
-
-```go
-type EXPANDTESTCOVERAGEError struct {
-    Op  string
-    Err error
-}
-```
+### Phase 3: Interop & Perf
+- [ ] Import Office 2007-365 test corpus
+- [ ] Define memory budgets per operation
+- [ ] PDF visual regression setup
 
 ## Performance Considerations
 
-1. Caching strategies
-2. Memory efficiency
-3. Concurrent access
-4. Batch operations
-5. Lazy evaluation
-
-## Testing Strategy
-
-- Unit tests for core functionality
-- Integration tests
-- Error case coverage
-- Performance benchmarks
-- Round-trip serialization tests
+- Test parallelization (`t.Parallel()`)
+- Cleanup of temporary files
+- efficient parsing of large test corpuses

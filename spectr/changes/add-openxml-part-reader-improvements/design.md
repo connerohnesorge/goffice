@@ -1,92 +1,64 @@
-# Design: ADD OPENXML PART READER IMPROVEMENTS
+# Design: OpenXML Part Reader Improvements
 
 ## Overview
-Implementation of ADDOPENXMLPARTREADERIMPROVEMENTS capability matching Open-XML-SDK feature parity.
+Enhancing the robustness and performance of the OpenXML part reader system, focusing on error recovery, stream processing, and memory efficiency.
 
 ## Core Types & Interfaces
 
-### Primary Types
+### Reader Interface
 ```go
-type ADD OPENXML PART READER IMPROVEMENTS interface {
-    // Primary interface methods
+type PartReader interface {
+    Read(r io.Reader) (*Part, error)
+    ReadStream(r io.Reader) (PartStream, error)
 }
 
-type ADD OPENXML PART READER IMPROVEMENTSConfig struct {
-    // Configuration options
+type PartStream interface {
+    Next() (Element, error)
+    Close() error
 }
+```
 
-type ADD OPENXML PART READER IMPROVEMENTSManager struct {
-    // Manager state
+### Error Handling
+```go
+type ReadError struct {
+    PartURI string
+    Offset  int64
+    Err     error
+    Fatal   bool
 }
 ```
 
 ## Architectural Decisions
 
-### 1. Design Pattern Selection
-**Decision**: Implement using appropriate design pattern
+### 1. Stream Processing
+**Decision**: Use `encoding/xml` decoder with custom stream wrapper
 
 **Rationale**:
-- Follows goffice conventions
-- Integrates with existing systems
-- Maintains Go idioms
-- Enables testing
+- Low memory footprint for large parts
+- Early exit on specific elements
+- Handles partial reads
 
-**Implementation**:
-- Clear separation of concerns
-- Interface-based design
-- Minimal dependencies
-- Composable components
-
-### 2. Integration Strategy
-**Decision**: Minimal coupling to existing systems
+### 2. Error Recovery
+**Decision**: Permissive parsing mode
 
 **Rationale**:
-- Reduces cascading changes
-- Easier testing
-- Cleaner API
-- Better maintainability
+- Many real-world documents are malformed
+- Try to recover usable data
+- Log warnings instead of hard failing when possible
 
 ## Implementation Strategy
 
-### Phase 1: Core Implementation (1-2 weeks)
-- [ ] Core interfaces and types
-- [ ] Primary functionality
-- [ ] Error handling
-- [ ] Basic tests
+### Phase 1: Robustness
+- [ ] Implement permissive XML decoder
+- [ ] Add namespace fallback handling
+- [ ] Validate relationships during read
 
-### Phase 2: Feature Completion (1-2 weeks)
-- [ ] Advanced features
-- [ ] Edge cases
-- [ ] Comprehensive tests
-- [ ] Documentation
-
-### Phase 3: Integration (1 week)
-- [ ] System integration
-- [ ] Performance optimization
-- [ ] Final testing
-- [ ] Examples
-
-## Error Handling
-
-```go
-type ADDOPENXMLPARTREADERIMPROVEMENTSError struct {
-    Op  string
-    Err error
-}
-```
-
-## Performance Considerations
-
-1. Caching strategies
-2. Memory efficiency
-3. Concurrent access
-4. Batch operations
-5. Lazy evaluation
+### Phase 2: Performance
+- [ ] Buffer pooling for readers
+- [ ] Lazy attribute parsing
+- [ ] String interning for common repeated values (styles, themes)
 
 ## Testing Strategy
-
-- Unit tests for core functionality
-- Integration tests
-- Error case coverage
-- Performance benchmarks
-- Round-trip serialization tests
+- Fuzz testing with malformed inputs
+- Benchmark comparisons with previous reader
+- Memory profile analysis on large documents
