@@ -3,11 +3,146 @@ package elements
 
 import (
 	"iter"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/connerohnesorge/goffice/openxml"
 )
+
+// CommentMention represents a user mention within comment content.
+type CommentMention struct {
+	Username string `json:"username"`
+	Start    int    `json:"start"`
+	End      int    `json:"end"`
+}
+
+// CommentContent represents structured comment content with mentions.
+type CommentContent struct {
+	Text     string           `json:"text"`
+	Mentions []CommentMention `json:"mentions"`
+}
+
+// CommentRun represents a run of text with optional mention formatting.
+type CommentRun struct {
+	Text      string `json:"text"`
+	IsMention bool   `json:"isMention"`
+}
+
+// parseMentions extracts @username patterns from text and returns CommentMention slices.
+func parseMentions(text string) []CommentMention {
+	var mentions []CommentMention
+	re := regexp.MustCompile(`@(\w+)`)
+	matches := re.FindAllStringSubmatch(text, -1)
+
+	for _, match := range matches {
+		if len(match) >= 2 {
+			startPos := strings.Index(text, match[0])
+			mentions = append(mentions, CommentMention{
+				Username: match[1],
+				Start:    startPos,
+				End:      startPos + len(match[0]),
+			})
+		}
+	}
+
+	return mentions
+}
+
+// splitTextWithMentions splits text into runs, marking mentions separately.
+func splitTextWithMentions(text string) []CommentRun {
+	var runs []CommentRun
+	re := regexp.MustCompile(`@(\w+)`)
+	lastIndex := 0
+
+	matches := re.FindAllStringSubmatch(text, -1)
+	for _, match := range matches {
+		// Add text before mention
+		if len(match) >= 2 {
+			mentionText := match[0]
+			mentionIndex := strings.Index(text, mentionText)
+
+			if mentionIndex > lastIndex {
+				runs = append(runs, CommentRun{
+					Text:      text[lastIndex:mentionIndex],
+					IsMention: false,
+				})
+			}
+
+			// Add the mention itself
+			runs = append(runs, CommentRun{
+				Text:      mentionText,
+				IsMention: true,
+			})
+
+			lastIndex = mentionIndex + len(mentionText)
+		}
+	}
+
+	// Add remaining text
+	if lastIndex < len(text) {
+		runs = append(runs, CommentRun{
+			Text:      text[lastIndex:],
+			IsMention: false,
+		})
+	}
+
+	return runs
+}
+
+// CommentThread represents a threaded conversation with a root comment and replies.
+type CommentThread struct {
+	Root     *Comment   `json:"root"`
+	Replies  []*Comment `json:"replies"`
+	Resolved bool       `json:"resolved"`
+}
+
+// NewCommentThread creates a new CommentThread with the given root comment.
+func NewCommentThread(root *Comment) *CommentThread {
+	return &CommentThread{
+		Root:     root,
+		Replies:  []*Comment{},
+		Resolved: root.Done(),
+	}
+}
+
+// AddReply adds a reply comment to this thread.
+func (ct *CommentThread) AddReply(reply *Comment) {
+	if reply.ParentId() != ct.Root.Id() {
+		// Set the parent ID if not already set
+		reply.SetParentId(ct.Root.Id())
+	}
+	ct.Replies = append(ct.Replies, reply)
+	ct.Resolved = reply.Done() || ct.Resolved
+}
+
+// GetAllComments returns all comments in this thread (root + replies).
+func (ct *CommentThread) GetAllComments() []*Comment {
+	all := make([]*Comment, 0, len(ct.Replies)+1)
+	all = append(all, ct.Root)
+	all = append(all, ct.Replies...)
+	return all
+}
+
+// GetReplyCount returns the number of replies in this thread.
+func (ct *CommentThread) GetReplyCount() int {
+	return len(ct.Replies)
+}
+
+// MarkResolved marks the entire thread as resolved.
+func (ct *CommentThread) MarkResolved() {
+	ct.Resolved = true
+	ct.Root.SetDone(true)
+	for _, reply := range ct.Replies {
+		reply.SetDone(true)
+	}
+}
+
+// IsEmpty returns true if this thread has no replies.
+func (ct *CommentThread) IsEmpty() bool {
+	return len(ct.Replies) == 0
+}
 
 // Comments represents the root element for a comments part (w:comments).
 type Comments struct {
@@ -365,6 +500,41 @@ func (c *Comment) SetDone(done bool) {
 	}
 }
 
+// ParentId returns the parent comment ID for threaded replies.
+// Returns 0 if no parent (root-level comment).
+func (c *Comment) ParentId() int {
+	attr, found := c.GetAttribute(
+		"parentId",
+		NamespaceWML,
+	)
+	if !found {
+		return 0
+	}
+	id, _ := strconv.Atoi(attr.Value())
+
+	return id
+}
+
+// SetParentId sets the parent comment ID for threaded replies.
+// Set to 0 for root-level comments (no parent).
+func (c *Comment) SetParentId(parentId int) {
+	if parentId == 0 {
+		c.RemoveAttribute(
+			"parentId",
+			NamespaceWML,
+		)
+	} else {
+		c.SetAttribute(
+			openxml.NewAttribute(
+				NamespaceWML,
+				"parentId",
+				PrefixW,
+				strconv.Itoa(parentId),
+			),
+		)
+	}
+}
+
 // ensureW15Namespace ensures the w15 namespace is declared on the Comments root element.
 func (c *Comment) ensureW15Namespace() {
 	// Walk up to find the root Comments element
@@ -425,6 +595,76 @@ func (c *Comment) AppendParagraph(
 	c.AppendChild(p)
 
 	return p
+}
+
+// ContentWithMentions returns the comment text with @mention parsing for user references.
+// This scans paragraph content for @username patterns and returns a structured view
+// of the content with extracted mentions.
+func (c *Comment) ContentWithMentions() *CommentContent {
+	var allText strings.Builder
+	content := &CommentContent{
+		Text:     "",
+		Mentions: make([]CommentMention, 0),
+	}
+
+	// Parse @mentions from paragraph content
+	for p := range c.Paragraphs() {
+		for r := range p.Runs() {
+			text := r.InnerText()
+			content.Mentions = append(content.Mentions, parseMentions(text)...)
+			allText.WriteString(text)
+		}
+	}
+
+	content.Text = allText.String()
+	return content
+}
+
+// SetExtendedContent sets comment content with support for rich text and mentions.
+// Automatically handles @mention parsing and creates appropriate paragraph structure.
+func (c *Comment) SetExtendedContent(text string) *CommentContent {
+	content := &CommentContent{
+		Text:     text,
+		Mentions: parseMentions(text),
+	}
+
+	// Clear existing content
+	for child := range c.Children() {
+		c.RemoveChild(child)
+	}
+
+	// Create new paragraph with mention-aware runs
+	p := c.AppendParagraph("")
+	runs := splitTextWithMentions(text)
+
+	for _, runData := range runs {
+		run := p.AppendRun(runData.Text)
+
+		// Apply formatting for mentions
+		if runData.IsMention {
+			run.SetColor("0563C1") // Blue color for mentions
+			run.SetBold(true)
+		}
+	}
+
+	return content
+}
+
+// IsReply returns true if this comment is a reply (has a parent).
+func (c *Comment) IsReply() bool {
+	return c.ParentId() > 0
+}
+
+// GetReplies returns all comments that are direct replies to this comment.
+// This should be called on the Comments collection to find replies.
+func (c *Comment) GetReplies(comments *Comments) []*Comment {
+	var replies []*Comment
+	for comment := range comments.Comments() {
+		if comment.ParentId() == c.Id() {
+			replies = append(replies, comment)
+		}
+	}
+	return replies
 }
 
 // Clone creates a deep copy of this Comment element.

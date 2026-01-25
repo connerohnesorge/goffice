@@ -196,3 +196,67 @@ func (*ChartAxis) getOrCreateScaling(
 
 	return nil
 }
+
+// SetLogScale sets logarithmic scale for the axis.
+func (a *ChartAxis) SetLogScale(logBase float64) {
+	axis := a.getUnderlyingAxis()
+	if axis == nil {
+		return
+	}
+
+	if ax, ok := axis.(*drawingml.ValueAxis); ok {
+		scaling := a.getOrCreateScaling(ax)
+		if scaling != nil {
+			scaling.SetLogBase(logBase)
+		}
+	}
+}
+
+// SetOrientation sets axis orientation.
+func (a *ChartAxis) SetOrientation(orientation drawingml.OrientationValue) {
+	axis := a.getUnderlyingAxis()
+	if axis == nil {
+		return
+	}
+
+	if ax, ok := axis.(*drawingml.ValueAxis); ok {
+		scaling := a.getOrCreateScaling(ax)
+		if scaling != nil {
+			scaling.SetOrientation(orientation)
+		}
+	}
+}
+
+// SetReverseOrder reverses the axis order.
+func (a *ChartAxis) SetReverseOrder(reverse bool) {
+	axis := a.getUnderlyingAxis()
+	if axis == nil {
+		return
+	}
+
+	if ax, ok := axis.(*drawingml.ValueAxis); ok {
+		scaling := a.getOrCreateScaling(ax)
+		if scaling != nil {
+			if reverse {
+				scaling.SetOrientation(drawingml.OrientationMaxMin)
+			} else {
+				scaling.SetOrientation(drawingml.OrientationMinMax)
+			}
+		}
+	}
+}
+
+// SetAxisPosition sets the axis position.
+func (a *ChartAxis) SetAxisPosition(pos drawingml.AxisPositionValue) {
+	axis := a.getUnderlyingAxis()
+	if axis == nil {
+		return
+	}
+
+	switch ax := axis.(type) {
+	case *drawingml.CategoryAxis:
+		ax.SetAxisPosition(pos)
+	case *drawingml.ValueAxis:
+		ax.SetAxisPosition(pos)
+	}
+}

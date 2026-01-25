@@ -1,11 +1,11 @@
 ## Implementation Tasks
 
 ### 1. Advanced Shape Properties
-- [ ] 1.1 Implement 3D properties (bevel, depth, contour)
-- [ ] 1.2 Add effect properties (shadow, glow, reflection, blur)
-- [ ] 1.3 Implement shape adjustments and guide points
-- [ ] 1.4 Add transformation matrices
-- [ ] 1.5 Support shape locking and protection
+- [x] 1.1 Implement 3D properties (bevel, depth, contour)
+- [x] 1.2 Add effect properties (shadow, glow, reflection, blur)
+- [x] 1.3 Implement shape adjustments and guide points
+- [x] 1.4 Add transformation matrices
+- [x] 1.5 Support shape locking and protection
 
 ### 2. Picture and Image Support
 - [ ] 2.1 Implement picture cropping

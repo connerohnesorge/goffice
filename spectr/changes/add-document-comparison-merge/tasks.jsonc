@@ -1,0 +1,249 @@
+{
+  "tasks": [
+    {
+      "id": "1.1",
+      "title": "Create element-level comparison",
+      "status": "completed"
+    },
+    {
+      "id": "1.2",
+      "title": "Implement content hash generation",
+      "status": "completed"
+    },
+    {
+      "id": "1.3",
+      "title": "Add formatting difference detection",
+      "status": "completed"
+    },
+    {
+      "id": "1.4",
+      "title": "Implement structural difference detection",
+      "status": "completed"
+    },
+    {
+      "id": "1.5",
+      "title": "Create change type classification",
+      "status": "completed"
+    },
+    {
+      "id": "2.1",
+      "title": "Detect inserted elements",
+      "status": "completed"
+    },
+    {
+      "id": "2.2",
+      "title": "Detect deleted elements",
+      "status": "completed"
+    },
+    {
+      "id": "2.3",
+      "title": "Detect modified elements",
+      "status": "completed"
+    },
+    {
+      "id": "2.4",
+      "title": "Track property changes",
+      "status": "completed"
+    },
+    {
+      "id": "2.5",
+      "title": "Create change list generation",
+      "status": "completed"
+    },
+    {
+      "id": "3.1",
+      "title": "Implement two-way merge",
+      "status": "completed"
+    },
+    {
+      "id": "3.2",
+      "title": "Implement three-way merge",
+      "status": "completed"
+    },
+    {
+      "id": "3.3",
+      "title": "Add conflict detection",
+      "status": "completed"
+    },
+    {
+      "id": "3.4",
+      "title": "Create merge strategy selection",
+      "status": "pending"
+    },
+    {
+      "id": "3.5",
+      "title": "Implement selective merge",
+      "status": "pending"
+    },
+    {
+      "id": "4.1",
+      "title": "Implement 'ours' strategy",
+      "status": "completed"
+    },
+    {
+      "id": "4.2",
+      "title": "Implement 'theirs' strategy",
+      "status": "pending"
+    },
+    {
+      "id": "4.3",
+      "title": "Implement 'combined' strategy",
+      "status": "pending"
+    },
+    {
+      "id": "4.4",
+      "title": "Add strategy customization",
+      "status": "pending"
+    },
+    {
+      "id": "4.5",
+      "title": "Create custom resolver support",
+      "status": "pending"
+    },
+    {
+      "id": "5.1",
+      "title": "Create conflict detection",
+      "status": "completed"
+    },
+    {
+      "id": "5.2",
+      "title": "Implement conflict reporting",
+      "status": "pending"
+    },
+    {
+      "id": "5.3",
+      "title": "Add conflict visualization markers",
+      "status": "pending"
+    },
+    {
+      "id": "5.4",
+      "title": "Create conflict resolution API",
+      "status": "pending"
+    },
+    {
+      "id": "5.5",
+      "title": "Implement conflict statistics",
+      "status": "pending"
+    },
+    {
+      "id": "6.1",
+      "title": "Create comparison result structure",
+      "status": "pending"
+    },
+    {
+      "id": "6.2",
+      "title": "Implement summary statistics",
+      "status": "pending"
+    },
+    {
+      "id": "6.3",
+      "title": "Add detailed change list",
+      "status": "pending"
+    },
+    {
+      "id": "6.4",
+      "title": "Create HTML report generation",
+      "status": "pending"
+    },
+    {
+      "id": "6.5",
+      "title": "Implement JSON export",
+      "status": "pending"
+    },
+    {
+      "id": "7.1",
+      "title": "Integrate with change tracking",
+      "status": "pending"
+    },
+    {
+      "id": "7.2",
+      "title": "Preserve tracked changes during merge",
+      "status": "pending"
+    },
+    {
+      "id": "7.3",
+      "title": "Add author attribution",
+      "status": "pending"
+    },
+    {
+      "id": "7.4",
+      "title": "Track merge source",
+      "status": "pending"
+    },
+    {
+      "id": "7.5",
+      "title": "Create timestamp tracking",
+      "status": "pending"
+    },
+    {
+      "id": "8.1",
+      "title": "Create DocumentComparator interface",
+      "status": "pending"
+    },
+    {
+      "id": "8.2",
+      "title": "Create DocumentMerger interface",
+      "status": "pending"
+    },
+    {
+      "id": "8.3",
+      "title": "Add comparison request API",
+      "status": "pending"
+    },
+    {
+      "id": "8.4",
+      "title": "Implement merge request API",
+      "status": "pending"
+    },
+    {
+      "id": "8.5",
+      "title": "Create conflict resolution API",
+      "status": "pending"
+    },
+    {
+      "id": "9.1",
+      "title": "Unit tests for comparison",
+      "status": "completed"
+    },
+    {
+      "id": "9.2",
+      "title": "Unit tests for merge",
+      "status": "completed"
+    },
+    {
+      "id": "9.3",
+      "title": "Conflict resolution tests",
+      "status": "pending"
+    },
+    {
+      "id": "9.4",
+      "title": "Roundtrip tests",
+      "status": "pending"
+    },
+    {
+      "id": "9.5",
+      "title": "Large document merge tests",
+      "status": "pending"
+    },
+    {
+      "id": "10.1",
+      "title": "Write comparison API documentation",
+      "status": "pending"
+    },
+    {
+      "id": "10.2",
+      "title": "Document merge strategies",
+      "status": "pending"
+    },
+    {
+      "id": "10.3",
+      "title": "Write conflict resolution guide",
+      "status": "pending"
+    },
+    {
+      "id": "10.4",
+      "title": "Add comparison examples",
+      "status": "pending"
+    }
+  ]
+}
