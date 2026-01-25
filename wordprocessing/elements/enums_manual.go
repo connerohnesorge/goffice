@@ -1,4 +1,3 @@
-// Package elements provides manually-defined enumerations and type aliases for WordprocessingML.
 //
 //nolint:revive // line-length-limit, max-public-structs - manual enums file
 package elements

@@ -1,7 +1,6 @@
 //revive:disable:file-length-limit chart data types need to be together
 //revive:disable:max-public-structs chart data has many public types
 
-// Package drawingml provides shared DrawingML types for shapes, images,
 // and effects.
 //
 // This file implements chart data reference types.

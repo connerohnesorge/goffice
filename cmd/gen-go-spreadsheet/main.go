@@ -1,5 +1,4 @@
 //nolint:revive // code generator entry point
-// Package main provides a code generator for SpreadsheetML elements.
 package main
 
 import (

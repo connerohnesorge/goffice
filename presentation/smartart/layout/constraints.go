@@ -1,4 +1,3 @@
-// Package layout provides automatic layout algorithms for SmartArt diagrams.
 package layout
 
 const (

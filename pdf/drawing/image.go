@@ -1,4 +1,3 @@
-// Package drawing provides image embedding for PDF output.
 // This file implements image handling with support for JPEG passthrough,
 // PNG handling with alpha channel support, and other image formats.
 

@@ -1,4 +1,3 @@
-// Package formula implements Excel formula evaluation engine.
 package formula
 
 import (

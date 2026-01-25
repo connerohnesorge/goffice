@@ -1,7 +1,6 @@
 //revive:disable:file-length-limit chart elements need to be together
 //revive:disable:max-public-structs chart elements have many public types
 
-// Package drawingml provides shared DrawingML types for shapes, images,
 // and effects.
 //
 // This file implements chart element types (Title, Legend, DataLabels, etc.).

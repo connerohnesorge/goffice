@@ -1,4 +1,3 @@
-// Package drawing provides DrawingML rendering tests.
 package drawing
 
 import (

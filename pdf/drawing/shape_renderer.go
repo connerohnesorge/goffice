@@ -1,4 +1,3 @@
-// Package drawing provides DrawingML rendering capabilities for PDF generation.
 package drawing
 
 import (

@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file contains tests for PivotField wrapper functionality.
 package spreadsheet
 

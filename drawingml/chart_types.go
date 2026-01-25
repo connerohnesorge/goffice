@@ -1,7 +1,6 @@
 //revive:disable:file-length-limit chart type definitions need to be together
 //revive:disable:max-public-structs chart types have many public structs
 
-// Package drawingml provides shared DrawingML types for shapes, images,
 // and effects.
 //
 // This file implements chart type structs (BarChart, LineChart, etc.).

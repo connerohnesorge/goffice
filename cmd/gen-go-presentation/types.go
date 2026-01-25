@@ -1,4 +1,3 @@
-// Package main provides a code generator for PresentationML elements.
 package main
 
 // SchemaType represents a type definition in the schema JSON.

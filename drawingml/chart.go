@@ -1,6 +1,5 @@
 //revive:disable:file-length-limit chart types need to be together
 
-// Package drawingml provides shared DrawingML types for shapes, images,
 // and effects.
 //
 // This file implements chart types for the DrawingML Chart namespace (c:).

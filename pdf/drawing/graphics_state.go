@@ -1,4 +1,3 @@
-// Package drawing provides graphics state management for PDF content streams.
 
 package drawing
 

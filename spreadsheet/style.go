@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file implements the high-level Style API with a fluent builder pattern.
 //
 //nolint:revive // file-length-limit: style builder API is cohesive

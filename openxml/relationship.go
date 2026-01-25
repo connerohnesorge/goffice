@@ -1,4 +1,3 @@
-// Package openxml provides the core framework for Office Open XML document processing.
 //
 //nolint:revive // Long lines required for OOXML relationship type URIs
 package openxml

@@ -1,4 +1,3 @@
-// Package drawing provides diagram rendering for PDF.
 package drawing
 
 import (

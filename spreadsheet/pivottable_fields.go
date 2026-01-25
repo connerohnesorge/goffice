@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file implements field management for PivotTable.
 package spreadsheet
 

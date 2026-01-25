@@ -1,4 +1,3 @@
-// Package packaging provides the OPC (Open Packaging Conventions) layer.
 package packaging
 
 import (

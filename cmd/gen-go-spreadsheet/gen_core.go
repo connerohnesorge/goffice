@@ -1,4 +1,3 @@
-// Package main provides a code generator for SpreadsheetML elements.
 package main
 
 import (

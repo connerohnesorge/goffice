@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file implements style and formatting for PivotTable.
 package spreadsheet
 

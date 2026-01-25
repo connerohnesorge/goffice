@@ -1,5 +1,3 @@
-// Package features provides the feature collection infrastructure for Office
-// Open XML. Features allow parts and elements to access shared services like
 // relationships, namespaces, and document-level settings.
 package features //nolint:revive // max-public-structs: interfaces.go defines many public types by design
 

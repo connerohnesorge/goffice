@@ -1,4 +1,3 @@
-// Package core provides PDF document creation and low-level PDF primitives.
 package core
 
 import "math"

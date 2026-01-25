@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file implements the PivotField wrapper for the PivotTable API.
 //
 //nolint:revive // file-length-limit: comprehensive pivot field implementation

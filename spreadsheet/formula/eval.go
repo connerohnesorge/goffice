@@ -1,5 +1,4 @@
 //nolint:all // formula package is scaffolding for future formula evaluation - WIP
-// Package formula provides formula parsing and evaluation for spreadsheets.
 package formula
 
 import (

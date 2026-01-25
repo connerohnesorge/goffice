@@ -1,6 +1,5 @@
 //revive:disable:file-length-limit comprehensive chart series implementation
 
-// Package drawingml provides shared DrawingML types for shapes, images,
 // and effects.
 //
 // This file implements chart series types.

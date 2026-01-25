@@ -1,4 +1,3 @@
-// Package drawing provides DrawingML fill rendering for PDF.
 package drawing
 
 import (

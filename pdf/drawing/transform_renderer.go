@@ -1,4 +1,3 @@
-// Package drawing provides transformation rendering for PDF.
 package drawing
 
 import (

@@ -1,4 +1,3 @@
-// Package openxml provides the core framework for Office Open XML document
 // processing.
 // This includes element types, features, and validation infrastructure shared
 // across all document types (Word, Excel, PowerPoint).

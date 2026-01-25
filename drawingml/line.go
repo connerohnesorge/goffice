@@ -1,4 +1,3 @@
-// Package drawingml provides shared DrawingML types for shapes, images,
 // and effects.
 //
 //nolint:revive // This file contains many public types for OOXML line elements.

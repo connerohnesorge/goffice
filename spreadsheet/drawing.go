@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file implements the high-level Drawing/Image API.
 package spreadsheet
 

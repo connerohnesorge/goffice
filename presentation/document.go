@@ -1,4 +1,3 @@
-// Package presentation provides PresentationML support for PowerPoint documents.
 // This file implements the document-level API for creating, reading,
 // and modifying .pptx files.
 //

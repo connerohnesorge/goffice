@@ -1,4 +1,3 @@
-// Package drawing provides clipping path operations for PDF content streams.
 
 package drawing
 

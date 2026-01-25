@@ -1,4 +1,3 @@
-// Package core provides integration tests for PDF document creation.
 package core
 
 import (

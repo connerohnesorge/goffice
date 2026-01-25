@@ -1,4 +1,3 @@
-// Package pdf provides the main API entry points for PDF rendering.
 package pdf
 
 import (

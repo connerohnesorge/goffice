@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file implements the high-level Sheet API for working with worksheets.
 //
 //nolint:revive // file-length-limit: comprehensive sheet API with all methods

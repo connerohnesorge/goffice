@@ -1,4 +1,3 @@
-// Package elements provides WordprocessingML element types.
 //
 //nolint:revive // file-length-limit: Drawing elements are cohesive and belong together in a single file.
 package elements

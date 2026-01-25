@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file implements the Shape type and shape-related methods.
 package spreadsheet
 

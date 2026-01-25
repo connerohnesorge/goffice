@@ -1,4 +1,3 @@
-// Package types provides simple value types for Office Open XML attributes.
 package types
 
 // SimpleValue is the base interface for all typed attribute values.

@@ -1,4 +1,3 @@
-// Package testutil provides testing utilities for the goffice SDK.
 package testutil
 
 import (

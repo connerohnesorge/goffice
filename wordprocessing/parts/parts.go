@@ -1,4 +1,3 @@
-// Package parts provides Word document part types.
 // Parts are the individual XML files within a .docx package, including
 // the main document, styles, settings, and other document components.
 //

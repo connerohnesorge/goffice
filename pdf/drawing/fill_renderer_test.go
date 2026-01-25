@@ -1,4 +1,3 @@
-// Package drawing provides fill rendering tests.
 package drawing
 
 import (

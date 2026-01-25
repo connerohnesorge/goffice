@@ -1,4 +1,3 @@
-// Package drawing provides integration tests for complete DrawingML rendering.
 package drawing
 
 import (

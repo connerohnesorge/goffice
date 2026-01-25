@@ -1,4 +1,3 @@
-// Package validation provides comment validation functions for Word documents.
 package validation
 
 import (

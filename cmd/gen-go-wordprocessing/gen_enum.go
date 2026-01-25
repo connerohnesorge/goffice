@@ -1,4 +1,3 @@
-// Package main provides a code generator for WordprocessingML elements.
 package main
 
 import (

@@ -1,4 +1,3 @@
-// Package openxml provides helper functions for traversing and querying
 // Open XML document element trees. This file contains generic utility functions
 // for working with Element and CompositeElement types, including:
 //

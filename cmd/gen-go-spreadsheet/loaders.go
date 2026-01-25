@@ -1,5 +1,4 @@
 //nolint:revive,gocritic // code generator with complex loading logic
-// Package main provides a code generator for SpreadsheetML elements.
 package main
 
 import (

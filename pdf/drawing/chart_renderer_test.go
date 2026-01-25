@@ -1,4 +1,3 @@
-// Package drawing provides chart rendering tests.
 package drawing
 
 import (

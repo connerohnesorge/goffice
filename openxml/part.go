@@ -1,4 +1,3 @@
-// Package openxml provides the core framework for Office Open XML
 // document processing.
 //
 //nolint:revive // file-length-limit: this file contains the core part types

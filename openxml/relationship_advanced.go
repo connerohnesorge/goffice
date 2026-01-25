@@ -1,4 +1,3 @@
-// Package openxml provides advanced relationship management capabilities.
 package openxml
 
 import (

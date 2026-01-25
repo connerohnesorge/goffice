@@ -1,4 +1,3 @@
-// Package elements provides manually-defined enumerations for SpreadsheetML.
 package elements
 
 import (

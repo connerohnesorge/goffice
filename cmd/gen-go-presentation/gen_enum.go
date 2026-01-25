@@ -1,4 +1,3 @@
-// Package main provides a code generator for PresentationML elements.
 package main
 
 import (

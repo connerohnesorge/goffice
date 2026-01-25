@@ -1,4 +1,3 @@
-// Package routing provides algorithms for routing connector paths between shapes.
 package routing
 
 import "github.com/connerohnesorge/goffice/drawingml"

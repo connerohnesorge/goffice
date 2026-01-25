@@ -1,4 +1,3 @@
-// Package elements provides common constants used across spreadsheet elements.
 package elements
 
 import "github.com/connerohnesorge/goffice/openxml"

@@ -1,4 +1,3 @@
-// Package drawing provides integration tests for PDF drawing operations.
 package drawing
 
 import (

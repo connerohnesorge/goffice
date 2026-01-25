@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 //
 //nolint:revive // file-length-limit: formula rewriting logic is cohesive
 package spreadsheet

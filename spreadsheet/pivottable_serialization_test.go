@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file tests PivotTable XML serialization.
 package spreadsheet
 

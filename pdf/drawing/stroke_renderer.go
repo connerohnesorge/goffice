@@ -1,4 +1,3 @@
-// Package drawing provides DrawingML stroke/line rendering for PDF.
 package drawing
 
 import (

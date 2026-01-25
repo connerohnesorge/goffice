@@ -1,6 +1,5 @@
 //revive:disable:file-length-limit axis types need to be together
 
-// Package drawingml provides shared DrawingML types for shapes, images,
 // and effects.
 //
 // This file implements chart axis types.

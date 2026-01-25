@@ -1,4 +1,3 @@
-// Package packaging provides the OPC (Open Packaging Conventions) layer.
 // OPC defines how Office Open XML documents are stored as ZIP-based packages
 // containing XML parts, relationships, and content types.
 //

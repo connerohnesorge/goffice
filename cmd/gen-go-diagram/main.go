@@ -1,4 +1,3 @@
-// Package main provides a code generator for Diagram elements.
 package main
 
 import (

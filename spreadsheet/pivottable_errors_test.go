@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file implements tests for PivotTable error handling and validation.
 package spreadsheet
 

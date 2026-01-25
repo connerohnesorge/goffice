@@ -1,4 +1,3 @@
-// Package drawing provides visual effects rendering for PDF.
 package drawing
 
 import (

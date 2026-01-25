@@ -1,4 +1,3 @@
-// Package drawingml provides shared DrawingML types.
 // This file implements extended chart types (Office 2016+).
 package drawingml
 

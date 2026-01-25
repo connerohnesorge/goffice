@@ -1,4 +1,3 @@
-// Package types provides simple value types for Office Open XML attributes.
 // These types handle the conversion between XML string representations
 // and Go native types (StringValue, Int32Value, BooleanValue, etc.).
 //

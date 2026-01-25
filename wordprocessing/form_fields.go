@@ -1,4 +1,3 @@
-// Package wordprocessing provides APIs for creating and manipulating Word documents.
 //
 //nolint:revive // file-length-limit: form fields implementation requires comprehensive coverage
 package wordprocessing

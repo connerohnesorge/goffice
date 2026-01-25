@@ -1,4 +1,3 @@
-// Package presentation provides PresentationML to PDF rendering capabilities.
 // It converts PowerPoint presentations (.pptx) to PDF format, handling slide layouts,
 // master slide inheritance, shapes, tables, charts, and various output modes.
 package presentation

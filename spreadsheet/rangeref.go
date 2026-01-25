@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 //
 //nolint:revive // file-length-limit: range reference logic is cohesive
 //nolint:gocritic // hugeParam: RangeRef uses value receivers for API consistency

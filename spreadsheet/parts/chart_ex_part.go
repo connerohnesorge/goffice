@@ -1,4 +1,3 @@
-// Package parts provides Excel document part types.
 // This file implements the extended chart part (Office 2016+).
 package parts
 

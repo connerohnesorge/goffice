@@ -1,4 +1,3 @@
-// Package drawing provides text-in-shape rendering for PDF.
 package drawing
 
 import (

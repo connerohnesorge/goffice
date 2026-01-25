@@ -1,4 +1,3 @@
-// Package spreadsheet provides SpreadsheetML support for Excel documents.
 // This file implements the document-level API for creating, reading,
 // and modifying .xlsx files.
 //

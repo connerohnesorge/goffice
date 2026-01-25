@@ -1,4 +1,3 @@
-// Package formula provides Excel function lexing and tokenization.
 package formula
 
 import (

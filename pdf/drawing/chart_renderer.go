@@ -1,4 +1,3 @@
-// Package drawing provides chart rendering for PDF.
 package drawing
 
 import (

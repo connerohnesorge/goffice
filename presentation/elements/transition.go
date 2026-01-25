@@ -1,4 +1,3 @@
-// Package elements provides PresentationML element types.
 //
 //nolint:revive // This file contains many public types for OOXML transition elements.
 package elements
