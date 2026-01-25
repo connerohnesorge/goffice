@@ -1102,7 +1102,7 @@ getFileExtension extracts the file extension from a filename.
 func init()
 ```
 
-Register audio content types.
+Register the DiagramColorsPart type.
 
 <a name="shouldUseStreamingForSize"></a>
 ## func shouldUseStreamingForSize

@@ -243,6 +243,7 @@ All part types are automatically registered with the openxml package's part type
 - [func ChartPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#ChartPartFactory>)
 - [func CommentsPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#CommentsPartFactory>)
 - [func CustomXmlPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#CustomXmlPartFactory>)
+- [func CustomXmlPropertiesPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#CustomXmlPropertiesPartFactory>)
 - [func DiagramColorsPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#DiagramColorsPartFactory>)
 - [func DiagramDataPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#DiagramDataPartFactory>)
 - [func DiagramLayoutDefinitionPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#DiagramLayoutDefinitionPartFactory>)
@@ -272,12 +273,26 @@ All part types are automatically registered with the openxml package's part type
 - [type CommentsPart](<#CommentsPart>)
   - [func newCommentsPart\(mainPart \*MainPart\) \(\*CommentsPart, error\)](<#newCommentsPart>)
   - [func \(cp \*CommentsPart\) AddComment\(author, text string\) \*elements.Comment](<#CommentsPart.AddComment>)
+  - [func \(cp \*CommentsPart\) AddCommentValidation\(comment \*elements.Comment\) error](<#CommentsPart.AddCommentValidation>)
+  - [func \(cp \*CommentsPart\) AddCommentWithParent\(author, text string, parentId int\) \(\*elements.Comment, error\)](<#CommentsPart.AddCommentWithParent>)
+  - [func \(cp \*CommentsPart\) AddReply\(parentComment \*elements.Comment, author, text string\) \(\*elements.Comment, error\)](<#CommentsPart.AddReply>)
   - [func \(cp \*CommentsPart\) Comments\(\) \*elements.Comments](<#CommentsPart.Comments>)
   - [func \(\*CommentsPart\) FixedContentType\(\) string](<#CommentsPart.FixedContentType>)
   - [func \(cp \*CommentsPart\) GetComment\(id int\) \*elements.Comment](<#CommentsPart.GetComment>)
+  - [func \(cp \*CommentsPart\) GetCommentHierarchy\(\) map\[int\]\[\]\*elements.Comment](<#CommentsPart.GetCommentHierarchy>)
+  - [func \(cp \*CommentsPart\) GetCommentThreads\(\) \[\]\*elements.CommentThread](<#CommentsPart.GetCommentThreads>)
+  - [func \(cp \*CommentsPart\) GetCommentWithValidation\(id int\) \(\*elements.Comment, error\)](<#CommentsPart.GetCommentWithValidation>)
+  - [func \(cp \*CommentsPart\) GetCommentsByAuthor\(author string\) \[\]\*elements.Comment](<#CommentsPart.GetCommentsByAuthor>)
+  - [func \(cp \*CommentsPart\) GetCommentsByDateRange\(from, to time.Time\) \[\]\*elements.Comment](<#CommentsPart.GetCommentsByDateRange>)
+  - [func \(cp \*CommentsPart\) GetCommentsByStatus\(resolved bool\) \[\]\*elements.Comment](<#CommentsPart.GetCommentsByStatus>)
   - [func \(cp \*CommentsPart\) GetOrCreateComments\(\) \*elements.Comments](<#CommentsPart.GetOrCreateComments>)
+  - [func \(cp \*CommentsPart\) GetResolvedComments\(\) \[\]\*elements.Comment](<#CommentsPart.GetResolvedComments>)
   - [func \(cp \*CommentsPart\) GetStream\(\) io.Reader](<#CommentsPart.GetStream>)
+  - [func \(cp \*CommentsPart\) GetThreadComments\(rootId int\) \[\]\*elements.Comment](<#CommentsPart.GetThreadComments>)
+  - [func \(cp \*CommentsPart\) GetUnresolvedComments\(\) \[\]\*elements.Comment](<#CommentsPart.GetUnresolvedComments>)
+  - [func \(cp \*CommentsPart\) MarkThreadResolved\(rootId int\) error](<#CommentsPart.MarkThreadResolved>)
   - [func \(cp \*CommentsPart\) RemoveComment\(id int\) bool](<#CommentsPart.RemoveComment>)
+  - [func \(cp \*CommentsPart\) ValidateCommentThread\(thread \*elements.CommentThread\) error](<#CommentsPart.ValidateCommentThread>)
   - [func \(cp \*CommentsPart\) initializeContent\(\)](<#CommentsPart.initializeContent>)
 - [type CustomXmlPart](<#CustomXmlPart>)
   - [func newCustomXmlPart\(mainPart \*MainPart\) \(\*CustomXmlPart, error\)](<#newCustomXmlPart>)
@@ -285,6 +300,12 @@ All part types are automatically registered with the openxml package's part type
   - [func \(cp \*CustomXmlPart\) GetXmlData\(\) \[\]byte](<#CustomXmlPart.GetXmlData>)
   - [func \(cp \*CustomXmlPart\) SetXmlData\(data \[\]byte\)](<#CustomXmlPart.SetXmlData>)
   - [func \(cp \*CustomXmlPart\) initializeContent\(\)](<#CustomXmlPart.initializeContent>)
+- [type CustomXmlPropertiesPart](<#CustomXmlPropertiesPart>)
+  - [func newCustomXmlPropertiesPart\(parent \*CustomXmlPart\) \(\*CustomXmlPropertiesPart, error\)](<#newCustomXmlPropertiesPart>)
+  - [func \(cp \*CustomXmlPropertiesPart\) GetStream\(\) io.Reader](<#CustomXmlPropertiesPart.GetStream>)
+  - [func \(cp \*CustomXmlPropertiesPart\) Properties\(\) \*elements.DatastoreItem](<#CustomXmlPropertiesPart.Properties>)
+  - [func \(cp \*CustomXmlPropertiesPart\) SetProperties\(props \*elements.DatastoreItem\) error](<#CustomXmlPropertiesPart.SetProperties>)
+  - [func \(cp \*CustomXmlPropertiesPart\) unmarshal\(v interface\{\}\) error](<#CustomXmlPropertiesPart.unmarshal>)
 - [type DiagramColorsPart](<#DiagramColorsPart>)
   - [func newDiagramColorsPart\(mainPart \*MainPart, uri string\) \(\*DiagramColorsPart, error\)](<#newDiagramColorsPart>)
   - [func \(dcp \*DiagramColorsPart\) ColorsDefinition\(\) \*diagram.ColorsDefinition](<#DiagramColorsPart.ColorsDefinition>)
@@ -480,6 +501,15 @@ const (
 const (
     ContentTypeCustomXml      = "application/xml"
     RelationshipTypeCustomXml = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXml"
+)
+```
+
+<a name="ContentTypeCustomXmlProperties"></a>Content type and relationship type for custom XML properties.
+
+```go
+const (
+    ContentTypeCustomXmlProperties      = "application/vnd.openxmlformats-officedocument.customXmlProperties+xml"
+    RelationshipTypeCustomXmlProperties = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXmlProps"
 )
 ```
 
@@ -697,6 +727,12 @@ var _ openxml.OpenXmlPart = (*CommentsPart)(nil)
 var _ openxml.OpenXmlPart = (*CustomXmlPart)(nil)
 ```
 
+<a name="_"></a>Ensure CustomXmlPropertiesPart implements OpenXmlPart.
+
+```go
+var _ openxml.OpenXmlPart = (*CustomXmlPropertiesPart)(nil)
+```
+
 <a name="_"></a>Ensure DiagramColorsPart implements OpenXmlPart.
 
 ```go
@@ -859,6 +895,15 @@ func CustomXmlPartFactory(uri string, container openxml.OpenXmlPartContainer) op
 ```
 
 CustomXmlPartFactory creates a CustomXmlPart from a URI and container.
+
+<a name="CustomXmlPropertiesPartFactory"></a>
+## func CustomXmlPropertiesPartFactory
+
+```go
+func CustomXmlPropertiesPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart
+```
+
+CustomXmlPropertiesPartFactory creates a CustomXmlPropertiesPart from a URI and container.
 
 <a name="DiagramColorsPartFactory"></a>
 ## func DiagramColorsPartFactory
@@ -1029,7 +1074,7 @@ WebSettingsPartFactory creates a WebSettingsPart from a URI and container.
 func init()
 ```
 
-Register the CommentsPart type.
+Register the HeaderPart and FooterPart types.
 
 <a name="itoaUint"></a>
 ## func itoaUint
@@ -1125,6 +1170,33 @@ func (cp *CommentsPart) AddComment(author, text string) *elements.Comment
 
 AddComment adds a new comment and returns it.
 
+<a name="CommentsPart.AddCommentValidation"></a>
+### func \(\*CommentsPart\) AddCommentValidation
+
+```go
+func (cp *CommentsPart) AddCommentValidation(comment *elements.Comment) error
+```
+
+AddCommentValidation adds validation results to comment metadata.
+
+<a name="CommentsPart.AddCommentWithParent"></a>
+### func \(\*CommentsPart\) AddCommentWithParent
+
+```go
+func (cp *CommentsPart) AddCommentWithParent(author, text string, parentId int) (*elements.Comment, error)
+```
+
+AddCommentWithParent adds a comment with optional parent ID.
+
+<a name="CommentsPart.AddReply"></a>
+### func \(\*CommentsPart\) AddReply
+
+```go
+func (cp *CommentsPart) AddReply(parentComment *elements.Comment, author, text string) (*elements.Comment, error)
+```
+
+AddReply adds a reply to an existing comment.
+
 <a name="CommentsPart.Comments"></a>
 ### func \(\*CommentsPart\) Comments
 
@@ -1152,6 +1224,60 @@ func (cp *CommentsPart) GetComment(id int) *elements.Comment
 
 GetComment returns the comment with the specified ID.
 
+<a name="CommentsPart.GetCommentHierarchy"></a>
+### func \(\*CommentsPart\) GetCommentHierarchy
+
+```go
+func (cp *CommentsPart) GetCommentHierarchy() map[int][]*elements.Comment
+```
+
+GetCommentHierarchy returns comments organized by thread hierarchy.
+
+<a name="CommentsPart.GetCommentThreads"></a>
+### func \(\*CommentsPart\) GetCommentThreads
+
+```go
+func (cp *CommentsPart) GetCommentThreads() []*elements.CommentThread
+```
+
+GetCommentThreads returns all comments organized into threads.
+
+<a name="CommentsPart.GetCommentWithValidation"></a>
+### func \(\*CommentsPart\) GetCommentWithValidation
+
+```go
+func (cp *CommentsPart) GetCommentWithValidation(id int) (*elements.Comment, error)
+```
+
+GetCommentWithValidation returns comment with validation status.
+
+<a name="CommentsPart.GetCommentsByAuthor"></a>
+### func \(\*CommentsPart\) GetCommentsByAuthor
+
+```go
+func (cp *CommentsPart) GetCommentsByAuthor(author string) []*elements.Comment
+```
+
+GetCommentsByAuthor returns all comments by a specific author.
+
+<a name="CommentsPart.GetCommentsByDateRange"></a>
+### func \(\*CommentsPart\) GetCommentsByDateRange
+
+```go
+func (cp *CommentsPart) GetCommentsByDateRange(from, to time.Time) []*elements.Comment
+```
+
+GetCommentsByDateRange returns comments within a date range.
+
+<a name="CommentsPart.GetCommentsByStatus"></a>
+### func \(\*CommentsPart\) GetCommentsByStatus
+
+```go
+func (cp *CommentsPart) GetCommentsByStatus(resolved bool) []*elements.Comment
+```
+
+GetCommentsByStatus returns comments by their resolved status.
+
 <a name="CommentsPart.GetOrCreateComments"></a>
 ### func \(\*CommentsPart\) GetOrCreateComments
 
@@ -1160,6 +1286,15 @@ func (cp *CommentsPart) GetOrCreateComments() *elements.Comments
 ```
 
 GetOrCreateComments returns the Comments element, creating if necessary.
+
+<a name="CommentsPart.GetResolvedComments"></a>
+### func \(\*CommentsPart\) GetResolvedComments
+
+```go
+func (cp *CommentsPart) GetResolvedComments() []*elements.Comment
+```
+
+GetResolvedComments returns all comments that are marked as done.
 
 <a name="CommentsPart.GetStream"></a>
 ### func \(\*CommentsPart\) GetStream
@@ -1170,6 +1305,33 @@ func (cp *CommentsPart) GetStream() io.Reader
 
 GetStream returns a reader for the part content.
 
+<a name="CommentsPart.GetThreadComments"></a>
+### func \(\*CommentsPart\) GetThreadComments
+
+```go
+func (cp *CommentsPart) GetThreadComments(rootId int) []*elements.Comment
+```
+
+GetThreadComments returns comments for a specific thread \(root \+ all replies\).
+
+<a name="CommentsPart.GetUnresolvedComments"></a>
+### func \(\*CommentsPart\) GetUnresolvedComments
+
+```go
+func (cp *CommentsPart) GetUnresolvedComments() []*elements.Comment
+```
+
+GetUnresolvedComments returns all comments that are not marked as done.
+
+<a name="CommentsPart.MarkThreadResolved"></a>
+### func \(\*CommentsPart\) MarkThreadResolved
+
+```go
+func (cp *CommentsPart) MarkThreadResolved(rootId int) error
+```
+
+MarkThreadResolved marks an entire thread as resolved.
+
 <a name="CommentsPart.RemoveComment"></a>
 ### func \(\*CommentsPart\) RemoveComment
 
@@ -1178,6 +1340,15 @@ func (cp *CommentsPart) RemoveComment(id int) bool
 ```
 
 RemoveComment removes the comment with the specified ID from the collection. Returns true if the comment was found and removed, false if not found.
+
+<a name="CommentsPart.ValidateCommentThread"></a>
+### func \(\*CommentsPart\) ValidateCommentThread
+
+```go
+func (cp *CommentsPart) ValidateCommentThread(thread *elements.CommentThread) error
+```
+
+ValidateCommentThread validates a complete comment thread structure.
 
 <a name="CommentsPart.initializeContent"></a>
 ### func \(\*CommentsPart\) initializeContent
@@ -1243,6 +1414,62 @@ func (cp *CustomXmlPart) initializeContent()
 ```
 
 initializeContent sets up minimal custom XML content.
+
+<a name="CustomXmlPropertiesPart"></a>
+## type CustomXmlPropertiesPart
+
+CustomXmlPropertiesPart represents a custom XML properties part.
+
+```go
+type CustomXmlPropertiesPart struct {
+    *openxml.OpenXmlPartData
+}
+```
+
+<a name="newCustomXmlPropertiesPart"></a>
+### func newCustomXmlPropertiesPart
+
+```go
+func newCustomXmlPropertiesPart(parent *CustomXmlPart) (*CustomXmlPropertiesPart, error)
+```
+
+newCustomXmlPropertiesPart creates a new custom XML properties part.
+
+<a name="CustomXmlPropertiesPart.GetStream"></a>
+### func \(\*CustomXmlPropertiesPart\) GetStream
+
+```go
+func (cp *CustomXmlPropertiesPart) GetStream() io.Reader
+```
+
+GetStream returns a reader for the part content.
+
+<a name="CustomXmlPropertiesPart.Properties"></a>
+### func \(\*CustomXmlPropertiesPart\) Properties
+
+```go
+func (cp *CustomXmlPropertiesPart) Properties() *elements.DatastoreItem
+```
+
+Properties returns the properties element.
+
+<a name="CustomXmlPropertiesPart.SetProperties"></a>
+### func \(\*CustomXmlPropertiesPart\) SetProperties
+
+```go
+func (cp *CustomXmlPropertiesPart) SetProperties(props *elements.DatastoreItem) error
+```
+
+SetProperties sets the properties element.
+
+<a name="CustomXmlPropertiesPart.unmarshal"></a>
+### func \(\*CustomXmlPropertiesPart\) unmarshal
+
+```go
+func (cp *CustomXmlPropertiesPart) unmarshal(v interface{}) error
+```
+
+unmarshal deserializes the part data into the given value.
 
 <a name="DiagramColorsPart"></a>
 ## type DiagramColorsPart

@@ -1102,7 +1102,7 @@ getFileExtension extracts the file extension from a filename.
 func init()
 ```
 
-Register the SlidePart type.
+Register the SlideMasterPart type.
 
 <a name="shouldUseStreamingForSize"></a>
 ## func shouldUseStreamingForSize

@@ -971,6 +971,15 @@ Data cell (1,1): Data 1-2
   - [func \(db \*DocumentBuilder\) BuildToBytes\(\) \(\[\]byte, error\)](<#DocumentBuilder.BuildToBytes>)
   - [func \(db \*DocumentBuilder\) SetAuthor\(\_ string\) \*DocumentBuilder](<#DocumentBuilder.SetAuthor>)
   - [func \(db \*DocumentBuilder\) SetTitle\(\_ string\) \*DocumentBuilder](<#DocumentBuilder.SetTitle>)
+- [type DocumentComparator](<#DocumentComparator>)
+  - [func NewDocumentComparator\(\) \*DocumentComparator](<#NewDocumentComparator>)
+  - [func \(dc \*DocumentComparator\) Compare\(doc1, doc2 \*Document\) \(\[\]compare.Diff, error\)](<#DocumentComparator.Compare>)
+- [type DocumentMerger](<#DocumentMerger>)
+  - [func NewDocumentMerger\(\) \*DocumentMerger](<#NewDocumentMerger>)
+  - [func \(dm \*DocumentMerger\) Merge\(base, other \*Document\) error](<#DocumentMerger.Merge>)
+  - [func \(dm \*DocumentMerger\) SetOptions\(options compare.MergeOptions\)](<#DocumentMerger.SetOptions>)
+  - [func \(dm \*DocumentMerger\) SetStrategy\(strategy compare.MergeStrategy\)](<#DocumentMerger.SetStrategy>)
+  - [func \(dm \*DocumentMerger\) ThreeWayMerge\(base, ours, theirs \*Document\) \(\[\]compare.Conflict, error\)](<#DocumentMerger.ThreeWayMerge>)
 - [type FileFormatVersion](<#FileFormatVersion>)
 - [type FormField](<#FormField>)
   - [func InsertCheckBox\(p \*elements.Paragraph, name string, checked bool\) \*FormField](<#InsertCheckBox>)
@@ -1860,6 +1869,91 @@ func (db *DocumentBuilder) SetTitle(_ string) *DocumentBuilder
 ```
 
 SetTitle sets the document title \(for core properties\).
+
+<a name="DocumentComparator"></a>
+## type DocumentComparator
+
+DocumentComparator compares two Word documents.
+
+```go
+type DocumentComparator struct {
+    comparator compare.Comparator
+}
+```
+
+<a name="NewDocumentComparator"></a>
+### func NewDocumentComparator
+
+```go
+func NewDocumentComparator() *DocumentComparator
+```
+
+NewDocumentComparator creates a new DocumentComparator.
+
+<a name="DocumentComparator.Compare"></a>
+### func \(\*DocumentComparator\) Compare
+
+```go
+func (dc *DocumentComparator) Compare(doc1, doc2 *Document) ([]compare.Diff, error)
+```
+
+Compare compares two documents and returns the differences.
+
+<a name="DocumentMerger"></a>
+## type DocumentMerger
+
+DocumentMerger merges Word documents.
+
+```go
+type DocumentMerger struct {
+    merger compare.Merger
+}
+```
+
+<a name="NewDocumentMerger"></a>
+### func NewDocumentMerger
+
+```go
+func NewDocumentMerger() *DocumentMerger
+```
+
+NewDocumentMerger creates a new DocumentMerger.
+
+<a name="DocumentMerger.Merge"></a>
+### func \(\*DocumentMerger\) Merge
+
+```go
+func (dm *DocumentMerger) Merge(base, other *Document) error
+```
+
+Merge merges 'other' into 'base'. The 'base' document is modified in place.
+
+<a name="DocumentMerger.SetOptions"></a>
+### func \(\*DocumentMerger\) SetOptions
+
+```go
+func (dm *DocumentMerger) SetOptions(options compare.MergeOptions)
+```
+
+SetOptions sets the merge options.
+
+<a name="DocumentMerger.SetStrategy"></a>
+### func \(\*DocumentMerger\) SetStrategy
+
+```go
+func (dm *DocumentMerger) SetStrategy(strategy compare.MergeStrategy)
+```
+
+SetStrategy sets the merge strategy.
+
+<a name="DocumentMerger.ThreeWayMerge"></a>
+### func \(\*DocumentMerger\) ThreeWayMerge
+
+```go
+func (dm *DocumentMerger) ThreeWayMerge(base, ours, theirs *Document) ([]compare.Conflict, error)
+```
+
+ThreeWayMerge merges 'ours' and 'theirs' into 'base'. Currently, this modifies 'base' in place to reflect the merge result. It returns the list of conflicts found.
 
 <a name="FileFormatVersion"></a>
 ## type FileFormatVersion

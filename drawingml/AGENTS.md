@@ -26,6 +26,8 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
 
 This file contains chart enumeration types used across chart files.
 
+Package drawingml provides shared DrawingML types. This file implements extended chart types \(Office 2016\+\).
+
 Package drawingml provides shared DrawingML types for shapes, images, and effects.
 
 This file implements chart series types.
@@ -109,6 +111,16 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
 - [func UnitsToPercent\(units int\) float64](<#UnitsToPercent>)
 - [func colorToHex\(r, g, b uint8\) string](<#colorToHex>)
 - [func formatUint32\(val uint32\) string](<#formatUint32>)
+- [type AlphaBiLevelEffect](<#AlphaBiLevelEffect>)
+  - [func NewAlphaBiLevelEffect\(thresh int\) \*AlphaBiLevelEffect](<#NewAlphaBiLevelEffect>)
+  - [func \(a \*AlphaBiLevelEffect\) SetThreshold\(thresh int\)](<#AlphaBiLevelEffect.SetThreshold>)
+  - [func \(a \*AlphaBiLevelEffect\) Threshold\(\) int](<#AlphaBiLevelEffect.Threshold>)
+- [type AlphaFixedEffect](<#AlphaFixedEffect>)
+  - [func NewAlphaFixedEffect\(amt int\) \*AlphaFixedEffect](<#NewAlphaFixedEffect>)
+  - [func \(a \*AlphaFixedEffect\) Amount\(\) int](<#AlphaFixedEffect.Amount>)
+  - [func \(a \*AlphaFixedEffect\) SetAmount\(amt int\)](<#AlphaFixedEffect.SetAmount>)
+- [type AlphaModulationEffect](<#AlphaModulationEffect>)
+  - [func NewAlphaModulationEffect\(\) \*AlphaModulationEffect](<#NewAlphaModulationEffect>)
 - [type Area3DChart](<#Area3DChart>)
   - [func NewArea3DChart\(grouping GroupingValue\) \*Area3DChart](<#NewArea3DChart>)
   - [func \(ac \*Area3DChart\) AddAxisID\(axisID uint32\)](<#Area3DChart.AddAxisID>)
@@ -126,6 +138,8 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(s \*AreaChartSeries\) SetValues\(values \*Values\)](<#AreaChartSeries.SetValues>)
 - [type AutoNumberSchemeValue](<#AutoNumberSchemeValue>)
 - [type AxisPositionValue](<#AxisPositionValue>)
+- [type Backdrop](<#Backdrop>)
+  - [func NewBackdrop\(\) \*Backdrop](<#NewBackdrop>)
 - [type Bar3DChart](<#Bar3DChart>)
   - [func NewBar3DChart\(direction BarDirectionValue, grouping BarGroupingValue\) \*Bar3DChart](<#NewBar3DChart>)
   - [func \(bc \*Bar3DChart\) AddAxisID\(axisID uint32\)](<#Bar3DChart.AddAxisID>)
@@ -151,11 +165,42 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(s \*BarChartSeries\) insertAfterOrder\(elem openxml.Element\)](<#BarChartSeries.insertAfterOrder>)
 - [type BarDirectionValue](<#BarDirectionValue>)
 - [type BarGroupingValue](<#BarGroupingValue>)
+- [type Bevel](<#Bevel>)
+  - [func NewBevel\(name string\) \*Bevel](<#NewBevel>)
+  - [func \(b \*Bevel\) Height\(\) EMU](<#Bevel.Height>)
+  - [func \(b \*Bevel\) Preset\(\) string](<#Bevel.Preset>)
+  - [func \(b \*Bevel\) SetHeight\(h EMU\)](<#Bevel.SetHeight>)
+  - [func \(b \*Bevel\) SetPreset\(p string\)](<#Bevel.SetPreset>)
+  - [func \(b \*Bevel\) SetWidth\(w EMU\)](<#Bevel.SetWidth>)
+  - [func \(b \*Bevel\) Width\(\) EMU](<#Bevel.Width>)
+- [type BiLevelEffect](<#BiLevelEffect>)
+  - [func NewBiLevelEffect\(thresh int\) \*BiLevelEffect](<#NewBiLevelEffect>)
+  - [func \(b \*BiLevelEffect\) SetThreshold\(thresh int\)](<#BiLevelEffect.SetThreshold>)
+  - [func \(b \*BiLevelEffect\) Threshold\(\) int](<#BiLevelEffect.Threshold>)
 - [type BlackWhiteMode](<#BlackWhiteMode>)
 - [type BlendModeValue](<#BlendModeValue>)
+- [type Blip](<#Blip>)
+  - [func NewBlip\(\) \*Blip](<#NewBlip>)
+  - [func \(b \*Blip\) AddAlphaBiLevelEffect\(thresh int\)](<#Blip.AddAlphaBiLevelEffect>)
+  - [func \(b \*Blip\) AddAlphaFixedEffect\(amt int\)](<#Blip.AddAlphaFixedEffect>)
+  - [func \(b \*Blip\) AddAlphaModulationEffect\(container \*openxml.CompositeElementBase\)](<#Blip.AddAlphaModulationEffect>)
+  - [func \(b \*Blip\) AddBiLevelEffect\(thresh int\)](<#Blip.AddBiLevelEffect>)
+  - [func \(b \*Blip\) AddGrayscaleEffect\(\)](<#Blip.AddGrayscaleEffect>)
+  - [func \(b \*Blip\) AddHSLEffect\(hue, sat, lum int\)](<#Blip.AddHSLEffect>)
+  - [func \(b \*Blip\) AddLuminanceEffect\(bright, contrast int\)](<#Blip.AddLuminanceEffect>)
+  - [func \(b \*Blip\) Clone\(\) openxml.Element](<#Blip.Clone>)
+  - [func \(b \*Blip\) CompressionState\(\) BlipCompression](<#Blip.CompressionState>)
+  - [func \(b \*Blip\) Embed\(\) string](<#Blip.Embed>)
+  - [func \(b \*Blip\) Link\(\) string](<#Blip.Link>)
+  - [func \(b \*Blip\) SetCompressionState\(state BlipCompression\)](<#Blip.SetCompressionState>)
+  - [func \(b \*Blip\) SetEmbed\(embedId string\)](<#Blip.SetEmbed>)
+  - [func \(b \*Blip\) SetLink\(linkId string\)](<#Blip.SetLink>)
+- [type BlipCompression](<#BlipCompression>)
 - [type BlipFill](<#BlipFill>)
   - [func NewBlipFill\(\) \*BlipFill](<#NewBlipFill>)
   - [func NewBlipFillWithEmbed\(embedId string\) \*BlipFill](<#NewBlipFillWithEmbed>)
+  - [func \(b \*BlipFill\) Blip\(\) \*Blip](<#BlipFill.Blip>)
+  - [func \(b \*BlipFill\) ClearSourceRect\(\)](<#BlipFill.ClearSourceRect>)
   - [func \(b \*BlipFill\) Clone\(\) openxml.Element](<#BlipFill.Clone>)
   - [func \(b \*BlipFill\) Dpi\(\) int](<#BlipFill.Dpi>)
   - [func \(b \*BlipFill\) Embed\(\) string](<#BlipFill.Embed>)
@@ -163,8 +208,10 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(b \*BlipFill\) SetDpi\(dpi int\)](<#BlipFill.SetDpi>)
   - [func \(b \*BlipFill\) SetEmbed\(embedId string\)](<#BlipFill.SetEmbed>)
   - [func \(b \*BlipFill\) SetRotateWithShape\(rotate bool\)](<#BlipFill.SetRotateWithShape>)
+  - [func \(b \*BlipFill\) SetSourceRect\(rect SourceRect\)](<#BlipFill.SetSourceRect>)
   - [func \(b \*BlipFill\) SetStretch\(\)](<#BlipFill.SetStretch>)
   - [func \(b \*BlipFill\) SetTile\(alignment RectAlignValue, flip TileFlipValue\)](<#BlipFill.SetTile>)
+  - [func \(b \*BlipFill\) SourceRect\(\) \*SourceRect](<#BlipFill.SourceRect>)
 - [type Blur](<#Blur>)
   - [func NewBlur\(radius EMU\) \*Blur](<#NewBlur>)
   - [func \(b \*Blur\) Clone\(\) openxml.Element](<#Blur.Clone>)
@@ -187,6 +234,16 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func NewBubbleSize\(\) \*BubbleSize](<#NewBubbleSize>)
   - [func \(b \*BubbleSize\) Clone\(\) openxml.Element](<#BubbleSize.Clone>)
   - [func \(b \*BubbleSize\) SetNumberReference\(formula string\)](<#BubbleSize.SetNumberReference>)
+- [type Camera](<#Camera>)
+  - [func NewCamera\(\) \*Camera](<#NewCamera>)
+  - [func \(c \*Camera\) FieldOfView\(\) int](<#Camera.FieldOfView>)
+  - [func \(c \*Camera\) Preset\(\) string](<#Camera.Preset>)
+  - [func \(c \*Camera\) Rotation\(\) \*Rotation3D](<#Camera.Rotation>)
+  - [func \(c \*Camera\) SetFieldOfView\(fov int\)](<#Camera.SetFieldOfView>)
+  - [func \(c \*Camera\) SetPreset\(p string\)](<#Camera.SetPreset>)
+  - [func \(c \*Camera\) SetRotation\(r \*Rotation3D\)](<#Camera.SetRotation>)
+  - [func \(c \*Camera\) SetZoom\(z int\)](<#Camera.SetZoom>)
+  - [func \(c \*Camera\) Zoom\(\) int](<#Camera.Zoom>)
 - [type CapValue](<#CapValue>)
 - [type CategoryAxis](<#CategoryAxis>)
   - [func NewCategoryAxis\(axisID, crossAxisID uint32\) \*CategoryAxis](<#NewCategoryAxis>)
@@ -218,6 +275,14 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(c \*Chart\) SetTitle\(title \*Title\)](<#Chart.SetTitle>)
   - [func \(c \*Chart\) Title\(\) \*Title](<#Chart.Title>)
   - [func \(c \*Chart\) insertAfterTitle\(elem openxml.Element\)](<#Chart.insertAfterTitle>)
+- [type ChartData](<#ChartData>)
+  - [func NewChartData\(\) \*ChartData](<#NewChartData>)
+- [type ChartDataBinding](<#ChartDataBinding>)
+- [type ChartElement](<#ChartElement>)
+- [type ChartEx](<#ChartEx>)
+  - [func NewChartEx\(\) \*ChartEx](<#NewChartEx>)
+  - [func \(c \*ChartEx\) SetPlotArea\(pa \*PlotAreaEx\)](<#ChartEx.SetPlotArea>)
+- [type ChartNumericBinding](<#ChartNumericBinding>)
 - [type ChartShapeProperties](<#ChartShapeProperties>)
   - [func NewChartShapeProperties\(\) \*ChartShapeProperties](<#NewChartShapeProperties>)
   - [func \(c \*ChartShapeProperties\) Clone\(\) openxml.Element](<#ChartShapeProperties.Clone>)
@@ -239,8 +304,45 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(cs \*ChartSpace\) insertBeforeChart\(elem openxml.Element\)](<#ChartSpace.insertBeforeChart>)
   - [func \(cs \*ChartSpace\) prependElement\(elem openxml.Element\)](<#ChartSpace.prependElement>)
   - [func \(cs \*ChartSpace\) removeElement\(localName string\)](<#ChartSpace.removeElement>)
+- [type ChartSpaceEx](<#ChartSpaceEx>)
+  - [func NewChartSpaceEx\(\) \*ChartSpaceEx](<#NewChartSpaceEx>)
+- [type ChartStringBinding](<#ChartStringBinding>)
+- [type ChartText](<#ChartText>)
+  - [func NewChartText\(name string\) \*ChartText](<#NewChartText>)
+  - [func \(ct \*ChartText\) Clone\(\) openxml.Element](<#ChartText.Clone>)
 - [type ColorTransformationType](<#ColorTransformationType>)
 - [type CompoundLineValue](<#CompoundLineValue>)
+- [type Connection](<#Connection>)
+  - [func NewConnection\(name string, id string, idx int\) \*Connection](<#NewConnection>)
+  - [func \(c \*Connection\) Id\(\) string](<#Connection.Id>)
+  - [func \(c \*Connection\) Index\(\) int](<#Connection.Index>)
+  - [func \(c \*Connection\) SetId\(id string\)](<#Connection.SetId>)
+  - [func \(c \*Connection\) SetIndex\(idx int\)](<#Connection.SetIndex>)
+- [type ConnectorLocks](<#ConnectorLocks>)
+  - [func NewConnectorLocks\(\) \*ConnectorLocks](<#NewConnectorLocks>)
+  - [func \(s \*ConnectorLocks\) Clone\(\) openxml.Element](<#ConnectorLocks.Clone>)
+  - [func \(s \*ConnectorLocks\) NoAdjustHandles\(\) bool](<#ConnectorLocks.NoAdjustHandles>)
+  - [func \(s \*ConnectorLocks\) NoChangeArrowheads\(\) bool](<#ConnectorLocks.NoChangeArrowheads>)
+  - [func \(s \*ConnectorLocks\) NoChangeAspect\(\) bool](<#ConnectorLocks.NoChangeAspect>)
+  - [func \(s \*ConnectorLocks\) NoChangeShapeType\(\) bool](<#ConnectorLocks.NoChangeShapeType>)
+  - [func \(s \*ConnectorLocks\) NoEditPoints\(\) bool](<#ConnectorLocks.NoEditPoints>)
+  - [func \(s \*ConnectorLocks\) NoGrouping\(\) bool](<#ConnectorLocks.NoGrouping>)
+  - [func \(s \*ConnectorLocks\) NoMove\(\) bool](<#ConnectorLocks.NoMove>)
+  - [func \(s \*ConnectorLocks\) NoResize\(\) bool](<#ConnectorLocks.NoResize>)
+  - [func \(s \*ConnectorLocks\) NoRotation\(\) bool](<#ConnectorLocks.NoRotation>)
+  - [func \(s \*ConnectorLocks\) NoSelection\(\) bool](<#ConnectorLocks.NoSelection>)
+  - [func \(s \*ConnectorLocks\) SetNoAdjustHandles\(lock bool\)](<#ConnectorLocks.SetNoAdjustHandles>)
+  - [func \(s \*ConnectorLocks\) SetNoChangeArrowheads\(lock bool\)](<#ConnectorLocks.SetNoChangeArrowheads>)
+  - [func \(s \*ConnectorLocks\) SetNoChangeAspect\(lock bool\)](<#ConnectorLocks.SetNoChangeAspect>)
+  - [func \(s \*ConnectorLocks\) SetNoChangeShapeType\(lock bool\)](<#ConnectorLocks.SetNoChangeShapeType>)
+  - [func \(s \*ConnectorLocks\) SetNoEditPoints\(lock bool\)](<#ConnectorLocks.SetNoEditPoints>)
+  - [func \(s \*ConnectorLocks\) SetNoGrouping\(lock bool\)](<#ConnectorLocks.SetNoGrouping>)
+  - [func \(s \*ConnectorLocks\) SetNoMove\(lock bool\)](<#ConnectorLocks.SetNoMove>)
+  - [func \(s \*ConnectorLocks\) SetNoResize\(lock bool\)](<#ConnectorLocks.SetNoResize>)
+  - [func \(s \*ConnectorLocks\) SetNoRotation\(lock bool\)](<#ConnectorLocks.SetNoRotation>)
+  - [func \(s \*ConnectorLocks\) SetNoSelection\(lock bool\)](<#ConnectorLocks.SetNoSelection>)
+  - [func \(s \*ConnectorLocks\) getBoolAttr\(name string, defaultVal bool\) bool](<#ConnectorLocks.getBoolAttr>)
+  - [func \(s \*ConnectorLocks\) setBoolAttr\(name string, value, defaultVal bool\)](<#ConnectorLocks.setBoolAttr>)
 - [type CrossesValue](<#CrossesValue>)
 - [type CustomGeometry](<#CustomGeometry>)
   - [func NewCustomGeometry\(\) \*CustomGeometry](<#NewCustomGeometry>)
@@ -250,18 +352,33 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(c \*CustomGeometry\) Clone\(\) openxml.Element](<#CustomGeometry.Clone>)
   - [func \(c \*CustomGeometry\) PathList\(\) \*PathList](<#CustomGeometry.PathList>)
   - [func \(c \*CustomGeometry\) SetRectangle\(left, top, right, bottom string\)](<#CustomGeometry.SetRectangle>)
+- [type DataLabelPositionValue](<#DataLabelPositionValue>)
+- [type DataLabelProvider](<#DataLabelProvider>)
 - [type DataLabels](<#DataLabels>)
   - [func NewDataLabels\(\) \*DataLabels](<#NewDataLabels>)
   - [func \(d \*DataLabels\) Clone\(\) openxml.Element](<#DataLabels.Clone>)
+  - [func \(d \*DataLabels\) SetNumberFormat\(formatCode string, sourceLinked bool\)](<#DataLabels.SetNumberFormat>)
+  - [func \(d \*DataLabels\) SetPosition\(pos DataLabelPositionValue\)](<#DataLabels.SetPosition>)
+  - [func \(d \*DataLabels\) SetShapeProperties\(props \*ChartShapeProperties\)](<#DataLabels.SetShapeProperties>)
   - [func \(d \*DataLabels\) SetShowCategoryName\(show bool\)](<#DataLabels.SetShowCategoryName>)
   - [func \(d \*DataLabels\) SetShowLegendKey\(show bool\)](<#DataLabels.SetShowLegendKey>)
   - [func \(d \*DataLabels\) SetShowPercent\(show bool\)](<#DataLabels.SetShowPercent>)
   - [func \(d \*DataLabels\) SetShowSeriesName\(show bool\)](<#DataLabels.SetShowSeriesName>)
   - [func \(d \*DataLabels\) SetShowValue\(show bool\)](<#DataLabels.SetShowValue>)
+  - [func \(d \*DataLabels\) SetTextProperties\(props \*ChartText\)](<#DataLabels.SetTextProperties>)
 - [type DataPoint](<#DataPoint>)
   - [func NewDataPoint\(index uint32\) \*DataPoint](<#NewDataPoint>)
   - [func \(d \*DataPoint\) Clone\(\) openxml.Element](<#DataPoint.Clone>)
   - [func \(d \*DataPoint\) SetShapeProperties\(props \*ChartShapeProperties\)](<#DataPoint.SetShapeProperties>)
+- [type DataTable](<#DataTable>)
+  - [func NewDataTable\(\) \*DataTable](<#NewDataTable>)
+  - [func \(d \*DataTable\) Clone\(\) openxml.Element](<#DataTable.Clone>)
+  - [func \(d \*DataTable\) SetShapeProperties\(props \*ChartShapeProperties\)](<#DataTable.SetShapeProperties>)
+  - [func \(d \*DataTable\) SetShowHorizontalBorder\(show bool\)](<#DataTable.SetShowHorizontalBorder>)
+  - [func \(d \*DataTable\) SetShowKeys\(show bool\)](<#DataTable.SetShowKeys>)
+  - [func \(d \*DataTable\) SetShowOutline\(show bool\)](<#DataTable.SetShowOutline>)
+  - [func \(d \*DataTable\) SetShowVerticalBorder\(show bool\)](<#DataTable.SetShowVerticalBorder>)
+  - [func \(d \*DataTable\) SetTextProperties\(props \*ChartText\)](<#DataTable.SetTextProperties>)
 - [type DateAxis](<#DateAxis>)
   - [func NewDateAxis\(axisID, crossAxisID uint32\) \*DateAxis](<#NewDateAxis>)
   - [func \(ax \*DateAxis\) AxisID\(\) uint32](<#DateAxis.AxisID>)
@@ -394,10 +511,20 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(g \*GradientStop\) Position\(\) int](<#GradientStop.Position>)
   - [func \(g \*GradientStop\) PositionPercent\(\) float64](<#GradientStop.PositionPercent>)
   - [func \(g \*GradientStop\) SetPosition\(position int\)](<#GradientStop.SetPosition>)
+- [type GrayscaleEffect](<#GrayscaleEffect>)
+  - [func NewGrayscaleEffect\(\) \*GrayscaleEffect](<#NewGrayscaleEffect>)
 - [type GroupFill](<#GroupFill>)
   - [func NewGroupFill\(\) \*GroupFill](<#NewGroupFill>)
   - [func \(f \*GroupFill\) Clone\(\) openxml.Element](<#GroupFill.Clone>)
 - [type GroupingValue](<#GroupingValue>)
+- [type HSLEffect](<#HSLEffect>)
+  - [func NewHSLEffect\(hue, sat, lum int\) \*HSLEffect](<#NewHSLEffect>)
+  - [func \(h \*HSLEffect\) Hue\(\) int](<#HSLEffect.Hue>)
+  - [func \(h \*HSLEffect\) Luminance\(\) int](<#HSLEffect.Luminance>)
+  - [func \(h \*HSLEffect\) Saturation\(\) int](<#HSLEffect.Saturation>)
+  - [func \(h \*HSLEffect\) SetHue\(hue int\)](<#HSLEffect.SetHue>)
+  - [func \(h \*HSLEffect\) SetLuminance\(lum int\)](<#HSLEffect.SetLuminance>)
+  - [func \(h \*HSLEffect\) SetSaturation\(sat int\)](<#HSLEffect.SetSaturation>)
 - [type HslColor](<#HslColor>)
   - [func NewHslColor\(hue, sat, lum int\) \*HslColor](<#NewHslColor>)
   - [func NewHslColorFromDegrees\(hueDegrees float64, satPercent, lumPercent float64\) \*HslColor](<#NewHslColorFromDegrees>)
@@ -436,9 +563,20 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func NewLegendWithPosition\(pos LegendPositionValue\) \*Legend](<#NewLegendWithPosition>)
   - [func \(l \*Legend\) Clone\(\) openxml.Element](<#Legend.Clone>)
   - [func \(l \*Legend\) Position\(\) LegendPositionValue](<#Legend.Position>)
+  - [func \(l \*Legend\) SetLayout\(layout \*Layout\)](<#Legend.SetLayout>)
   - [func \(l \*Legend\) SetOverlay\(overlay bool\)](<#Legend.SetOverlay>)
   - [func \(l \*Legend\) SetPosition\(pos LegendPositionValue\)](<#Legend.SetPosition>)
+  - [func \(l \*Legend\) SetShapeProperties\(props \*ChartShapeProperties\)](<#Legend.SetShapeProperties>)
+  - [func \(l \*Legend\) SetTextProperties\(props \*ChartText\)](<#Legend.SetTextProperties>)
 - [type LegendPositionValue](<#LegendPositionValue>)
+- [type LightRig](<#LightRig>)
+  - [func NewLightRig\(\) \*LightRig](<#NewLightRig>)
+  - [func \(l \*LightRig\) Direction\(\) string](<#LightRig.Direction>)
+  - [func \(l \*LightRig\) Rig\(\) string](<#LightRig.Rig>)
+  - [func \(l \*LightRig\) Rotation\(\) \*Rotation3D](<#LightRig.Rotation>)
+  - [func \(l \*LightRig\) SetDirection\(d string\)](<#LightRig.SetDirection>)
+  - [func \(l \*LightRig\) SetRig\(r string\)](<#LightRig.SetRig>)
+  - [func \(l \*LightRig\) SetRotation\(r \*Rotation3D\)](<#LightRig.SetRotation>)
 - [type Line3DChart](<#Line3DChart>)
   - [func NewLine3DChart\(grouping GroupingValue\) \*Line3DChart](<#NewLine3DChart>)
   - [func \(lc \*Line3DChart\) AddAxisID\(axisID uint32\)](<#Line3DChart.AddAxisID>)
@@ -511,6 +649,12 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(l \*LineProperties\) removeDash\(\)](<#LineProperties.removeDash>)
   - [func \(l \*LineProperties\) removeFill\(\)](<#LineProperties.removeFill>)
   - [func \(l \*LineProperties\) removeJoin\(\)](<#LineProperties.removeJoin>)
+- [type LuminanceEffect](<#LuminanceEffect>)
+  - [func NewLuminanceEffect\(bright, contrast int\) \*LuminanceEffect](<#NewLuminanceEffect>)
+  - [func \(l \*LuminanceEffect\) Brightness\(\) int](<#LuminanceEffect.Brightness>)
+  - [func \(l \*LuminanceEffect\) Contrast\(\) int](<#LuminanceEffect.Contrast>)
+  - [func \(l \*LuminanceEffect\) SetBrightness\(bright int\)](<#LuminanceEffect.SetBrightness>)
+  - [func \(l \*LuminanceEffect\) SetContrast\(contrast int\)](<#LuminanceEffect.SetContrast>)
 - [type Marker](<#Marker>)
   - [func NewMarker\(\) \*Marker](<#NewMarker>)
   - [func NewMarkerWithStyle\(style MarkerStyleValue\) \*Marker](<#NewMarkerWithStyle>)
@@ -658,9 +802,16 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(pa \*PlotArea\) AddValueAxis\(axisID, crossAxisID uint32\) \*ValueAxis](<#PlotArea.AddValueAxis>)
   - [func \(pa \*PlotArea\) Clone\(\) openxml.Element](<#PlotArea.Clone>)
   - [func \(pa \*PlotArea\) Layout\(\) \*Layout](<#PlotArea.Layout>)
+  - [func \(pa \*PlotArea\) SetDataTable\(dt \*DataTable\)](<#PlotArea.SetDataTable>)
   - [func \(pa \*PlotArea\) SetLayout\(layout \*Layout\)](<#PlotArea.SetLayout>)
   - [func \(pa \*PlotArea\) SetShapeProperties\(props \*ChartShapeProperties\)](<#PlotArea.SetShapeProperties>)
   - [func \(pa \*PlotArea\) ShapeProperties\(\) \*ChartShapeProperties](<#PlotArea.ShapeProperties>)
+- [type PlotAreaEx](<#PlotAreaEx>)
+  - [func NewPlotAreaEx\(\) \*PlotAreaEx](<#NewPlotAreaEx>)
+  - [func \(pa \*PlotAreaEx\) AddPlotAreaRegion\(region \*PlotAreaRegion\)](<#PlotAreaEx.AddPlotAreaRegion>)
+- [type PlotAreaRegion](<#PlotAreaRegion>)
+  - [func NewPlotAreaRegion\(\) \*PlotAreaRegion](<#NewPlotAreaRegion>)
+  - [func \(par \*PlotAreaRegion\) AddSeries\(series \*SeriesEx\)](<#PlotAreaRegion.AddSeries>)
 - [type Point2D](<#Point2D>)
   - [func NewPoint2D\(x, y EMU\) Point2D](<#NewPoint2D>)
   - [func NewPoint2DFromCm\(x, y float64\) Point2D](<#NewPoint2DFromCm>)
@@ -752,9 +903,18 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(c \*RgbColor\) SetValue\(hex string\)](<#RgbColor.SetValue>)
   - [func \(c \*RgbColor\) Value\(\) string](<#RgbColor.Value>)
   - [func \(c \*RgbColor\) addTransformation\(name string, value int\)](<#RgbColor.addTransformation>)
+- [type Rotation3D](<#Rotation3D>)
+  - [func NewRotation3D\(\) \*Rotation3D](<#NewRotation3D>)
+  - [func \(r \*Rotation3D\) Lat\(\) int](<#Rotation3D.Lat>)
+  - [func \(r \*Rotation3D\) Lon\(\) int](<#Rotation3D.Lon>)
+  - [func \(r \*Rotation3D\) Rev\(\) int](<#Rotation3D.Rev>)
+  - [func \(r \*Rotation3D\) SetLat\(lat int\)](<#Rotation3D.SetLat>)
+  - [func \(r \*Rotation3D\) SetLon\(lon int\)](<#Rotation3D.SetLon>)
+  - [func \(r \*Rotation3D\) SetRev\(rev int\)](<#Rotation3D.SetRev>)
 - [type Scaling](<#Scaling>)
   - [func NewScaling\(\) \*Scaling](<#NewScaling>)
   - [func \(s \*Scaling\) Clone\(\) openxml.Element](<#Scaling.Clone>)
+  - [func \(s \*Scaling\) SetLogBase\(val float64\)](<#Scaling.SetLogBase>)
   - [func \(s \*Scaling\) SetMaximum\(val float64\)](<#Scaling.SetMaximum>)
   - [func \(s \*Scaling\) SetMinimum\(val float64\)](<#Scaling.SetMinimum>)
   - [func \(s \*Scaling\) SetOrientation\(orientation OrientationValue\)](<#Scaling.SetOrientation>)
@@ -770,6 +930,14 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(s \*ScatterChartSeries\) SetXValues\(values \*XValues\)](<#ScatterChartSeries.SetXValues>)
   - [func \(s \*ScatterChartSeries\) SetYValues\(values \*YValues\)](<#ScatterChartSeries.SetYValues>)
 - [type ScatterStyleValue](<#ScatterStyleValue>)
+- [type Scene3D](<#Scene3D>)
+  - [func NewScene3D\(\) \*Scene3D](<#NewScene3D>)
+  - [func \(s \*Scene3D\) Backdrop\(\) \*Backdrop](<#Scene3D.Backdrop>)
+  - [func \(s \*Scene3D\) Camera\(\) \*Camera](<#Scene3D.Camera>)
+  - [func \(s \*Scene3D\) LightRig\(\) \*LightRig](<#Scene3D.LightRig>)
+  - [func \(s \*Scene3D\) SetBackdrop\(b \*Backdrop\)](<#Scene3D.SetBackdrop>)
+  - [func \(s \*Scene3D\) SetCamera\(c \*Camera\)](<#Scene3D.SetCamera>)
+  - [func \(s \*Scene3D\) SetLightRig\(l \*LightRig\)](<#Scene3D.SetLightRig>)
 - [type SchemeColor](<#SchemeColor>)
   - [func NewSchemeColor\(value SchemeColorValue\) \*SchemeColor](<#NewSchemeColor>)
   - [func \(c \*SchemeColor\) AddAlpha\(value int\)](<#SchemeColor.AddAlpha>)
@@ -787,11 +955,36 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func NewSeriesAxis\(axisID, crossAxisID uint32\) \*SeriesAxis](<#NewSeriesAxis>)
   - [func \(ax \*SeriesAxis\) AxisID\(\) uint32](<#SeriesAxis.AxisID>)
   - [func \(ax \*SeriesAxis\) Clone\(\) openxml.Element](<#SeriesAxis.Clone>)
+- [type SeriesEx](<#SeriesEx>)
+  - [func NewSeriesEx\(\) \*SeriesEx](<#NewSeriesEx>)
+  - [func \(s \*SeriesEx\) SetLayoutID\(layoutID string\)](<#SeriesEx.SetLayoutID>)
 - [type SeriesText](<#SeriesText>)
   - [func NewSeriesText\(\) \*SeriesText](<#NewSeriesText>)
   - [func NewSeriesTextWithReference\(formula string\) \*SeriesText](<#NewSeriesTextWithReference>)
   - [func NewSeriesTextWithValue\(text string\) \*SeriesText](<#NewSeriesTextWithValue>)
   - [func \(s \*SeriesText\) Clone\(\) openxml.Element](<#SeriesText.Clone>)
+- [type Shape3D](<#Shape3D>)
+  - [func NewShape3D\(\) \*Shape3D](<#NewShape3D>)
+  - [func \(s \*Shape3D\) BevelBottom\(\) \*Bevel](<#Shape3D.BevelBottom>)
+  - [func \(s \*Shape3D\) BevelTop\(\) \*Bevel](<#Shape3D.BevelTop>)
+  - [func \(s \*Shape3D\) ContourColor\(\) openxml.Element](<#Shape3D.ContourColor>)
+  - [func \(s \*Shape3D\) ContourWidth\(\) EMU](<#Shape3D.ContourWidth>)
+  - [func \(s \*Shape3D\) ExtrusionColor\(\) openxml.Element](<#Shape3D.ExtrusionColor>)
+  - [func \(s \*Shape3D\) ExtrusionHeight\(\) EMU](<#Shape3D.ExtrusionHeight>)
+  - [func \(s \*Shape3D\) PresetMaterial\(\) string](<#Shape3D.PresetMaterial>)
+  - [func \(s \*Shape3D\) SetBevelBottom\(b \*Bevel\)](<#Shape3D.SetBevelBottom>)
+  - [func \(s \*Shape3D\) SetBevelTop\(b \*Bevel\)](<#Shape3D.SetBevelTop>)
+  - [func \(s \*Shape3D\) SetContourColorRgb\(hex string\)](<#Shape3D.SetContourColorRgb>)
+  - [func \(s \*Shape3D\) SetContourColorScheme\(color SchemeColorValue\)](<#Shape3D.SetContourColorScheme>)
+  - [func \(s \*Shape3D\) SetContourWidth\(w EMU\)](<#Shape3D.SetContourWidth>)
+  - [func \(s \*Shape3D\) SetExtrusionColorRgb\(hex string\)](<#Shape3D.SetExtrusionColorRgb>)
+  - [func \(s \*Shape3D\) SetExtrusionColorScheme\(color SchemeColorValue\)](<#Shape3D.SetExtrusionColorScheme>)
+  - [func \(s \*Shape3D\) SetExtrusionHeight\(h EMU\)](<#Shape3D.SetExtrusionHeight>)
+  - [func \(s \*Shape3D\) SetPresetMaterial\(m string\)](<#Shape3D.SetPresetMaterial>)
+  - [func \(s \*Shape3D\) SetZ\(z EMU\)](<#Shape3D.SetZ>)
+  - [func \(s \*Shape3D\) Z\(\) EMU](<#Shape3D.Z>)
+  - [func \(s \*Shape3D\) removeContourColor\(\)](<#Shape3D.removeContourColor>)
+  - [func \(s \*Shape3D\) removeExtrusionColor\(\)](<#Shape3D.removeExtrusionColor>)
 - [type ShapeGuide](<#ShapeGuide>)
   - [func NewShapeGuide\(name, formula string\) \*ShapeGuide](<#NewShapeGuide>)
   - [func \(g \*ShapeGuide\) Clone\(\) openxml.Element](<#ShapeGuide.Clone>)
@@ -799,21 +992,51 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(g \*ShapeGuide\) Name\(\) string](<#ShapeGuide.Name>)
   - [func \(g \*ShapeGuide\) SetFormula\(formula string\)](<#ShapeGuide.SetFormula>)
   - [func \(g \*ShapeGuide\) SetName\(name string\)](<#ShapeGuide.SetName>)
+- [type ShapeLocks](<#ShapeLocks>)
+  - [func NewShapeLocks\(\) \*ShapeLocks](<#NewShapeLocks>)
+  - [func \(s \*ShapeLocks\) Clone\(\) openxml.Element](<#ShapeLocks.Clone>)
+  - [func \(s \*ShapeLocks\) NoAdjustHandles\(\) bool](<#ShapeLocks.NoAdjustHandles>)
+  - [func \(s \*ShapeLocks\) NoChangeArrowheads\(\) bool](<#ShapeLocks.NoChangeArrowheads>)
+  - [func \(s \*ShapeLocks\) NoChangeAspect\(\) bool](<#ShapeLocks.NoChangeAspect>)
+  - [func \(s \*ShapeLocks\) NoChangeShapeType\(\) bool](<#ShapeLocks.NoChangeShapeType>)
+  - [func \(s \*ShapeLocks\) NoEditPoints\(\) bool](<#ShapeLocks.NoEditPoints>)
+  - [func \(s \*ShapeLocks\) NoGrouping\(\) bool](<#ShapeLocks.NoGrouping>)
+  - [func \(s \*ShapeLocks\) NoMove\(\) bool](<#ShapeLocks.NoMove>)
+  - [func \(s \*ShapeLocks\) NoResize\(\) bool](<#ShapeLocks.NoResize>)
+  - [func \(s \*ShapeLocks\) NoRotation\(\) bool](<#ShapeLocks.NoRotation>)
+  - [func \(s \*ShapeLocks\) NoSelection\(\) bool](<#ShapeLocks.NoSelection>)
+  - [func \(s \*ShapeLocks\) NoTextEdit\(\) bool](<#ShapeLocks.NoTextEdit>)
+  - [func \(s \*ShapeLocks\) SetNoAdjustHandles\(lock bool\)](<#ShapeLocks.SetNoAdjustHandles>)
+  - [func \(s \*ShapeLocks\) SetNoChangeArrowheads\(lock bool\)](<#ShapeLocks.SetNoChangeArrowheads>)
+  - [func \(s \*ShapeLocks\) SetNoChangeAspect\(lock bool\)](<#ShapeLocks.SetNoChangeAspect>)
+  - [func \(s \*ShapeLocks\) SetNoChangeShapeType\(lock bool\)](<#ShapeLocks.SetNoChangeShapeType>)
+  - [func \(s \*ShapeLocks\) SetNoEditPoints\(lock bool\)](<#ShapeLocks.SetNoEditPoints>)
+  - [func \(s \*ShapeLocks\) SetNoGrouping\(lock bool\)](<#ShapeLocks.SetNoGrouping>)
+  - [func \(s \*ShapeLocks\) SetNoMove\(lock bool\)](<#ShapeLocks.SetNoMove>)
+  - [func \(s \*ShapeLocks\) SetNoResize\(lock bool\)](<#ShapeLocks.SetNoResize>)
+  - [func \(s \*ShapeLocks\) SetNoRotation\(lock bool\)](<#ShapeLocks.SetNoRotation>)
+  - [func \(s \*ShapeLocks\) SetNoSelection\(lock bool\)](<#ShapeLocks.SetNoSelection>)
+  - [func \(s \*ShapeLocks\) SetNoTextEdit\(lock bool\)](<#ShapeLocks.SetNoTextEdit>)
+  - [func \(s \*ShapeLocks\) getBoolAttr\(name string, defaultVal bool\) bool](<#ShapeLocks.getBoolAttr>)
+  - [func \(s \*ShapeLocks\) setBoolAttr\(name string, value, defaultVal bool\)](<#ShapeLocks.setBoolAttr>)
 - [type ShapeProperties](<#ShapeProperties>)
   - [func NewShapeProperties\(\) \*ShapeProperties](<#NewShapeProperties>)
   - [func \(s \*ShapeProperties\) BlackWhiteMode\(\) BlackWhiteMode](<#ShapeProperties.BlackWhiteMode>)
   - [func \(s \*ShapeProperties\) BlipFill\(\) \*BlipFill](<#ShapeProperties.BlipFill>)
   - [func \(s \*ShapeProperties\) Clone\(\) openxml.Element](<#ShapeProperties.Clone>)
   - [func \(s \*ShapeProperties\) CustomGeometry\(\) \*CustomGeometry](<#ShapeProperties.CustomGeometry>)
+  - [func \(s \*ShapeProperties\) EffectList\(\) \*EffectList](<#ShapeProperties.EffectList>)
   - [func \(s \*ShapeProperties\) GradientFill\(\) \*GradientFill](<#ShapeProperties.GradientFill>)
   - [func \(s \*ShapeProperties\) GroupFill\(\) bool](<#ShapeProperties.GroupFill>)
   - [func \(s \*ShapeProperties\) NoFill\(\) bool](<#ShapeProperties.NoFill>)
   - [func \(s \*ShapeProperties\) Outline\(\) \*LineProperties](<#ShapeProperties.Outline>)
   - [func \(s \*ShapeProperties\) PatternFill\(\) \*PatternFill](<#ShapeProperties.PatternFill>)
   - [func \(s \*ShapeProperties\) PresetGeometry\(\) \*PresetGeometry](<#ShapeProperties.PresetGeometry>)
+  - [func \(s \*ShapeProperties\) Scene3D\(\) \*Scene3D](<#ShapeProperties.Scene3D>)
   - [func \(s \*ShapeProperties\) SetBlackWhiteMode\(mode BlackWhiteMode\)](<#ShapeProperties.SetBlackWhiteMode>)
   - [func \(s \*ShapeProperties\) SetBlipFill\(fill \*BlipFill\)](<#ShapeProperties.SetBlipFill>)
   - [func \(s \*ShapeProperties\) SetCustomGeometry\(geometry \*CustomGeometry\)](<#ShapeProperties.SetCustomGeometry>)
+  - [func \(s \*ShapeProperties\) SetEffectList\(effects \*EffectList\)](<#ShapeProperties.SetEffectList>)
   - [func \(s \*ShapeProperties\) SetGradientFill\(fill \*GradientFill\)](<#ShapeProperties.SetGradientFill>)
   - [func \(s \*ShapeProperties\) SetGroupFill\(\)](<#ShapeProperties.SetGroupFill>)
   - [func \(s \*ShapeProperties\) SetNoFill\(\)](<#ShapeProperties.SetNoFill>)
@@ -824,16 +1047,22 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(s \*ShapeProperties\) SetPatternFill\(fill \*PatternFill\)](<#ShapeProperties.SetPatternFill>)
   - [func \(s \*ShapeProperties\) SetPresetGeometry\(geometry \*PresetGeometry\)](<#ShapeProperties.SetPresetGeometry>)
   - [func \(s \*ShapeProperties\) SetPresetShape\(shapeType ShapeTypeValue\)](<#ShapeProperties.SetPresetShape>)
+  - [func \(s \*ShapeProperties\) SetScene3D\(scene \*Scene3D\)](<#ShapeProperties.SetScene3D>)
+  - [func \(s \*ShapeProperties\) SetShape3D\(sp3d \*Shape3D\)](<#ShapeProperties.SetShape3D>)
+  - [func \(s \*ShapeProperties\) SetShapeLocks\(locks \*ShapeLocks\)](<#ShapeProperties.SetShapeLocks>)
   - [func \(s \*ShapeProperties\) SetSolidFill\(fill \*SolidFill\)](<#ShapeProperties.SetSolidFill>)
   - [func \(s \*ShapeProperties\) SetSolidFillColor\(hexColor string\)](<#ShapeProperties.SetSolidFillColor>)
   - [func \(s \*ShapeProperties\) SetSolidFillSchemeColor\(color SchemeColorValue\)](<#ShapeProperties.SetSolidFillSchemeColor>)
   - [func \(s \*ShapeProperties\) SetTransform\(transform \*Transform2D\)](<#ShapeProperties.SetTransform>)
   - [func \(s \*ShapeProperties\) SetTransformValues\(offX, offY, extCx, extCy EMU\)](<#ShapeProperties.SetTransformValues>)
+  - [func \(s \*ShapeProperties\) Shape3D\(\) \*Shape3D](<#ShapeProperties.Shape3D>)
+  - [func \(s \*ShapeProperties\) ShapeLocks\(\) \*ShapeLocks](<#ShapeProperties.ShapeLocks>)
   - [func \(s \*ShapeProperties\) SolidFill\(\) \*SolidFill](<#ShapeProperties.SolidFill>)
   - [func \(s \*ShapeProperties\) Transform\(\) \*Transform2D](<#ShapeProperties.Transform>)
   - [func \(s \*ShapeProperties\) insertAfterFill\(elem openxml.Element\)](<#ShapeProperties.insertAfterFill>)
   - [func \(s \*ShapeProperties\) insertAfterGeometry\(elem openxml.Element\)](<#ShapeProperties.insertAfterGeometry>)
   - [func \(s \*ShapeProperties\) insertAfterTransform\(elem openxml.Element\)](<#ShapeProperties.insertAfterTransform>)
+  - [func \(s \*ShapeProperties\) insertInOrder\(elem openxml.Element, name string, predecessors ...string\)](<#ShapeProperties.insertInOrder>)
   - [func \(s \*ShapeProperties\) removeFill\(\)](<#ShapeProperties.removeFill>)
   - [func \(s \*ShapeProperties\) removeGeometry\(\)](<#ShapeProperties.removeGeometry>)
 - [type ShapeStyle](<#ShapeStyle>)
@@ -860,6 +1089,7 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func \(f \*SolidFill\) SetPresetColor\(color PresetColorValue\)](<#SolidFill.SetPresetColor>)
   - [func \(f \*SolidFill\) SetRgbColor\(hexColor string\)](<#SolidFill.SetRgbColor>)
   - [func \(f \*SolidFill\) SetSchemeColor\(color SchemeColorValue\)](<#SolidFill.SetSchemeColor>)
+- [type SourceRect](<#SourceRect>)
 - [type StockChart](<#StockChart>)
   - [func NewStockChart\(\) \*StockChart](<#NewStockChart>)
   - [func \(sc \*StockChart\) AddAxisID\(axisID uint32\)](<#StockChart.AddAxisID>)
@@ -1139,6 +1369,8 @@ Package drawingml provides shared DrawingML types for shapes, images, and effect
   - [func NewTitle\(\) \*Title](<#NewTitle>)
   - [func NewTitleWithText\(text string\) \*Title](<#NewTitleWithText>)
   - [func \(t \*Title\) Clone\(\) openxml.Element](<#Title.Clone>)
+  - [func \(t \*Title\) SetLayout\(layout \*Layout\)](<#Title.SetLayout>)
+  - [func \(t \*Title\) SetOverlay\(overlay bool\)](<#Title.SetOverlay>)
 - [type Transform2D](<#Transform2D>)
   - [func NewTransform2D\(offX, offY, extCx, extCy EMU\) \*Transform2D](<#NewTransform2D>)
   - [func NewTransform2DWithOffset\(offset Offset, extent Extent\) \*Transform2D](<#NewTransform2DWithOffset>)
@@ -1291,6 +1523,28 @@ const (
     attrZero = "0"
     // attrOne is the "1" value used for boolean true attributes.
     attrOne = "1"
+)
+```
+
+<a name="NamespaceChartEx"></a>Constants for extended charts.
+
+```go
+const (
+    // NamespaceChartEx is the namespace for extended charts (cx:).
+    NamespaceChartEx = "http://schemas.microsoft.com/office/drawing/2014/chartex"
+    // PrefixChartEx is the prefix for extended charts.
+    PrefixChartEx = "cx"
+)
+```
+
+<a name="SeriesLayoutWaterfall"></a>SeriesLayout constants for extended charts.
+
+```go
+const (
+    SeriesLayoutWaterfall  = "waterfall"
+    SeriesLayoutSunburst   = "sunburst"
+    SeriesLayoutTreemap    = "treemap"
+    SeriesLayoutBoxWhisker = "boxWhisker"
 )
 ```
 
@@ -1850,6 +2104,102 @@ func formatUint32(val uint32) string
 
 formatUint32 formats a uint32 value as a string.
 
+<a name="AlphaBiLevelEffect"></a>
+## type AlphaBiLevelEffect
+
+AlphaBiLevelEffect represents an alpha bi\-level effect \(a:alphaBiLevel\).
+
+```go
+type AlphaBiLevelEffect struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewAlphaBiLevelEffect"></a>
+### func NewAlphaBiLevelEffect
+
+```go
+func NewAlphaBiLevelEffect(thresh int) *AlphaBiLevelEffect
+```
+
+NewAlphaBiLevelEffect creates a new alpha bi\-level effect.
+
+<a name="AlphaBiLevelEffect.SetThreshold"></a>
+### func \(\*AlphaBiLevelEffect\) SetThreshold
+
+```go
+func (a *AlphaBiLevelEffect) SetThreshold(thresh int)
+```
+
+SetThreshold sets the threshold value.
+
+<a name="AlphaBiLevelEffect.Threshold"></a>
+### func \(\*AlphaBiLevelEffect\) Threshold
+
+```go
+func (a *AlphaBiLevelEffect) Threshold() int
+```
+
+Threshold returns the threshold value.
+
+<a name="AlphaFixedEffect"></a>
+## type AlphaFixedEffect
+
+AlphaFixedEffect represents a fixed alpha effect \(a:alphaModFix\).
+
+```go
+type AlphaFixedEffect struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewAlphaFixedEffect"></a>
+### func NewAlphaFixedEffect
+
+```go
+func NewAlphaFixedEffect(amt int) *AlphaFixedEffect
+```
+
+NewAlphaFixedEffect creates a new fixed alpha effect.
+
+<a name="AlphaFixedEffect.Amount"></a>
+### func \(\*AlphaFixedEffect\) Amount
+
+```go
+func (a *AlphaFixedEffect) Amount() int
+```
+
+Amount returns the alpha amount \(0\-100000\).
+
+<a name="AlphaFixedEffect.SetAmount"></a>
+### func \(\*AlphaFixedEffect\) SetAmount
+
+```go
+func (a *AlphaFixedEffect) SetAmount(amt int)
+```
+
+SetAmount sets the alpha amount.
+
+<a name="AlphaModulationEffect"></a>
+## type AlphaModulationEffect
+
+AlphaModulationEffect represents an alpha modulation effect \(a:alphaMod\).
+
+```go
+type AlphaModulationEffect struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewAlphaModulationEffect"></a>
+### func NewAlphaModulationEffect
+
+```go
+func NewAlphaModulationEffect() *AlphaModulationEffect
+```
+
+NewAlphaModulationEffect creates a new alpha modulation effect.
+
 <a name="Area3DChart"></a>
 ## type Area3DChart
 
@@ -2045,6 +2395,26 @@ const (
     AxisPositionRight  AxisPositionValue = "r"
 )
 ```
+
+<a name="Backdrop"></a>
+## type Backdrop
+
+Backdrop represents a backdrop \(a:backdrop\).
+
+```go
+type Backdrop struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewBackdrop"></a>
+### func NewBackdrop
+
+```go
+func NewBackdrop() *Backdrop
+```
+
+NewBackdrop creates a new Backdrop element.
 
 <a name="Bar3DChart"></a>
 ## type Bar3DChart
@@ -2297,6 +2667,118 @@ const (
 )
 ```
 
+<a name="Bevel"></a>
+## type Bevel
+
+Bevel represents a bevel \(a:bevelT, a:bevelB\).
+
+```go
+type Bevel struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewBevel"></a>
+### func NewBevel
+
+```go
+func NewBevel(name string) *Bevel
+```
+
+NewBevel creates a new Bevel element.
+
+<a name="Bevel.Height"></a>
+### func \(\*Bevel\) Height
+
+```go
+func (b *Bevel) Height() EMU
+```
+
+Height returns the height in EMUs.
+
+<a name="Bevel.Preset"></a>
+### func \(\*Bevel\) Preset
+
+```go
+func (b *Bevel) Preset() string
+```
+
+Preset returns the preset bevel type.
+
+<a name="Bevel.SetHeight"></a>
+### func \(\*Bevel\) SetHeight
+
+```go
+func (b *Bevel) SetHeight(h EMU)
+```
+
+SetHeight sets the height in EMUs.
+
+<a name="Bevel.SetPreset"></a>
+### func \(\*Bevel\) SetPreset
+
+```go
+func (b *Bevel) SetPreset(p string)
+```
+
+SetPreset sets the preset bevel type.
+
+<a name="Bevel.SetWidth"></a>
+### func \(\*Bevel\) SetWidth
+
+```go
+func (b *Bevel) SetWidth(w EMU)
+```
+
+SetWidth sets the width in EMUs.
+
+<a name="Bevel.Width"></a>
+### func \(\*Bevel\) Width
+
+```go
+func (b *Bevel) Width() EMU
+```
+
+Width returns the width in EMUs.
+
+<a name="BiLevelEffect"></a>
+## type BiLevelEffect
+
+BiLevelEffect represents a bi\-level \(threshold\) effect \(a:biLevel\). Makes image black and white based on threshold.
+
+```go
+type BiLevelEffect struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewBiLevelEffect"></a>
+### func NewBiLevelEffect
+
+```go
+func NewBiLevelEffect(thresh int) *BiLevelEffect
+```
+
+NewBiLevelEffect creates a new bi\-level effect.
+
+<a name="BiLevelEffect.SetThreshold"></a>
+### func \(\*BiLevelEffect\) SetThreshold
+
+```go
+func (b *BiLevelEffect) SetThreshold(thresh int)
+```
+
+SetThreshold sets the threshold value.
+
+<a name="BiLevelEffect.Threshold"></a>
+### func \(\*BiLevelEffect\) Threshold
+
+```go
+func (b *BiLevelEffect) Threshold() int
+```
+
+Threshold returns the threshold value.
+
 <a name="BlackWhiteMode"></a>
 ## type BlackWhiteMode
 
@@ -2350,6 +2832,173 @@ const (
 )
 ```
 
+<a name="Blip"></a>
+## type Blip
+
+Blip represents a Binary Large Image or Picture \(a:blip\).
+
+```go
+type Blip struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewBlip"></a>
+### func NewBlip
+
+```go
+func NewBlip() *Blip
+```
+
+NewBlip creates a new BLIP element.
+
+<a name="Blip.AddAlphaBiLevelEffect"></a>
+### func \(\*Blip\) AddAlphaBiLevelEffect
+
+```go
+func (b *Blip) AddAlphaBiLevelEffect(thresh int)
+```
+
+AddAlphaBiLevelEffect adds an alpha bi\-level effect to the Blip.
+
+<a name="Blip.AddAlphaFixedEffect"></a>
+### func \(\*Blip\) AddAlphaFixedEffect
+
+```go
+func (b *Blip) AddAlphaFixedEffect(amt int)
+```
+
+AddAlphaFixedEffect adds a fixed alpha effect to the Blip.
+
+<a name="Blip.AddAlphaModulationEffect"></a>
+### func \(\*Blip\) AddAlphaModulationEffect
+
+```go
+func (b *Blip) AddAlphaModulationEffect(container *openxml.CompositeElementBase)
+```
+
+AddAlphaModulationEffect adds an alpha modulation effect to the Blip.
+
+<a name="Blip.AddBiLevelEffect"></a>
+### func \(\*Blip\) AddBiLevelEffect
+
+```go
+func (b *Blip) AddBiLevelEffect(thresh int)
+```
+
+AddBiLevelEffect adds a bi\-level effect to the Blip.
+
+<a name="Blip.AddGrayscaleEffect"></a>
+### func \(\*Blip\) AddGrayscaleEffect
+
+```go
+func (b *Blip) AddGrayscaleEffect()
+```
+
+AddGrayscaleEffect adds a grayscale effect to the Blip.
+
+<a name="Blip.AddHSLEffect"></a>
+### func \(\*Blip\) AddHSLEffect
+
+```go
+func (b *Blip) AddHSLEffect(hue, sat, lum int)
+```
+
+AddHSLEffect adds an HSL effect to the Blip.
+
+<a name="Blip.AddLuminanceEffect"></a>
+### func \(\*Blip\) AddLuminanceEffect
+
+```go
+func (b *Blip) AddLuminanceEffect(bright, contrast int)
+```
+
+AddLuminanceEffect adds a luminance effect to the Blip.
+
+<a name="Blip.Clone"></a>
+### func \(\*Blip\) Clone
+
+```go
+func (b *Blip) Clone() openxml.Element
+```
+
+Clone creates a deep copy of this Blip element.
+
+<a name="Blip.CompressionState"></a>
+### func \(\*Blip\) CompressionState
+
+```go
+func (b *Blip) CompressionState() BlipCompression
+```
+
+CompressionState returns the compression state.
+
+<a name="Blip.Embed"></a>
+### func \(\*Blip\) Embed
+
+```go
+func (b *Blip) Embed() string
+```
+
+Embed returns the embedded relationship ID.
+
+<a name="Blip.Link"></a>
+### func \(\*Blip\) Link
+
+```go
+func (b *Blip) Link() string
+```
+
+Link returns the linked relationship ID.
+
+<a name="Blip.SetCompressionState"></a>
+### func \(\*Blip\) SetCompressionState
+
+```go
+func (b *Blip) SetCompressionState(state BlipCompression)
+```
+
+SetCompressionState sets the compression state.
+
+<a name="Blip.SetEmbed"></a>
+### func \(\*Blip\) SetEmbed
+
+```go
+func (b *Blip) SetEmbed(embedId string)
+```
+
+SetEmbed sets the embedded relationship ID.
+
+<a name="Blip.SetLink"></a>
+### func \(\*Blip\) SetLink
+
+```go
+func (b *Blip) SetLink(linkId string)
+```
+
+SetLink sets the linked relationship ID.
+
+<a name="BlipCompression"></a>
+## type BlipCompression
+
+BlipCompression represents the compression state of a BLIP.
+
+```go
+type BlipCompression string
+```
+
+<a name="BlipCompressionEmail"></a>Blip compression constants.
+
+```go
+const (
+    BlipCompressionEmail   BlipCompression = "email"
+    BlipCompressionScreen  BlipCompression = "screen"
+    BlipCompressionPrint   BlipCompression = "print"
+    BlipCompressionHQPrint BlipCompression = "hqprint"
+    BlipCompressionNone    BlipCompression = "none"
+)
+```
+
 <a name="BlipFill"></a>
 ## type BlipFill
 
@@ -2378,6 +3027,24 @@ func NewBlipFillWithEmbed(embedId string) *BlipFill
 ```
 
 NewBlipFillWithEmbed creates a new blip fill with an embedded relationship ID.
+
+<a name="BlipFill.Blip"></a>
+### func \(\*BlipFill\) Blip
+
+```go
+func (b *BlipFill) Blip() *Blip
+```
+
+Blip returns the Blip element, creating it if necessary.
+
+<a name="BlipFill.ClearSourceRect"></a>
+### func \(\*BlipFill\) ClearSourceRect
+
+```go
+func (b *BlipFill) ClearSourceRect()
+```
+
+ClearSourceRect removes the source rectangle \(removes cropping\).
 
 <a name="BlipFill.Clone"></a>
 ### func \(\*BlipFill\) Clone
@@ -2442,6 +3109,15 @@ func (b *BlipFill) SetRotateWithShape(rotate bool)
 
 SetRotateWithShape sets whether the fill rotates with the shape.
 
+<a name="BlipFill.SetSourceRect"></a>
+### func \(\*BlipFill\) SetSourceRect
+
+```go
+func (b *BlipFill) SetSourceRect(rect SourceRect)
+```
+
+SetSourceRect sets the source rectangle for cropping the image. All values are percentages where 100000 = 100%. For example, Left=10000 crops 10% from the left side.
+
 <a name="BlipFill.SetStretch"></a>
 ### func \(\*BlipFill\) SetStretch
 
@@ -2459,6 +3135,15 @@ func (b *BlipFill) SetTile(alignment RectAlignValue, flip TileFlipValue)
 ```
 
 SetTile sets the fill to tile mode.
+
+<a name="BlipFill.SourceRect"></a>
+### func \(\*BlipFill\) SourceRect
+
+```go
+func (b *BlipFill) SourceRect() *SourceRect
+```
+
+SourceRect returns the source rectangle for cropping, or nil if not set.
 
 <a name="Blur"></a>
 ## type Blur
@@ -2665,6 +3350,98 @@ func (b *BubbleSize) SetNumberReference(formula string)
 ```
 
 SetNumberReference sets a number reference for the bubble sizes.
+
+<a name="Camera"></a>
+## type Camera
+
+Camera represents a camera \(a:camera\).
+
+```go
+type Camera struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewCamera"></a>
+### func NewCamera
+
+```go
+func NewCamera() *Camera
+```
+
+NewCamera creates a new Camera element.
+
+<a name="Camera.FieldOfView"></a>
+### func \(\*Camera\) FieldOfView
+
+```go
+func (c *Camera) FieldOfView() int
+```
+
+FieldOfView returns the field of view in 60000ths of a degree.
+
+<a name="Camera.Preset"></a>
+### func \(\*Camera\) Preset
+
+```go
+func (c *Camera) Preset() string
+```
+
+Preset returns the preset camera type.
+
+<a name="Camera.Rotation"></a>
+### func \(\*Camera\) Rotation
+
+```go
+func (c *Camera) Rotation() *Rotation3D
+```
+
+Rotation returns the rotation element.
+
+<a name="Camera.SetFieldOfView"></a>
+### func \(\*Camera\) SetFieldOfView
+
+```go
+func (c *Camera) SetFieldOfView(fov int)
+```
+
+SetFieldOfView sets the field of view in 60000ths of a degree.
+
+<a name="Camera.SetPreset"></a>
+### func \(\*Camera\) SetPreset
+
+```go
+func (c *Camera) SetPreset(p string)
+```
+
+SetPreset sets the preset camera type.
+
+<a name="Camera.SetRotation"></a>
+### func \(\*Camera\) SetRotation
+
+```go
+func (c *Camera) SetRotation(r *Rotation3D)
+```
+
+SetRotation sets the rotation element.
+
+<a name="Camera.SetZoom"></a>
+### func \(\*Camera\) SetZoom
+
+```go
+func (c *Camera) SetZoom(z int)
+```
+
+SetZoom sets the zoom percentage.
+
+<a name="Camera.Zoom"></a>
+### func \(\*Camera\) Zoom
+
+```go
+func (c *Camera) Zoom() int
+```
+
+Zoom returns the zoom percentage.
 
 <a name="CapValue"></a>
 ## type CapValue
@@ -2961,6 +3738,91 @@ func (c *Chart) insertAfterTitle(elem openxml.Element)
 
 insertAfterTitle inserts an element after the title element.
 
+<a name="ChartData"></a>
+## type ChartData
+
+ChartData represents the cx:chartData element.
+
+```go
+type ChartData struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewChartData"></a>
+### func NewChartData
+
+```go
+func NewChartData() *ChartData
+```
+
+NewChartData creates a new chart data element.
+
+<a name="ChartDataBinding"></a>
+## type ChartDataBinding
+
+ChartDataBinding defines the interface for data binding in charts.
+
+```go
+type ChartDataBinding interface {
+    Formula() string
+    SetFormula(formula string)
+}
+```
+
+<a name="ChartElement"></a>
+## type ChartElement
+
+ChartElement is a marker interface for any chart element.
+
+```go
+type ChartElement interface {
+    openxml.Element
+}
+```
+
+<a name="ChartEx"></a>
+## type ChartEx
+
+ChartEx represents the cx:chart element.
+
+```go
+type ChartEx struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewChartEx"></a>
+### func NewChartEx
+
+```go
+func NewChartEx() *ChartEx
+```
+
+NewChartEx creates a new extended chart element.
+
+<a name="ChartEx.SetPlotArea"></a>
+### func \(\*ChartEx\) SetPlotArea
+
+```go
+func (c *ChartEx) SetPlotArea(pa *PlotAreaEx)
+```
+
+SetPlotArea sets the plot area for the chart.
+
+<a name="ChartNumericBinding"></a>
+## type ChartNumericBinding
+
+ChartNumericBinding defines the interface for numeric data binding.
+
+```go
+type ChartNumericBinding interface {
+    ChartDataBinding
+    SetCache(values []float64)
+    SetCacheWithFormat(values []float64, formatCode string)
+}
+```
+
 <a name="ChartShapeProperties"></a>
 ## type ChartShapeProperties
 
@@ -3154,6 +4016,67 @@ func (cs *ChartSpace) removeElement(localName string)
 
 removeElement removes an element by local name.
 
+<a name="ChartSpaceEx"></a>
+## type ChartSpaceEx
+
+ChartSpaceEx represents the cx:chartSpace root element for extended chart parts.
+
+```go
+type ChartSpaceEx struct {
+    *openxml.PartRootElementBase
+}
+```
+
+<a name="NewChartSpaceEx"></a>
+### func NewChartSpaceEx
+
+```go
+func NewChartSpaceEx() *ChartSpaceEx
+```
+
+NewChartSpaceEx creates a new extended chart space element.
+
+<a name="ChartStringBinding"></a>
+## type ChartStringBinding
+
+ChartStringBinding defines the interface for string data binding.
+
+```go
+type ChartStringBinding interface {
+    ChartDataBinding
+    SetCache(values []string)
+}
+```
+
+<a name="ChartText"></a>
+## type ChartText
+
+ChartText represents a text body in chart context \(c:rich or c:txPr\).
+
+```go
+type ChartText struct {
+    *TextBody
+}
+```
+
+<a name="NewChartText"></a>
+### func NewChartText
+
+```go
+func NewChartText(name string) *ChartText
+```
+
+NewChartText creates a new ChartText element with the given local name. name should be "rich" \(for title\) or "txPr" \(for legend/datalabels\).
+
+<a name="ChartText.Clone"></a>
+### func \(\*ChartText\) Clone
+
+```go
+func (ct *ChartText) Clone() openxml.Element
+```
+
+Clone creates a deep copy of this ChartText.
+
 <a name="ColorTransformationType"></a>
 ## type ColorTransformationType
 
@@ -3246,6 +4169,289 @@ const (
     CompoundLineTriple    CompoundLineValue = "tri"
 )
 ```
+
+<a name="Connection"></a>
+## type Connection
+
+Connection represents a connection to a shape \(a:stCxn or a:endCxn\).
+
+```go
+type Connection struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewConnection"></a>
+### func NewConnection
+
+```go
+func NewConnection(name string, id string, idx int) *Connection
+```
+
+NewConnection creates a new connection element. name is either "stCxn" or "endCxn".
+
+<a name="Connection.Id"></a>
+### func \(\*Connection\) Id
+
+```go
+func (c *Connection) Id() string
+```
+
+Id returns the shape ID.
+
+<a name="Connection.Index"></a>
+### func \(\*Connection\) Index
+
+```go
+func (c *Connection) Index() int
+```
+
+Index returns the connection site index.
+
+<a name="Connection.SetId"></a>
+### func \(\*Connection\) SetId
+
+```go
+func (c *Connection) SetId(id string)
+```
+
+SetId sets the shape ID.
+
+<a name="Connection.SetIndex"></a>
+### func \(\*Connection\) SetIndex
+
+```go
+func (c *Connection) SetIndex(idx int)
+```
+
+SetIndex sets the connection site index.
+
+<a name="ConnectorLocks"></a>
+## type ConnectorLocks
+
+ConnectorLocks represents connector locking properties \(a:cxnSpLocks\).
+
+```go
+type ConnectorLocks struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewConnectorLocks"></a>
+### func NewConnectorLocks
+
+```go
+func NewConnectorLocks() *ConnectorLocks
+```
+
+NewConnectorLocks creates a new ConnectorLocks element.
+
+<a name="ConnectorLocks.Clone"></a>
+### func \(\*ConnectorLocks\) Clone
+
+```go
+func (s *ConnectorLocks) Clone() openxml.Element
+```
+
+Clone creates a deep copy of this ConnectorLocks element.
+
+<a name="ConnectorLocks.NoAdjustHandles"></a>
+### func \(\*ConnectorLocks\) NoAdjustHandles
+
+```go
+func (s *ConnectorLocks) NoAdjustHandles() bool
+```
+
+NoAdjustHandles returns whether adjusting handles is locked.
+
+<a name="ConnectorLocks.NoChangeArrowheads"></a>
+### func \(\*ConnectorLocks\) NoChangeArrowheads
+
+```go
+func (s *ConnectorLocks) NoChangeArrowheads() bool
+```
+
+NoChangeArrowheads returns whether changing arrowheads is locked.
+
+<a name="ConnectorLocks.NoChangeAspect"></a>
+### func \(\*ConnectorLocks\) NoChangeAspect
+
+```go
+func (s *ConnectorLocks) NoChangeAspect() bool
+```
+
+NoChangeAspect returns whether aspect ratio change is locked.
+
+<a name="ConnectorLocks.NoChangeShapeType"></a>
+### func \(\*ConnectorLocks\) NoChangeShapeType
+
+```go
+func (s *ConnectorLocks) NoChangeShapeType() bool
+```
+
+NoChangeShapeType returns whether changing shape type is locked.
+
+<a name="ConnectorLocks.NoEditPoints"></a>
+### func \(\*ConnectorLocks\) NoEditPoints
+
+```go
+func (s *ConnectorLocks) NoEditPoints() bool
+```
+
+NoEditPoints returns whether editing points is locked.
+
+<a name="ConnectorLocks.NoGrouping"></a>
+### func \(\*ConnectorLocks\) NoGrouping
+
+```go
+func (s *ConnectorLocks) NoGrouping() bool
+```
+
+NoGrouping returns whether grouping is locked.
+
+<a name="ConnectorLocks.NoMove"></a>
+### func \(\*ConnectorLocks\) NoMove
+
+```go
+func (s *ConnectorLocks) NoMove() bool
+```
+
+NoMove returns whether moving is locked.
+
+<a name="ConnectorLocks.NoResize"></a>
+### func \(\*ConnectorLocks\) NoResize
+
+```go
+func (s *ConnectorLocks) NoResize() bool
+```
+
+NoResize returns whether resizing is locked.
+
+<a name="ConnectorLocks.NoRotation"></a>
+### func \(\*ConnectorLocks\) NoRotation
+
+```go
+func (s *ConnectorLocks) NoRotation() bool
+```
+
+NoRotation returns whether rotation is locked.
+
+<a name="ConnectorLocks.NoSelection"></a>
+### func \(\*ConnectorLocks\) NoSelection
+
+```go
+func (s *ConnectorLocks) NoSelection() bool
+```
+
+NoSelection returns whether selection is locked.
+
+<a name="ConnectorLocks.SetNoAdjustHandles"></a>
+### func \(\*ConnectorLocks\) SetNoAdjustHandles
+
+```go
+func (s *ConnectorLocks) SetNoAdjustHandles(lock bool)
+```
+
+SetNoAdjustHandles sets whether adjusting handles is locked.
+
+<a name="ConnectorLocks.SetNoChangeArrowheads"></a>
+### func \(\*ConnectorLocks\) SetNoChangeArrowheads
+
+```go
+func (s *ConnectorLocks) SetNoChangeArrowheads(lock bool)
+```
+
+SetNoChangeArrowheads sets whether changing arrowheads is locked.
+
+<a name="ConnectorLocks.SetNoChangeAspect"></a>
+### func \(\*ConnectorLocks\) SetNoChangeAspect
+
+```go
+func (s *ConnectorLocks) SetNoChangeAspect(lock bool)
+```
+
+SetNoChangeAspect sets whether aspect ratio change is locked.
+
+<a name="ConnectorLocks.SetNoChangeShapeType"></a>
+### func \(\*ConnectorLocks\) SetNoChangeShapeType
+
+```go
+func (s *ConnectorLocks) SetNoChangeShapeType(lock bool)
+```
+
+SetNoChangeShapeType sets whether changing shape type is locked.
+
+<a name="ConnectorLocks.SetNoEditPoints"></a>
+### func \(\*ConnectorLocks\) SetNoEditPoints
+
+```go
+func (s *ConnectorLocks) SetNoEditPoints(lock bool)
+```
+
+SetNoEditPoints sets whether editing points is locked.
+
+<a name="ConnectorLocks.SetNoGrouping"></a>
+### func \(\*ConnectorLocks\) SetNoGrouping
+
+```go
+func (s *ConnectorLocks) SetNoGrouping(lock bool)
+```
+
+SetNoGrouping sets whether grouping is locked.
+
+<a name="ConnectorLocks.SetNoMove"></a>
+### func \(\*ConnectorLocks\) SetNoMove
+
+```go
+func (s *ConnectorLocks) SetNoMove(lock bool)
+```
+
+SetNoMove sets whether moving is locked.
+
+<a name="ConnectorLocks.SetNoResize"></a>
+### func \(\*ConnectorLocks\) SetNoResize
+
+```go
+func (s *ConnectorLocks) SetNoResize(lock bool)
+```
+
+SetNoResize sets whether resizing is locked.
+
+<a name="ConnectorLocks.SetNoRotation"></a>
+### func \(\*ConnectorLocks\) SetNoRotation
+
+```go
+func (s *ConnectorLocks) SetNoRotation(lock bool)
+```
+
+SetNoRotation sets whether rotation is locked.
+
+<a name="ConnectorLocks.SetNoSelection"></a>
+### func \(\*ConnectorLocks\) SetNoSelection
+
+```go
+func (s *ConnectorLocks) SetNoSelection(lock bool)
+```
+
+SetNoSelection sets whether selection is locked.
+
+<a name="ConnectorLocks.getBoolAttr"></a>
+### func \(\*ConnectorLocks\) getBoolAttr
+
+```go
+func (s *ConnectorLocks) getBoolAttr(name string, defaultVal bool) bool
+```
+
+getBoolAttr retrieves a boolean attribute value.
+
+<a name="ConnectorLocks.setBoolAttr"></a>
+### func \(\*ConnectorLocks\) setBoolAttr
+
+```go
+func (s *ConnectorLocks) setBoolAttr(name string, value, defaultVal bool)
+```
+
+setBoolAttr sets a boolean attribute value.
 
 <a name="CrossesValue"></a>
 ## type CrossesValue
@@ -3340,6 +4546,43 @@ func (c *CustomGeometry) SetRectangle(left, top, right, bottom string)
 
 SetRectangle sets the text rectangle for the geometry.
 
+<a name="DataLabelPositionValue"></a>
+## type DataLabelPositionValue
+
+DataLabelPositionValue represents data label position.
+
+```go
+type DataLabelPositionValue string
+```
+
+<a name="DataLabelPositionBestFit"></a>Data label position values.
+
+```go
+const (
+    DataLabelPositionBestFit DataLabelPositionValue = "bestFit"
+    DataLabelPositionBottom  DataLabelPositionValue = "b"
+    DataLabelPositionCenter  DataLabelPositionValue = "ctr"
+    DataLabelPositionInBase  DataLabelPositionValue = "inBase"
+    DataLabelPositionInEnd   DataLabelPositionValue = "inEnd"
+    DataLabelPositionLeft    DataLabelPositionValue = "l"
+    DataLabelPositionOutEnd  DataLabelPositionValue = "outEnd"
+    DataLabelPositionRight   DataLabelPositionValue = "r"
+    DataLabelPositionTop     DataLabelPositionValue = "t"
+)
+```
+
+<a name="DataLabelProvider"></a>
+## type DataLabelProvider
+
+DataLabelProvider defines the interface for elements that support data labels.
+
+```go
+type DataLabelProvider interface {
+    DataLabels() *DataLabels
+    SetDataLabels(dl *DataLabels)
+}
+```
+
 <a name="DataLabels"></a>
 ## type DataLabels
 
@@ -3368,6 +4611,33 @@ func (d *DataLabels) Clone() openxml.Element
 ```
 
 Clone creates a deep copy of this DataLabels.
+
+<a name="DataLabels.SetNumberFormat"></a>
+### func \(\*DataLabels\) SetNumberFormat
+
+```go
+func (d *DataLabels) SetNumberFormat(formatCode string, sourceLinked bool)
+```
+
+SetNumberFormat sets the number format for the data labels.
+
+<a name="DataLabels.SetPosition"></a>
+### func \(\*DataLabels\) SetPosition
+
+```go
+func (d *DataLabels) SetPosition(pos DataLabelPositionValue)
+```
+
+SetPosition sets the position of the data labels.
+
+<a name="DataLabels.SetShapeProperties"></a>
+### func \(\*DataLabels\) SetShapeProperties
+
+```go
+func (d *DataLabels) SetShapeProperties(props *ChartShapeProperties)
+```
+
+SetShapeProperties sets the shape properties for the data labels.
 
 <a name="DataLabels.SetShowCategoryName"></a>
 ### func \(\*DataLabels\) SetShowCategoryName
@@ -3414,6 +4684,15 @@ func (d *DataLabels) SetShowValue(show bool)
 
 SetShowValue sets whether to show the value.
 
+<a name="DataLabels.SetTextProperties"></a>
+### func \(\*DataLabels\) SetTextProperties
+
+```go
+func (d *DataLabels) SetTextProperties(props *ChartText)
+```
+
+SetTextProperties sets the text properties for the data labels.
+
 <a name="DataPoint"></a>
 ## type DataPoint
 
@@ -3451,6 +4730,89 @@ func (d *DataPoint) SetShapeProperties(props *ChartShapeProperties)
 ```
 
 SetShapeProperties sets the shape properties for the data point.
+
+<a name="DataTable"></a>
+## type DataTable
+
+DataTable represents the c:dTable element for the data table.
+
+```go
+type DataTable struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewDataTable"></a>
+### func NewDataTable
+
+```go
+func NewDataTable() *DataTable
+```
+
+NewDataTable creates a new data table element.
+
+<a name="DataTable.Clone"></a>
+### func \(\*DataTable\) Clone
+
+```go
+func (d *DataTable) Clone() openxml.Element
+```
+
+Clone creates a deep copy of this DataTable.
+
+<a name="DataTable.SetShapeProperties"></a>
+### func \(\*DataTable\) SetShapeProperties
+
+```go
+func (d *DataTable) SetShapeProperties(props *ChartShapeProperties)
+```
+
+SetShapeProperties sets the shape properties for the data table.
+
+<a name="DataTable.SetShowHorizontalBorder"></a>
+### func \(\*DataTable\) SetShowHorizontalBorder
+
+```go
+func (d *DataTable) SetShowHorizontalBorder(show bool)
+```
+
+SetShowHorizontalBorder sets whether to show horizontal borders.
+
+<a name="DataTable.SetShowKeys"></a>
+### func \(\*DataTable\) SetShowKeys
+
+```go
+func (d *DataTable) SetShowKeys(show bool)
+```
+
+SetShowKeys sets whether to show legend keys.
+
+<a name="DataTable.SetShowOutline"></a>
+### func \(\*DataTable\) SetShowOutline
+
+```go
+func (d *DataTable) SetShowOutline(show bool)
+```
+
+SetShowOutline sets whether to show the outline border.
+
+<a name="DataTable.SetShowVerticalBorder"></a>
+### func \(\*DataTable\) SetShowVerticalBorder
+
+```go
+func (d *DataTable) SetShowVerticalBorder(show bool)
+```
+
+SetShowVerticalBorder sets whether to show vertical borders.
+
+<a name="DataTable.SetTextProperties"></a>
+### func \(\*DataTable\) SetTextProperties
+
+```go
+func (d *DataTable) SetTextProperties(props *ChartText)
+```
+
+SetTextProperties sets the text properties for the data table.
 
 <a name="DateAxis"></a>
 ## type DateAxis
@@ -4733,6 +6095,26 @@ func (g *GradientStop) SetPosition(position int)
 
 SetPosition sets the position in 1000ths of a percent.
 
+<a name="GrayscaleEffect"></a>
+## type GrayscaleEffect
+
+GrayscaleEffect represents a grayscale effect \(a:grayscl\).
+
+```go
+type GrayscaleEffect struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewGrayscaleEffect"></a>
+### func NewGrayscaleEffect
+
+```go
+func NewGrayscaleEffect() *GrayscaleEffect
+```
+
+NewGrayscaleEffect creates a new grayscale effect.
+
 <a name="GroupFill"></a>
 ## type GroupFill
 
@@ -4780,6 +6162,80 @@ const (
     GroupingPercentStacked GroupingValue = "percentStacked"
 )
 ```
+
+<a name="HSLEffect"></a>
+## type HSLEffect
+
+HSLEffect represents a Hue/Saturation/Luminance effect \(a:hsl\).
+
+```go
+type HSLEffect struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewHSLEffect"></a>
+### func NewHSLEffect
+
+```go
+func NewHSLEffect(hue, sat, lum int) *HSLEffect
+```
+
+NewHSLEffect creates a new HSL effect.
+
+<a name="HSLEffect.Hue"></a>
+### func \(\*HSLEffect\) Hue
+
+```go
+func (h *HSLEffect) Hue() int
+```
+
+Hue returns the hue adjustment \(0\-36000000\).
+
+<a name="HSLEffect.Luminance"></a>
+### func \(\*HSLEffect\) Luminance
+
+```go
+func (h *HSLEffect) Luminance() int
+```
+
+Luminance returns the luminance adjustment \(0\-100000\).
+
+<a name="HSLEffect.Saturation"></a>
+### func \(\*HSLEffect\) Saturation
+
+```go
+func (h *HSLEffect) Saturation() int
+```
+
+Saturation returns the saturation adjustment \(0\-100000\).
+
+<a name="HSLEffect.SetHue"></a>
+### func \(\*HSLEffect\) SetHue
+
+```go
+func (h *HSLEffect) SetHue(hue int)
+```
+
+SetHue sets the hue adjustment.
+
+<a name="HSLEffect.SetLuminance"></a>
+### func \(\*HSLEffect\) SetLuminance
+
+```go
+func (h *HSLEffect) SetLuminance(lum int)
+```
+
+SetLuminance sets the luminance adjustment.
+
+<a name="HSLEffect.SetSaturation"></a>
+### func \(\*HSLEffect\) SetSaturation
+
+```go
+func (h *HSLEffect) SetSaturation(sat int)
+```
+
+SetSaturation sets the saturation adjustment.
 
 <a name="HslColor"></a>
 ## type HslColor
@@ -5133,6 +6589,15 @@ func (l *Legend) Position() LegendPositionValue
 
 Position returns the legend position.
 
+<a name="Legend.SetLayout"></a>
+### func \(\*Legend\) SetLayout
+
+```go
+func (l *Legend) SetLayout(layout *Layout)
+```
+
+SetLayout sets the layout for the legend.
+
 <a name="Legend.SetOverlay"></a>
 ### func \(\*Legend\) SetOverlay
 
@@ -5150,6 +6615,24 @@ func (l *Legend) SetPosition(pos LegendPositionValue)
 ```
 
 SetPosition sets the legend position.
+
+<a name="Legend.SetShapeProperties"></a>
+### func \(\*Legend\) SetShapeProperties
+
+```go
+func (l *Legend) SetShapeProperties(props *ChartShapeProperties)
+```
+
+SetShapeProperties sets the shape properties for the legend.
+
+<a name="Legend.SetTextProperties"></a>
+### func \(\*Legend\) SetTextProperties
+
+```go
+func (l *Legend) SetTextProperties(props *ChartText)
+```
+
+SetTextProperties sets the text properties for the legend.
 
 <a name="LegendPositionValue"></a>
 ## type LegendPositionValue
@@ -5171,6 +6654,80 @@ const (
     LegendPositionTopRight LegendPositionValue = "tr"
 )
 ```
+
+<a name="LightRig"></a>
+## type LightRig
+
+LightRig represents a light rig \(a:lightRig\).
+
+```go
+type LightRig struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewLightRig"></a>
+### func NewLightRig
+
+```go
+func NewLightRig() *LightRig
+```
+
+NewLightRig creates a new LightRig element.
+
+<a name="LightRig.Direction"></a>
+### func \(\*LightRig\) Direction
+
+```go
+func (l *LightRig) Direction() string
+```
+
+Direction returns the light direction.
+
+<a name="LightRig.Rig"></a>
+### func \(\*LightRig\) Rig
+
+```go
+func (l *LightRig) Rig() string
+```
+
+Rig returns the rig preset type.
+
+<a name="LightRig.Rotation"></a>
+### func \(\*LightRig\) Rotation
+
+```go
+func (l *LightRig) Rotation() *Rotation3D
+```
+
+Rotation returns the rotation element.
+
+<a name="LightRig.SetDirection"></a>
+### func \(\*LightRig\) SetDirection
+
+```go
+func (l *LightRig) SetDirection(d string)
+```
+
+SetDirection sets the light direction.
+
+<a name="LightRig.SetRig"></a>
+### func \(\*LightRig\) SetRig
+
+```go
+func (l *LightRig) SetRig(r string)
+```
+
+SetRig sets the rig preset type.
+
+<a name="LightRig.SetRotation"></a>
+### func \(\*LightRig\) SetRotation
+
+```go
+func (l *LightRig) SetRotation(r *Rotation3D)
+```
+
+SetRotation sets the rotation element.
 
 <a name="Line3DChart"></a>
 ## type Line3DChart
@@ -5890,6 +7447,62 @@ func (l *LineProperties) removeJoin()
 ```
 
 removeJoin removes any existing join element.
+
+<a name="LuminanceEffect"></a>
+## type LuminanceEffect
+
+LuminanceEffect represents a luminance effect \(a:lum\).
+
+```go
+type LuminanceEffect struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewLuminanceEffect"></a>
+### func NewLuminanceEffect
+
+```go
+func NewLuminanceEffect(bright, contrast int) *LuminanceEffect
+```
+
+NewLuminanceEffect creates a new luminance effect.
+
+<a name="LuminanceEffect.Brightness"></a>
+### func \(\*LuminanceEffect\) Brightness
+
+```go
+func (l *LuminanceEffect) Brightness() int
+```
+
+Brightness returns the brightness adjustment \(0\-100000\).
+
+<a name="LuminanceEffect.Contrast"></a>
+### func \(\*LuminanceEffect\) Contrast
+
+```go
+func (l *LuminanceEffect) Contrast() int
+```
+
+Contrast returns the contrast adjustment \(0\-100000\).
+
+<a name="LuminanceEffect.SetBrightness"></a>
+### func \(\*LuminanceEffect\) SetBrightness
+
+```go
+func (l *LuminanceEffect) SetBrightness(bright int)
+```
+
+SetBrightness sets the brightness adjustment.
+
+<a name="LuminanceEffect.SetContrast"></a>
+### func \(\*LuminanceEffect\) SetContrast
+
+```go
+func (l *LuminanceEffect) SetContrast(contrast int)
+```
+
+SetContrast sets the contrast adjustment.
 
 <a name="Marker"></a>
 ## type Marker
@@ -7375,6 +8988,15 @@ func (pa *PlotArea) Layout() *Layout
 
 Layout returns the layout element.
 
+<a name="PlotArea.SetDataTable"></a>
+### func \(\*PlotArea\) SetDataTable
+
+```go
+func (pa *PlotArea) SetDataTable(dt *DataTable)
+```
+
+SetDataTable sets the data table for the plot area.
+
 <a name="PlotArea.SetLayout"></a>
 ### func \(\*PlotArea\) SetLayout
 
@@ -7401,6 +9023,64 @@ func (pa *PlotArea) ShapeProperties() *ChartShapeProperties
 ```
 
 ShapeProperties returns the shape properties for the plot area.
+
+<a name="PlotAreaEx"></a>
+## type PlotAreaEx
+
+PlotAreaEx represents the cx:plotArea element.
+
+```go
+type PlotAreaEx struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewPlotAreaEx"></a>
+### func NewPlotAreaEx
+
+```go
+func NewPlotAreaEx() *PlotAreaEx
+```
+
+NewPlotAreaEx creates a new extended plot area.
+
+<a name="PlotAreaEx.AddPlotAreaRegion"></a>
+### func \(\*PlotAreaEx\) AddPlotAreaRegion
+
+```go
+func (pa *PlotAreaEx) AddPlotAreaRegion(region *PlotAreaRegion)
+```
+
+AddPlotAreaRegion adds a region to the plot area.
+
+<a name="PlotAreaRegion"></a>
+## type PlotAreaRegion
+
+PlotAreaRegion represents a region in the plot area \(cx:plotAreaRegion\).
+
+```go
+type PlotAreaRegion struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewPlotAreaRegion"></a>
+### func NewPlotAreaRegion
+
+```go
+func NewPlotAreaRegion() *PlotAreaRegion
+```
+
+NewPlotAreaRegion creates a new plot area region.
+
+<a name="PlotAreaRegion.AddSeries"></a>
+### func \(\*PlotAreaRegion\) AddSeries
+
+```go
+func (par *PlotAreaRegion) AddSeries(series *SeriesEx)
+```
+
+AddSeries adds a series to the plot area region.
 
 <a name="Point2D"></a>
 ## type Point2D
@@ -8459,6 +10139,80 @@ func (c *RgbColor) addTransformation(name string, value int)
 
 addTransformation adds a color transformation child element.
 
+<a name="Rotation3D"></a>
+## type Rotation3D
+
+Rotation3D represents a 3D rotation \(a:rot\).
+
+```go
+type Rotation3D struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewRotation3D"></a>
+### func NewRotation3D
+
+```go
+func NewRotation3D() *Rotation3D
+```
+
+NewRotation3D creates a new Rotation3D element.
+
+<a name="Rotation3D.Lat"></a>
+### func \(\*Rotation3D\) Lat
+
+```go
+func (r *Rotation3D) Lat() int
+```
+
+Lat returns the latitude in 60000ths of a degree.
+
+<a name="Rotation3D.Lon"></a>
+### func \(\*Rotation3D\) Lon
+
+```go
+func (r *Rotation3D) Lon() int
+```
+
+Lon returns the longitude in 60000ths of a degree.
+
+<a name="Rotation3D.Rev"></a>
+### func \(\*Rotation3D\) Rev
+
+```go
+func (r *Rotation3D) Rev() int
+```
+
+Rev returns the revolution in 60000ths of a degree.
+
+<a name="Rotation3D.SetLat"></a>
+### func \(\*Rotation3D\) SetLat
+
+```go
+func (r *Rotation3D) SetLat(lat int)
+```
+
+SetLat sets the latitude.
+
+<a name="Rotation3D.SetLon"></a>
+### func \(\*Rotation3D\) SetLon
+
+```go
+func (r *Rotation3D) SetLon(lon int)
+```
+
+SetLon sets the longitude.
+
+<a name="Rotation3D.SetRev"></a>
+### func \(\*Rotation3D\) SetRev
+
+```go
+func (r *Rotation3D) SetRev(rev int)
+```
+
+SetRev sets the revolution.
+
 <a name="Scaling"></a>
 ## type Scaling
 
@@ -8487,6 +10241,15 @@ func (s *Scaling) Clone() openxml.Element
 ```
 
 Clone creates a deep copy of this Scaling.
+
+<a name="Scaling.SetLogBase"></a>
+### func \(\*Scaling\) SetLogBase
+
+```go
+func (s *Scaling) SetLogBase(val float64)
+```
+
+SetLogBase sets the logarithmic base for the axis scaling. Typical values are 10 or 2. Range 2\-1000.
 
 <a name="Scaling.SetMaximum"></a>
 ### func \(\*Scaling\) SetMaximum
@@ -8639,6 +10402,80 @@ const (
     ScatterStyleSmoothMarker ScatterStyleValue = "smoothMarker"
 )
 ```
+
+<a name="Scene3D"></a>
+## type Scene3D
+
+Scene3D represents the 3D scene properties \(a:scene3d\).
+
+```go
+type Scene3D struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewScene3D"></a>
+### func NewScene3D
+
+```go
+func NewScene3D() *Scene3D
+```
+
+NewScene3D creates a new Scene3D element.
+
+<a name="Scene3D.Backdrop"></a>
+### func \(\*Scene3D\) Backdrop
+
+```go
+func (s *Scene3D) Backdrop() *Backdrop
+```
+
+Backdrop returns the backdrop element.
+
+<a name="Scene3D.Camera"></a>
+### func \(\*Scene3D\) Camera
+
+```go
+func (s *Scene3D) Camera() *Camera
+```
+
+Camera returns the camera element.
+
+<a name="Scene3D.LightRig"></a>
+### func \(\*Scene3D\) LightRig
+
+```go
+func (s *Scene3D) LightRig() *LightRig
+```
+
+LightRig returns the light rig element.
+
+<a name="Scene3D.SetBackdrop"></a>
+### func \(\*Scene3D\) SetBackdrop
+
+```go
+func (s *Scene3D) SetBackdrop(b *Backdrop)
+```
+
+SetBackdrop sets the backdrop element.
+
+<a name="Scene3D.SetCamera"></a>
+### func \(\*Scene3D\) SetCamera
+
+```go
+func (s *Scene3D) SetCamera(c *Camera)
+```
+
+SetCamera sets the camera element.
+
+<a name="Scene3D.SetLightRig"></a>
+### func \(\*Scene3D\) SetLightRig
+
+```go
+func (s *Scene3D) SetLightRig(l *LightRig)
+```
+
+SetLightRig sets the light rig element.
 
 <a name="SchemeColor"></a>
 ## type SchemeColor
@@ -8838,6 +10675,35 @@ func (ax *SeriesAxis) Clone() openxml.Element
 
 Clone creates a deep copy of this SeriesAxis.
 
+<a name="SeriesEx"></a>
+## type SeriesEx
+
+SeriesEx represents a series in an extended chart \(cx:series\).
+
+```go
+type SeriesEx struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewSeriesEx"></a>
+### func NewSeriesEx
+
+```go
+func NewSeriesEx() *SeriesEx
+```
+
+NewSeriesEx creates a new extended series.
+
+<a name="SeriesEx.SetLayoutID"></a>
+### func \(\*SeriesEx\) SetLayoutID
+
+```go
+func (s *SeriesEx) SetLayoutID(layoutID string)
+```
+
+SetLayout sets the layout ID for the series \(e.g., "waterfall", "sunburst"\).
+
 <a name="SeriesText"></a>
 ## type SeriesText
 
@@ -8884,6 +10750,206 @@ func (s *SeriesText) Clone() openxml.Element
 ```
 
 Clone creates a deep copy of this SeriesText.
+
+<a name="Shape3D"></a>
+## type Shape3D
+
+Shape3D represents the 3D shape properties \(a:sp3d\).
+
+```go
+type Shape3D struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewShape3D"></a>
+### func NewShape3D
+
+```go
+func NewShape3D() *Shape3D
+```
+
+NewShape3D creates a new Shape3D element.
+
+<a name="Shape3D.BevelBottom"></a>
+### func \(\*Shape3D\) BevelBottom
+
+```go
+func (s *Shape3D) BevelBottom() *Bevel
+```
+
+BevelBottom returns the bottom bevel.
+
+<a name="Shape3D.BevelTop"></a>
+### func \(\*Shape3D\) BevelTop
+
+```go
+func (s *Shape3D) BevelTop() *Bevel
+```
+
+BevelTop returns the top bevel.
+
+<a name="Shape3D.ContourColor"></a>
+### func \(\*Shape3D\) ContourColor
+
+```go
+func (s *Shape3D) ContourColor() openxml.Element
+```
+
+ContourColor returns the contour color container element.
+
+<a name="Shape3D.ContourWidth"></a>
+### func \(\*Shape3D\) ContourWidth
+
+```go
+func (s *Shape3D) ContourWidth() EMU
+```
+
+ContourWidth returns the contour width in EMUs.
+
+<a name="Shape3D.ExtrusionColor"></a>
+### func \(\*Shape3D\) ExtrusionColor
+
+```go
+func (s *Shape3D) ExtrusionColor() openxml.Element
+```
+
+ExtrusionColor returns the extrusion color container element.
+
+<a name="Shape3D.ExtrusionHeight"></a>
+### func \(\*Shape3D\) ExtrusionHeight
+
+```go
+func (s *Shape3D) ExtrusionHeight() EMU
+```
+
+ExtrusionHeight returns the extrusion height in EMUs.
+
+<a name="Shape3D.PresetMaterial"></a>
+### func \(\*Shape3D\) PresetMaterial
+
+```go
+func (s *Shape3D) PresetMaterial() string
+```
+
+PresetMaterial returns the preset material type.
+
+<a name="Shape3D.SetBevelBottom"></a>
+### func \(\*Shape3D\) SetBevelBottom
+
+```go
+func (s *Shape3D) SetBevelBottom(b *Bevel)
+```
+
+SetBevelBottom sets the bottom bevel.
+
+<a name="Shape3D.SetBevelTop"></a>
+### func \(\*Shape3D\) SetBevelTop
+
+```go
+func (s *Shape3D) SetBevelTop(b *Bevel)
+```
+
+SetBevelTop sets the top bevel.
+
+<a name="Shape3D.SetContourColorRgb"></a>
+### func \(\*Shape3D\) SetContourColorRgb
+
+```go
+func (s *Shape3D) SetContourColorRgb(hex string)
+```
+
+SetContourColorRgb sets the contour color to an RGB color.
+
+<a name="Shape3D.SetContourColorScheme"></a>
+### func \(\*Shape3D\) SetContourColorScheme
+
+```go
+func (s *Shape3D) SetContourColorScheme(color SchemeColorValue)
+```
+
+SetContourColorScheme sets the contour color to a scheme color.
+
+<a name="Shape3D.SetContourWidth"></a>
+### func \(\*Shape3D\) SetContourWidth
+
+```go
+func (s *Shape3D) SetContourWidth(w EMU)
+```
+
+SetContourWidth sets the contour width in EMUs.
+
+<a name="Shape3D.SetExtrusionColorRgb"></a>
+### func \(\*Shape3D\) SetExtrusionColorRgb
+
+```go
+func (s *Shape3D) SetExtrusionColorRgb(hex string)
+```
+
+SetExtrusionColorRgb sets the extrusion color to an RGB color.
+
+<a name="Shape3D.SetExtrusionColorScheme"></a>
+### func \(\*Shape3D\) SetExtrusionColorScheme
+
+```go
+func (s *Shape3D) SetExtrusionColorScheme(color SchemeColorValue)
+```
+
+SetExtrusionColorScheme sets the extrusion color to a scheme color.
+
+<a name="Shape3D.SetExtrusionHeight"></a>
+### func \(\*Shape3D\) SetExtrusionHeight
+
+```go
+func (s *Shape3D) SetExtrusionHeight(h EMU)
+```
+
+SetExtrusionHeight sets the extrusion height in EMUs.
+
+<a name="Shape3D.SetPresetMaterial"></a>
+### func \(\*Shape3D\) SetPresetMaterial
+
+```go
+func (s *Shape3D) SetPresetMaterial(m string)
+```
+
+SetPresetMaterial sets the preset material type.
+
+<a name="Shape3D.SetZ"></a>
+### func \(\*Shape3D\) SetZ
+
+```go
+func (s *Shape3D) SetZ(z EMU)
+```
+
+SetZ sets the z\-coordinate in EMUs.
+
+<a name="Shape3D.Z"></a>
+### func \(\*Shape3D\) Z
+
+```go
+func (s *Shape3D) Z() EMU
+```
+
+Z returns the z\-coordinate in EMUs.
+
+<a name="Shape3D.removeContourColor"></a>
+### func \(\*Shape3D\) removeContourColor
+
+```go
+func (s *Shape3D) removeContourColor()
+```
+
+
+
+<a name="Shape3D.removeExtrusionColor"></a>
+### func \(\*Shape3D\) removeExtrusionColor
+
+```go
+func (s *Shape3D) removeExtrusionColor()
+```
+
+
 
 <a name="ShapeGuide"></a>
 ## type ShapeGuide
@@ -8950,6 +11016,251 @@ func (g *ShapeGuide) SetName(name string)
 
 SetName sets the guide name.
 
+<a name="ShapeLocks"></a>
+## type ShapeLocks
+
+ShapeLocks represents shape locking properties \(a:spLocks\). This element specifies locking properties for a shape to prevent certain types of modifications by the user.
+
+```go
+type ShapeLocks struct {
+    *openxml.LeafElementBase
+}
+```
+
+<a name="NewShapeLocks"></a>
+### func NewShapeLocks
+
+```go
+func NewShapeLocks() *ShapeLocks
+```
+
+NewShapeLocks creates a new ShapeLocks element.
+
+<a name="ShapeLocks.Clone"></a>
+### func \(\*ShapeLocks\) Clone
+
+```go
+func (s *ShapeLocks) Clone() openxml.Element
+```
+
+Clone creates a deep copy of this ShapeLocks element.
+
+<a name="ShapeLocks.NoAdjustHandles"></a>
+### func \(\*ShapeLocks\) NoAdjustHandles
+
+```go
+func (s *ShapeLocks) NoAdjustHandles() bool
+```
+
+NoAdjustHandles returns whether adjusting handles is locked.
+
+<a name="ShapeLocks.NoChangeArrowheads"></a>
+### func \(\*ShapeLocks\) NoChangeArrowheads
+
+```go
+func (s *ShapeLocks) NoChangeArrowheads() bool
+```
+
+NoChangeArrowheads returns whether changing arrowheads is locked.
+
+<a name="ShapeLocks.NoChangeAspect"></a>
+### func \(\*ShapeLocks\) NoChangeAspect
+
+```go
+func (s *ShapeLocks) NoChangeAspect() bool
+```
+
+NoChangeAspect returns whether aspect ratio change is locked.
+
+<a name="ShapeLocks.NoChangeShapeType"></a>
+### func \(\*ShapeLocks\) NoChangeShapeType
+
+```go
+func (s *ShapeLocks) NoChangeShapeType() bool
+```
+
+NoChangeShapeType returns whether changing shape type is locked.
+
+<a name="ShapeLocks.NoEditPoints"></a>
+### func \(\*ShapeLocks\) NoEditPoints
+
+```go
+func (s *ShapeLocks) NoEditPoints() bool
+```
+
+NoEditPoints returns whether editing points is locked.
+
+<a name="ShapeLocks.NoGrouping"></a>
+### func \(\*ShapeLocks\) NoGrouping
+
+```go
+func (s *ShapeLocks) NoGrouping() bool
+```
+
+NoGrouping returns whether grouping is locked.
+
+<a name="ShapeLocks.NoMove"></a>
+### func \(\*ShapeLocks\) NoMove
+
+```go
+func (s *ShapeLocks) NoMove() bool
+```
+
+NoMove returns whether moving is locked.
+
+<a name="ShapeLocks.NoResize"></a>
+### func \(\*ShapeLocks\) NoResize
+
+```go
+func (s *ShapeLocks) NoResize() bool
+```
+
+NoResize returns whether resizing is locked.
+
+<a name="ShapeLocks.NoRotation"></a>
+### func \(\*ShapeLocks\) NoRotation
+
+```go
+func (s *ShapeLocks) NoRotation() bool
+```
+
+NoRotation returns whether rotation is locked.
+
+<a name="ShapeLocks.NoSelection"></a>
+### func \(\*ShapeLocks\) NoSelection
+
+```go
+func (s *ShapeLocks) NoSelection() bool
+```
+
+NoSelection returns whether selection is locked.
+
+<a name="ShapeLocks.NoTextEdit"></a>
+### func \(\*ShapeLocks\) NoTextEdit
+
+```go
+func (s *ShapeLocks) NoTextEdit() bool
+```
+
+NoTextEdit returns whether text editing is locked.
+
+<a name="ShapeLocks.SetNoAdjustHandles"></a>
+### func \(\*ShapeLocks\) SetNoAdjustHandles
+
+```go
+func (s *ShapeLocks) SetNoAdjustHandles(lock bool)
+```
+
+SetNoAdjustHandles sets whether adjusting handles is locked.
+
+<a name="ShapeLocks.SetNoChangeArrowheads"></a>
+### func \(\*ShapeLocks\) SetNoChangeArrowheads
+
+```go
+func (s *ShapeLocks) SetNoChangeArrowheads(lock bool)
+```
+
+SetNoChangeArrowheads sets whether changing arrowheads is locked.
+
+<a name="ShapeLocks.SetNoChangeAspect"></a>
+### func \(\*ShapeLocks\) SetNoChangeAspect
+
+```go
+func (s *ShapeLocks) SetNoChangeAspect(lock bool)
+```
+
+SetNoChangeAspect sets whether aspect ratio change is locked.
+
+<a name="ShapeLocks.SetNoChangeShapeType"></a>
+### func \(\*ShapeLocks\) SetNoChangeShapeType
+
+```go
+func (s *ShapeLocks) SetNoChangeShapeType(lock bool)
+```
+
+SetNoChangeShapeType sets whether changing shape type is locked.
+
+<a name="ShapeLocks.SetNoEditPoints"></a>
+### func \(\*ShapeLocks\) SetNoEditPoints
+
+```go
+func (s *ShapeLocks) SetNoEditPoints(lock bool)
+```
+
+SetNoEditPoints sets whether editing points is locked.
+
+<a name="ShapeLocks.SetNoGrouping"></a>
+### func \(\*ShapeLocks\) SetNoGrouping
+
+```go
+func (s *ShapeLocks) SetNoGrouping(lock bool)
+```
+
+SetNoGrouping sets whether grouping is locked.
+
+<a name="ShapeLocks.SetNoMove"></a>
+### func \(\*ShapeLocks\) SetNoMove
+
+```go
+func (s *ShapeLocks) SetNoMove(lock bool)
+```
+
+SetNoMove sets whether moving is locked.
+
+<a name="ShapeLocks.SetNoResize"></a>
+### func \(\*ShapeLocks\) SetNoResize
+
+```go
+func (s *ShapeLocks) SetNoResize(lock bool)
+```
+
+SetNoResize sets whether resizing is locked.
+
+<a name="ShapeLocks.SetNoRotation"></a>
+### func \(\*ShapeLocks\) SetNoRotation
+
+```go
+func (s *ShapeLocks) SetNoRotation(lock bool)
+```
+
+SetNoRotation sets whether rotation is locked.
+
+<a name="ShapeLocks.SetNoSelection"></a>
+### func \(\*ShapeLocks\) SetNoSelection
+
+```go
+func (s *ShapeLocks) SetNoSelection(lock bool)
+```
+
+SetNoSelection sets whether selection is locked.
+
+<a name="ShapeLocks.SetNoTextEdit"></a>
+### func \(\*ShapeLocks\) SetNoTextEdit
+
+```go
+func (s *ShapeLocks) SetNoTextEdit(lock bool)
+```
+
+SetNoTextEdit sets whether text editing is locked.
+
+<a name="ShapeLocks.getBoolAttr"></a>
+### func \(\*ShapeLocks\) getBoolAttr
+
+```go
+func (s *ShapeLocks) getBoolAttr(name string, defaultVal bool) bool
+```
+
+getBoolAttr retrieves a boolean attribute value.
+
+<a name="ShapeLocks.setBoolAttr"></a>
+### func \(\*ShapeLocks\) setBoolAttr
+
+```go
+func (s *ShapeLocks) setBoolAttr(name string, value, defaultVal bool)
+```
+
+setBoolAttr sets a boolean attribute value.
+
 <a name="ShapeProperties"></a>
 ## type ShapeProperties
 
@@ -9006,6 +11317,15 @@ func (s *ShapeProperties) CustomGeometry() *CustomGeometry
 
 CustomGeometry returns the custom geometry, or nil if not set.
 
+<a name="ShapeProperties.EffectList"></a>
+### func \(\*ShapeProperties\) EffectList
+
+```go
+func (s *ShapeProperties) EffectList() *EffectList
+```
+
+EffectList returns the effect list, or nil if not set.
+
 <a name="ShapeProperties.GradientFill"></a>
 ### func \(\*ShapeProperties\) GradientFill
 
@@ -9060,6 +11380,15 @@ func (s *ShapeProperties) PresetGeometry() *PresetGeometry
 
 PresetGeometry returns the preset geometry, or nil if not set.
 
+<a name="ShapeProperties.Scene3D"></a>
+### func \(\*ShapeProperties\) Scene3D
+
+```go
+func (s *ShapeProperties) Scene3D() *Scene3D
+```
+
+Scene3D returns the 3D scene properties, or nil if not set.
+
 <a name="ShapeProperties.SetBlackWhiteMode"></a>
 ### func \(\*ShapeProperties\) SetBlackWhiteMode
 
@@ -9086,6 +11415,15 @@ func (s *ShapeProperties) SetCustomGeometry(geometry *CustomGeometry)
 ```
 
 SetCustomGeometry sets the custom geometry for the shape.
+
+<a name="ShapeProperties.SetEffectList"></a>
+### func \(\*ShapeProperties\) SetEffectList
+
+```go
+func (s *ShapeProperties) SetEffectList(effects *EffectList)
+```
+
+SetEffectList sets the effect list.
 
 <a name="ShapeProperties.SetGradientFill"></a>
 ### func \(\*ShapeProperties\) SetGradientFill
@@ -9177,6 +11515,33 @@ func (s *ShapeProperties) SetPresetShape(shapeType ShapeTypeValue)
 
 SetPresetShape sets the shape to a preset shape type.
 
+<a name="ShapeProperties.SetScene3D"></a>
+### func \(\*ShapeProperties\) SetScene3D
+
+```go
+func (s *ShapeProperties) SetScene3D(scene *Scene3D)
+```
+
+SetScene3D sets the 3D scene properties.
+
+<a name="ShapeProperties.SetShape3D"></a>
+### func \(\*ShapeProperties\) SetShape3D
+
+```go
+func (s *ShapeProperties) SetShape3D(sp3d *Shape3D)
+```
+
+SetShape3D sets the 3D shape properties.
+
+<a name="ShapeProperties.SetShapeLocks"></a>
+### func \(\*ShapeProperties\) SetShapeLocks
+
+```go
+func (s *ShapeProperties) SetShapeLocks(locks *ShapeLocks)
+```
+
+SetShapeLocks sets the shape locks.
+
 <a name="ShapeProperties.SetSolidFill"></a>
 ### func \(\*ShapeProperties\) SetSolidFill
 
@@ -9222,6 +11587,24 @@ func (s *ShapeProperties) SetTransformValues(offX, offY, extCx, extCy EMU)
 
 SetTransformValues sets the transform using offset and extent values.
 
+<a name="ShapeProperties.Shape3D"></a>
+### func \(\*ShapeProperties\) Shape3D
+
+```go
+func (s *ShapeProperties) Shape3D() *Shape3D
+```
+
+Shape3D returns the 3D shape properties, or nil if not set.
+
+<a name="ShapeProperties.ShapeLocks"></a>
+### func \(\*ShapeProperties\) ShapeLocks
+
+```go
+func (s *ShapeProperties) ShapeLocks() *ShapeLocks
+```
+
+ShapeLocks returns the shape locks, or nil if not set.
+
 <a name="ShapeProperties.SolidFill"></a>
 ### func \(\*ShapeProperties\) SolidFill
 
@@ -9266,6 +11649,15 @@ func (s *ShapeProperties) insertAfterTransform(elem openxml.Element)
 ```
 
 insertAfterTransform inserts an element after the transform element.
+
+<a name="ShapeProperties.insertInOrder"></a>
+### func \(\*ShapeProperties\) insertInOrder
+
+```go
+func (s *ShapeProperties) insertInOrder(elem openxml.Element, name string, predecessors ...string)
+```
+
+insertInOrder inserts the element in the correct position based on predecessors.
 
 <a name="ShapeProperties.removeFill"></a>
 ### func \(\*ShapeProperties\) removeFill
@@ -9693,6 +12085,20 @@ func (f *SolidFill) SetSchemeColor(color SchemeColorValue)
 ```
 
 SetSchemeColor sets the fill color to a scheme color.
+
+<a name="SourceRect"></a>
+## type SourceRect
+
+SourceRect represents the portion of the image to display \(cropping\). Values are percentages \(0\-100000 where 100000 = 100%\).
+
+```go
+type SourceRect struct {
+    Left   int // Left crop percentage
+    Top    int // Top crop percentage
+    Right  int // Right crop percentage
+    Bottom int // Bottom crop percentage
+}
+```
 
 <a name="StockChart"></a>
 ## type StockChart
@@ -12388,6 +14794,24 @@ func (t *Title) Clone() openxml.Element
 ```
 
 Clone creates a deep copy of this Title.
+
+<a name="Title.SetLayout"></a>
+### func \(\*Title\) SetLayout
+
+```go
+func (t *Title) SetLayout(layout *Layout)
+```
+
+SetLayout sets the layout for the title.
+
+<a name="Title.SetOverlay"></a>
+### func \(\*Title\) SetOverlay
+
+```go
+func (t *Title) SetOverlay(overlay bool)
+```
+
+SetOverlay sets whether the title overlays the chart.
 
 <a name="Transform2D"></a>
 ## type Transform2D

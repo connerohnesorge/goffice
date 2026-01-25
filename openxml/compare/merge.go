@@ -79,19 +79,32 @@ func (s *StrategyCombined) Resolve(conflict Conflict) (interface{}, error) {
 			return s1 + sep + s2, nil
 		}
 	}
-	// Default to ours for non-combinable types
+// StrategyConflictMarkers resolves text conflicts by inserting conflict markers.
+type StrategyConflictMarkers struct {
+	OursLabel   string
+	TheirsLabel string
+}
+
+func (s *StrategyConflictMarkers) Resolve(conflict Conflict) (interface{}, error) {
+	if conflict.Type == ConflictText {
+		s1, ok1 := conflict.OurValue.(string)
+		s2, ok2 := conflict.TheirValue.(string)
+		if ok1 && ok2 {
+			ours := s.OursLabel
+			if ours == "" {
+				ours = "OURS"
+			}
+			theirs := s.TheirsLabel
+			if theirs == "" {
+				theirs = "THEIRS"
+			}
+			
+			return fmt.Sprintf("<<<<<<< %s\n%s\n=======\n%s\n>>>>>>> %s", ours, s1, s2, theirs), nil
+		}
+	}
 	return conflict.OurValue, nil
 }
 
-// MergeOptions configures the behavior of the merge operation.
-type MergeOptions struct {
-	IgnoreAttributes bool
-	IgnoreText       bool
-	IgnoreChildren   bool
-}
-
-// Merger is the interface for merging OpenXML elements.
-type Merger interface {
 	Merge(base, other openxml.Element) error
 	ThreeWayMerge(base, ours, theirs openxml.Element) (openxml.Element, []Conflict, error)
 	SetStrategy(strategy MergeStrategy)

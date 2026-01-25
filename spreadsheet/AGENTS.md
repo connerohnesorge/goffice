@@ -20,6 +20,8 @@ Package spreadsheet provides SpreadsheetML support for Excel documents. This fil
 
 Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements chart series functionality.
 
+Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements chart data cache synchronization.
+
 Package spreadsheet provides SpreadsheetML support for Excel documents.
 
 Package spreadsheet provides SpreadsheetML support for Excel documents.
@@ -329,6 +331,16 @@ Package spreadsheet provides SpreadsheetML support for Excel documents. This fil
   - [func \(c \*Cell\) SetStyle\(style \*Style\)](<#Cell.SetStyle>)
   - [func \(c \*Cell\) StyleIndex\(\) uint32](<#Cell.StyleIndex>)
   - [func \(c \*Cell\) getWorkbookPart\(\) \*parts.WorkbookPart](<#Cell.getWorkbookPart>)
+- [type CellBuilder](<#CellBuilder>)
+  - [func \(cb \*CellBuilder\) Cell\(\) \*Cell](<#CellBuilder.Cell>)
+  - [func \(cb \*CellBuilder\) Row\(\) \*RowBuilder](<#CellBuilder.Row>)
+  - [func \(cb \*CellBuilder\) SetBool\(value bool\) \*CellBuilder](<#CellBuilder.SetBool>)
+  - [func \(cb \*CellBuilder\) SetInt\(value int\) \*CellBuilder](<#CellBuilder.SetInt>)
+  - [func \(cb \*CellBuilder\) SetNumber\(value float64\) \*CellBuilder](<#CellBuilder.SetNumber>)
+  - [func \(cb \*CellBuilder\) SetString\(value string\) \*CellBuilder](<#CellBuilder.SetString>)
+  - [func \(cb \*CellBuilder\) SetStyle\(style \*Style\) \*CellBuilder](<#CellBuilder.SetStyle>)
+  - [func \(cb \*CellBuilder\) Sheet\(\) \*SheetBuilder](<#CellBuilder.Sheet>)
+  - [func \(cb \*CellBuilder\) Workbook\(\) \*WorkbookBuilder](<#CellBuilder.Workbook>)
 - [type CellRef](<#CellRef>)
   - [func MustParseCellRef\(s string\) CellRef](<#MustParseCellRef>)
   - [func NewAbsCellRef\(col, row int\) CellRef](<#NewAbsCellRef>)
@@ -359,6 +371,7 @@ Package spreadsheet provides SpreadsheetML support for Excel documents. This fil
   - [func \(c \*Chart\) Series\(index int\) \*ChartSeries](<#Chart.Series>)
   - [func \(c \*Chart\) SeriesCount\(\) int](<#Chart.SeriesCount>)
   - [func \(c \*Chart\) SetTitle\(title string\)](<#Chart.SetTitle>)
+  - [func \(c \*Chart\) Synchronize\(\) error](<#Chart.Synchronize>)
   - [func \(c \*Chart\) Title\(\) string](<#Chart.Title>)
   - [func \(c \*Chart\) Type\(\) ChartType](<#Chart.Type>)
   - [func \(c \*Chart\) ValueAxis\(\) \*ChartAxis](<#Chart.ValueAxis>)
@@ -366,11 +379,15 @@ Package spreadsheet provides SpreadsheetML support for Excel documents. This fil
   - [func \(c \*Chart\) setAnchorPosition\(anchor CellRef\) error](<#Chart.setAnchorPosition>)
 - [type ChartAxis](<#ChartAxis>)
   - [func newChartAxis\(chart \*Chart, axisType string\) \*ChartAxis](<#newChartAxis>)
+  - [func \(a \*ChartAxis\) SetAxisPosition\(pos drawingml.AxisPositionValue\)](<#ChartAxis.SetAxisPosition>)
+  - [func \(a \*ChartAxis\) SetLogScale\(logBase float64\)](<#ChartAxis.SetLogScale>)
   - [func \(a \*ChartAxis\) SetMajorGridlines\(show bool\)](<#ChartAxis.SetMajorGridlines>)
   - [func \(a \*ChartAxis\) SetMaximum\(val float64\)](<#ChartAxis.SetMaximum>)
   - [func \(a \*ChartAxis\) SetMinimum\(val float64\)](<#ChartAxis.SetMinimum>)
   - [func \(a \*ChartAxis\) SetMinorGridlines\(show bool\)](<#ChartAxis.SetMinorGridlines>)
   - [func \(a \*ChartAxis\) SetNumberFormat\(format string\)](<#ChartAxis.SetNumberFormat>)
+  - [func \(a \*ChartAxis\) SetOrientation\(orientation drawingml.OrientationValue\)](<#ChartAxis.SetOrientation>)
+  - [func \(a \*ChartAxis\) SetReverseOrder\(reverse bool\)](<#ChartAxis.SetReverseOrder>)
   - [func \(a \*ChartAxis\) SetTitle\(title string\)](<#ChartAxis.SetTitle>)
   - [func \(a \*ChartAxis\) Title\(\) string](<#ChartAxis.Title>)
   - [func \(\*ChartAxis\) getOrCreateScaling\(ax \*drawingml.ValueAxis\) \*drawingml.Scaling](<#ChartAxis.getOrCreateScaling>)
@@ -535,6 +552,11 @@ Package spreadsheet provides SpreadsheetML support for Excel documents. This fil
   - [func \(r \*Range\) SetValue\(value interface\{\}\)](<#Range.SetValue>)
   - [func \(r \*Range\) Start\(\) CellRef](<#Range.Start>)
   - [func \(r \*Range\) String\(\) string](<#Range.String>)
+- [type RangeBuilder](<#RangeBuilder>)
+  - [func \(rb \*RangeBuilder\) Merge\(\) \*RangeBuilder](<#RangeBuilder.Merge>)
+  - [func \(rb \*RangeBuilder\) SetStyle\(style \*Style\) \*RangeBuilder](<#RangeBuilder.SetStyle>)
+  - [func \(rb \*RangeBuilder\) SetValue\(value interface\{\}\) \*RangeBuilder](<#RangeBuilder.SetValue>)
+  - [func \(rb \*RangeBuilder\) Sheet\(\) \*SheetBuilder](<#RangeBuilder.Sheet>)
 - [type RangeRef](<#RangeRef>)
   - [func MustParseRangeRef\(s string\) RangeRef](<#MustParseRangeRef>)
   - [func NewRangeRef\(start, end CellRef\) RangeRef](<#NewRangeRef>)
@@ -568,6 +590,10 @@ Package spreadsheet provides SpreadsheetML support for Excel documents. This fil
   - [func \(r \*Row\) Index\(\) uint32](<#Row.Index>)
   - [func \(r \*Row\) SetHeight\(height float64\)](<#Row.SetHeight>)
   - [func \(r \*Row\) SetHidden\(hidden bool\)](<#Row.SetHidden>)
+- [type RowBuilder](<#RowBuilder>)
+  - [func \(rb \*RowBuilder\) Cell\(col uint32\) \*CellBuilder](<#RowBuilder.Cell>)
+  - [func \(rb \*RowBuilder\) Row\(\) \*Row](<#RowBuilder.Row>)
+  - [func \(rb \*RowBuilder\) Sheet\(\) \*SheetBuilder](<#RowBuilder.Sheet>)
 - [type Shape](<#Shape>)
   - [func \(s \*Shape\) FromCell\(\) CellRef](<#Shape.FromCell>)
   - [func \(s \*Shape\) SetText\(text string\)](<#Shape.SetText>)
@@ -625,6 +651,11 @@ Package spreadsheet provides SpreadsheetML support for Excel documents. This fil
   - [func \(s \*Sheet\) updateMergedCells\(operation ShiftOperation\) error](<#Sheet.updateMergedCells>)
   - [func \(s \*Sheet\) updateNamedRanges\(operation ShiftOperation\) error](<#Sheet.updateNamedRanges>)
   - [func \(s \*Sheet\) updateTableRanges\(operation ShiftOperation\) error](<#Sheet.updateTableRanges>)
+- [type SheetBuilder](<#SheetBuilder>)
+  - [func \(sb \*SheetBuilder\) AddRow\(\) \*RowBuilder](<#SheetBuilder.AddRow>)
+  - [func \(sb \*SheetBuilder\) Range\(ref string\) \*RangeBuilder](<#SheetBuilder.Range>)
+  - [func \(sb \*SheetBuilder\) Sheet\(\) \*Sheet](<#SheetBuilder.Sheet>)
+  - [func \(sb \*SheetBuilder\) Workbook\(\) \*WorkbookBuilder](<#SheetBuilder.Workbook>)
 - [type ShiftOperation](<#ShiftOperation>)
 - [type ShiftType](<#ShiftType>)
 - [type Style](<#Style>)
@@ -708,6 +739,10 @@ Package spreadsheet provides SpreadsheetML support for Excel documents. This fil
   - [func TokenizeFormula\(formula string\) \(\[\]Token, error\)](<#TokenizeFormula>)
 - [type TokenType](<#TokenType>)
 - [type VerticalAlign](<#VerticalAlign>)
+- [type WorkbookBuilder](<#WorkbookBuilder>)
+  - [func NewWorkbookBuilder\(\) \*WorkbookBuilder](<#NewWorkbookBuilder>)
+  - [func \(wb \*WorkbookBuilder\) AddSheet\(name string\) \*SheetBuilder](<#WorkbookBuilder.AddSheet>)
+  - [func \(wb \*WorkbookBuilder\) Build\(\) \(\*Document, error\)](<#WorkbookBuilder.Build>)
 - [type docError](<#docError>)
   - [func \(e docError\) Error\(\) string](<#docError.Error>)
 - [type fieldAxisInfo](<#fieldAxisInfo>)
@@ -1825,6 +1860,99 @@ func (c *Cell) getWorkbookPart() *parts.WorkbookPart
 
 getWorkbookPart returns the workbook part for this cell's document.
 
+<a name="CellBuilder"></a>
+## type CellBuilder
+
+
+
+```go
+type CellBuilder struct {
+    rb   *RowBuilder
+    cell *Cell
+}
+```
+
+<a name="CellBuilder.Cell"></a>
+### func \(\*CellBuilder\) Cell
+
+```go
+func (cb *CellBuilder) Cell() *Cell
+```
+
+
+
+<a name="CellBuilder.Row"></a>
+### func \(\*CellBuilder\) Row
+
+```go
+func (cb *CellBuilder) Row() *RowBuilder
+```
+
+
+
+<a name="CellBuilder.SetBool"></a>
+### func \(\*CellBuilder\) SetBool
+
+```go
+func (cb *CellBuilder) SetBool(value bool) *CellBuilder
+```
+
+
+
+<a name="CellBuilder.SetInt"></a>
+### func \(\*CellBuilder\) SetInt
+
+```go
+func (cb *CellBuilder) SetInt(value int) *CellBuilder
+```
+
+
+
+<a name="CellBuilder.SetNumber"></a>
+### func \(\*CellBuilder\) SetNumber
+
+```go
+func (cb *CellBuilder) SetNumber(value float64) *CellBuilder
+```
+
+
+
+<a name="CellBuilder.SetString"></a>
+### func \(\*CellBuilder\) SetString
+
+```go
+func (cb *CellBuilder) SetString(value string) *CellBuilder
+```
+
+
+
+<a name="CellBuilder.SetStyle"></a>
+### func \(\*CellBuilder\) SetStyle
+
+```go
+func (cb *CellBuilder) SetStyle(style *Style) *CellBuilder
+```
+
+
+
+<a name="CellBuilder.Sheet"></a>
+### func \(\*CellBuilder\) Sheet
+
+```go
+func (cb *CellBuilder) Sheet() *SheetBuilder
+```
+
+
+
+<a name="CellBuilder.Workbook"></a>
+### func \(\*CellBuilder\) Workbook
+
+```go
+func (cb *CellBuilder) Workbook() *WorkbookBuilder
+```
+
+
+
 <a name="CellRef"></a>
 ## type CellRef
 
@@ -2158,6 +2286,15 @@ func (c *Chart) SetTitle(title string)
 
 SetTitle sets the chart title.
 
+<a name="Chart.Synchronize"></a>
+### func \(\*Chart\) Synchronize
+
+```go
+func (c *Chart) Synchronize() error
+```
+
+Synchronize updates the chart data cache from the sheet data.
+
 <a name="Chart.Title"></a>
 ### func \(\*Chart\) Title
 
@@ -2227,6 +2364,24 @@ func newChartAxis(chart *Chart, axisType string) *ChartAxis
 
 newChartAxis creates a new ChartAxis.
 
+<a name="ChartAxis.SetAxisPosition"></a>
+### func \(\*ChartAxis\) SetAxisPosition
+
+```go
+func (a *ChartAxis) SetAxisPosition(pos drawingml.AxisPositionValue)
+```
+
+SetAxisPosition sets the axis position.
+
+<a name="ChartAxis.SetLogScale"></a>
+### func \(\*ChartAxis\) SetLogScale
+
+```go
+func (a *ChartAxis) SetLogScale(logBase float64)
+```
+
+SetLogScale sets logarithmic scale for the axis.
+
 <a name="ChartAxis.SetMajorGridlines"></a>
 ### func \(\*ChartAxis\) SetMajorGridlines
 
@@ -2271,6 +2426,24 @@ func (a *ChartAxis) SetNumberFormat(format string)
 ```
 
 SetNumberFormat sets the number format for axis labels.
+
+<a name="ChartAxis.SetOrientation"></a>
+### func \(\*ChartAxis\) SetOrientation
+
+```go
+func (a *ChartAxis) SetOrientation(orientation drawingml.OrientationValue)
+```
+
+SetOrientation sets axis orientation.
+
+<a name="ChartAxis.SetReverseOrder"></a>
+### func \(\*ChartAxis\) SetReverseOrder
+
+```go
+func (a *ChartAxis) SetReverseOrder(reverse bool)
+```
+
+SetReverseOrder reverses the axis order.
 
 <a name="ChartAxis.SetTitle"></a>
 ### func \(\*ChartAxis\) SetTitle
@@ -4002,6 +4175,54 @@ func (r *Range) String() string
 
 String returns the A1\-style range reference.
 
+<a name="RangeBuilder"></a>
+## type RangeBuilder
+
+
+
+```go
+type RangeBuilder struct {
+    sb   *SheetBuilder
+    rnge *Range
+}
+```
+
+<a name="RangeBuilder.Merge"></a>
+### func \(\*RangeBuilder\) Merge
+
+```go
+func (rb *RangeBuilder) Merge() *RangeBuilder
+```
+
+
+
+<a name="RangeBuilder.SetStyle"></a>
+### func \(\*RangeBuilder\) SetStyle
+
+```go
+func (rb *RangeBuilder) SetStyle(style *Style) *RangeBuilder
+```
+
+
+
+<a name="RangeBuilder.SetValue"></a>
+### func \(\*RangeBuilder\) SetValue
+
+```go
+func (rb *RangeBuilder) SetValue(value interface{}) *RangeBuilder
+```
+
+
+
+<a name="RangeBuilder.Sheet"></a>
+### func \(\*RangeBuilder\) Sheet
+
+```go
+func (rb *RangeBuilder) Sheet() *SheetBuilder
+```
+
+
+
 <a name="RangeRef"></a>
 ## type RangeRef
 
@@ -4308,6 +4529,45 @@ func (r *Row) SetHidden(hidden bool)
 ```
 
 SetHidden sets whether the row is hidden.
+
+<a name="RowBuilder"></a>
+## type RowBuilder
+
+
+
+```go
+type RowBuilder struct {
+    sb  *SheetBuilder
+    row *Row
+}
+```
+
+<a name="RowBuilder.Cell"></a>
+### func \(\*RowBuilder\) Cell
+
+```go
+func (rb *RowBuilder) Cell(col uint32) *CellBuilder
+```
+
+
+
+<a name="RowBuilder.Row"></a>
+### func \(\*RowBuilder\) Row
+
+```go
+func (rb *RowBuilder) Row() *Row
+```
+
+
+
+<a name="RowBuilder.Sheet"></a>
+### func \(\*RowBuilder\) Sheet
+
+```go
+func (rb *RowBuilder) Sheet() *SheetBuilder
+```
+
+
 
 <a name="Shape"></a>
 ## type Shape
@@ -4842,6 +5102,54 @@ func (s *Sheet) updateTableRanges(operation ShiftOperation) error
 ```
 
 updateTableRanges updates Table part ranges.
+
+<a name="SheetBuilder"></a>
+## type SheetBuilder
+
+
+
+```go
+type SheetBuilder struct {
+    wb    *WorkbookBuilder
+    sheet *Sheet
+}
+```
+
+<a name="SheetBuilder.AddRow"></a>
+### func \(\*SheetBuilder\) AddRow
+
+```go
+func (sb *SheetBuilder) AddRow() *RowBuilder
+```
+
+
+
+<a name="SheetBuilder.Range"></a>
+### func \(\*SheetBuilder\) Range
+
+```go
+func (sb *SheetBuilder) Range(ref string) *RangeBuilder
+```
+
+
+
+<a name="SheetBuilder.Sheet"></a>
+### func \(\*SheetBuilder\) Sheet
+
+```go
+func (sb *SheetBuilder) Sheet() *Sheet
+```
+
+
+
+<a name="SheetBuilder.Workbook"></a>
+### func \(\*SheetBuilder\) Workbook
+
+```go
+func (sb *SheetBuilder) Workbook() *WorkbookBuilder
+```
+
+
 
 <a name="ShiftOperation"></a>
 ## type ShiftOperation
@@ -5754,6 +6062,45 @@ const (
     VerticalDistributed VerticalAlign = "distributed"
 )
 ```
+
+<a name="WorkbookBuilder"></a>
+## type WorkbookBuilder
+
+
+
+```go
+type WorkbookBuilder struct {
+    doc    *Document
+    errors []error
+}
+```
+
+<a name="NewWorkbookBuilder"></a>
+### func NewWorkbookBuilder
+
+```go
+func NewWorkbookBuilder() *WorkbookBuilder
+```
+
+
+
+<a name="WorkbookBuilder.AddSheet"></a>
+### func \(\*WorkbookBuilder\) AddSheet
+
+```go
+func (wb *WorkbookBuilder) AddSheet(name string) *SheetBuilder
+```
+
+
+
+<a name="WorkbookBuilder.Build"></a>
+### func \(\*WorkbookBuilder\) Build
+
+```go
+func (wb *WorkbookBuilder) Build() (*Document, error)
+```
+
+
 
 <a name="docError"></a>
 ## type docError

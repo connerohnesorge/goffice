@@ -6,6 +6,8 @@
 import "github.com/connerohnesorge/goffice/spreadsheet/parts"
 ```
 
+Package parts provides Excel document part types. This file implements the extended chart part \(Office 2016\+\).
+
 Package parts provides Excel document part types.
 
 Parts are the individual XML files within an .xlsx package. Each part represents a distinct aspect of the workbook such as the workbook itself, worksheets, styles, shared strings, and more.
@@ -208,6 +210,7 @@ Part operations should be performed through the parent workbook's thread\-safe A
 - [Constants](<#constants>)
 - [Variables](<#variables>)
 - [func CalculationChainPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#CalculationChainPartFactory>)
+- [func ChartExPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#ChartExPartFactory>)
 - [func ChartPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#ChartPartFactory>)
 - [func ChartsheetPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#ChartsheetPartFactory>)
 - [func ConnectionsPartFactory\(uri string, container openxml.OpenXmlPartContainer\) openxml.OpenXmlPart](<#ConnectionsPartFactory>)
@@ -243,6 +246,12 @@ Part operations should be performed through the parent workbook's thread\-safe A
   - [func \(\*CalculationChainPart\) FixedContentType\(\) string](<#CalculationChainPart.FixedContentType>)
   - [func \(ccp \*CalculationChainPart\) GetStream\(\) io.Reader](<#CalculationChainPart.GetStream>)
   - [func \(ccp \*CalculationChainPart\) initializeContent\(\)](<#CalculationChainPart.initializeContent>)
+- [type ChartExPart](<#ChartExPart>)
+  - [func newChartExPart\(drawingsPart \*DrawingsPart, uri string\) \(\*ChartExPart, error\)](<#newChartExPart>)
+  - [func \(cp \*ChartExPart\) ChartSpace\(\) \*drawingml.ChartSpaceEx](<#ChartExPart.ChartSpace>)
+  - [func \(\*ChartExPart\) FixedContentType\(\) string](<#ChartExPart.FixedContentType>)
+  - [func \(cp \*ChartExPart\) GetStream\(\) io.Reader](<#ChartExPart.GetStream>)
+  - [func \(cp \*ChartExPart\) initializeContent\(\)](<#ChartExPart.initializeContent>)
 - [type ChartPart](<#ChartPart>)
   - [func newChartPart\(drawingsPart \*DrawingsPart, uri string\) \(\*ChartPart, error\)](<#newChartPart>)
   - [func \(cp \*ChartPart\) ChartSpace\(\) \*drawingml.ChartSpace](<#ChartPart.ChartSpace>)
@@ -634,6 +643,18 @@ const (
 )
 ```
 
+<a name="ContentTypeChartEx"></a>ContentTypeChartEx is the content type for extended charts.
+
+```go
+const ContentTypeChartEx = "application/vnd.ms-office.chartex+xml"
+```
+
+<a name="RelationshipTypeChartEx"></a>RelationshipTypeChartEx is the relationship type for extended charts.
+
+```go
+const RelationshipTypeChartEx = "http://schemas.microsoft.com/office/2014/relationships/chartEx"
+```
+
 ## Variables
 
 <a name="pngMagic"></a>Magic byte signatures for image formats
@@ -697,6 +718,12 @@ var ErrNilPackage = partError("package is nil")
 var _ openxml.OpenXmlPart = (*CalculationChainPart)(
     nil,
 )
+```
+
+<a name="_"></a>Ensure ChartExPart implements OpenXmlPart.
+
+```go
+var _ openxml.OpenXmlPart = (*ChartExPart)(nil)
 ```
 
 <a name="_"></a>Ensure ChartPart implements OpenXmlPart.
@@ -951,6 +978,15 @@ func CalculationChainPartFactory(uri string, container openxml.OpenXmlPartContai
 ```
 
 CalculationChainPartFactory creates a CalculationChainPart from a URI and container.
+
+<a name="ChartExPartFactory"></a>
+## func ChartExPartFactory
+
+```go
+func ChartExPartFactory(uri string, container openxml.OpenXmlPartContainer) openxml.OpenXmlPart
+```
+
+ChartExPartFactory creates a ChartExPart from a URI and container.
 
 <a name="ChartPartFactory"></a>
 ## func ChartPartFactory
@@ -1211,7 +1247,7 @@ addChildPart is a helper to add a child part with the appropriate relationship.
 func init()
 ```
 
-Register the DrawingsPart type.
+Register the SharedStringTablePart type.
 
 <a name="CalculationChainPart"></a>
 ## type CalculationChainPart
@@ -1268,6 +1304,62 @@ func (ccp *CalculationChainPart) initializeContent()
 ```
 
 initializeContent sets up minimal calculation chain content.
+
+<a name="ChartExPart"></a>
+## type ChartExPart
+
+ChartExPart represents an extended chart part \(xl/charts/chartEx1.xml\). This part contains extended chart definitions \(Waterfall, Sunburst, etc.\).
+
+```go
+type ChartExPart struct {
+    *openxml.OpenXmlPartData
+}
+```
+
+<a name="newChartExPart"></a>
+### func newChartExPart
+
+```go
+func newChartExPart(drawingsPart *DrawingsPart, uri string) (*ChartExPart, error)
+```
+
+newChartExPart creates a new extended chart part.
+
+<a name="ChartExPart.ChartSpace"></a>
+### func \(\*ChartExPart\) ChartSpace
+
+```go
+func (cp *ChartExPart) ChartSpace() *drawingml.ChartSpaceEx
+```
+
+ChartSpace returns the root ChartSpaceEx element.
+
+<a name="ChartExPart.FixedContentType"></a>
+### func \(\*ChartExPart\) FixedContentType
+
+```go
+func (*ChartExPart) FixedContentType() string
+```
+
+FixedContentType returns the content type for this part.
+
+<a name="ChartExPart.GetStream"></a>
+### func \(\*ChartExPart\) GetStream
+
+```go
+func (cp *ChartExPart) GetStream() io.Reader
+```
+
+GetStream returns a reader for the part content.
+
+<a name="ChartExPart.initializeContent"></a>
+### func \(\*ChartExPart\) initializeContent
+
+```go
+func (cp *ChartExPart) initializeContent()
+```
+
+initializeContent sets up minimal extended chart content.
 
 <a name="ChartPart"></a>
 ## type ChartPart

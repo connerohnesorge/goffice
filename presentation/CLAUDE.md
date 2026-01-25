@@ -894,7 +894,28 @@ Document is valid
   - [func \(s \*OpenSettings\) WithAutoSave\(autoSave bool\) \*OpenSettings](<#OpenSettings.WithAutoSave>)
   - [func \(s \*OpenSettings\) WithMaxCharacters\(maxChars int64\) \*OpenSettings](<#OpenSettings.WithMaxCharacters>)
   - [func \(s \*OpenSettings\) WithTargetVersion\(version FileFormatVersion\) \*OpenSettings](<#OpenSettings.WithTargetVersion>)
+- [type ParagraphBuilder](<#ParagraphBuilder>)
+  - [func \(pb \*ParagraphBuilder\) AddRun\(text string\) \*RunBuilder](<#ParagraphBuilder.AddRun>)
+  - [func \(pb \*ParagraphBuilder\) Shape\(\) \*ShapeBuilder](<#ParagraphBuilder.Shape>)
+- [type PresentationBuilder](<#PresentationBuilder>)
+  - [func NewPresentationBuilder\(\) \*PresentationBuilder](<#NewPresentationBuilder>)
+  - [func \(pb \*PresentationBuilder\) AddSlide\(\) \*SlideBuilder](<#PresentationBuilder.AddSlide>)
+  - [func \(pb \*PresentationBuilder\) Build\(\) \(\*Document, error\)](<#PresentationBuilder.Build>)
 - [type ProcessMode](<#ProcessMode>)
+- [type RunBuilder](<#RunBuilder>)
+  - [func \(rb \*RunBuilder\) Bold\(bold bool\) \*RunBuilder](<#RunBuilder.Bold>)
+  - [func \(rb \*RunBuilder\) Paragraph\(\) \*ParagraphBuilder](<#RunBuilder.Paragraph>)
+  - [func \(rb \*RunBuilder\) Size\(size int\) \*RunBuilder](<#RunBuilder.Size>)
+- [type ShapeBuilder](<#ShapeBuilder>)
+  - [func \(shb \*ShapeBuilder\) AddParagraph\(text string\) \*ParagraphBuilder](<#ShapeBuilder.AddParagraph>)
+  - [func \(shb \*ShapeBuilder\) SetType\(shapeType drawingml.ShapeTypeValue\) \*ShapeBuilder](<#ShapeBuilder.SetType>)
+  - [func \(shb \*ShapeBuilder\) Shape\(\) \*elements.Shape](<#ShapeBuilder.Shape>)
+  - [func \(shb \*ShapeBuilder\) Slide\(\) \*SlideBuilder](<#ShapeBuilder.Slide>)
+- [type SlideBuilder](<#SlideBuilder>)
+  - [func \(sb \*SlideBuilder\) AddShape\(\) \*ShapeBuilder](<#SlideBuilder.AddShape>)
+  - [func \(sb \*SlideBuilder\) AddTitle\(text string\) \*SlideBuilder](<#SlideBuilder.AddTitle>)
+  - [func \(sb \*SlideBuilder\) Presentation\(\) \*PresentationBuilder](<#SlideBuilder.Presentation>)
+  - [func \(sb \*SlideBuilder\) SlidePart\(\) \*parts.SlidePart](<#SlideBuilder.SlidePart>)
 - [type Table](<#Table>)
   - [func NewTable\(slide \*elements.Slide, rows, cols int\) \*Table](<#NewTable>)
   - [func NewTableFromGraphicFrame\(gf \*elements.GraphicFrame\) \*Table](<#NewTableFromGraphicFrame>)
@@ -1949,6 +1970,75 @@ func (s *OpenSettings) WithTargetVersion(version FileFormatVersion) *OpenSetting
 
 WithTargetVersion returns a copy of the settings with the target version.
 
+<a name="ParagraphBuilder"></a>
+## type ParagraphBuilder
+
+
+
+```go
+type ParagraphBuilder struct {
+    shb *ShapeBuilder
+    p   *drawingml.TextParagraph
+}
+```
+
+<a name="ParagraphBuilder.AddRun"></a>
+### func \(\*ParagraphBuilder\) AddRun
+
+```go
+func (pb *ParagraphBuilder) AddRun(text string) *RunBuilder
+```
+
+
+
+<a name="ParagraphBuilder.Shape"></a>
+### func \(\*ParagraphBuilder\) Shape
+
+```go
+func (pb *ParagraphBuilder) Shape() *ShapeBuilder
+```
+
+
+
+<a name="PresentationBuilder"></a>
+## type PresentationBuilder
+
+
+
+```go
+type PresentationBuilder struct {
+    doc    *Document
+    errors []error
+}
+```
+
+<a name="NewPresentationBuilder"></a>
+### func NewPresentationBuilder
+
+```go
+func NewPresentationBuilder() *PresentationBuilder
+```
+
+
+
+<a name="PresentationBuilder.AddSlide"></a>
+### func \(\*PresentationBuilder\) AddSlide
+
+```go
+func (pb *PresentationBuilder) AddSlide() *SlideBuilder
+```
+
+
+
+<a name="PresentationBuilder.Build"></a>
+### func \(\*PresentationBuilder\) Build
+
+```go
+func (pb *PresentationBuilder) Build() (*Document, error)
+```
+
+
+
 <a name="ProcessMode"></a>
 ## type ProcessMode
 
@@ -1972,6 +2062,141 @@ const (
     ProcessModeProcessAllParts
 )
 ```
+
+<a name="RunBuilder"></a>
+## type RunBuilder
+
+
+
+```go
+type RunBuilder struct {
+    pb  *ParagraphBuilder
+    r   *drawingml.TextRun
+}
+```
+
+<a name="RunBuilder.Bold"></a>
+### func \(\*RunBuilder\) Bold
+
+```go
+func (rb *RunBuilder) Bold(bold bool) *RunBuilder
+```
+
+
+
+<a name="RunBuilder.Paragraph"></a>
+### func \(\*RunBuilder\) Paragraph
+
+```go
+func (rb *RunBuilder) Paragraph() *ParagraphBuilder
+```
+
+
+
+<a name="RunBuilder.Size"></a>
+### func \(\*RunBuilder\) Size
+
+```go
+func (rb *RunBuilder) Size(size int) *RunBuilder
+```
+
+
+
+<a name="ShapeBuilder"></a>
+## type ShapeBuilder
+
+
+
+```go
+type ShapeBuilder struct {
+    sb    *SlideBuilder
+    shape *elements.Shape
+}
+```
+
+<a name="ShapeBuilder.AddParagraph"></a>
+### func \(\*ShapeBuilder\) AddParagraph
+
+```go
+func (shb *ShapeBuilder) AddParagraph(text string) *ParagraphBuilder
+```
+
+
+
+<a name="ShapeBuilder.SetType"></a>
+### func \(\*ShapeBuilder\) SetType
+
+```go
+func (shb *ShapeBuilder) SetType(shapeType drawingml.ShapeTypeValue) *ShapeBuilder
+```
+
+
+
+<a name="ShapeBuilder.Shape"></a>
+### func \(\*ShapeBuilder\) Shape
+
+```go
+func (shb *ShapeBuilder) Shape() *elements.Shape
+```
+
+
+
+<a name="ShapeBuilder.Slide"></a>
+### func \(\*ShapeBuilder\) Slide
+
+```go
+func (shb *ShapeBuilder) Slide() *SlideBuilder
+```
+
+
+
+<a name="SlideBuilder"></a>
+## type SlideBuilder
+
+
+
+```go
+type SlideBuilder struct {
+    pb        *PresentationBuilder
+    slidePart *parts.SlidePart
+}
+```
+
+<a name="SlideBuilder.AddShape"></a>
+### func \(\*SlideBuilder\) AddShape
+
+```go
+func (sb *SlideBuilder) AddShape() *ShapeBuilder
+```
+
+
+
+<a name="SlideBuilder.AddTitle"></a>
+### func \(\*SlideBuilder\) AddTitle
+
+```go
+func (sb *SlideBuilder) AddTitle(text string) *SlideBuilder
+```
+
+
+
+<a name="SlideBuilder.Presentation"></a>
+### func \(\*SlideBuilder\) Presentation
+
+```go
+func (sb *SlideBuilder) Presentation() *PresentationBuilder
+```
+
+
+
+<a name="SlideBuilder.SlidePart"></a>
+### func \(\*SlideBuilder\) SlidePart
+
+```go
+func (sb *SlideBuilder) SlidePart() *parts.SlidePart
+```
+
+
 
 <a name="Table"></a>
 ## type Table

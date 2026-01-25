@@ -1785,17 +1785,24 @@ Package elements provides manually\-defined enumerations and type aliases for Wo
   - [func \(c \*Comment\) Author\(\) string](<#Comment.Author>)
   - [func \(c \*Comment\) Clone\(\) openxml.Element](<#Comment.Clone>)
   - [func \(c \*Comment\) CloneNode\(deep bool\) openxml.Element](<#Comment.CloneNode>)
+  - [func \(c \*Comment\) ContentWithMentions\(\) \*CommentContent](<#Comment.ContentWithMentions>)
   - [func \(c \*Comment\) Date\(\) time.Time](<#Comment.Date>)
   - [func \(c \*Comment\) Done\(\) bool](<#Comment.Done>)
+  - [func \(c \*Comment\) GetReplies\(comments \*Comments\) \[\]\*Comment](<#Comment.GetReplies>)
   - [func \(c \*Comment\) Id\(\) int](<#Comment.Id>)
   - [func \(c \*Comment\) Initials\(\) string](<#Comment.Initials>)
+  - [func \(c \*Comment\) IsReply\(\) bool](<#Comment.IsReply>)
   - [func \(c \*Comment\) Paragraphs\(\) iter.Seq\[\*Paragraph\]](<#Comment.Paragraphs>)
+  - [func \(c \*Comment\) ParentId\(\) int](<#Comment.ParentId>)
   - [func \(c \*Comment\) SetAuthor\(name string\)](<#Comment.SetAuthor>)
   - [func \(c \*Comment\) SetDate\(t time.Time\)](<#Comment.SetDate>)
   - [func \(c \*Comment\) SetDone\(done bool\)](<#Comment.SetDone>)
+  - [func \(c \*Comment\) SetExtendedContent\(text string\) \*CommentContent](<#Comment.SetExtendedContent>)
   - [func \(c \*Comment\) SetId\(id int\)](<#Comment.SetId>)
   - [func \(c \*Comment\) SetInitials\(initials string\)](<#Comment.SetInitials>)
+  - [func \(c \*Comment\) SetParentId\(parentId int\)](<#Comment.SetParentId>)
   - [func \(c \*Comment\) ensureW15Namespace\(\)](<#Comment.ensureW15Namespace>)
+- [type CommentContent](<#CommentContent>)
 - [type CommentEx](<#CommentEx>)
   - [func NewCommentEx\(\) \*CommentEx](<#NewCommentEx>)
   - [func \(m \*CommentEx\) Clone\(\) openxml.Element](<#CommentEx.Clone>)
@@ -1808,6 +1815,8 @@ Package elements provides manually\-defined enumerations and type aliases for Wo
   - [func NewCommentId\(\) \*CommentId](<#NewCommentId>)
   - [func \(m \*CommentId\) Clone\(\) openxml.Element](<#CommentId.Clone>)
   - [func \(m \*CommentId\) Validate\(\) error](<#CommentId.Validate>)
+- [type CommentMention](<#CommentMention>)
+  - [func parseMentions\(text string\) \[\]CommentMention](<#parseMentions>)
 - [type CommentRangeEnd](<#CommentRangeEnd>)
   - [func NewCommentRangeEnd\(id int\) \*CommentRangeEnd](<#NewCommentRangeEnd>)
   - [func \(cre \*CommentRangeEnd\) Clone\(\) openxml.Element](<#CommentRangeEnd.Clone>)
@@ -1826,6 +1835,15 @@ Package elements provides manually\-defined enumerations and type aliases for Wo
   - [func \(cr \*CommentReference\) CloneNode\(deep bool\) openxml.Element](<#CommentReference.CloneNode>)
   - [func \(cr \*CommentReference\) Id\(\) int](<#CommentReference.Id>)
   - [func \(cr \*CommentReference\) SetId\(id int\)](<#CommentReference.SetId>)
+- [type CommentRun](<#CommentRun>)
+  - [func splitTextWithMentions\(text string\) \[\]CommentRun](<#splitTextWithMentions>)
+- [type CommentThread](<#CommentThread>)
+  - [func NewCommentThread\(root \*Comment\) \*CommentThread](<#NewCommentThread>)
+  - [func \(ct \*CommentThread\) AddReply\(reply \*Comment\)](<#CommentThread.AddReply>)
+  - [func \(ct \*CommentThread\) GetAllComments\(\) \[\]\*Comment](<#CommentThread.GetAllComments>)
+  - [func \(ct \*CommentThread\) GetReplyCount\(\) int](<#CommentThread.GetReplyCount>)
+  - [func \(ct \*CommentThread\) IsEmpty\(\) bool](<#CommentThread.IsEmpty>)
+  - [func \(ct \*CommentThread\) MarkResolved\(\)](<#CommentThread.MarkResolved>)
 - [type Comments](<#Comments>)
   - [func NewComments\(\) \*Comments](<#NewComments>)
   - [func \(c \*Comments\) AddComment\(author, text string\) \*Comment](<#Comments.AddComment>)
@@ -2369,6 +2387,11 @@ Package elements provides manually\-defined enumerations and type aliases for Wo
   - [func NewDataType\(\) \*DataType](<#NewDataType>)
   - [func \(m \*DataType\) Clone\(\) openxml.Element](<#DataType.Clone>)
   - [func \(m \*DataType\) Validate\(\) error](<#DataType.Validate>)
+- [type DatastoreItem](<#DatastoreItem>)
+  - [func NewDatastoreItem\(\) \*DatastoreItem](<#NewDatastoreItem>)
+  - [func \(d \*DatastoreItem\) AddSchemaRef\(uri string\)](<#DatastoreItem.AddSchemaRef>)
+- [type DatastoreSchemaRef](<#DatastoreSchemaRef>)
+- [type DatastoreSchemaRefs](<#DatastoreSchemaRefs>)
 - [type Date1904](<#Date1904>)
   - [func NewDate1904\(\) \*Date1904](<#NewDate1904>)
   - [func \(m \*Date1904\) Clone\(\) openxml.Element](<#Date1904.Clone>)
@@ -26774,6 +26797,15 @@ func (c *Comment) CloneNode(deep bool) openxml.Element
 
 CloneNode creates a copy of this Comment element.
 
+<a name="Comment.ContentWithMentions"></a>
+### func \(\*Comment\) ContentWithMentions
+
+```go
+func (c *Comment) ContentWithMentions() *CommentContent
+```
+
+ContentWithMentions returns the comment text with @mention parsing for user references. This scans paragraph content for @username patterns and returns a structured view of the content with extracted mentions.
+
 <a name="Comment.Date"></a>
 ### func \(\*Comment\) Date
 
@@ -26791,6 +26823,15 @@ func (c *Comment) Done() bool
 ```
 
 Done returns whether the comment is marked as done/resolved \(w15:done attribute\). Returns true if the attribute is set to "1" or "true", false otherwise.
+
+<a name="Comment.GetReplies"></a>
+### func \(\*Comment\) GetReplies
+
+```go
+func (c *Comment) GetReplies(comments *Comments) []*Comment
+```
+
+GetReplies returns all comments that are direct replies to this comment. This should be called on the Comments collection to find replies.
 
 <a name="Comment.Id"></a>
 ### func \(\*Comment\) Id
@@ -26810,6 +26851,15 @@ func (c *Comment) Initials() string
 
 Initials returns the comment author's initials.
 
+<a name="Comment.IsReply"></a>
+### func \(\*Comment\) IsReply
+
+```go
+func (c *Comment) IsReply() bool
+```
+
+IsReply returns true if this comment is a reply \(has a parent\).
+
 <a name="Comment.Paragraphs"></a>
 ### func \(\*Comment\) Paragraphs
 
@@ -26818,6 +26868,15 @@ func (c *Comment) Paragraphs() iter.Seq[*Paragraph]
 ```
 
 Paragraphs returns an iterator over all paragraphs in the comment.
+
+<a name="Comment.ParentId"></a>
+### func \(\*Comment\) ParentId
+
+```go
+func (c *Comment) ParentId() int
+```
+
+ParentId returns the parent comment ID for threaded replies. Returns 0 if no parent \(root\-level comment\).
 
 <a name="Comment.SetAuthor"></a>
 ### func \(\*Comment\) SetAuthor
@@ -26846,6 +26905,15 @@ func (c *Comment) SetDone(done bool)
 
 SetDone sets the comment's done/resolved status \(w15:done attribute\). When set to true, adds w15:done="1". When set to false, removes the attribute. This requires the w15 namespace to be declared on the comments root element.
 
+<a name="Comment.SetExtendedContent"></a>
+### func \(\*Comment\) SetExtendedContent
+
+```go
+func (c *Comment) SetExtendedContent(text string) *CommentContent
+```
+
+SetExtendedContent sets comment content with support for rich text and mentions. Automatically handles @mention parsing and creates appropriate paragraph structure.
+
 <a name="Comment.SetId"></a>
 ### func \(\*Comment\) SetId
 
@@ -26864,6 +26932,15 @@ func (c *Comment) SetInitials(initials string)
 
 SetInitials sets the comment author's initials.
 
+<a name="Comment.SetParentId"></a>
+### func \(\*Comment\) SetParentId
+
+```go
+func (c *Comment) SetParentId(parentId int)
+```
+
+SetParentId sets the parent comment ID for threaded replies. Set to 0 for root\-level comments \(no parent\).
+
 <a name="Comment.ensureW15Namespace"></a>
 ### func \(\*Comment\) ensureW15Namespace
 
@@ -26872,6 +26949,18 @@ func (c *Comment) ensureW15Namespace()
 ```
 
 ensureW15Namespace ensures the w15 namespace is declared on the Comments root element.
+
+<a name="CommentContent"></a>
+## type CommentContent
+
+CommentContent represents structured comment content with mentions.
+
+```go
+type CommentContent struct {
+    Text     string           `json:"text"`
+    Mentions []CommentMention `json:"mentions"`
+}
+```
 
 <a name="CommentEx"></a>
 ## type CommentEx
@@ -26998,6 +27087,28 @@ func (m *CommentId) Validate() error
 ```
 
 
+
+<a name="CommentMention"></a>
+## type CommentMention
+
+CommentMention represents a user mention within comment content.
+
+```go
+type CommentMention struct {
+    Username string `json:"username"`
+    Start    int    `json:"start"`
+    End      int    `json:"end"`
+}
+```
+
+<a name="parseMentions"></a>
+### func parseMentions
+
+```go
+func parseMentions(text string) []CommentMention
+```
+
+parseMentions extracts @username patterns from text and returns CommentMention slices.
 
 <a name="CommentRangeEnd"></a>
 ## type CommentRangeEnd
@@ -27166,6 +27277,94 @@ func (cr *CommentReference) SetId(id int)
 ```
 
 SetId sets the referenced comment ID.
+
+<a name="CommentRun"></a>
+## type CommentRun
+
+CommentRun represents a run of text with optional mention formatting.
+
+```go
+type CommentRun struct {
+    Text      string `json:"text"`
+    IsMention bool   `json:"isMention"`
+}
+```
+
+<a name="splitTextWithMentions"></a>
+### func splitTextWithMentions
+
+```go
+func splitTextWithMentions(text string) []CommentRun
+```
+
+splitTextWithMentions splits text into runs, marking mentions separately.
+
+<a name="CommentThread"></a>
+## type CommentThread
+
+CommentThread represents a threaded conversation with a root comment and replies.
+
+```go
+type CommentThread struct {
+    Root     *Comment   `json:"root"`
+    Replies  []*Comment `json:"replies"`
+    Resolved bool       `json:"resolved"`
+}
+```
+
+<a name="NewCommentThread"></a>
+### func NewCommentThread
+
+```go
+func NewCommentThread(root *Comment) *CommentThread
+```
+
+NewCommentThread creates a new CommentThread with the given root comment.
+
+<a name="CommentThread.AddReply"></a>
+### func \(\*CommentThread\) AddReply
+
+```go
+func (ct *CommentThread) AddReply(reply *Comment)
+```
+
+AddReply adds a reply comment to this thread.
+
+<a name="CommentThread.GetAllComments"></a>
+### func \(\*CommentThread\) GetAllComments
+
+```go
+func (ct *CommentThread) GetAllComments() []*Comment
+```
+
+GetAllComments returns all comments in this thread \(root \+ replies\).
+
+<a name="CommentThread.GetReplyCount"></a>
+### func \(\*CommentThread\) GetReplyCount
+
+```go
+func (ct *CommentThread) GetReplyCount() int
+```
+
+GetReplyCount returns the number of replies in this thread.
+
+<a name="CommentThread.IsEmpty"></a>
+### func \(\*CommentThread\) IsEmpty
+
+```go
+func (ct *CommentThread) IsEmpty() bool
+```
+
+IsEmpty returns true if this thread has no replies.
+
+<a name="CommentThread.MarkResolved"></a>
+### func \(\*CommentThread\) MarkResolved
+
+```go
+func (ct *CommentThread) MarkResolved()
+```
+
+MarkResolved marks the entire thread as resolved.
 
 <a name="Comments"></a>
 ## type Comments
@@ -32992,6 +33191,59 @@ func (m *DataType) Validate() error
 ```
 
 
+
+<a name="DatastoreItem"></a>
+## type DatastoreItem
+
+DatastoreItem represents the properties of a custom XML part.
+
+```go
+type DatastoreItem struct {
+    XMLName    xml.Name             `xml:"http://schemas.openxmlformats.org/officeDocument/2006/customXml datastoreItem"`
+    ItemID     string               `xml:"itemID,attr"`
+    SchemaRefs *DatastoreSchemaRefs `xml:"schemaRefs,omitempty"`
+}
+```
+
+<a name="NewDatastoreItem"></a>
+### func NewDatastoreItem
+
+```go
+func NewDatastoreItem() *DatastoreItem
+```
+
+NewDatastoreItem creates a new DatastoreItem.
+
+<a name="DatastoreItem.AddSchemaRef"></a>
+### func \(\*DatastoreItem\) AddSchemaRef
+
+```go
+func (d *DatastoreItem) AddSchemaRef(uri string)
+```
+
+AddSchemaRef adds a schema reference.
+
+<a name="DatastoreSchemaRef"></a>
+## type DatastoreSchemaRef
+
+DatastoreSchemaRef represents a reference to an XML schema.
+
+```go
+type DatastoreSchemaRef struct {
+    URI string `xml:"uri,attr"`
+}
+```
+
+<a name="DatastoreSchemaRefs"></a>
+## type DatastoreSchemaRefs
+
+DatastoreSchemaRefs represents a collection of schema references.
+
+```go
+type DatastoreSchemaRefs struct {
+    SchemaRef []*DatastoreSchemaRef `xml:"schemaRef"`
+}
+```
 
 <a name="Date1904"></a>
 ## type Date1904

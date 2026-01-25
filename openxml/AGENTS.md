@@ -225,6 +225,8 @@ Package openxml provides the core framework for Office Open XML document process
 
 Package openxml provides the core framework for Office Open XML document processing.
 
+Package openxml provides advanced relationship management capabilities.
+
 ## Index
 
 - [Constants](<#constants>)
@@ -260,6 +262,7 @@ Package openxml provides the core framework for Office Open XML document process
 - [func ToSliceOfType\[T Element\]\(elements iter.Seq\[Element\]\) \[\]T](<#ToSliceOfType>)
 - [func WriteDocumentElement\(w io.Writer, elem Element, namespaces map\[string\]string\) error](<#WriteDocumentElement>)
 - [func collectNamespaces\(elem Element, prefixes map\[string\]string\) map\[string\]string](<#collectNamespaces>)
+- [func contains\(slice \[\]string, item string\) bool](<#contains>)
 - [func descendantsOfTypeRecursive\[T Element\]\(parent CompositeElement, yield func\(T\) bool\) bool](<#descendantsOfTypeRecursive>)
 - [func descendantsRecursive\(parent CompositeElement, yield func\(Element\) bool\) bool](<#descendantsRecursive>)
 - [func escapeXmlAttr\(s string\) string](<#escapeXmlAttr>)
@@ -269,6 +272,7 @@ Package openxml provides the core framework for Office Open XML document process
 - [func init\(\)](<#init>)
 - [func parseChildren\(decoder \*xml.Decoder, parent CompositeElement, factory ElementFactory\) error](<#parseChildren>)
 - [func readTextContent\(decoder \*xml.Decoder\) \(string, error\)](<#readTextContent>)
+- [func remove\(slice \[\]string, item string\) \[\]string](<#remove>)
 - [func setLeafInnerText\(parent CompositeElement, textBuilder \*strings.Builder\)](<#setLeafInnerText>)
 - [func skipElement\(decoder \*xml.Decoder\) error](<#skipElement>)
 - [func writeNamespaceDeclarations\(buf \*bytes.Buffer, namespaces map\[string\]string\)](<#writeNamespaceDeclarations>)
@@ -490,12 +494,39 @@ Package openxml provides the core framework for Office Open XML document process
 - [type PartTypeInfo](<#PartTypeInfo>)
   - [func GetPartTypeByContentType\(contentType string\) \(\*PartTypeInfo, bool\)](<#GetPartTypeByContentType>)
   - [func GetPartTypeByRelationship\(relType string\) \(\*PartTypeInfo, bool\)](<#GetPartTypeByRelationship>)
+- [type RelationshipCloneOptions](<#RelationshipCloneOptions>)
+- [type RelationshipCloner](<#RelationshipCloner>)
+  - [func NewRelationshipCloner\(options RelationshipCloneOptions\) \*RelationshipCloner](<#NewRelationshipCloner>)
+  - [func \(c \*RelationshipCloner\) CloneRelationship\(rel OpenXmlRelationship, newContainer OpenXmlPartContainer\) \(OpenXmlRelationship, error\)](<#RelationshipCloner.CloneRelationship>)
+- [type RelationshipGraph](<#RelationshipGraph>)
+  - [func NewRelationshipGraph\(\) \*RelationshipGraph](<#NewRelationshipGraph>)
+  - [func \(g \*RelationshipGraph\) AddDependency\(sourcePart, targetPart string\)](<#RelationshipGraph.AddDependency>)
+  - [func \(g \*RelationshipGraph\) DetectCircularDependency\(from, to string\) bool](<#RelationshipGraph.DetectCircularDependency>)
+  - [func \(g \*RelationshipGraph\) GetDependencies\(partURI string\) \[\]string](<#RelationshipGraph.GetDependencies>)
+  - [func \(g \*RelationshipGraph\) GetDependents\(partURI string\) \[\]string](<#RelationshipGraph.GetDependents>)
+  - [func \(g \*RelationshipGraph\) GetOrphanedParts\(allParts \[\]string\) \[\]string](<#RelationshipGraph.GetOrphanedParts>)
+  - [func \(g \*RelationshipGraph\) GetTransitiveDependencies\(partURI string\) \[\]string](<#RelationshipGraph.GetTransitiveDependencies>)
+  - [func \(g \*RelationshipGraph\) RemoveDependency\(sourcePart, targetPart string\)](<#RelationshipGraph.RemoveDependency>)
+  - [func \(g \*RelationshipGraph\) TopologicalSort\(parts \[\]string\) \(\[\]string, error\)](<#RelationshipGraph.TopologicalSort>)
+  - [func \(g \*RelationshipGraph\) isReachable\(source, target string, visited map\[string\]bool\) bool](<#RelationshipGraph.isReachable>)
+  - [func \(g \*RelationshipGraph\) visitDependencies\(part string, visited map\[string\]bool, result \*\[\]string\)](<#RelationshipGraph.visitDependencies>)
 - [type RelationshipIDGenerator](<#RelationshipIDGenerator>)
   - [func NewRelationshipIDGenerator\(\) \*RelationshipIDGenerator](<#NewRelationshipIDGenerator>)
   - [func \(g \*RelationshipIDGenerator\) Next\(\) string](<#RelationshipIDGenerator.Next>)
   - [func \(g \*RelationshipIDGenerator\) Reserve\(id string\)](<#RelationshipIDGenerator.Reserve>)
+- [type RelationshipPath](<#RelationshipPath>)
+  - [func \(p \*RelationshipPath\) LastPart\(\) OpenXmlPart](<#RelationshipPath.LastPart>)
+  - [func \(p \*RelationshipPath\) Length\(\) int](<#RelationshipPath.Length>)
+- [type RelationshipPathFinder](<#RelationshipPathFinder>)
+  - [func NewRelationshipPathFinder\(maxDepth int\) \*RelationshipPathFinder](<#NewRelationshipPathFinder>)
+  - [func \(f \*RelationshipPathFinder\) FindPath\(source OpenXmlPartContainer, targetURI string\) \(\*RelationshipPath, error\)](<#RelationshipPathFinder.FindPath>)
+  - [func \(f \*RelationshipPathFinder\) findPathRecursive\(container OpenXmlPartContainer, targetURI string, depth int, visited map\[string\]bool, path \*RelationshipPath\) bool](<#RelationshipPathFinder.findPathRecursive>)
 - [type RelationshipTypeInfo](<#RelationshipTypeInfo>)
   - [func GetRelationshipTypeInfo\(relType string\) \(RelationshipTypeInfo, bool\)](<#GetRelationshipTypeInfo>)
+- [type RelationshipValidator](<#RelationshipValidator>)
+  - [func NewRelationshipValidator\(graph \*RelationshipGraph\) \*RelationshipValidator](<#NewRelationshipValidator>)
+  - [func \(v \*RelationshipValidator\) ValidateNoCycles\(parts \[\]string\) error](<#RelationshipValidator.ValidateNoCycles>)
+  - [func \(v \*RelationshipValidator\) ValidateNoOrphans\(allParts, rootParts \[\]string\) error](<#RelationshipValidator.ValidateNoOrphans>)
 - [type TargetMode](<#TargetMode>)
   - [func \(tm TargetMode\) String\(\) string](<#TargetMode.String>)
 - [type UnknownElement](<#UnknownElement>)
@@ -1441,6 +1472,15 @@ func collectNamespaces(elem Element, prefixes map[string]string) map[string]stri
 
 collectNamespaces collects all namespaces used in an element tree.
 
+<a name="contains"></a>
+## func contains
+
+```go
+func contains(slice []string, item string) bool
+```
+
+
+
 <a name="descendantsOfTypeRecursive"></a>
 ## func descendantsOfTypeRecursive
 
@@ -1521,6 +1561,15 @@ func readTextContent(decoder *xml.Decoder) (string, error)
 ```
 
 readTextContent reads text content until the end element is reached.
+
+<a name="remove"></a>
+## func remove
+
+```go
+func remove(slice []string, item string) []string
+```
+
+
 
 <a name="setLeafInnerText"></a>
 ## func setLeafInnerText
@@ -3919,6 +3968,164 @@ func GetPartTypeByRelationship(relType string) (*PartTypeInfo, bool)
 
 GetPartTypeByRelationship returns the part type info for a relationship type.
 
+<a name="RelationshipCloneOptions"></a>
+## type RelationshipCloneOptions
+
+RelationshipCloneOptions configures relationship cloning behavior.
+
+```go
+type RelationshipCloneOptions struct {
+    // PreserveIDs keeps original relationship IDs if true
+    PreserveIDs bool
+    // IDMapping maps old relationship IDs to new ones
+    IDMapping map[string]string
+    // UpdateCallback is called for each cloned relationship
+    UpdateCallback func(oldRel, newRel OpenXmlRelationship) error
+}
+```
+
+<a name="RelationshipCloner"></a>
+## type RelationshipCloner
+
+RelationshipCloner handles cloning relationships with proper ID rewriting.
+
+```go
+type RelationshipCloner struct {
+    options RelationshipCloneOptions
+    idGen   *RelationshipIDGenerator
+}
+```
+
+<a name="NewRelationshipCloner"></a>
+### func NewRelationshipCloner
+
+```go
+func NewRelationshipCloner(options RelationshipCloneOptions) *RelationshipCloner
+```
+
+NewRelationshipCloner creates a new relationship cloner.
+
+<a name="RelationshipCloner.CloneRelationship"></a>
+### func \(\*RelationshipCloner\) CloneRelationship
+
+```go
+func (c *RelationshipCloner) CloneRelationship(rel OpenXmlRelationship, newContainer OpenXmlPartContainer) (OpenXmlRelationship, error)
+```
+
+CloneRelationship creates a copy of a relationship with optional ID remapping.
+
+<a name="RelationshipGraph"></a>
+## type RelationshipGraph
+
+RelationshipGraph manages part dependencies and relationship chains.
+
+```go
+type RelationshipGraph struct {
+    mu           sync.RWMutex
+    dependencies map[string][]string // part URI -> dependent part URIs
+    reverse      map[string][]string // part URI -> parts that depend on it
+}
+```
+
+<a name="NewRelationshipGraph"></a>
+### func NewRelationshipGraph
+
+```go
+func NewRelationshipGraph() *RelationshipGraph
+```
+
+NewRelationshipGraph creates a new relationship dependency graph.
+
+<a name="RelationshipGraph.AddDependency"></a>
+### func \(\*RelationshipGraph\) AddDependency
+
+```go
+func (g *RelationshipGraph) AddDependency(sourcePart, targetPart string)
+```
+
+AddDependency records that sourcePart depends on targetPart.
+
+<a name="RelationshipGraph.DetectCircularDependency"></a>
+### func \(\*RelationshipGraph\) DetectCircularDependency
+
+```go
+func (g *RelationshipGraph) DetectCircularDependency(from, to string) bool
+```
+
+DetectCircularDependency checks if adding a dependency would create a cycle.
+
+<a name="RelationshipGraph.GetDependencies"></a>
+### func \(\*RelationshipGraph\) GetDependencies
+
+```go
+func (g *RelationshipGraph) GetDependencies(partURI string) []string
+```
+
+GetDependencies returns all parts that the given part depends on.
+
+<a name="RelationshipGraph.GetDependents"></a>
+### func \(\*RelationshipGraph\) GetDependents
+
+```go
+func (g *RelationshipGraph) GetDependents(partURI string) []string
+```
+
+GetDependents returns all parts that depend on the given part.
+
+<a name="RelationshipGraph.GetOrphanedParts"></a>
+### func \(\*RelationshipGraph\) GetOrphanedParts
+
+```go
+func (g *RelationshipGraph) GetOrphanedParts(allParts []string) []string
+```
+
+GetOrphanedParts returns parts that are not referenced by any other part.
+
+<a name="RelationshipGraph.GetTransitiveDependencies"></a>
+### func \(\*RelationshipGraph\) GetTransitiveDependencies
+
+```go
+func (g *RelationshipGraph) GetTransitiveDependencies(partURI string) []string
+```
+
+GetTransitiveDependencies returns all parts reachable from the given part.
+
+<a name="RelationshipGraph.RemoveDependency"></a>
+### func \(\*RelationshipGraph\) RemoveDependency
+
+```go
+func (g *RelationshipGraph) RemoveDependency(sourcePart, targetPart string)
+```
+
+RemoveDependency removes a dependency between sourcePart and targetPart.
+
+<a name="RelationshipGraph.TopologicalSort"></a>
+### func \(\*RelationshipGraph\) TopologicalSort
+
+```go
+func (g *RelationshipGraph) TopologicalSort(parts []string) ([]string, error)
+```
+
+TopologicalSort returns parts in topological order \(dependencies first\). Returns error if circular dependencies exist.
+
+<a name="RelationshipGraph.isReachable"></a>
+### func \(\*RelationshipGraph\) isReachable
+
+```go
+func (g *RelationshipGraph) isReachable(source, target string, visited map[string]bool) bool
+```
+
+isReachable checks if target is reachable from source using DFS.
+
+<a name="RelationshipGraph.visitDependencies"></a>
+### func \(\*RelationshipGraph\) visitDependencies
+
+```go
+func (g *RelationshipGraph) visitDependencies(part string, visited map[string]bool, result *[]string)
+```
+
+visitDependencies performs DFS to collect all dependencies.
+
 <a name="RelationshipIDGenerator"></a>
 ## type RelationshipIDGenerator
 
@@ -3959,6 +4166,73 @@ func (g *RelationshipIDGenerator) Reserve(id string)
 
 Reserve marks an ID as used \(for loading existing relationships\).
 
+<a name="RelationshipPath"></a>
+## type RelationshipPath
+
+RelationshipPath represents a path through relationships.
+
+```go
+type RelationshipPath struct {
+    Parts []OpenXmlPart
+}
+```
+
+<a name="RelationshipPath.LastPart"></a>
+### func \(\*RelationshipPath\) LastPart
+
+```go
+func (p *RelationshipPath) LastPart() OpenXmlPart
+```
+
+LastPart returns the final part in the path.
+
+<a name="RelationshipPath.Length"></a>
+### func \(\*RelationshipPath\) Length
+
+```go
+func (p *RelationshipPath) Length() int
+```
+
+Length returns the number of parts in the path minus one \(the number of hops\).
+
+<a name="RelationshipPathFinder"></a>
+## type RelationshipPathFinder
+
+RelationshipPathFinder finds paths through part hierarchies.
+
+```go
+type RelationshipPathFinder struct {
+    maxDepth int
+}
+```
+
+<a name="NewRelationshipPathFinder"></a>
+### func NewRelationshipPathFinder
+
+```go
+func NewRelationshipPathFinder(maxDepth int) *RelationshipPathFinder
+```
+
+NewRelationshipPathFinder creates a new path finder.
+
+<a name="RelationshipPathFinder.FindPath"></a>
+### func \(\*RelationshipPathFinder\) FindPath
+
+```go
+func (f *RelationshipPathFinder) FindPath(source OpenXmlPartContainer, targetURI string) (*RelationshipPath, error)
+```
+
+FindPath finds a path from source to target through the part hierarchy.
+
+<a name="RelationshipPathFinder.findPathRecursive"></a>
+### func \(\*RelationshipPathFinder\) findPathRecursive
+
+```go
+func (f *RelationshipPathFinder) findPathRecursive(container OpenXmlPartContainer, targetURI string, depth int, visited map[string]bool, path *RelationshipPath) bool
+```
+
+findPathRecursive performs DFS to find a path.
+
 <a name="RelationshipTypeInfo"></a>
 ## type RelationshipTypeInfo
 
@@ -3980,6 +4254,44 @@ func GetRelationshipTypeInfo(relType string) (RelationshipTypeInfo, bool)
 ```
 
 GetRelationshipTypeInfo returns metadata about a relationship type.
+
+<a name="RelationshipValidator"></a>
+## type RelationshipValidator
+
+RelationshipValidator validates relationship consistency.
+
+```go
+type RelationshipValidator struct {
+    graph *RelationshipGraph
+}
+```
+
+<a name="NewRelationshipValidator"></a>
+### func NewRelationshipValidator
+
+```go
+func NewRelationshipValidator(graph *RelationshipGraph) *RelationshipValidator
+```
+
+NewRelationshipValidator creates a new validator.
+
+<a name="RelationshipValidator.ValidateNoCycles"></a>
+### func \(\*RelationshipValidator\) ValidateNoCycles
+
+```go
+func (v *RelationshipValidator) ValidateNoCycles(parts []string) error
+```
+
+ValidateNoCycles checks for circular dependencies.
+
+<a name="RelationshipValidator.ValidateNoOrphans"></a>
+### func \(\*RelationshipValidator\) ValidateNoOrphans
+
+```go
+func (v *RelationshipValidator) ValidateNoOrphans(allParts, rootParts []string) error
+```
+
+ValidateNoOrphans checks for orphaned parts \(excluding root parts\).
 
 <a name="TargetMode"></a>
 ## type TargetMode
