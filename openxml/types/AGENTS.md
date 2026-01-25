@@ -174,9 +174,7 @@ emus := types.InchesToEmus(1.0)      // 914400
 halfPts := types.PointsToHalfPoints(12) // 24
 ```
 
-Package types provides simple value types for Office Open XML attributes.
-
-Package types provides simple value types for Office Open XML attributes. These types handle the conversion between XML string representations and Go native types \(StringValue, Int32Value, BooleanValue, etc.\).
+These types handle the conversion between XML string representations and Go native types \(StringValue, Int32Value, BooleanValue, etc.\).
 
 All value types implement the SimpleValue interface which provides:
 

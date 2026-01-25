@@ -201,11 +201,26 @@ The wordprocessing package is organized into subpackages:
 
 See those packages for lower\-level element manipulation.
 
-Package wordprocessing provides WordprocessingML support for Word documents. This package implements the document\-level API for creating, reading, and modifying .docx files.
-
 Package wordprocessing provides APIs for creating and manipulating Word documents.
 
-Package wordprocessing provides WordprocessingML support for Word documents. This package implements the document\-level API for creating, reading, and modifying .docx files.
+Comparison and Merge:
+
+The package includes DocumentComparator and DocumentMerger for comparing and merging entire Word documents.
+
+```
+doc1, _ := wordprocessing.Open("base.docx", false)
+doc2, _ := wordprocessing.Open("modified.docx", false)
+
+comparator := wordprocessing.NewDocumentComparator()
+diffs, _ := comparator.Compare(doc1, doc2)
+
+merger := wordprocessing.NewDocumentMerger()
+merger.Merge(doc1, doc2) // Merges doc2 into doc1
+```
+
+This package implements the document\-level API for creating, reading, and modifying .docx files.
+
+This package implements the document\-level API for creating, reading, and modifying .docx files.
 
 <details><summary>Example (Add Table)</summary>
 <p>

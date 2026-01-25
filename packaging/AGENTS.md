@@ -6,10 +6,6 @@
 import "github.com/connerohnesorge/goffice/packaging"
 ```
 
-Package packaging provides the OPC \(Open Packaging Conventions\) layer.
-
-Package packaging provides the OPC \(Open Packaging Conventions\) layer.
-
 Package packaging provides the OPC \(Open Packaging Conventions\) layer for Office Open XML document handling.
 
 OPC defines how Office Open XML documents \(such as .docx, .xlsx, .pptx\) are stored as ZIP\-based packages containing XML parts, relationships, and content types. This package implements the low\-level package operations required by higher\-level document APIs.
@@ -149,19 +145,9 @@ err := pkg.SaveAs("copy.docx")
 
 Package operations are protected by sync.RWMutex for safe concurrent access. Read operations can proceed concurrently, while write operations require exclusive access.
 
-Package packaging provides the OPC \(Open Packaging Conventions\) layer.
-
-Package packaging provides the OPC \(Open Packaging Conventions\) layer.
-
-Package packaging provides the OPC \(Open Packaging Conventions\) layer. OPC defines how Office Open XML documents are stored as ZIP\-based packages containing XML parts, relationships, and content types.
+OPC defines how Office Open XML documents are stored as ZIP\-based packages containing XML parts, relationships, and content types.
 
 type which requires cohesive implementation of all package operations \(create, open, save, close, parts, relationships\) in a single file for maintainability.
-
-Package packaging provides the OPC \(Open Packaging Conventions\) layer.
-
-Package packaging provides the OPC \(Open Packaging Conventions\) layer.
-
-Package packaging provides the OPC \(Open Packaging Conventions\) layer.
 
 ## Index
 

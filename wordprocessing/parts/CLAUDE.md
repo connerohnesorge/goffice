@@ -196,7 +196,7 @@ All part types are automatically registered with the openxml package's part type
 
 Part operations should be performed through the parent document's thread\-safe API. Direct part manipulation is not thread\-safe.
 
-Package parts provides Word document part types. Parts are the individual XML files within a .docx package, including the main document, styles, settings, and other document components.
+Parts are the individual XML files within a .docx package, including the main document, styles, settings, and other document components.
 
 ### Part Types
 
@@ -1074,7 +1074,7 @@ WebSettingsPartFactory creates a WebSettingsPart from a URI and container.
 func init()
 ```
 
-Register the ChartPart type.
+Register the DiagramStylePart type.
 
 <a name="itoaUint"></a>
 ## func itoaUint

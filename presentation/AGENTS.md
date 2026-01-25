@@ -126,7 +126,7 @@ The presentation package is organized into subpackages:
 
 See those packages for lower\-level element manipulation.
 
-Package presentation provides PresentationML support for PowerPoint documents. This file implements the document\-level API for creating, reading, and modifying .pptx files.
+This file implements the document\-level API for creating, reading, and modifying .pptx files.
 
 <details><summary>Example (Animation)</summary>
 <p>

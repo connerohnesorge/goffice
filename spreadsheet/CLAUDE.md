@@ -6,23 +6,15 @@
 import "github.com/connerohnesorge/goffice/spreadsheet"
 ```
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the high\-level Cell API for working with cell values.
+This file implements the high\-level Cell API for working with cell values.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents.
+This file implements the high\-level Chart API.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents.
+This file implements chart axis functionality.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents.
+This file implements chart series functionality.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the high\-level Chart API.
-
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements chart axis functionality.
-
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements chart series functionality.
-
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements chart data cache synchronization.
-
-Package spreadsheet provides SpreadsheetML support for Excel documents.
+This file implements chart data cache synchronization.
 
 Package spreadsheet provides SpreadsheetML support for Excel documents.
 
@@ -221,39 +213,33 @@ The spreadsheet package is organized into subpackages:
 
 See those packages for lower\-level element manipulation.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the document\-level API for creating, reading, and modifying .xlsx files.
+This file implements the document\-level API for creating, reading, and modifying .xlsx files.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the high\-level Drawing/Image API.
+This file implements the high\-level Drawing/Image API.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the Image type and image\-related methods.
+This file implements the Image type and image\-related methods.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the Shape type and shape\-related methods.
+This file implements the Shape type and shape\-related methods.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents.
+This file implements the high\-level PivotTable API.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the high\-level PivotTable API.
+This file implements pivot table cache population logic.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements pivot table cache population logic.
+This file implements error types for PivotTable validation.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements error types for PivotTable validation.
+This file implements the PivotField wrapper for the PivotTable API.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the PivotField wrapper for the PivotTable API.
+This file implements field management for PivotTable.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements field management for PivotTable.
+This file implements style and formatting for PivotTable.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements style and formatting for PivotTable.
+This file implements field update logic for PivotTable.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements field update logic for PivotTable.
+This file implements the high\-level Sheet API for working with worksheets.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents.
+This file implements the high\-level Style API with a fluent builder pattern.
 
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the high\-level Sheet API for working with worksheets.
-
-Package spreadsheet provides SpreadsheetML support for Excel documents.
-
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the high\-level Style API with a fluent builder pattern.
-
-Package spreadsheet provides SpreadsheetML support for Excel documents. This file implements the high\-level Table API.
+This file implements the high\-level Table API.
 
 ## Index
 

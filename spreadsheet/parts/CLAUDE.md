@@ -6,7 +6,7 @@
 import "github.com/connerohnesorge/goffice/spreadsheet/parts"
 ```
 
-Package parts provides Excel document part types. This file implements the extended chart part \(Office 2016\+\).
+This file implements the extended chart part \(Office 2016\+\).
 
 Package parts provides Excel document part types.
 
@@ -1247,7 +1247,7 @@ addChildPart is a helper to add a child part with the appropriate relationship.
 func init()
 ```
 
-Register the slicer part types.
+Register image content types.
 
 <a name="CalculationChainPart"></a>
 ## type CalculationChainPart

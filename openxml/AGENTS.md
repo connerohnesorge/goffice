@@ -141,7 +141,7 @@ Element and document validation support is provided through the validation subpa
 
 OpenXmlPackage is thread\-safe for concurrent access. Individual elements should not be modified concurrently from multiple goroutines.
 
-Package openxml provides helper functions for traversing and querying Open XML document element trees. This file contains generic utility functions for working with Element and CompositeElement types, including:
+Open XML document element trees. This file contains generic utility functions for working with Element and CompositeElement types, including:
 
 - First, All: Get child elements of a specific type
 - OfType: Filter element sequences by type
@@ -154,7 +154,7 @@ Package openxml provides helper functions for traversing and querying Open XML d
 
 All traversal functions return iter.Seq iterators for lazy evaluation and composition with Go's range\-over\-function syntax.
 
-Package openxml provides the core framework for Office Open XML document processing. This includes element types, features, and validation infrastructure shared across all document types \(Word, Excel, PowerPoint\).
+processing. This includes element types, features, and validation infrastructure shared across all document types \(Word, Excel, PowerPoint\).
 
 ### Element Types
 
@@ -219,13 +219,9 @@ elem.Clone()               - Deep clone with all descendants
 elem.CloneNode(false)      - Shallow clone without children
 ```
 
-Package openxml provides the core framework for Office Open XML document processing.
+document processing.
 
-Package openxml provides the core framework for Office Open XML document processing.
-
-Package openxml provides the core framework for Office Open XML document processing.
-
-Package openxml provides advanced relationship management capabilities.
+document processing.
 
 ## Index
 

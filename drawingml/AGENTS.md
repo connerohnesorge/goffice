@@ -6,37 +6,37 @@
 import "github.com/connerohnesorge/goffice/drawingml"
 ```
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
 This file implements chart types for the DrawingML Chart namespace \(c:\).
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
 This file implements chart axis types.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
 This file implements chart data reference types.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
 This file implements chart element types \(Title, Legend, DataLabels, etc.\).
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
 This file contains chart enumeration types used across chart files.
 
-Package drawingml provides shared DrawingML types. This file implements extended chart types \(Office 2016\+\).
+This file implements extended chart types \(Office 2016\+\).
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
 This file implements chart series types.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
 This file implements chart type structs \(BarChart, LineChart, etc.\).
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
 Package drawingml provides shared DrawingML types for shapes, images, charts, diagrams, and effects used across Office Open XML documents.
 
@@ -67,23 +67,23 @@ DrawingML defines several XML namespaces for different aspects of drawing:
 - SpreadsheetDrawing \(xdr:\) \- Drawing positioning in Excel
 - ChartDrawing \(cdr:\) \- Drawing in charts
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects. DrawingML \(Drawing Markup Language\) is the common drawing specification used across Office Open XML documents for charts, diagrams, and graphical content.
+and effects. DrawingML \(Drawing Markup Language\) is the common drawing specification used across Office Open XML documents for charts, diagrams, and graphical content.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
-Package drawingml provides shared DrawingML types for shapes, images, and effects.
+and effects.
 
 ## Index
 
