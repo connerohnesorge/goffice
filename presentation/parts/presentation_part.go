@@ -160,7 +160,7 @@ func (pp *PresentationPart) AddSlideWithLayout(layout *SlideLayoutPart) (*SlideP
 	if err != nil {
 		return nil, err
 	}
-	
+
 	if layout != nil {
 		// Add relationship from slide to layout
 		rel, err := slidePart.PackagingPart().CreateRelationship(
@@ -171,13 +171,13 @@ func (pp *PresentationPart) AddSlideWithLayout(layout *SlideLayoutPart) (*SlideP
 		if err != nil {
 			return nil, err
 		}
-		
+
 		// Add the layout part to slide's child parts
 		if err := slidePart.AddPart(layout, rel.ID()); err != nil {
 			return nil, err
 		}
 	}
-	
+
 	return slidePart, nil
 }
 

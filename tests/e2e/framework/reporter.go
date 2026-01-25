@@ -259,25 +259,25 @@ type ReportSummary struct {
 
 // JSONReport represents the JSON report structure
 type JSONReport struct {
-	Version     string             `json:"version"`
-	GeneratedAt time.Time          `json:"generated_at"`
-	Summary     ReportSummary      `json:"summary"`
-	Results     []JSONTestResult   `json:"results"`
+	Version     string           `json:"version"`
+	GeneratedAt time.Time        `json:"generated_at"`
+	Summary     ReportSummary    `json:"summary"`
+	Results     []JSONTestResult `json:"results"`
 }
 
 // JSONTestResult represents a single test result in JSON format
 type JSONTestResult struct {
-	Scenario         string                  `json:"scenario"`
-	Status           string                  `json:"status"`
-	StartTime        time.Time               `json:"start_time"`
-	EndTime          time.Time               `json:"end_time"`
-	Duration         float64                 `json:"duration_seconds"`
-	GoOutputPath     string                  `json:"go_output_path,omitempty"`
-	DotNetOutputPath string                  `json:"dotnet_output_path,omitempty"`
-	GoError          string                  `json:"go_error,omitempty"`
-	DotNetError      string                  `json:"dotnet_error,omitempty"`
-	ComparisonError  string                  `json:"comparison_error,omitempty"`
-	Comparison       *JSONComparisonResult   `json:"comparison,omitempty"`
+	Scenario         string                `json:"scenario"`
+	Status           string                `json:"status"`
+	StartTime        time.Time             `json:"start_time"`
+	EndTime          time.Time             `json:"end_time"`
+	Duration         float64               `json:"duration_seconds"`
+	GoOutputPath     string                `json:"go_output_path,omitempty"`
+	DotNetOutputPath string                `json:"dotnet_output_path,omitempty"`
+	GoError          string                `json:"go_error,omitempty"`
+	DotNetError      string                `json:"dotnet_error,omitempty"`
+	ComparisonError  string                `json:"comparison_error,omitempty"`
+	Comparison       *JSONComparisonResult `json:"comparison,omitempty"`
 }
 
 // JSONComparisonResult represents comparison results in JSON format

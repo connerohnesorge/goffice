@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 // Package main demonstrates reading SmartArt diagram structure from Office documents.
 //
 // This example shows how to:

@@ -4,7 +4,6 @@ import (
 	"testing"
 )
 
-
 func TestFontsAddAndGetFont(t *testing.T) {
 	f := NewFonts()
 

@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package main
 
 // Bar chart data - Quarterly sales for 3 regions

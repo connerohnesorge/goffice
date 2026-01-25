@@ -313,10 +313,10 @@ func (anvp *ApplicationNonVisualProperties) SetVideoFile(relId string) {
 	if existing := anvp.GetElement("videoFile", NamespaceDrawingML); existing != nil {
 		anvp.RemoveChild(existing)
 	}
-	
+
 	vf := openxml.NewLeafElement(NamespaceDrawingML, "videoFile", PrefixA)
 	vf.SetAttribute(openxml.NewAttribute(NamespaceRelationships, "link", PrefixR, relId))
-	
+
 	// Insert before extLst if present
 	if extLst := anvp.GetElement("extLst", NamespacePresentationML); extLst != nil {
 		anvp.InsertBefore(vf, extLst)
@@ -331,10 +331,10 @@ func (anvp *ApplicationNonVisualProperties) SetAudioFile(relId string) {
 	if existing := anvp.GetElement("audioFile", NamespaceDrawingML); existing != nil {
 		anvp.RemoveChild(existing)
 	}
-	
+
 	af := openxml.NewLeafElement(NamespaceDrawingML, "audioFile", PrefixA)
 	af.SetAttribute(openxml.NewAttribute(NamespaceRelationships, "link", PrefixR, relId))
-	
+
 	// Insert before extLst if present
 	if extLst := anvp.GetElement("extLst", NamespacePresentationML); extLst != nil {
 		anvp.InsertBefore(af, extLst)
@@ -355,35 +355,35 @@ type MediaProperties struct {
 // SetMediaProperties sets the media properties in extLst.
 func (anvp *ApplicationNonVisualProperties) SetMediaProperties(props MediaProperties) {
 	extLst := anvp.GetOrCreateMediaExtensionList()
-	
+
 	// Media extension URI for Office 2010
 	mediaUri := "{DAA4B4D4-6D71-4841-9C94-3DE7FCFB9230}"
 	ext := extLst.GetOrCreateMediaExtension(mediaUri)
-	
+
 	// Create p14:media element
 	nsP14 := "http://schemas.microsoft.com/office/powerpoint/2010/main"
 	media := openxml.NewLeafElement(nsP14, "media", "p14")
-	
+
 	if props.EmbedRelId != "" {
 		media.SetAttribute(openxml.NewAttribute(NamespaceRelationships, "embed", PrefixR, props.EmbedRelId))
 	}
-	
+
 	if props.AutoStart {
 		media.SetAttribute(openxml.NewAttribute("", "autoStart", "", "1"))
 	}
-	
+
 	if props.Loop {
 		media.SetAttribute(openxml.NewAttribute("", "loop", "", "1"))
 	}
-	
+
 	if props.Muted {
 		media.SetAttribute(openxml.NewAttribute("", "mute", "", "1"))
 	}
-	
+
 	if props.Volume > 0 {
 		media.SetAttribute(openxml.NewAttribute("", "vol", "", strconv.Itoa(props.Volume)))
 	}
-	
+
 	// Clear existing children of extension and add new media element
 	ext.ClearChildren()
 	ext.AppendChild(media)
@@ -400,7 +400,7 @@ func (anvp *ApplicationNonVisualProperties) GetOrCreateMediaExtensionList() *Med
 			return &MediaExtensionList{CompositeElementBase: comp}
 		}
 	}
-	
+
 	extLst := NewMediaExtensionList()
 	anvp.AppendChild(extLst)
 	return extLst
@@ -432,7 +432,7 @@ func (el *MediaExtensionList) GetOrCreateMediaExtension(uri string) *MediaExtens
 			}
 		}
 	}
-	
+
 	ext := NewMediaExtension(uri)
 	el.AppendChild(ext)
 	return ext

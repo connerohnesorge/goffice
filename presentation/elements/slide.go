@@ -2,7 +2,10 @@
 package elements
 
 import (
+	"encoding/xml"
+
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/openxml/types"
 )
 
 const (
@@ -212,7 +215,7 @@ func (s *Slide) AddVideo(
 ) *Picture {
 	pic := s.AddPicture(posterRelId)
 	pic.NonVisualPictureProperties().SetVideoFile(videoRelId)
-	
+
 	return pic
 }
 
@@ -223,17 +226,32 @@ func (s *Slide) AddAudio(
 ) *Picture {
 	pic := s.AddPicture(posterRelId)
 	pic.NonVisualPictureProperties().SetAudioFile(audioRelId)
-	
+
 	return pic
 }
 
-// Clone creates a deep copy of this Slide element.
-func (s *Slide) Clone() openxml.Element {
-	cloned := s.PartRootElementBase.Clone()
+// ===========================================================================
+// NotesSlide (p:notesSld) - Notes slide
+// ===========================================================================
 
-	return &Slide{
-		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
+// HeaderFooter returns the header/footer element.
+func (ns *NotesSlide) HeaderFooter() *ExtHeaderFooter {
+	elem := ns.GetElement(
+		"hf",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
 	}
+	if hf, ok := elem.(*ExtHeaderFooter); ok {
+		return hf
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &ExtHeaderFooter{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
 }
 
 // ===========================================================================
@@ -441,6 +459,21 @@ func (sl *SlideLayout) GetOrCreateCommonSlideData() *CommonSlideData {
 	return csd
 }
 
+// Name returns the slide layout name.
+func (sl *SlideLayout) Name() string {
+	csd := sl.CommonSlideData()
+	if csd == nil {
+		return ""
+	}
+
+	return csd.Name()
+}
+
+// SetName sets the slide layout name.
+func (sl *SlideLayout) SetName(name string) {
+	sl.GetOrCreateCommonSlideData().SetName(name)
+}
+
 // AddPlaceholder adds a new placeholder shape to the layout.
 func (sl *SlideLayout) AddPlaceholder(phType PlaceholderType, idx int) *Shape {
 	csd := sl.GetOrCreateCommonSlideData()
@@ -448,6 +481,126 @@ func (sl *SlideLayout) AddPlaceholder(phType PlaceholderType, idx int) *Shape {
 	shape := st.AddShape()
 	shape.NonVisualShapeProperties().SetPlaceholder(phType, idx)
 	return shape
+}
+
+// ColorMapOverride returns the color map override element.
+func (sl *SlideLayout) ColorMapOverride() *ColorMapOverride {
+	elem := sl.GetElement(
+		"clrMapOvr",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if cmo, ok := elem.(*ColorMapOverride); ok {
+		return cmo
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &ColorMapOverride{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// Transition returns the slide transition.
+func (sl *SlideLayout) Transition() *SlideTransition {
+	elem := sl.GetElement(
+		"transition",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if tr, ok := elem.(*SlideTransition); ok {
+		return tr
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &SlideTransition{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// Timing returns the slide timing.
+func (sl *SlideLayout) Timing() *SlideTiming {
+	elem := sl.GetElement(
+		"timing",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if t, ok := elem.(*SlideTiming); ok {
+		return t
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &SlideTiming{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// HeaderFooter returns the header/footer element.
+func (sl *SlideLayout) HeaderFooter() *ExtHeaderFooter {
+	elem := sl.GetElement(
+		"hf",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if hf, ok := elem.(*ExtHeaderFooter); ok {
+		return hf
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &ExtHeaderFooter{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// ExtensionList returns the extension list.
+func (sl *SlideLayout) ExtensionList() *ExtensionListModify {
+	elem := sl.GetElement(
+		"extLst",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if el, ok := elem.(*ExtensionListModify); ok {
+		return el
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &ExtensionListModify{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// TextStyles returns the text styles element.
+func (sl *SlideLayout) TextStyles() *TextStyles {
+	elem := sl.GetElement(
+		"txStyles",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if ts, ok := elem.(*TextStyles); ok {
+		return ts
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &TextStyles{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
 }
 
 // Clone creates a deep copy of this SlideLayout element.
@@ -510,5 +663,264 @@ func (sm *SlideMaster) Clone() openxml.Element {
 
 	return &SlideMaster{
 		PartRootElementBase: cloned.(*openxml.PartRootElementBase),
+	}
+}
+
+// ColorMap returns the color map element.
+func (sm *SlideMaster) ColorMap() *PresentationColorMap {
+	elem := sm.GetElement(
+		"clrMap",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if cm, ok := elem.(*PresentationColorMap); ok {
+		return cm
+	}
+	// Wrap generic element
+	if comp := wrapCompositeElement(elem); comp != nil {
+		// Use the existing element's data but wrapped in our type
+		// Note: We might need a better way to wrap if strict validation is needed
+		cm := NewPresentationColorMap()
+		cm.CompositeElementBase = comp
+		return cm
+	}
+	return nil
+}
+
+// SlideLayoutIdList returns the slide layout ID list.
+func (sm *SlideMaster) SlideLayoutIdList() *SlideLayoutIdList {
+	elem := sm.GetElement(
+		"sldLayoutIdLst",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if slil, ok := elem.(*SlideLayoutIdList); ok {
+		return slil
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &SlideLayoutIdList{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// Transition returns the slide transition.
+func (sm *SlideMaster) Transition() *SlideTransition {
+	elem := sm.GetElement(
+		"transition",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if tr, ok := elem.(*SlideTransition); ok {
+		return tr
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &SlideTransition{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// Timing returns the slide timing.
+func (sm *SlideMaster) Timing() *SlideTiming {
+	elem := sm.GetElement(
+		"timing",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if t, ok := elem.(*SlideTiming); ok {
+		return t
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &SlideTiming{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// HeaderFooter returns the header/footer element.
+func (sm *SlideMaster) HeaderFooter() *ExtHeaderFooter {
+	elem := sm.GetElement(
+		"hf",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if hf, ok := elem.(*ExtHeaderFooter); ok {
+		return hf
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &ExtHeaderFooter{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// TextStyles returns the text styles element.
+func (sm *SlideMaster) TextStyles() *TextStyles {
+	elem := sm.GetElement(
+		"txStyles",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if ts, ok := elem.(*TextStyles); ok {
+		return ts
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &TextStyles{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// ExtensionList returns the extension list.
+func (sm *SlideMaster) ExtensionList() *ExtensionListModify {
+	elem := sm.GetElement(
+		"extLst",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if el, ok := elem.(*ExtensionListModify); ok {
+		return el
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &ExtensionListModify{
+			CompositeElementBase: comp,
+		}
+	}
+	return nil
+}
+
+// GetOrCreateSlideLayoutIdList returns the slide layout ID list, creating if needed.
+func (sm *SlideMaster) GetOrCreateSlideLayoutIdList() *SlideLayoutIdList {
+	slil := sm.SlideLayoutIdList()
+	if slil != nil {
+		return slil
+	}
+	slil = NewSlideLayoutIdList()
+	// Insert after clrMap
+	if cm := sm.ColorMap(); cm != nil {
+		sm.InsertAfter(slil, cm)
+	} else if csd := sm.CommonSlideData(); csd != nil {
+		sm.InsertAfter(slil, csd)
+	} else {
+		sm.AppendChild(slil)
+	}
+
+	return slil
+}
+
+// AddSlideLayoutId adds a slide layout ID entry.
+func (sm *SlideMaster) AddSlideLayoutId(
+	id uint32,
+	relId string,
+) *SlideLayoutId {
+	return sm.GetOrCreateSlideLayoutIdList().AddSlideLayoutId(id, relId)
+}
+
+// ===========================================================================
+// SlideLayoutIdList (p:sldLayoutIdLst)
+// ===========================================================================
+
+// AddSlideLayoutId adds a slide layout ID entry.
+func (slil *SlideLayoutIdList) AddSlideLayoutId(
+	id uint32,
+	relId string,
+) *SlideLayoutId {
+	slid := NewSlideLayoutId()
+	slid.SetId(id)
+	slid.SetRelId(relId)
+	slil.AppendChild(slid)
+
+	return slid
+}
+
+// ===========================================================================
+// SlideLayoutId (p:sldLayoutId)
+// ===========================================================================
+
+// SetId sets the slide layout ID.
+func (sid *SlideLayoutId) SetId(id uint32) {
+	sid.Id = types.NewUInt32Value(id)
+}
+
+// SetRelId sets the relationship ID.
+func (sid *SlideLayoutId) SetRelId(relId string) {
+	sid.RelationshipId = types.NewStringValue(relId)
+}
+
+// ===========================================================================
+// HeaderFooter (p:hf)
+// ===========================================================================
+
+// SetSlideNumber sets whether to show the slide number.
+func (hf *ExtHeaderFooter) SetSlideNumber(show bool) {
+	hf.SlideNumber = types.NewBooleanValue(show)
+}
+
+// SetHeader sets whether to show the header.
+func (hf *ExtHeaderFooter) SetHeader(show bool) {
+	hf.Header = types.NewBooleanValue(show)
+}
+
+// SetFooter sets whether to show the footer.
+func (hf *ExtHeaderFooter) SetFooter(show bool) {
+	hf.Footer = types.NewBooleanValue(show)
+}
+
+// SetDateTime sets whether to show the date and time.
+func (hf *ExtHeaderFooter) SetDateTime(show bool) {
+	hf.DateTime = types.NewBooleanValue(show)
+}
+
+// ===========================================================================
+// PresentationColorMap (p:clrMap)
+// ===========================================================================
+
+// PresentationColorMap represents the color map element (p:clrMap) in PresentationML.
+// Note: We use this wrapper because the generated ColorMap is for DrawingML (pic:clrMap).
+type PresentationColorMap struct {
+	*ColorMappingType
+	XMLName xml.Name `xml:"http://schemas.openxmlformats.org/presentationml/2006/main clrMap"`
+}
+
+// NewPresentationColorMap creates a new PresentationColorMap.
+func NewPresentationColorMap() *PresentationColorMap {
+	cmt := NewColorMappingType()
+	// Override the underlying element name/namespace to match p:clrMap
+	cmt.CompositeElementBase = openxml.NewCompositeElement(
+		NamespacePresentationML,
+		"clrMap",
+		PrefixP,
+	)
+
+	return &PresentationColorMap{
+		ColorMappingType: cmt,
+	}
+}
+
+// Clone creates a deep copy of this PresentationColorMap.
+func (m *PresentationColorMap) Clone() openxml.Element {
+	cloned := m.ColorMappingType.Clone()
+	return &PresentationColorMap{
+		ColorMappingType: cloned.(*ColorMappingType),
 	}
 }

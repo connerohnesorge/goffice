@@ -6,7 +6,6 @@ import (
 
 const testTableName = "Table1"
 
-
 func TestNewTableWithDefaults(t *testing.T) {
 	table := NewTableWithDefaults(
 		1,

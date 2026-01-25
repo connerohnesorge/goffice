@@ -551,6 +551,20 @@ func (c *PresetColor) Clone() openxml.Element {
 	}
 }
 
+// GetPresetColorHex returns the hexadecimal string for a given preset color value.
+// This is a placeholder for a more comprehensive mapping if needed.
+func GetPresetColorHex(pcv PresetColorValue) string {
+	switch pcv {
+	case PresetColorBlack:
+		return "000000"
+	case PresetColorWhite:
+		return "FFFFFF"
+	// Add more mappings as needed
+	default:
+		return "000000" // Default to black for unknown preset colors
+	}
+}
+
 // SchemeColor represents a theme scheme color (a:schemeClr) referencing
 // a color from the document theme.
 type SchemeColor struct {
@@ -665,6 +679,18 @@ func (c *SchemeColor) Clone() openxml.Element {
 		CompositeElementBase: c.CompositeElementBase.Clone().(*openxml.CompositeElementBase),
 	}
 }
+
+// Resolve returns the actual hex color string for this scheme color,
+// given a ColorScheme to resolve against.
+func (c *SchemeColor) Resolve(cs *ColorScheme) string {
+	if cs == nil {
+		return ""
+	}
+
+	return cs.ResolveColor(c.Value())
+}
+
+
 
 // SystemColor represents a system color (a:sysClr) referencing a Windows
 // system color from the operating system color scheme.

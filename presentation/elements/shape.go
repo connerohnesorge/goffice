@@ -6,6 +6,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/openxml/types"
 )
 
 // Shape represents a shape element (p:sp).
@@ -378,6 +379,41 @@ func (nvsp *NonVisualShapeProperties) SetName(
 	))
 }
 
+// Placeholder returns the placeholder element.
+func (nvsp *NonVisualShapeProperties) Placeholder() *PlaceholderShape {
+	nvPrElem := nvsp.GetElement(
+		"nvPr",
+		NamespacePresentationML,
+	)
+	if nvPrElem == nil {
+		return nil
+	}
+	nvPr, ok := nvPrElem.(*openxml.CompositeElementBase)
+	if !ok {
+		// Wrap generic composite element
+		if comp := wrapCompositeElement(nvPrElem); comp != nil {
+			nvPr = comp
+		} else {
+			return nil
+		}
+	}
+
+	elem := nvPr.GetElement("ph", NamespacePresentationML)
+	if elem == nil {
+		return nil
+	}
+	if ph, ok := elem.(*PlaceholderShape); ok {
+		return ph
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &PlaceholderShape{
+			CompositeElementBase: comp,
+		}
+	}
+
+	return nil
+}
+
 // SetPlaceholder sets the placeholder type.
 func (nvsp *NonVisualShapeProperties) SetPlaceholder(
 	phType PlaceholderType,
@@ -392,7 +428,12 @@ func (nvsp *NonVisualShapeProperties) SetPlaceholder(
 	}
 	nvPr, ok := nvPrElem.(*openxml.CompositeElementBase)
 	if !ok {
-		return
+		// Try to wrap it
+		if comp := wrapCompositeElement(nvPrElem); comp != nil {
+			nvPr = comp
+		} else {
+			return
+		}
 	}
 
 	// Remove existing placeholder
@@ -401,30 +442,12 @@ func (nvsp *NonVisualShapeProperties) SetPlaceholder(
 	}
 
 	// Create new placeholder element
-	ph := openxml.NewLeafElement(
-		NamespacePresentationML,
-		"ph",
-		PrefixP,
-	)
+	ph := NewPlaceholderShape()
 	if phType != "" {
-		ph.SetAttribute(
-			openxml.NewAttribute(
-				"",
-				"type",
-				"",
-				string(phType),
-			),
-		)
+		ph.Type = types.NewEnumValue(PlaceholderValues(phType))
 	}
 	if idx >= 0 {
-		ph.SetAttribute(
-			openxml.NewAttribute(
-				"",
-				"idx",
-				"",
-				strconv.Itoa(idx),
-			),
-		)
+		ph.Index = types.NewUInt32Value(uint32(idx))
 	}
 	nvPr.AppendChild(ph)
 }
@@ -436,6 +459,25 @@ func (nvsp *NonVisualShapeProperties) Clone() openxml.Element {
 	return &NonVisualShapeProperties{
 		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
 	}
+}
+
+// ===========================================================================
+// PlaceholderShape (p:ph) methods
+// ===========================================================================
+
+// SetOrientation sets the orientation of the placeholder.
+func (ph *PlaceholderShape) SetOrientation(orient DirectionValues) {
+	ph.Orientation = types.NewEnumValue(orient)
+}
+
+// SetSize sets the size of the placeholder.
+func (ph *PlaceholderShape) SetSize(sz PlaceholderSizeValues) {
+	ph.Size = types.NewEnumValue(sz)
+}
+
+// SetHasCustomPrompt sets whether the placeholder has a custom prompt.
+func (ph *PlaceholderShape) SetHasCustomPrompt(has bool) {
+	ph.HasCustomPrompt = types.NewBooleanValue(has)
 }
 
 // ===========================================================================
@@ -666,6 +708,95 @@ func NewShapeStyle() *ShapeStyle {
 	)
 
 	return &ShapeStyle{CompositeElementBase: elem}
+}
+
+// SetLineReference sets the line style reference.
+func (ss *ShapeStyle) SetLineReference(
+	idx int,
+	color drawingml.SchemeColorValue,
+) {
+	ss.setStyleReference("lnRef", idx, color)
+}
+
+// SetFillReference sets the fill style reference.
+func (ss *ShapeStyle) SetFillReference(
+	idx int,
+	color drawingml.SchemeColorValue,
+) {
+	ss.setStyleReference("fillRef", idx, color)
+}
+
+// SetEffectReference sets the effect style reference.
+func (ss *ShapeStyle) SetEffectReference(
+	idx int,
+	color drawingml.SchemeColorValue,
+) {
+	ss.setStyleReference("effectRef", idx, color)
+}
+
+// SetFontReference sets the font style reference.
+func (ss *ShapeStyle) SetFontReference(
+	idx string,
+	color drawingml.SchemeColorValue,
+) {
+	// Remove existing
+	if existing := ss.GetElement("fontRef", NamespaceDrawingML); existing != nil {
+		ss.RemoveChild(existing)
+	}
+
+	fontRef := openxml.NewCompositeElement(
+		NamespaceDrawingML,
+		"fontRef",
+		PrefixA,
+	)
+	fontRef.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"idx",
+			"",
+			string(idx),
+		),
+	)
+
+	if color != "" {
+		sc := drawingml.NewSchemeColor(color)
+		fontRef.AppendChild(sc)
+	}
+
+	ss.AppendChild(fontRef)
+}
+
+// setStyleReference sets a style matrix reference element.
+func (ss *ShapeStyle) setStyleReference(
+	name string,
+	idx int,
+	color drawingml.SchemeColorValue,
+) {
+	// Remove existing
+	if existing := ss.GetElement(name, NamespaceDrawingML); existing != nil {
+		ss.RemoveChild(existing)
+	}
+
+	ref := openxml.NewCompositeElement(
+		NamespaceDrawingML,
+		name,
+		PrefixA,
+	)
+	ref.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"idx",
+			"",
+			strconv.Itoa(idx),
+		),
+	)
+
+	if color != "" {
+		sc := drawingml.NewSchemeColor(color)
+		ref.AppendChild(sc)
+	}
+
+	ss.AppendChild(ref)
 }
 
 // Clone creates a deep copy of this ShapeStyle element.

@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package main
 
 // EMU (English Metric Units) position and size constants

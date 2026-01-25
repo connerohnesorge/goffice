@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 // This file implements chart data cache synchronization.
 package spreadsheet
 

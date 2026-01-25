@@ -316,7 +316,7 @@ func TestStreamingVideo(t *testing.T) {
 
 	// Create a large video data (simulating a large file)
 	largeVideoData := make([]byte, 150*1024*1024) // 150MB
-	copy(largeVideoData[4:], []byte("ftyp")) // MP4 header
+	copy(largeVideoData[4:], []byte("ftyp"))      // MP4 header
 
 	// Add video with streaming threshold below file size
 	opts := &AddVideoOptions{
@@ -440,15 +440,15 @@ func TestVideoRoundTrip(t *testing.T) {
 func TestVideoPlaybackConfiguration(t *testing.T) {
 	pres, _ := New(filepath.Join(t.TempDir(), "playback.pptx"), DocTypePresentation)
 	slide, _ := pres.AddSlide()
-	
+
 	// Add a dummy video
 	videoData := make([]byte, 16)
 	copy(videoData[4:], []byte("ftyp"))
 	videoPart, _ := pres.AddVideoFromBytes(0, videoData, "video.mp4", nil)
-	
+
 	// Add video to slide
 	pic := slide.AddVideo(videoPart.RelationshipID(), "")
-	
+
 	// Configure playback
 	props := elements.MediaProperties{
 		EmbedRelId: videoPart.RelationshipID(),
@@ -456,7 +456,7 @@ func TestVideoPlaybackConfiguration(t *testing.T) {
 		Loop:       true,
 	}
 	pic.NonVisualPictureProperties().ApplicationNonVisualProperties().SetMediaProperties(props)
-	
+
 	// Verify properties (optional, mainly check it doesn't crash and serializes)
 	if err := pres.Save(); err != nil {
 		t.Fatalf("Failed to save: %v", err)

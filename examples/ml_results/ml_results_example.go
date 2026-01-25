@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 // Package main demonstrates comprehensive spreadsheet creation with ML results data,
 // including model comparisons, formulas, and charts.
 //

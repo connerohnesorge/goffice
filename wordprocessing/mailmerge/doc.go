@@ -9,14 +9,14 @@
 //
 // # Basic Usage
 //
-//      doc, _ := wordprocessing.Open("template.docx", true)
-//      result, err := mailmerge.New(doc).
-//              DataSource(mailmerge.NewCSVDataSource("contacts.csv")).
-//              Execute()
-//      if err != nil {
-//              log.Fatal(err)
-//      }
-//      result.Save()
+//	doc, _ := wordprocessing.Open("template.docx", true)
+//	result, err := mailmerge.New(doc).
+//	        DataSource(mailmerge.NewCSVDataSource("contacts.csv")).
+//	        Execute()
+//	if err != nil {
+//	        log.Fatal(err)
+//	}
+//	result.Save()
 //
 // # Data Sources
 //
@@ -49,11 +49,11 @@
 //
 // Example:
 //
-//      opts := &mailmerge.MergeOptions{
-//              StrictFields:       true,  // error on missing fields
-//              RemoveUnusedFields: true,  // remove unreplaced fields
-//      }
-//      result, _ := mailmerge.New(doc).Options(opts).DataSource(ds).Execute()
+//	opts := &mailmerge.MergeOptions{
+//	        StrictFields:       true,  // error on missing fields
+//	        RemoveUnusedFields: true,  // remove unreplaced fields
+//	}
+//	result, _ := mailmerge.New(doc).Options(opts).DataSource(ds).Execute()
 //
 // # OOXML Metadata Integration
 //

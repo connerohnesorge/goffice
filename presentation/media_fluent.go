@@ -8,18 +8,14 @@ import (
 // Video represents a video shape on a slide with a fluent API.
 
 type Video struct {
-
 	slide *parts.SlidePart
 
-	part  parts.MediaPart
+	part parts.MediaPart
 
-	pic   *elements.Picture
+	pic *elements.Picture
 
 	props elements.MediaProperties
-
 }
-
-
 
 // AddVideo adds a video to the specified slide.
 
@@ -33,8 +29,6 @@ func (d *Document) AddVideo(slideIndex int, filePath string) (*Video, error) {
 
 	}
 
-	
-
 	slide, err := d.GetSlide(slideIndex)
 
 	if err != nil {
@@ -43,35 +37,27 @@ func (d *Document) AddVideo(slideIndex int, filePath string) (*Video, error) {
 
 	}
 
-	
-
 	// Add the video to the slide's XML
 
 	pic := slide.AddVideo(part.RelationshipID(), "")
-
-	
 
 	v := &Video{
 
 		slide: slide,
 
-		part:  part,
+		part: part,
 
-		pic:   pic,
+		pic: pic,
 
 		props: elements.MediaProperties{
 
 			EmbedRelId: part.RelationshipID(),
-
 		},
-
 	}
 
 	return v, nil
 
 }
-
-
 
 // SetPosition sets the position of the video in EMUs.
 
@@ -83,55 +69,25 @@ func (v *Video) SetPosition(x, y int) *Video {
 
 }
 
-
-
 // SetSize sets the size of the video in EMUs.
-
-
 
 func (v *Video) SetSize(w, h int) *Video {
 
-
-
 	v.pic.SetSize(w, h)
-
-
 
 	return v
 
-
-
 }
-
-
-
-
-
-
 
 // SetPoster sets the poster image for the video.
 
-
-
 func (v *Video) SetPoster(img *parts.ImagePart) *Video {
-
-
 
 	v.pic.SetRelId(img.RelationshipID())
 
-
-
 	return v
 
-
-
 }
-
-
-
-
-
-
 
 // SetAutoStart sets whether the video starts automatically.
 
@@ -145,8 +101,6 @@ func (v *Video) SetAutoStart(auto bool) *Video {
 
 }
 
-
-
 // SetLoop sets whether the video loops.
 
 func (v *Video) SetLoop(loop bool) *Video {
@@ -158,8 +112,6 @@ func (v *Video) SetLoop(loop bool) *Video {
 	return v
 
 }
-
-
 
 // SetMuted sets whether the video is muted.
 
@@ -173,8 +125,6 @@ func (v *Video) SetMuted(muted bool) *Video {
 
 }
 
-
-
 // SetVolume sets the video volume (0-100000).
 
 func (v *Video) SetVolume(vol int) *Video {
@@ -187,8 +137,6 @@ func (v *Video) SetVolume(vol int) *Video {
 
 }
 
-
-
 func (v *Video) applyProps() {
 
 	anvp := v.pic.NonVisualPictureProperties().ApplicationNonVisualProperties()
@@ -197,23 +145,17 @@ func (v *Video) applyProps() {
 
 }
 
-
-
 // Audio represents an audio shape on a slide with a fluent API.
 
 type Audio struct {
-
 	slide *parts.SlidePart
 
-	part  parts.MediaPart
+	part parts.MediaPart
 
-	pic   *elements.Picture
+	pic *elements.Picture
 
 	props elements.MediaProperties
-
 }
-
-
 
 // AddAudio adds an audio to the specified slide.
 
@@ -227,8 +169,6 @@ func (d *Document) AddAudio(slideIndex int, filePath string) (*Audio, error) {
 
 	}
 
-	
-
 	slide, err := d.GetSlide(slideIndex)
 
 	if err != nil {
@@ -237,35 +177,27 @@ func (d *Document) AddAudio(slideIndex int, filePath string) (*Audio, error) {
 
 	}
 
-	
-
 	// Add the audio to the slide's XML
 
 	pic := slide.AddAudio(part.RelationshipID(), "")
-
-	
 
 	a := &Audio{
 
 		slide: slide,
 
-		part:  part,
+		part: part,
 
-		pic:   pic,
+		pic: pic,
 
 		props: elements.MediaProperties{
 
 			EmbedRelId: part.RelationshipID(),
-
 		},
-
 	}
 
 	return a, nil
 
 }
-
-
 
 // SetPosition sets the position of the audio icon in EMUs.
 
@@ -277,8 +209,6 @@ func (a *Audio) SetPosition(x, y int) *Audio {
 
 }
 
-
-
 // SetSize sets the size of the audio icon in EMUs.
 
 func (a *Audio) SetSize(w, h int) *Audio {
@@ -288,8 +218,6 @@ func (a *Audio) SetSize(w, h int) *Audio {
 	return a
 
 }
-
-
 
 // SetLoop sets whether the audio loops.
 
@@ -303,8 +231,6 @@ func (a *Audio) SetLoop(loop bool) *Audio {
 
 }
 
-
-
 // SetMuted sets whether the audio is muted.
 
 func (a *Audio) SetMuted(muted bool) *Audio {
@@ -316,8 +242,6 @@ func (a *Audio) SetMuted(muted bool) *Audio {
 	return a
 
 }
-
-
 
 // SetVolume sets the audio volume (0-100000).
 
@@ -331,8 +255,6 @@ func (a *Audio) SetVolume(vol int) *Audio {
 
 }
 
-
-
 func (a *Audio) applyProps() {
 
 	anvp := a.pic.NonVisualPictureProperties().ApplicationNonVisualProperties()
@@ -340,5 +262,3 @@ func (a *Audio) applyProps() {
 	anvp.SetMediaProperties(a.props)
 
 }
-
-

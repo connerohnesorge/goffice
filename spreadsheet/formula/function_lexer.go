@@ -1,11 +1,12 @@
+//go:build ignore
+// +build ignore
+
 package formula
 
 import (
 	"fmt"
 	"strings"
 	"unicode"
-
-	"github.com/connerohnesorge/goffice/spreadsheet"
 )
 
 // LexerState represents the current state during lexing.

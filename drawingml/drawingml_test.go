@@ -5,10 +5,6 @@ import (
 	"testing"
 )
 
-
-
-
-
 // TestPoint2D tests Point2D type.
 func TestPoint2D(t *testing.T) {
 	t.Run("NewPoint2D", func(t *testing.T) {
@@ -21,7 +17,6 @@ func TestPoint2D(t *testing.T) {
 			)
 		}
 	})
-
 
 	t.Run("IsZero", func(t *testing.T) {
 		zero := Point2D{}
@@ -228,7 +223,6 @@ func TestEffectExtent(t *testing.T) {
 		},
 	)
 }
-
 
 // TestTransform2D tests Transform2D element.
 //

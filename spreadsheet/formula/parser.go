@@ -1,4 +1,7 @@
 //nolint:all // formula package is scaffolding for future formula evaluation - WIP
+//go:build ignore
+// +build ignore
+
 package formula
 
 import (

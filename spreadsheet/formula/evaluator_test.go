@@ -2,8 +2,6 @@ package formula
 
 import (
 	"testing"
-
-	"github.com/connerohnesorge/goffice/spreadsheet"
 )
 
 func TestEvaluateCellFormula(t *testing.T) {

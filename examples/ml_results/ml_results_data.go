@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 //nolint:revive // Data file contains test values that should not be converted to constants
 package main
 

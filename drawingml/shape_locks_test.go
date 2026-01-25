@@ -98,7 +98,7 @@ func TestShapeLocksClone(t *testing.T) {
 	if !clone.NoRotation() {
 		t.Error("expected cloned NoRotation to be true")
 	}
-	
+
 	// Change original
 	locks.SetNoGrouping(false)
 	if !clone.NoGrouping() {

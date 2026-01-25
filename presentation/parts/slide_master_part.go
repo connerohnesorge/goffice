@@ -109,7 +109,17 @@ func (smp *SlideMasterPart) AddSlideLayoutPart() (*SlideLayoutPart, error) {
 		num,
 	)
 
-	return newSlideLayoutPart(smp, uri)
+	slp, err := newSlideLayoutPart(smp, uri)
+	if err != nil {
+		return nil, err
+	}
+
+	// Add layout ID to master XML to maintain the relationship
+	// Slide layout IDs start at 2147483648 (0x80000000)
+	id := uint32(2147483648 + num)
+	smp.SlideMaster().AddSlideLayoutId(id, slp.RelationshipID())
+
+	return slp, nil
 }
 
 // SlideLayoutParts returns all slide layout parts.
@@ -122,6 +132,17 @@ func (smp *SlideMasterPart) SlideLayoutParts() []*SlideLayoutPart {
 	}
 
 	return layouts
+}
+
+// GetLayoutByName returns the slide layout part with the given name.
+func (smp *SlideMasterPart) GetLayoutByName(name string) *SlideLayoutPart {
+	for _, slp := range smp.SlideLayoutParts() {
+		if slp.SlideLayout().Name() == name {
+			return slp
+		}
+	}
+
+	return nil
 }
 
 // AddThemePart adds a theme part to this slide master.

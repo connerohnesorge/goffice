@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 // Package main demonstrates PowerPoint presentation to PDF rendering with DrawingML shapes.
 //
 // This example shows how to:

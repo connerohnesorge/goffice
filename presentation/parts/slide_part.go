@@ -92,6 +92,35 @@ func (sp *SlidePart) Slide() *elements.Slide {
 	return nil
 }
 
+// SlideLayoutPart returns the slide layout part associated with this slide.
+func (sp *SlidePart) SlideLayoutPart() *SlideLayoutPart {
+	for part := range sp.Parts() {
+		if slp, ok := part.(*SlideLayoutPart); ok {
+			return slp
+		}
+	}
+
+	return nil
+}
+
+// SetSlideLayoutPart sets the slide layout part for this slide.
+func (sp *SlidePart) SetSlideLayoutPart(slp *SlideLayoutPart) error {
+	// Remove existing layout part relationship
+	if existing := sp.SlideLayoutPart(); existing != nil {
+		if err := sp.DeletePart(existing.RelationshipID()); err != nil {
+			return err
+		}
+	}
+
+	// Create relationship to new layout part
+	rel, err := sp.PackagingPart().CreateRelationship(slp.URI(), RelationshipTypeSlideLayout, "")
+	if err != nil {
+		return err
+	}
+
+	return sp.AddPart(slp, rel.ID())
+}
+
 // AddNotesSlidePart adds a notes slide part to this slide.
 func (sp *SlidePart) AddNotesSlidePart() (*NotesSlidePart, error) {
 	return newNotesSlidePart(sp)

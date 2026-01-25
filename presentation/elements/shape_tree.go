@@ -8,6 +8,13 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+const (
+	localNamePic          = "pic"
+	localNameGroupShape   = "grpSp"
+	localNameGraphicFrame = "graphicFrame"
+	localNameConnShape    = "cxnSp"
+)
+
 // Global shape ID counter for generating unique IDs.
 var shapeIdCounter uint32
 

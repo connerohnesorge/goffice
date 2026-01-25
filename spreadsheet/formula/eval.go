@@ -25,6 +25,14 @@ const (
 	ValueTypeArray
 )
 
+// Aliases for compatibility
+const (
+	ValueNumber  = ValueTypeNumber
+	ValueString  = ValueTypeString
+	ValueBoolean = ValueTypeBoolean
+	ValueArray   = ValueTypeArray
+)
+
 // Value represents a value in formula evaluation.
 type Value struct {
 	Type  ValueType
@@ -164,6 +172,24 @@ func (v Value) AsBoolean() (bool, error) {
 	default:
 		return false, fmt.Errorf("cannot convert to boolean")
 	}
+}
+
+// FunctionRegistry manages available formula functions (stub).
+type FunctionRegistry struct {
+	functions map[string]interface{}
+}
+
+// NewFunctionRegistry creates a new function registry (stub).
+func NewFunctionRegistry() *FunctionRegistry {
+	return &FunctionRegistry{
+		functions: make(map[string]interface{}),
+	}
+}
+
+// Get retrieves a function by name (stub).
+func (fr *FunctionRegistry) Get(name string) (interface{}, bool) {
+	fn, ok := fr.functions[name]
+	return fn, ok
 }
 
 // EvalContext provides context for formula evaluation.

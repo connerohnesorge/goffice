@@ -2,6 +2,7 @@
 package elements
 
 import (
+	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
@@ -182,12 +183,71 @@ func NewSlideBackground() *SlideBackground {
 	}
 }
 
+// BackgroundProperties returns the background properties.
+func (bg *SlideBackground) BackgroundProperties() *BackgroundProperties {
+	elem := bg.GetElement(
+		"bgPr",
+		NamespacePresentationML,
+	)
+	if elem == nil {
+		return nil
+	}
+	if bgPr, ok := elem.(*BackgroundProperties); ok {
+		return bgPr
+	}
+	if comp := wrapCompositeElement(elem); comp != nil {
+		return &BackgroundProperties{
+			CompositeElementBase: comp,
+		}
+	}
+
+	return nil
+}
+
+// GetOrCreateBackgroundProperties returns the background properties, creating if needed.
+func (bg *SlideBackground) GetOrCreateBackgroundProperties() *BackgroundProperties {
+	bgPr := bg.BackgroundProperties()
+	if bgPr != nil {
+		return bgPr
+	}
+	bgPr = NewBackgroundProperties()
+	bg.AppendChild(bgPr)
+
+	return bgPr
+}
+
 // Clone creates a deep copy of this SlideBackground element.
 func (bg *SlideBackground) Clone() openxml.Element {
 	cloned := bg.CompositeElementBase.Clone()
 
 	return &SlideBackground{
 		CompositeElementBase: cloned.(*openxml.CompositeElementBase),
+	}
+}
+
+// SetSolidFill sets a solid color fill for the background.
+func (bp *BackgroundProperties) SetSolidFill(hexColor string) {
+	bp.removeFill()
+	solidFill := drawingml.NewSolidFillWithRgb(hexColor)
+	bp.AppendChild(solidFill)
+}
+
+// removeFill removes any existing fill elements.
+func (bp *BackgroundProperties) removeFill() {
+	if nf := bp.GetElement("noFill", NamespaceDrawingML); nf != nil {
+		bp.RemoveChild(nf)
+	}
+	if sf := bp.GetElement("solidFill", NamespaceDrawingML); sf != nil {
+		bp.RemoveChild(sf)
+	}
+	if gf := bp.GetElement("gradFill", NamespaceDrawingML); gf != nil {
+		bp.RemoveChild(gf)
+	}
+	if pf := bp.GetElement("pattFill", NamespaceDrawingML); pf != nil {
+		bp.RemoveChild(pf)
+	}
+	if bf := bp.GetElement("blipFill", NamespaceDrawingML); bf != nil {
+		bp.RemoveChild(bf)
 	}
 }
 

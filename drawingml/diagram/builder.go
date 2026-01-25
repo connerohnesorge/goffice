@@ -76,15 +76,15 @@ func (b *DataModelBuilder) WithText(text string) *DataModelBuilder {
 	if b.lastPoint == nil {
 		return b
 	}
-	
+
 	// Create text body if needed
 	if b.lastPoint.TextBody == nil {
 		b.lastPoint.TextBody = NewTextBody()
 	}
-	
+
 	// Add paragraph with text
 	b.lastPoint.TextBody.AddParagraph(text)
-	
+
 	return b
 }
 
@@ -95,11 +95,11 @@ func (b *DataModelBuilder) WithShapeProperties(spPr *ShapeProperties) *DataModel
 	if b.lastPoint == nil {
 		return b
 	}
-	
+
 	if spPr != nil {
 		b.lastPoint.ShapeProperties = spPr
 	}
-	
+
 	return b
 }
 
@@ -174,6 +174,7 @@ func (b *DataModelBuilder) AddPresentationOfConnection(sourceID, destID string) 
 // all child elements (points and connections). This is needed because
 // the generated Clone() method only clones explicit fields, not children
 // stored in the CompositeElementBase.
+//
 //nolint:revive // cognitive complexity is necessary for proper deep cloning
 func deepCloneDataModel(source *DataModelRoot) *DataModelRoot {
 	if source == nil {

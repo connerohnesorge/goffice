@@ -65,7 +65,7 @@ func TestGetAudios(t *testing.T) {
 	// Add two audio files
 	audioData := make([]byte, 16)
 	copy(audioData, []byte("ID3"))
-	
+
 	_, err = pres.AddAudioFromFile(0, "", &AddAudioOptions{
 		AutoDetectType: false,
 		AudioType:      parts.AudioTypeMp3,

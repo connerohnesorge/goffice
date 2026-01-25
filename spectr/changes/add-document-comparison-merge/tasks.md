@@ -1,33 +1,33 @@
 ## 1. Document Comparison Engine
-- [ ] 1.1 Create element-level comparison
-- [ ] 1.2 Implement content hash generation
-- [ ] 1.3 Add formatting difference detection
-- [ ] 1.4 Implement structural difference detection
-- [ ] 1.5 Create change type classification
+- [x] 1.1 Create element-level comparison
+- [x] 1.2 Implement content hash generation
+- [x] 1.3 Add formatting difference detection
+- [x] 1.4 Implement structural difference detection
+- [x] 1.5 Create change type classification
 
 ## 2. Change Detection
-- [ ] 2.1 Detect inserted elements
-- [ ] 2.2 Detect deleted elements
-- [ ] 2.3 Detect modified elements
-- [ ] 2.4 Track property changes
-- [ ] 2.5 Create change list generation
+- [x] 2.1 Detect inserted elements
+- [x] 2.2 Detect deleted elements
+- [x] 2.3 Detect modified elements
+- [x] 2.4 Track property changes
+- [x] 2.5 Create change list generation
 
 ## 3. Document Merge
-- [ ] 3.1 Implement two-way merge
-- [ ] 3.2 Implement three-way merge
-- [ ] 3.3 Add conflict detection
+- [x] 3.1 Implement two-way merge
+- [x] 3.2 Implement three-way merge
+- [x] 3.3 Add conflict detection
 - [ ] 3.4 Create merge strategy selection
 - [ ] 3.5 Implement selective merge
 
 ## 4. Merge Strategies
-- [ ] 4.1 Implement "ours" strategy
+- [x] 4.1 Implement "ours" strategy
 - [ ] 4.2 Implement "theirs" strategy
 - [ ] 4.3 Implement "combined" strategy
 - [ ] 4.4 Add strategy customization
 - [ ] 4.5 Create custom resolver support
 
 ## 5. Conflict Resolution
-- [ ] 5.1 Create conflict detection
+- [x] 5.1 Create conflict detection
 - [ ] 5.2 Implement conflict reporting
 - [ ] 5.3 Add conflict visualization markers
 - [ ] 5.4 Create conflict resolution API
@@ -55,8 +55,8 @@
 - [ ] 8.5 Create conflict resolution API
 
 ## 9. Testing
-- [ ] 9.1 Unit tests for comparison
-- [ ] 9.2 Unit tests for merge
+- [x] 9.1 Unit tests for comparison
+- [x] 9.2 Unit tests for merge
 - [ ] 9.3 Conflict resolution tests
 - [ ] 9.4 Roundtrip tests
 - [ ] 9.5 Large document merge tests

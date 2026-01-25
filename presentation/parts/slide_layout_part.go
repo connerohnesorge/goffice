@@ -127,6 +127,94 @@ func (slp *SlideLayoutPart) SlideLayout() *elements.SlideLayout {
 	return nil
 }
 
+// EffectiveColorMap returns the effective PresentationColorMap for this layout,
+// retrieved from the associated SlideMaster.
+func (slp *SlideLayoutPart) EffectiveColorMap() *elements.PresentationColorMap {
+	if smp := slp.SlideMasterPart(); smp != nil {
+		return smp.SlideMaster().ColorMap()
+	}
+	return nil
+}
+
+// EffectiveTransition returns the effective SlideTransition for this layout,
+// resolving from SlideMaster if not present locally.
+func (slp *SlideLayoutPart) EffectiveTransition() *elements.SlideTransition {
+	if tr := slp.SlideLayout().Transition(); tr != nil {
+		return tr
+	}
+	if smp := slp.SlideMasterPart(); smp != nil {
+		return smp.SlideMaster().Transition()
+	}
+	return nil
+}
+
+// EffectiveTiming returns the effective SlideTiming for this layout,
+// resolving from SlideMaster if not present locally.
+func (slp *SlideLayoutPart) EffectiveTiming() *elements.SlideTiming {
+	if t := slp.SlideLayout().Timing(); t != nil {
+		return t
+	}
+	if smp := slp.SlideMasterPart(); smp != nil {
+		return smp.SlideMaster().Timing()
+	}
+	return nil
+}
+
+// EffectiveHeaderFooter returns the effective ExtHeaderFooter for this layout,
+// resolving from SlideMaster if not present locally.
+func (slp *SlideLayoutPart) EffectiveHeaderFooter() *elements.ExtHeaderFooter {
+	if hf := slp.SlideLayout().HeaderFooter(); hf != nil {
+		return hf
+	}
+	if smp := slp.SlideMasterPart(); smp != nil {
+		return smp.SlideMaster().HeaderFooter()
+	}
+	return nil
+}
+
+// EffectiveTextStyles returns the effective TextStyles for this layout,
+// resolving from SlideMaster if not present locally.
+func (slp *SlideLayoutPart) EffectiveTextStyles() *elements.TextStyles {
+	if ts := slp.SlideLayout().TextStyles(); ts != nil {
+		return ts
+	}
+	if smp := slp.SlideMasterPart(); smp != nil {
+		return smp.SlideMaster().TextStyles()
+	}
+	return nil
+}
+
+// EffectiveExtensionList returns the effective ExtensionListModify for this layout,
+// resolving from SlideMaster if not present locally.
+func (slp *SlideLayoutPart) EffectiveExtensionList() *elements.ExtensionListModify {
+	if el := slp.SlideLayout().ExtensionList(); el != nil {
+		return el
+	}
+	if smp := slp.SlideMasterPart(); smp != nil {
+		return smp.SlideMaster().ExtensionList()
+	}
+	return nil
+}
+
+// SlideMasterPart returns the slide master part associated with this layout.
+func (slp *SlideLayoutPart) SlideMasterPart() *SlideMasterPart {
+	// A slide layout can be owned by a slide master or by the presentation directly.
+	// We check for SlideMasterPart in parent containers.
+	container := slp.Container()
+	if smp, ok := container.(*SlideMasterPart); ok {
+		return smp
+	}
+
+	// Also check related parts
+	for part := range slp.Parts() {
+		if smp, ok := part.(*SlideMasterPart); ok {
+			return smp
+		}
+	}
+
+	return nil
+}
+
 // AddPlaceholder adds a placeholder to the layout.
 func (slp *SlideLayoutPart) AddPlaceholder(phType elements.PlaceholderType, idx int) *elements.Shape {
 	return slp.SlideLayout().AddPlaceholder(phType, idx)

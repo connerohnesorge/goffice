@@ -1,4 +1,8 @@
+//go:build ignore
+// +build ignore
+
 // Package main provides an example of creating PowerPoint presentations with SmartArt diagrams.
+//
 //nolint:revive // Example code may have longer functions and repeated string literals for clarity
 package main
 

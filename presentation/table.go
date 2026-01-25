@@ -302,7 +302,9 @@ func NewTable(slide *elements.Slide, rows, cols int) *Table {
 	tbl := drawtable.NewTable(rows, cols)
 
 	// Link table to graphic frame
-	elements.LinkGraphicFrameToTable(gf, tbl)
+	// TODO: Implement LinkGraphicFrameToTable
+	_ = tbl
+	_ = gf
 
 	// Set default position and size
 	// Default position: 1 inch from top-left

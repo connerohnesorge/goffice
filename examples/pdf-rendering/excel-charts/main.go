@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 // Package main demonstrates Excel workbook to PDF rendering with DrawingML charts.
 //
 // This example shows how to:

@@ -379,12 +379,12 @@ func (s *ShapeProperties) insertInOrder(elem openxml.Element, name string, prede
 	// openxml implementation usually handles InsertAfter(elem, nil) as PrependChild?
 	// Let's assume PrependChild if no predecessor found, but that might put it before xfrm.
 	// So we should try to append if it's a "late" element.
-	
+
 	// Simplified strategy:
 	// If it's scene3d or sp3d or effects, we prefer appending if no 'ln' or 'fill' or 'xfrm' found?
 	// But 'xfrm' is almost always there.
 	// If 'xfrm' is missing, maybe we should just append.
-	
+
 	s.AppendChild(elem)
 }
 

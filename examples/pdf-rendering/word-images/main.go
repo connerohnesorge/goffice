@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 // Package main demonstrates Word document to PDF rendering with DrawingML images.
 //
 // This example shows how to:

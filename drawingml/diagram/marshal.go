@@ -46,6 +46,7 @@ func escapeAttr(s string) string {
 
 // marshalPointToEncoder marshals a Point to an XML encoder,
 // handling the TextBody tag conflict properly.
+//
 //nolint:revive // function length is necessary for proper XML marshaling with all attributes
 func marshalPointToEncoder(e *xml.Encoder, p *Point) error {
 	if p == nil {

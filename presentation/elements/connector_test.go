@@ -141,8 +141,8 @@ func TestConnectionShape_BothConnections(t *testing.T) {
 }
 
 func TestGenerateDefaultConnectionSites(t *testing.T) {
-	width := drawingml.EMU(100000)  // 100000 EMU
-	height := drawingml.EMU(50000)  // 50000 EMU
+	width := drawingml.EMU(100000) // 100000 EMU
+	height := drawingml.EMU(50000) // 50000 EMU
 
 	sites := routing.GenerateDefaultConnectionSites(width, height)
 

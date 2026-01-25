@@ -86,7 +86,7 @@ func TestVideoTypeFromExtension(t *testing.T) {
 		{".webm", VideoTypeWebm},
 		{".mkv", VideoTypeMkv},
 		{".ogv", VideoTypeOgv},
-		{"mp4", VideoTypeMp4}, // Without dot
+		{"mp4", VideoTypeMp4},  // Without dot
 		{".MP4", VideoTypeMp4}, // Case insensitive
 	}
 
@@ -280,12 +280,12 @@ func TestShouldStream(t *testing.T) {
 		size     int64
 		expected bool
 	}{
-		{1024 * 1024, false},                    // 1MB - no streaming
-		{50 * 1024 * 1024, false},               // 50MB - no streaming
-		{99 * 1024 * 1024, false},               // 99MB - no streaming
-		{100 * 1024 * 1024, false},              // Exactly 100MB - no streaming
-		{100*1024*1024 + 1, true},               // 100MB + 1 byte - streaming
-		{200 * 1024 * 1024, true},               // 200MB - streaming
+		{1024 * 1024, false},       // 1MB - no streaming
+		{50 * 1024 * 1024, false},  // 50MB - no streaming
+		{99 * 1024 * 1024, false},  // 99MB - no streaming
+		{100 * 1024 * 1024, false}, // Exactly 100MB - no streaming
+		{100*1024*1024 + 1, true},  // 100MB + 1 byte - streaming
+		{200 * 1024 * 1024, true},  // 200MB - streaming
 	}
 
 	for _, tt := range tests {

@@ -14,7 +14,7 @@ func TestDataModelBuilder_WithText(t *testing.T) {
 	builder.AddPoint("node1").WithText("Hello World")
 
 	dataModel := builder.Build()
-	
+
 	// Verify text
 	var found bool
 	for pt := range openxml.Elements[*diagram.Point](dataModel.PointList) {
@@ -32,7 +32,7 @@ func TestDataModelBuilder_WithText(t *testing.T) {
 			}
 		}
 	}
-	
+
 	if !found {
 		t.Error("Expected point with text body")
 	}
@@ -48,12 +48,12 @@ func TestDataModelBuilder_WithShapeProperties(t *testing.T) {
 	// Yes, ShapeProperties has SetSolidFill (via CompositeElementBase or helper?)
 	// Actually drawingml/shape_properties.go had SetTransform etc.
 	// drawingml/shape_properties_fill.go likely has fill methods.
-	
+
 	// Add point with shape properties
 	builder.AddPoint("node1").WithShapeProperties(spPr)
 
 	dataModel := builder.Build()
-	
+
 	// Verify shape properties
 	var found bool
 	for pt := range openxml.Elements[*diagram.Point](dataModel.PointList) {
@@ -61,7 +61,7 @@ func TestDataModelBuilder_WithShapeProperties(t *testing.T) {
 			found = true
 		}
 	}
-	
+
 	if !found {
 		t.Error("Expected point with shape properties")
 	}

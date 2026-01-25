@@ -89,20 +89,46 @@ func (nsp *NotesSlidePart) NotesSlide() *elements.NotesSlide {
 	return nil
 }
 
+// NotesMasterPart returns the NotesMasterPart that this NotesSlide is associated with.
+func (nsp *NotesSlidePart) NotesMasterPart() *NotesMasterPart {
+	// NotesSlide is directly related to a NotesMaster part.
+	for part := range nsp.Parts() {
+		if nmp, ok := part.(*NotesMasterPart); ok {
+			return nmp
+		}
+	}
+
+	return nil
+}
+
+// EffectiveHeaderFooter returns the effective ExtHeaderFooter for this notes slide,
+// resolving from NotesMaster if not present locally.
+func (nsp *NotesSlidePart) EffectiveHeaderFooter() *elements.ExtHeaderFooter {
+	// First check local HeaderFooter on NotesSlide
+	if hf := nsp.NotesSlide().HeaderFooter(); hf != nil {
+		return hf
+	}
+	// Fallback to NotesMaster's HeaderFooter
+	if nmp := nsp.NotesMasterPart(); nmp != nil {
+		return nmp.NotesMaster().HeaderFooter
+	}
+	return nil
+}
+
 // GetOrCreateCommonSlideData returns or creates the common slide data (p:cSld).
 func (nsp *NotesSlidePart) GetOrCreateCommonSlideData() *elements.CommonSlideData {
 	ns := nsp.NotesSlide()
 	if ns == nil {
 		return nil
 	}
-	
+
 	// Check if cSld already exists
 	for child := range ns.Children() {
 		if csd, ok := child.(*elements.CommonSlideData); ok {
 			return csd
 		}
 	}
-	
+
 	csd := elements.NewCommonSlideData()
 	ns.AppendChild(csd)
 	return csd
@@ -112,7 +138,7 @@ func (nsp *NotesSlidePart) GetOrCreateCommonSlideData() *elements.CommonSlideDat
 func (nsp *NotesSlidePart) SetNotes(text string) {
 	csd := nsp.GetOrCreateCommonSlideData()
 	st := csd.GetOrCreateShapeTree()
-	
+
 	// Notes usually have a body placeholder for text
 	// For now, we'll just add a shape with the text
 	shape := st.AddShape()
@@ -130,7 +156,7 @@ func (nsp *NotesSlidePart) SetNotes(text string) {
 func (nsp *NotesSlidePart) GetOrCreateTextBody() *elements.TextBody {
 	csd := nsp.GetOrCreateCommonSlideData()
 	st := csd.GetOrCreateShapeTree()
-	
+
 	// Try to find existing body placeholder
 	for _, shape := range st.Shapes() {
 		if nvsp := shape.NonVisualShapeProperties(); nvsp != nil {
@@ -141,7 +167,7 @@ func (nsp *NotesSlidePart) GetOrCreateTextBody() *elements.TextBody {
 			}
 		}
 	}
-	
+
 	// Create new shape with text body
 	shape := st.AddShape()
 	return shape.GetOrCreateTextBody()

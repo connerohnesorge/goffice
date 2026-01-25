@@ -72,7 +72,7 @@ func (d *Document) ImportHTMLTable(slideIndex int, htmlStr string) (*Table, erro
 	}
 
 	table := NewTable(slide.Slide(), numRows, numCols)
-	
+
 	relFn := func(url string) string {
 		rel, _ := slide.PackagingPart().CreateRelationship(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", "External")
 		if rel != nil {
@@ -135,7 +135,7 @@ func parseRowNodes(n *html.Node) []*html.Node {
 func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string) string) {
 	tb.ClearParagraphs()
 	p := tb.AddParagraph("")
-	
+
 	var f func(*html.Node, bool, bool, bool, int, string, string)
 	f = func(n *html.Node, bold, italic, underline bool, level int, listType string, linkId string) {
 		switch n.Type {
@@ -161,7 +161,7 @@ func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string
 			newLevel := level
 			newListType := listType
 			newLinkId := linkId
-			
+
 			switch n.Data {
 			case "b", "strong":
 				newBold = true
@@ -203,13 +203,13 @@ func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string
 					p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
 				}
 			}
-			
+
 			for c := n.FirstChild; c != nil; c = c.NextSibling {
 				f(c, newBold, newItalic, newUnderline, newLevel, newListType, newLinkId)
 			}
 		}
 	}
-	
+
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		f(c, false, false, false, 0, "", "")
 	}

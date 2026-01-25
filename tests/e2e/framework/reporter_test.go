@@ -17,11 +17,11 @@ func TestReporter_Generate(t *testing.T) {
 	// Create sample test results
 	results := []*TestResult{
 		{
-			Scenario:  "test_scenario_1",
-			Status:    StatusPassed,
-			StartTime: time.Now().Add(-5 * time.Second),
-			EndTime:   time.Now(),
-			GoOutputPath: "/tmp/go/test1.docx",
+			Scenario:         "test_scenario_1",
+			Status:           StatusPassed,
+			StartTime:        time.Now().Add(-5 * time.Second),
+			EndTime:          time.Now(),
+			GoOutputPath:     "/tmp/go/test1.docx",
 			DotNetOutputPath: "/tmp/dotnet/test1.docx",
 			Comparison: &ComparisonResult{
 				XMLMatch:    true,
@@ -30,13 +30,13 @@ func TestReporter_Generate(t *testing.T) {
 			},
 		},
 		{
-			Scenario:  "test_scenario_2",
-			Status:    StatusFailed,
-			StartTime: time.Now().Add(-3 * time.Second),
-			EndTime:   time.Now(),
-			GoOutputPath: "/tmp/go/test2.docx",
+			Scenario:         "test_scenario_2",
+			Status:           StatusFailed,
+			StartTime:        time.Now().Add(-3 * time.Second),
+			EndTime:          time.Now(),
+			GoOutputPath:     "/tmp/go/test2.docx",
 			DotNetOutputPath: "/tmp/dotnet/test2.docx",
-			ComparisonError: "XML structure mismatch",
+			ComparisonError:  "XML structure mismatch",
 			Comparison: &ComparisonResult{
 				XMLMatch:    false,
 				BinaryMatch: false,
@@ -187,10 +187,10 @@ func TestJSONReport_Structure(t *testing.T) {
 
 	results := []*TestResult{
 		{
-			Scenario:  "json_test",
-			Status:    StatusPassed,
-			StartTime: time.Now().Add(-2 * time.Second),
-			EndTime:   time.Now(),
+			Scenario:     "json_test",
+			Status:       StatusPassed,
+			StartTime:    time.Now().Add(-2 * time.Second),
+			EndTime:      time.Now(),
 			GoOutputPath: "/tmp/test.docx",
 			Comparison: &ComparisonResult{
 				XMLMatch:    true,

@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 // Package main demonstrates creating PowerPoint presentations with various chart types.
 //
 // This example shows how to create six different chart types using the goffice library:

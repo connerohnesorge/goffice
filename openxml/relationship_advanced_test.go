@@ -396,6 +396,10 @@ func (m *mockPartContainer) Package() *packaging.Package {
 	return nil
 }
 
+func (m *mockPartContainer) URI() string {
+	return "/mock/container"
+}
+
 type mockPart struct {
 	uri           string
 	relationships []OpenXmlRelationship

@@ -32,4 +32,3 @@ func TestTableDeleteRow(t *testing.T) {
 		)
 	}
 }
-

@@ -22,10 +22,10 @@ func ExampleReporter() {
 	// Create sample test results
 	results := []*TestResult{
 		{
-			Scenario:  "basic_text_formatting",
-			Status:    StatusPassed,
-			StartTime: time.Now().Add(-10 * time.Second),
-			EndTime:   time.Now().Add(-5 * time.Second),
+			Scenario:         "basic_text_formatting",
+			Status:           StatusPassed,
+			StartTime:        time.Now().Add(-10 * time.Second),
+			EndTime:          time.Now().Add(-5 * time.Second),
 			GoOutputPath:     filepath.Join(tmpDir, "go", "test1.docx"),
 			DotNetOutputPath: filepath.Join(tmpDir, "dotnet", "test1.docx"),
 			Comparison: &ComparisonResult{
@@ -35,13 +35,13 @@ func ExampleReporter() {
 			},
 		},
 		{
-			Scenario:  "table_with_borders",
-			Status:    StatusFailed,
-			StartTime: time.Now().Add(-5 * time.Second),
-			EndTime:   time.Now(),
+			Scenario:         "table_with_borders",
+			Status:           StatusFailed,
+			StartTime:        time.Now().Add(-5 * time.Second),
+			EndTime:          time.Now(),
 			GoOutputPath:     filepath.Join(tmpDir, "go", "test2.docx"),
 			DotNetOutputPath: filepath.Join(tmpDir, "dotnet", "test2.docx"),
-			ComparisonError: "XML structure mismatch in table borders",
+			ComparisonError:  "XML structure mismatch in table borders",
 			Comparison: &ComparisonResult{
 				XMLMatch:    false,
 				BinaryMatch: false,

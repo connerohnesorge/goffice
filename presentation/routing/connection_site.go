@@ -20,7 +20,7 @@ const (
 
 // ConnectionSite represents a point where connectors can attach to a shape.
 // Corresponds to ECMA-376 CT_ConnectionSite (a:cxn element).
-type ConnectionSite struct{
+type ConnectionSite struct {
 	// Index is the 0-based identifier for this connection site.
 	// Used in connector start/end connection references.
 	Index int

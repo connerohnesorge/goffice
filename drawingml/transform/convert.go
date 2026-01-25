@@ -9,10 +9,10 @@ import (
 
 // Constants for parsing and conversion.
 const (
-	base10              = 10
-	rotationDivisor     = 60000.0
-	drawingMLNamespace  = "http://schemas.openxmlformats.org/drawingml/2006/main"
-	presentationMLNS    = "http://schemas.openxmlformats.org/presentationml/2006/main"
+	base10             = 10
+	rotationDivisor    = 60000.0
+	drawingMLNamespace = "http://schemas.openxmlformats.org/drawingml/2006/main"
+	presentationMLNS   = "http://schemas.openxmlformats.org/presentationml/2006/main"
 )
 
 // FromTransform2D converts a DrawingML Transform2D element to a transformation Matrix.

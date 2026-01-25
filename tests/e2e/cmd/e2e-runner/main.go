@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/connerohnesorge/goffice/tests/e2e/bridges/go"
 	"github.com/connerohnesorge/goffice/tests/e2e/comparison"
 	"github.com/connerohnesorge/goffice/tests/e2e/framework"
 )

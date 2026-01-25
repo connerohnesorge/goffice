@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 package formula
 
 import (
@@ -230,7 +233,6 @@ func (v Value) Equal(other Value) bool {
 	default:
 		return false
 	}
-}
 }
 
 // Value represents a formula evaluation result

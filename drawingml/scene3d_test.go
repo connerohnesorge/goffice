@@ -19,7 +19,7 @@ func TestScene3D(t *testing.T) {
 		cam.SetPreset("orthographicFront")
 		cam.SetFieldOfView(5400000)
 		cam.SetZoom(100000)
-		
+
 		rot := NewRotation3D()
 		rot.SetLat(0)
 		rot.SetLon(0)
@@ -80,7 +80,7 @@ func TestShape3D(t *testing.T) {
 
 	t.Run("Bevels", func(t *testing.T) {
 		sp3d := NewShape3D()
-		
+
 		top := NewBevel("bevelT")
 		top.SetWidth(76200)
 		top.SetHeight(76200)
@@ -108,25 +108,25 @@ func TestShape3D(t *testing.T) {
 
 	t.Run("Colors", func(t *testing.T) {
 		sp3d := NewShape3D()
-		
+
 		// Test RGB extrusion color
 		sp3d.SetExtrusionColorRgb("FF0000")
 		if sp3d.ExtrusionColor() == nil {
 			t.Error("Expected extrusion color")
 		}
-		
+
 		// Test scheme extrusion color
 		sp3d.SetExtrusionColorScheme(SchemeColorAccent1)
 		if sp3d.ExtrusionColor() == nil {
 			t.Error("Expected extrusion color")
 		}
-		
+
 		// Test RGB contour color
 		sp3d.SetContourColorRgb("0000FF")
 		if sp3d.ContourColor() == nil {
 			t.Error("Expected contour color")
 		}
-		
+
 		// Test scheme contour color
 		sp3d.SetContourColorScheme(SchemeColorAccent2)
 		if sp3d.ContourColor() == nil {

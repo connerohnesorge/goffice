@@ -261,7 +261,7 @@ func (p *OpenXmlPartData) loadChildPartsRecursive(
 		// Load child parts only once for the underlying partData
 		if partData != nil {
 			partData.loadChildPartsRecursive(
-				depth + 1,
+				depth+1,
 				loadedURIs,
 			)
 		}

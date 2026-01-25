@@ -367,11 +367,11 @@ func (f *RelationshipPathFinder) findPathRecursive(
 	// Check all child parts
 	for part := range container.Parts() {
 		partURI := part.URI()
-		
+
 		if visited[partURI] {
 			continue
 		}
-		
+
 		if partURI == targetURI {
 			// Found target
 			path.Parts = append(path.Parts, part)

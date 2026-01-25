@@ -1,3 +1,6 @@
+//go:build ignore
+// +build ignore
+
 // Package main provides an example of using the comment API to add comments to Word documents.
 package main
 
