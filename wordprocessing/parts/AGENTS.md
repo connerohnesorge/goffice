@@ -296,15 +296,19 @@ All part types are automatically registered with the openxml package's part type
   - [func \(cp \*CommentsPart\) initializeContent\(\)](<#CommentsPart.initializeContent>)
 - [type CustomXmlPart](<#CustomXmlPart>)
   - [func newCustomXmlPart\(mainPart \*MainPart\) \(\*CustomXmlPart, error\)](<#newCustomXmlPart>)
+  - [func \(cp \*CustomXmlPart\) AddPropertiesPart\(\) \(\*CustomXmlPropertiesPart, error\)](<#CustomXmlPart.AddPropertiesPart>)
   - [func \(cp \*CustomXmlPart\) GetStream\(\) io.Reader](<#CustomXmlPart.GetStream>)
   - [func \(cp \*CustomXmlPart\) GetXmlData\(\) \[\]byte](<#CustomXmlPart.GetXmlData>)
+  - [func \(cp \*CustomXmlPart\) Marshal\(v interface\{\}\) error](<#CustomXmlPart.Marshal>)
   - [func \(cp \*CustomXmlPart\) SetXmlData\(data \[\]byte\)](<#CustomXmlPart.SetXmlData>)
+  - [func \(cp \*CustomXmlPart\) Unmarshal\(v interface\{\}\) error](<#CustomXmlPart.Unmarshal>)
+  - [func \(cp \*CustomXmlPart\) addChildPart\(uri string, contentType string, relationshipType string\) \(\*packaging.Part, string, error\)](<#CustomXmlPart.addChildPart>)
   - [func \(cp \*CustomXmlPart\) initializeContent\(\)](<#CustomXmlPart.initializeContent>)
 - [type CustomXmlPropertiesPart](<#CustomXmlPropertiesPart>)
-  - [func newCustomXmlPropertiesPart\(parent \*CustomXmlPart\) \(\*CustomXmlPropertiesPart, error\)](<#newCustomXmlPropertiesPart>)
   - [func \(cp \*CustomXmlPropertiesPart\) GetStream\(\) io.Reader](<#CustomXmlPropertiesPart.GetStream>)
   - [func \(cp \*CustomXmlPropertiesPart\) Properties\(\) \*elements.DatastoreItem](<#CustomXmlPropertiesPart.Properties>)
   - [func \(cp \*CustomXmlPropertiesPart\) SetProperties\(props \*elements.DatastoreItem\) error](<#CustomXmlPropertiesPart.SetProperties>)
+  - [func \(cp \*CustomXmlPropertiesPart\) initializeContent\(\)](<#CustomXmlPropertiesPart.initializeContent>)
   - [func \(cp \*CustomXmlPropertiesPart\) unmarshal\(v interface\{\}\) error](<#CustomXmlPropertiesPart.unmarshal>)
 - [type DiagramColorsPart](<#DiagramColorsPart>)
   - [func newDiagramColorsPart\(mainPart \*MainPart, uri string\) \(\*DiagramColorsPart, error\)](<#newDiagramColorsPart>)
@@ -1074,7 +1078,7 @@ WebSettingsPartFactory creates a WebSettingsPart from a URI and container.
 func init()
 ```
 
-Register the StylesPart type.
+Register the CustomXmlPropertiesPart type.
 
 <a name="itoaUint"></a>
 ## func itoaUint
@@ -1379,6 +1383,15 @@ func newCustomXmlPart(mainPart *MainPart) (*CustomXmlPart, error)
 
 newCustomXmlPart creates a new custom XML part.
 
+<a name="CustomXmlPart.AddPropertiesPart"></a>
+### func \(\*CustomXmlPart\) AddPropertiesPart
+
+```go
+func (cp *CustomXmlPart) AddPropertiesPart() (*CustomXmlPropertiesPart, error)
+```
+
+AddPropertiesPart adds a custom XML properties part to this custom XML part.
+
 <a name="CustomXmlPart.GetStream"></a>
 ### func \(\*CustomXmlPart\) GetStream
 
@@ -1397,6 +1410,15 @@ func (cp *CustomXmlPart) GetXmlData() []byte
 
 GetXmlData returns the custom XML data.
 
+<a name="CustomXmlPart.Marshal"></a>
+### func \(\*CustomXmlPart\) Marshal
+
+```go
+func (cp *CustomXmlPart) Marshal(v interface{}) error
+```
+
+Marshal serializes the given value to XML and stores it in the part.
+
 <a name="CustomXmlPart.SetXmlData"></a>
 ### func \(\*CustomXmlPart\) SetXmlData
 
@@ -1405,6 +1427,24 @@ func (cp *CustomXmlPart) SetXmlData(data []byte)
 ```
 
 SetXmlData sets the custom XML data.
+
+<a name="CustomXmlPart.Unmarshal"></a>
+### func \(\*CustomXmlPart\) Unmarshal
+
+```go
+func (cp *CustomXmlPart) Unmarshal(v interface{}) error
+```
+
+Unmarshal deserializes the part data into the given value.
+
+<a name="CustomXmlPart.addChildPart"></a>
+### func \(\*CustomXmlPart\) addChildPart
+
+```go
+func (cp *CustomXmlPart) addChildPart(uri string, contentType string, relationshipType string) (*packaging.Part, string, error)
+```
+
+addChildPart is a helper to add a child part.
 
 <a name="CustomXmlPart.initializeContent"></a>
 ### func \(\*CustomXmlPart\) initializeContent
@@ -1425,15 +1465,6 @@ type CustomXmlPropertiesPart struct {
     *openxml.OpenXmlPartData
 }
 ```
-
-<a name="newCustomXmlPropertiesPart"></a>
-### func newCustomXmlPropertiesPart
-
-```go
-func newCustomXmlPropertiesPart(parent *CustomXmlPart) (*CustomXmlPropertiesPart, error)
-```
-
-newCustomXmlPropertiesPart creates a new custom XML properties part.
 
 <a name="CustomXmlPropertiesPart.GetStream"></a>
 ### func \(\*CustomXmlPropertiesPart\) GetStream
@@ -1461,6 +1492,15 @@ func (cp *CustomXmlPropertiesPart) SetProperties(props *elements.DatastoreItem) 
 ```
 
 SetProperties sets the properties element.
+
+<a name="CustomXmlPropertiesPart.initializeContent"></a>
+### func \(\*CustomXmlPropertiesPart\) initializeContent
+
+```go
+func (cp *CustomXmlPropertiesPart) initializeContent()
+```
+
+initializeContent sets up minimal custom XML properties content.
 
 <a name="CustomXmlPropertiesPart.unmarshal"></a>
 ### func \(\*CustomXmlPropertiesPart\) unmarshal

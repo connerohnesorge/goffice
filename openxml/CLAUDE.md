@@ -154,7 +154,7 @@ Open XML document element trees. This file contains generic utility functions fo
 
 All traversal functions return iter.Seq iterators for lazy evaluation and composition with Go's range\-over\-function syntax.
 
-processing. This includes element types, features, and validation infrastructure shared across all document types \(Word, Excel, PowerPoint\).
+Package openxml provides core infrastructure for Open Office XML document processing. This includes element types, features, and validation infrastructure shared across all document types \(Word, Excel, PowerPoint\).
 
 ### Element Types
 
@@ -335,6 +335,7 @@ document processing.
 - [type DataPartReferenceRelationship](<#DataPartReferenceRelationship>)
   - [func NewDataPartReferenceRelationship\(id, relType, target string, container OpenXmlPartContainer\) \*DataPartReferenceRelationship](<#NewDataPartReferenceRelationship>)
   - [func \(r \*DataPartReferenceRelationship\) Container\(\) OpenXmlPartContainer](<#DataPartReferenceRelationship.Container>)
+  - [func \(r \*DataPartReferenceRelationship\) GetPart\(\) \(OpenXmlPart, error\)](<#DataPartReferenceRelationship.GetPart>)
   - [func \(r \*DataPartReferenceRelationship\) ID\(\) string](<#DataPartReferenceRelationship.ID>)
   - [func \(r \*DataPartReferenceRelationship\) Target\(\) string](<#DataPartReferenceRelationship.Target>)
   - [func \(r \*DataPartReferenceRelationship\) TargetMode\(\) TargetMode](<#DataPartReferenceRelationship.TargetMode>)
@@ -350,10 +351,15 @@ document processing.
 - [type ExternalRelationship](<#ExternalRelationship>)
   - [func NewExternalRelationship\(id, relType, targetURI string, container OpenXmlPartContainer\) \*ExternalRelationship](<#NewExternalRelationship>)
   - [func \(r \*ExternalRelationship\) Container\(\) OpenXmlPartContainer](<#ExternalRelationship.Container>)
+  - [func \(r \*ExternalRelationship\) GetPart\(\) \(OpenXmlPart, error\)](<#ExternalRelationship.GetPart>)
   - [func \(r \*ExternalRelationship\) ID\(\) string](<#ExternalRelationship.ID>)
   - [func \(r \*ExternalRelationship\) Target\(\) string](<#ExternalRelationship.Target>)
   - [func \(r \*ExternalRelationship\) TargetMode\(\) TargetMode](<#ExternalRelationship.TargetMode>)
   - [func \(r \*ExternalRelationship\) Type\(\) string](<#ExternalRelationship.Type>)
+- [type ExternalTarget](<#ExternalTarget>)
+  - [func NewExternalTarget\(url string\) \*ExternalTarget](<#NewExternalTarget>)
+  - [func \(t \*ExternalTarget\) IsExternal\(\) bool](<#ExternalTarget.IsExternal>)
+  - [func \(t \*ExternalTarget\) URI\(\) string](<#ExternalTarget.URI>)
 - [type Fallback](<#Fallback>)
   - [func NewFallback\(\) \*Fallback](<#NewFallback>)
   - [func NewFallbackWithFeatures\(parentFeatures \*features.FeatureCollection\) \*Fallback](<#NewFallbackWithFeatures>)
@@ -366,6 +372,7 @@ document processing.
 - [type HyperlinkRelationship](<#HyperlinkRelationship>)
   - [func NewHyperlinkRelationship\(id, targetURI string, isExternal bool, container OpenXmlPartContainer\) \*HyperlinkRelationship](<#NewHyperlinkRelationship>)
   - [func \(r \*HyperlinkRelationship\) Container\(\) OpenXmlPartContainer](<#HyperlinkRelationship.Container>)
+  - [func \(r \*HyperlinkRelationship\) GetPart\(\) \(OpenXmlPart, error\)](<#HyperlinkRelationship.GetPart>)
   - [func \(r \*HyperlinkRelationship\) ID\(\) string](<#HyperlinkRelationship.ID>)
   - [func \(r \*HyperlinkRelationship\) IsExternal\(\) bool](<#HyperlinkRelationship.IsExternal>)
   - [func \(r \*HyperlinkRelationship\) Target\(\) string](<#HyperlinkRelationship.Target>)
@@ -374,6 +381,10 @@ document processing.
 - [type IFixedContentTypePart](<#IFixedContentTypePart>)
 - [type IRelationshipIDPart](<#IRelationshipIDPart>)
 - [type ISaveablePart](<#ISaveablePart>)
+- [type InternalTarget](<#InternalTarget>)
+  - [func NewInternalTarget\(part OpenXmlPart\) \*InternalTarget](<#NewInternalTarget>)
+  - [func \(t \*InternalTarget\) IsExternal\(\) bool](<#InternalTarget.IsExternal>)
+  - [func \(t \*InternalTarget\) URI\(\) string](<#InternalTarget.URI>)
 - [type LeafElement](<#LeafElement>)
 - [type LeafElementBase](<#LeafElementBase>)
   - [func NewLeafElement\(namespaceURI, localName, prefix string\) \*LeafElementBase](<#NewLeafElement>)
@@ -472,6 +483,7 @@ document processing.
 - [type PartRelationship](<#PartRelationship>)
   - [func NewPartRelationship\(id, relType string, target OpenXmlPart, container OpenXmlPartContainer\) \*PartRelationship](<#NewPartRelationship>)
   - [func \(r \*PartRelationship\) Container\(\) OpenXmlPartContainer](<#PartRelationship.Container>)
+  - [func \(r \*PartRelationship\) GetPart\(\) \(OpenXmlPart, error\)](<#PartRelationship.GetPart>)
   - [func \(r \*PartRelationship\) ID\(\) string](<#PartRelationship.ID>)
   - [func \(r \*PartRelationship\) Target\(\) string](<#PartRelationship.Target>)
   - [func \(r \*PartRelationship\) TargetMode\(\) TargetMode](<#PartRelationship.TargetMode>)
@@ -494,6 +506,8 @@ document processing.
 - [type RelationshipCloner](<#RelationshipCloner>)
   - [func NewRelationshipCloner\(options RelationshipCloneOptions\) \*RelationshipCloner](<#NewRelationshipCloner>)
   - [func \(c \*RelationshipCloner\) CloneRelationship\(rel OpenXmlRelationship, newContainer OpenXmlPartContainer\) \(OpenXmlRelationship, error\)](<#RelationshipCloner.CloneRelationship>)
+- [type RelationshipCollection](<#RelationshipCollection>)
+  - [func NewRelationshipCollection\(container OpenXmlPartContainer\) RelationshipCollection](<#NewRelationshipCollection>)
 - [type RelationshipGraph](<#RelationshipGraph>)
   - [func NewRelationshipGraph\(\) \*RelationshipGraph](<#NewRelationshipGraph>)
   - [func \(g \*RelationshipGraph\) AddDependency\(sourcePart, targetPart string\)](<#RelationshipGraph.AddDependency>)
@@ -517,6 +531,8 @@ document processing.
   - [func NewRelationshipPathFinder\(maxDepth int\) \*RelationshipPathFinder](<#NewRelationshipPathFinder>)
   - [func \(f \*RelationshipPathFinder\) FindPath\(source OpenXmlPartContainer, targetURI string\) \(\*RelationshipPath, error\)](<#RelationshipPathFinder.FindPath>)
   - [func \(f \*RelationshipPathFinder\) findPathRecursive\(container OpenXmlPartContainer, targetURI string, depth int, visited map\[string\]bool, path \*RelationshipPath\) bool](<#RelationshipPathFinder.findPathRecursive>)
+- [type RelationshipTarget](<#RelationshipTarget>)
+- [type RelationshipType](<#RelationshipType>)
 - [type RelationshipTypeInfo](<#RelationshipTypeInfo>)
   - [func GetRelationshipTypeInfo\(relType string\) \(RelationshipTypeInfo, bool\)](<#GetRelationshipTypeInfo>)
 - [type RelationshipValidator](<#RelationshipValidator>)
@@ -554,6 +570,7 @@ document processing.
   - [func \(xw \*XMLWriter\) WriteElementWithNamespaces\(elem Element, namespaces map\[string\]string\) error](<#XMLWriter.WriteElementWithNamespaces>)
 - [type baseRelationship](<#baseRelationship>)
   - [func \(r \*baseRelationship\) Container\(\) OpenXmlPartContainer](<#baseRelationship.Container>)
+  - [func \(r \*baseRelationship\) GetPart\(\) \(OpenXmlPart, error\)](<#baseRelationship.GetPart>)
   - [func \(r \*baseRelationship\) ID\(\) string](<#baseRelationship.ID>)
   - [func \(r \*baseRelationship\) Target\(\) string](<#baseRelationship.Target>)
   - [func \(r \*baseRelationship\) TargetMode\(\) TargetMode](<#baseRelationship.TargetMode>)
@@ -575,6 +592,12 @@ document processing.
   - [func \(\*packageFeature\) featureMarker\(\)](<#packageFeature.featureMarker>)
 - [type partError](<#partError>)
   - [func \(e partError\) Error\(\) string](<#partError.Error>)
+- [type relationshipCollection](<#relationshipCollection>)
+  - [func \(rc \*relationshipCollection\) Add\(relType RelationshipType, target RelationshipTarget\) \(OpenXmlRelationship, error\)](<#relationshipCollection.Add>)
+  - [func \(rc \*relationshipCollection\) All\(\) \[\]OpenXmlRelationship](<#relationshipCollection.All>)
+  - [func \(rc \*relationshipCollection\) GetByID\(id string\) \(OpenXmlRelationship, error\)](<#relationshipCollection.GetByID>)
+  - [func \(rc \*relationshipCollection\) GetByType\(relType RelationshipType\) \[\]OpenXmlRelationship](<#relationshipCollection.GetByType>)
+  - [func \(rc \*relationshipCollection\) Remove\(id string\) error](<#relationshipCollection.Remove>)
 
 
 ## Constants
@@ -1028,6 +1051,15 @@ var (
     ErrContentTypeMismatch = partError(
         "content type mismatch",
     )
+)
+```
+
+<a name="ErrRelationshipExternal"></a>Relationship errors.
+
+```go
+var (
+    ErrRelationshipExternal = errors.New("relationship targets external resource")
+    ErrRelationshipNotPart  = errors.New("relationship does not target a part")
 )
 ```
 
@@ -2225,6 +2257,15 @@ func (r *DataPartReferenceRelationship) Container() OpenXmlPartContainer
 
 Container returns the owning container.
 
+<a name="DataPartReferenceRelationship.GetPart"></a>
+### func \(\*DataPartReferenceRelationship\) GetPart
+
+```go
+func (r *DataPartReferenceRelationship) GetPart() (OpenXmlPart, error)
+```
+
+GetPart returns the target part.
+
 <a name="DataPartReferenceRelationship.ID"></a>
 ### func \(\*DataPartReferenceRelationship\) ID
 
@@ -2431,6 +2472,15 @@ func (r *ExternalRelationship) Container() OpenXmlPartContainer
 
 Container returns the owning container.
 
+<a name="ExternalRelationship.GetPart"></a>
+### func \(\*ExternalRelationship\) GetPart
+
+```go
+func (r *ExternalRelationship) GetPart() (OpenXmlPart, error)
+```
+
+GetPart returns error for external relationships.
+
 <a name="ExternalRelationship.ID"></a>
 ### func \(\*ExternalRelationship\) ID
 
@@ -2466,6 +2516,44 @@ func (r *ExternalRelationship) Type() string
 ```
 
 Type returns the relationship type URI.
+
+<a name="ExternalTarget"></a>
+## type ExternalTarget
+
+ExternalTarget represents a relationship to an external resource.
+
+```go
+type ExternalTarget struct {
+    URL string
+}
+```
+
+<a name="NewExternalTarget"></a>
+### func NewExternalTarget
+
+```go
+func NewExternalTarget(url string) *ExternalTarget
+```
+
+NewExternalTarget creates a new external target.
+
+<a name="ExternalTarget.IsExternal"></a>
+### func \(\*ExternalTarget\) IsExternal
+
+```go
+func (t *ExternalTarget) IsExternal() bool
+```
+
+IsExternal returns true for external targets.
+
+<a name="ExternalTarget.URI"></a>
+### func \(\*ExternalTarget\) URI
+
+```go
+func (t *ExternalTarget) URI() string
+```
+
+URI returns the external URL.
 
 <a name="Fallback"></a>
 ## type Fallback
@@ -2618,6 +2706,15 @@ func (r *HyperlinkRelationship) Container() OpenXmlPartContainer
 
 Container returns the owning container.
 
+<a name="HyperlinkRelationship.GetPart"></a>
+### func \(\*HyperlinkRelationship\) GetPart
+
+```go
+func (r *HyperlinkRelationship) GetPart() (OpenXmlPart, error)
+```
+
+GetPart returns error for hyperlinks unless they target a specific part which they usually don't. Internal hyperlinks target bookmarks in the same document.
+
 <a name="HyperlinkRelationship.ID"></a>
 ### func \(\*HyperlinkRelationship\) ID
 
@@ -2705,6 +2802,44 @@ type ISaveablePart interface {
     Save() error
 }
 ```
+
+<a name="InternalTarget"></a>
+## type InternalTarget
+
+InternalTarget represents a relationship to a part within the package.
+
+```go
+type InternalTarget struct {
+    Part OpenXmlPart
+}
+```
+
+<a name="NewInternalTarget"></a>
+### func NewInternalTarget
+
+```go
+func NewInternalTarget(part OpenXmlPart) *InternalTarget
+```
+
+NewInternalTarget creates a new internal target.
+
+<a name="InternalTarget.IsExternal"></a>
+### func \(\*InternalTarget\) IsExternal
+
+```go
+func (t *InternalTarget) IsExternal() bool
+```
+
+IsExternal returns false for internal targets.
+
+<a name="InternalTarget.URI"></a>
+### func \(\*InternalTarget\) URI
+
+```go
+func (t *InternalTarget) URI() string
+```
+
+URI returns the part URI.
 
 <a name="LeafElement"></a>
 ## type LeafElement
@@ -3709,6 +3844,10 @@ type OpenXmlRelationship interface {
 
     // Container returns the part or package that owns this relationship.
     Container() OpenXmlPartContainer
+
+    // GetPart returns the target part if the relationship targets a part.
+    // Returns error for external relationships or if the part is not found.
+    GetPart() (OpenXmlPart, error)
 }
 ```
 
@@ -3760,6 +3899,15 @@ func (r *PartRelationship) Container() OpenXmlPartContainer
 ```
 
 Container returns the owning container.
+
+<a name="PartRelationship.GetPart"></a>
+### func \(\*PartRelationship\) GetPart
+
+```go
+func (r *PartRelationship) GetPart() (OpenXmlPart, error)
+```
+
+GetPart returns the target part.
 
 <a name="PartRelationship.ID"></a>
 ### func \(\*PartRelationship\) ID
@@ -4010,6 +4158,39 @@ func (c *RelationshipCloner) CloneRelationship(rel OpenXmlRelationship, newConta
 
 CloneRelationship creates a copy of a relationship with optional ID remapping.
 
+<a name="RelationshipCollection"></a>
+## type RelationshipCollection
+
+RelationshipCollection manages a collection of relationships.
+
+```go
+type RelationshipCollection interface {
+    // Add adds a new relationship to the collection.
+    Add(relType RelationshipType, target RelationshipTarget) (OpenXmlRelationship, error)
+
+    // Remove removes a relationship by ID.
+    Remove(id string) error
+
+    // GetByID returns a relationship by ID.
+    GetByID(id string) (OpenXmlRelationship, error)
+
+    // GetByType returns all relationships of the given type.
+    GetByType(relType RelationshipType) []OpenXmlRelationship
+
+    // All returns all relationships in the collection.
+    All() []OpenXmlRelationship
+}
+```
+
+<a name="NewRelationshipCollection"></a>
+### func NewRelationshipCollection
+
+```go
+func NewRelationshipCollection(container OpenXmlPartContainer) RelationshipCollection
+```
+
+NewRelationshipCollection creates a new relationship collection.
+
 <a name="RelationshipGraph"></a>
 ## type RelationshipGraph
 
@@ -4228,6 +4409,29 @@ func (f *RelationshipPathFinder) findPathRecursive(container OpenXmlPartContaine
 ```
 
 findPathRecursive performs DFS to find a path.
+
+<a name="RelationshipTarget"></a>
+## type RelationshipTarget
+
+RelationshipTarget represents the target of a relationship.
+
+```go
+type RelationshipTarget interface {
+    // URI returns the target URI.
+    URI() string
+    // IsExternal returns true if the target is external.
+    IsExternal() bool
+}
+```
+
+<a name="RelationshipType"></a>
+## type RelationshipType
+
+RelationshipType identifies the kind of relationship.
+
+```go
+type RelationshipType string
+```
 
 <a name="RelationshipTypeInfo"></a>
 ## type RelationshipTypeInfo
@@ -4598,6 +4802,15 @@ func (r *baseRelationship) Container() OpenXmlPartContainer
 
 Container returns the owning container.
 
+<a name="baseRelationship.GetPart"></a>
+### func \(\*baseRelationship\) GetPart
+
+```go
+func (r *baseRelationship) GetPart() (OpenXmlPart, error)
+```
+
+GetPart returns the target part.
+
 <a name="baseRelationship.ID"></a>
 ### func \(\*baseRelationship\) ID
 
@@ -4798,6 +5011,65 @@ type partError string
 
 ```go
 func (e partError) Error() string
+```
+
+
+
+<a name="relationshipCollection"></a>
+## type relationshipCollection
+
+
+
+```go
+type relationshipCollection struct {
+    mu        sync.RWMutex
+    rels      map[string]OpenXmlRelationship
+    container OpenXmlPartContainer
+    idGen     *RelationshipIDGenerator
+}
+```
+
+<a name="relationshipCollection.Add"></a>
+### func \(\*relationshipCollection\) Add
+
+```go
+func (rc *relationshipCollection) Add(relType RelationshipType, target RelationshipTarget) (OpenXmlRelationship, error)
+```
+
+
+
+<a name="relationshipCollection.All"></a>
+### func \(\*relationshipCollection\) All
+
+```go
+func (rc *relationshipCollection) All() []OpenXmlRelationship
+```
+
+
+
+<a name="relationshipCollection.GetByID"></a>
+### func \(\*relationshipCollection\) GetByID
+
+```go
+func (rc *relationshipCollection) GetByID(id string) (OpenXmlRelationship, error)
+```
+
+
+
+<a name="relationshipCollection.GetByType"></a>
+### func \(\*relationshipCollection\) GetByType
+
+```go
+func (rc *relationshipCollection) GetByType(relType RelationshipType) []OpenXmlRelationship
+```
+
+
+
+<a name="relationshipCollection.Remove"></a>
+### func \(\*relationshipCollection\) Remove
+
+```go
+func (rc *relationshipCollection) Remove(id string) error
 ```
 
 

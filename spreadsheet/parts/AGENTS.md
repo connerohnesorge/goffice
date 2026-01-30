@@ -6,7 +6,7 @@
 import "github.com/connerohnesorge/goffice/spreadsheet/parts"
 ```
 
-This file implements the extended chart part \(Office 2016\+\).
+Package parts implements various OpenXML part types.
 
 Package parts provides Excel document part types.
 
@@ -247,11 +247,9 @@ Part operations should be performed through the parent workbook's thread\-safe A
   - [func \(ccp \*CalculationChainPart\) GetStream\(\) io.Reader](<#CalculationChainPart.GetStream>)
   - [func \(ccp \*CalculationChainPart\) initializeContent\(\)](<#CalculationChainPart.initializeContent>)
 - [type ChartExPart](<#ChartExPart>)
-  - [func newChartExPart\(drawingsPart \*DrawingsPart, uri string\) \(\*ChartExPart, error\)](<#newChartExPart>)
   - [func \(cp \*ChartExPart\) ChartSpace\(\) \*drawingml.ChartSpaceEx](<#ChartExPart.ChartSpace>)
   - [func \(\*ChartExPart\) FixedContentType\(\) string](<#ChartExPart.FixedContentType>)
   - [func \(cp \*ChartExPart\) GetStream\(\) io.Reader](<#ChartExPart.GetStream>)
-  - [func \(cp \*ChartExPart\) initializeContent\(\)](<#ChartExPart.initializeContent>)
 - [type ChartPart](<#ChartPart>)
   - [func newChartPart\(drawingsPart \*DrawingsPart, uri string\) \(\*ChartPart, error\)](<#newChartPart>)
   - [func \(cp \*ChartPart\) ChartSpace\(\) \*drawingml.ChartSpace](<#ChartPart.ChartSpace>)
@@ -1247,7 +1245,7 @@ addChildPart is a helper to add a child part with the appropriate relationship.
 func init()
 ```
 
-Register the DrawingsPart type.
+Register image content types.
 
 <a name="CalculationChainPart"></a>
 ## type CalculationChainPart
@@ -1316,15 +1314,6 @@ type ChartExPart struct {
 }
 ```
 
-<a name="newChartExPart"></a>
-### func newChartExPart
-
-```go
-func newChartExPart(drawingsPart *DrawingsPart, uri string) (*ChartExPart, error)
-```
-
-newChartExPart creates a new extended chart part.
-
 <a name="ChartExPart.ChartSpace"></a>
 ### func \(\*ChartExPart\) ChartSpace
 
@@ -1351,15 +1340,6 @@ func (cp *ChartExPart) GetStream() io.Reader
 ```
 
 GetStream returns a reader for the part content.
-
-<a name="ChartExPart.initializeContent"></a>
-### func \(\*ChartExPart\) initializeContent
-
-```go
-func (cp *ChartExPart) initializeContent()
-```
-
-initializeContent sets up minimal extended chart content.
 
 <a name="ChartPart"></a>
 ## type ChartPart

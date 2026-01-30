@@ -11,19 +11,17 @@ stop:
     - run: "spectr validate --all"
       showStdout: true
       message: "Spec validation failed"
-      maxOutputLines: 100
-      timeout: 300
     - run: "nix develop --command 'tests'"
       showStdout: false
       message: "Tests (nix develop --command 'tests') failed. Fix them, DON'T skip or ignore them."
-      maxOutputLines: 100
-      timeout: 599
     - run: "nix develop --command 'lint'"
       showStdout: false
       showCommand: true
       message: "Linting failed. Fix the linting errors."
-      maxOutputLines: 100
-      timeout: 599
+    - run: "go generate ./..."
+      showStdout: false
+      message: "go generate ./... failed. Fix the linting errors."
+      showCommand: true
   # Example:
   # - run: "npm test"
   #   showStdout: true

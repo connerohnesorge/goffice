@@ -6,6 +6,8 @@
 import "github.com/connerohnesorge/goffice/presentation"
 ```
 
+Package presentation provides a fluent API for creating and modifying PowerPoint presentations.
+
 Package presentation provides PresentationML support for PowerPoint documents.
 
 This package implements the document\-level API for creating, reading, and modifying .pptx files \(and related formats like .potx, .ppsx, .pptm, .potm, .ppsm, .ppam\).
@@ -813,12 +815,19 @@ Document is valid
 
 - [Constants](<#constants>)
 - [Variables](<#variables>)
+- [func LinkGraphicFrameToTable\(gf \*elements.GraphicFrame, tbl \*drawtable.Table\)](<#LinkGraphicFrameToTable>)
 - [func applyHTMLToTextBody\(tb \*drawingml.TextBody, n \*html.Node, relFn func\(string\) string\)](<#applyHTMLToTextBody>)
+- [func applyListFormatting\(p \*drawingml.TextParagraph, level int, listType string\)](<#applyListFormatting>)
+- [func createRelFn\(slide \*parts.SlidePart\) func\(string\) string](<#createRelFn>)
+- [func findTableNode\(n \*html.Node\) \*html.Node](<#findTableNode>)
 - [func getAudioFormatFromContentType\(contentType string\) string](<#getAudioFormatFromContentType>)
 - [func getFormatFromContentType\(contentType string\) string](<#getFormatFromContentType>)
-- [func getText\(n \*html.Node\) string](<#getText>)
+- [func getHref\(n \*html.Node, relFn func\(string\) string\) string](<#getHref>)
+- [func handleElementNode\(tb \*drawingml.TextBody, p \*\*drawingml.TextParagraph, n \*html.Node, bold, italic, underline bool, level int, listType string, linkId string, relFn func\(string\) string, f func\(\*html.Node, bool, bool, bool, int, string, string\)\)](<#handleElementNode>)
+- [func handleTextNode\(p \*drawingml.TextParagraph, n \*html.Node, bold, italic, underline bool, linkId string\)](<#handleTextNode>)
 - [func isAudioFormatSupported\(contentType string\) bool](<#isAudioFormatSupported>)
 - [func isFormatSupported\(contentType string\) bool](<#isFormatSupported>)
+- [func parseHTMLRows\(tableNode \*html.Node\) \[\]\[\]\*html.Node](<#parseHTMLRows>)
 - [func parseRowNodes\(n \*html.Node\) \[\]\*html.Node](<#parseRowNodes>)
 - [type AddAudioOptions](<#AddAudioOptions>)
   - [func DefaultAddAudioOptions\(\) \*AddAudioOptions](<#DefaultAddAudioOptions>)
@@ -867,7 +876,7 @@ Document is valid
   - [func \(d \*Document\) GetSlide\(index int\) \(\*parts.SlidePart, error\)](<#Document.GetSlide>)
   - [func \(d \*Document\) GetVideos\(\) \[\]parts.MediaPart](<#Document.GetVideos>)
   - [func \(d \*Document\) ImportHTMLTable\(slideIndex int, htmlStr string\) \(\*Table, error\)](<#Document.ImportHTMLTable>)
-  - [func \(d \*Document\) ImportHTMLText\(slideIndex int, x, y, w, h float64, htmlStr string\) \(\*elements.Shape, error\)](<#Document.ImportHTMLText>)
+  - [func \(d \*Document\) ImportHTMLText\(slideIndex int, rect HTMLRect, htmlStr string\) \(\*elements.Shape, error\)](<#Document.ImportHTMLText>)
   - [func \(d \*Document\) IsEditable\(\) bool](<#Document.IsEditable>)
   - [func \(d \*Document\) IsValid\(version validation.FileFormatVersions\) bool](<#Document.IsValid>)
   - [func \(d \*Document\) Package\(\) \*openxml.OpenXmlPackage](<#Document.Package>)
@@ -888,6 +897,7 @@ Document is valid
   - [func \(d \*Document\) detectDocumentType\(\)](<#Document.detectDocumentType>)
   - [func \(d \*Document\) initializeDocument\(\) error](<#Document.initializeDocument>)
 - [type FileFormatVersion](<#FileFormatVersion>)
+- [type HTMLRect](<#HTMLRect>)
 - [type MarkupCompatibilityProcessSettings](<#MarkupCompatibilityProcessSettings>)
 - [type OpenSettings](<#OpenSettings>)
   - [func DefaultOpenSettings\(\) \*OpenSettings](<#DefaultOpenSettings>)
@@ -907,10 +917,10 @@ Document is valid
   - [func \(rb \*RunBuilder\) Paragraph\(\) \*ParagraphBuilder](<#RunBuilder.Paragraph>)
   - [func \(rb \*RunBuilder\) Size\(size int\) \*RunBuilder](<#RunBuilder.Size>)
 - [type ShapeBuilder](<#ShapeBuilder>)
-  - [func \(shb \*ShapeBuilder\) AddParagraph\(text string\) \*ParagraphBuilder](<#ShapeBuilder.AddParagraph>)
-  - [func \(shb \*ShapeBuilder\) SetType\(shapeType drawingml.ShapeTypeValue\) \*ShapeBuilder](<#ShapeBuilder.SetType>)
-  - [func \(shb \*ShapeBuilder\) Shape\(\) \*elements.Shape](<#ShapeBuilder.Shape>)
-  - [func \(shb \*ShapeBuilder\) Slide\(\) \*SlideBuilder](<#ShapeBuilder.Slide>)
+  - [func \(sh \*ShapeBuilder\) AddParagraph\(text string\) \*ParagraphBuilder](<#ShapeBuilder.AddParagraph>)
+  - [func \(sh \*ShapeBuilder\) SetType\(shapeType drawingml.ShapeTypeValue\) \*ShapeBuilder](<#ShapeBuilder.SetType>)
+  - [func \(sh \*ShapeBuilder\) Shape\(\) \*elements.Shape](<#ShapeBuilder.Shape>)
+  - [func \(sh \*ShapeBuilder\) Slide\(\) \*SlideBuilder](<#ShapeBuilder.Slide>)
 - [type SlideBuilder](<#SlideBuilder>)
   - [func \(sb \*SlideBuilder\) AddShape\(\) \*ShapeBuilder](<#SlideBuilder.AddShape>)
   - [func \(sb \*SlideBuilder\) AddTitle\(text string\) \*SlideBuilder](<#SlideBuilder.AddTitle>)
@@ -1119,11 +1129,47 @@ var (
 var _ io.Closer = (*Document)(nil)
 ```
 
+<a name="LinkGraphicFrameToTable"></a>
+## func LinkGraphicFrameToTable
+
+```go
+func LinkGraphicFrameToTable(gf *elements.GraphicFrame, tbl *drawtable.Table)
+```
+
+LinkGraphicFrameToTable sets up a GraphicFrame to contain a table. This creates the proper \<a:graphic\>\<a:graphicData\> structure with the table element.
+
 <a name="applyHTMLToTextBody"></a>
 ## func applyHTMLToTextBody
 
 ```go
 func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string) string)
+```
+
+
+
+<a name="applyListFormatting"></a>
+## func applyListFormatting
+
+```go
+func applyListFormatting(p *drawingml.TextParagraph, level int, listType string)
+```
+
+
+
+<a name="createRelFn"></a>
+## func createRelFn
+
+```go
+func createRelFn(slide *parts.SlidePart) func(string) string
+```
+
+
+
+<a name="findTableNode"></a>
+## func findTableNode
+
+```go
+func findTableNode(n *html.Node) *html.Node
 ```
 
 
@@ -1146,11 +1192,29 @@ func getFormatFromContentType(contentType string) string
 
 Helper function to get format name from content type.
 
-<a name="getText"></a>
-## func getText
+<a name="getHref"></a>
+## func getHref
 
 ```go
-func getText(n *html.Node) string
+func getHref(n *html.Node, relFn func(string) string) string
+```
+
+
+
+<a name="handleElementNode"></a>
+## func handleElementNode
+
+```go
+func handleElementNode(tb *drawingml.TextBody, p **drawingml.TextParagraph, n *html.Node, bold, italic, underline bool, level int, listType string, linkId string, relFn func(string) string, f func(*html.Node, bool, bool, bool, int, string, string))
+```
+
+
+
+<a name="handleTextNode"></a>
+## func handleTextNode
+
+```go
+func handleTextNode(p *drawingml.TextParagraph, n *html.Node, bold, italic, underline bool, linkId string)
 ```
 
 
@@ -1172,6 +1236,15 @@ func isFormatSupported(contentType string) bool
 ```
 
 Helper function to check if format is supported.
+
+<a name="parseHTMLRows"></a>
+## func parseHTMLRows
+
+```go
+func parseHTMLRows(tableNode *html.Node) [][]*html.Node
+```
+
+
 
 <a name="parseRowNodes"></a>
 ## func parseRowNodes
@@ -1238,16 +1311,13 @@ DefaultAddVideoOptions returns default options for adding videos.
 <a name="Audio"></a>
 ## type Audio
 
-
+Audio represents an audio shape on a slide with a fluent API.
 
 ```go
 type Audio struct {
     slide *parts.SlidePart
-
-    part parts.MediaPart
-
-    pic *elements.Picture
-
+    part  parts.MediaPart
+    pic   *elements.Picture
     props elements.MediaProperties
 }
 ```
@@ -1259,7 +1329,7 @@ type Audio struct {
 func (a *Audio) SetLoop(loop bool) *Audio
 ```
 
-
+SetLoop sets whether the audio loops.
 
 <a name="Audio.SetMuted"></a>
 ### func \(\*Audio\) SetMuted
@@ -1268,7 +1338,7 @@ func (a *Audio) SetLoop(loop bool) *Audio
 func (a *Audio) SetMuted(muted bool) *Audio
 ```
 
-
+SetMuted sets whether the audio is muted.
 
 <a name="Audio.SetPosition"></a>
 ### func \(\*Audio\) SetPosition
@@ -1277,7 +1347,7 @@ func (a *Audio) SetMuted(muted bool) *Audio
 func (a *Audio) SetPosition(x, y int) *Audio
 ```
 
-
+SetPosition sets the position of the audio icon in EMUs.
 
 <a name="Audio.SetSize"></a>
 ### func \(\*Audio\) SetSize
@@ -1286,7 +1356,7 @@ func (a *Audio) SetPosition(x, y int) *Audio
 func (a *Audio) SetSize(w, h int) *Audio
 ```
 
-
+SetSize sets the size of the audio icon in EMUs.
 
 <a name="Audio.SetVolume"></a>
 ### func \(\*Audio\) SetVolume
@@ -1295,7 +1365,7 @@ func (a *Audio) SetSize(w, h int) *Audio
 func (a *Audio) SetVolume(vol int) *Audio
 ```
 
-
+SetVolume sets the audio volume \(0\-100000\).
 
 <a name="Audio.applyProps"></a>
 ### func \(\*Audio\) applyProps
@@ -1482,7 +1552,7 @@ OpenWithSettings opens a PowerPoint presentation with custom settings.
 func (d *Document) AddAudio(slideIndex int, filePath string) (*Audio, error)
 ```
 
-
+AddAudio adds an audio to the specified slide.
 
 <a name="Document.AddAudioFromBytes"></a>
 ### func \(\*Document\) AddAudioFromBytes
@@ -1563,7 +1633,7 @@ AddTheme adds a theme to the presentation. Returns the newly created ThemePart.
 func (d *Document) AddVideo(slideIndex int, filePath string) (*Video, error)
 ```
 
-
+AddVideo adds a video to the specified slide.
 
 <a name="Document.AddVideoFromBytes"></a>
 ### func \(\*Document\) AddVideoFromBytes
@@ -1686,7 +1756,7 @@ ImportHTMLTable imports an HTML table into the specified slide.
 ### func \(\*Document\) ImportHTMLText
 
 ```go
-func (d *Document) ImportHTMLText(slideIndex int, x, y, w, h float64, htmlStr string) (*elements.Shape, error)
+func (d *Document) ImportHTMLText(slideIndex int, rect HTMLRect, htmlStr string) (*elements.Shape, error)
 ```
 
 ImportHTMLText imports an HTML string into a text shape on the specified slide.
@@ -1898,6 +1968,17 @@ const (
 )
 ```
 
+<a name="HTMLRect"></a>
+## type HTMLRect
+
+HTMLRect defines a rectangle for HTML text import.
+
+```go
+type HTMLRect struct {
+    X, Y, W, H float64
+}
+```
+
 <a name="MarkupCompatibilityProcessSettings"></a>
 ## type MarkupCompatibilityProcessSettings
 
@@ -1973,11 +2054,11 @@ WithTargetVersion returns a copy of the settings with the target version.
 <a name="ParagraphBuilder"></a>
 ## type ParagraphBuilder
 
-
+ParagraphBuilder provides a fluent API for building paragraphs.
 
 ```go
 type ParagraphBuilder struct {
-    shb *ShapeBuilder
+    sh  *ShapeBuilder
     p   *drawingml.TextParagraph
 }
 ```
@@ -1989,7 +2070,7 @@ type ParagraphBuilder struct {
 func (pb *ParagraphBuilder) AddRun(text string) *RunBuilder
 ```
 
-
+AddRun adds a new text run to the paragraph and returns a RunBuilder.
 
 <a name="ParagraphBuilder.Shape"></a>
 ### func \(\*ParagraphBuilder\) Shape
@@ -1998,12 +2079,12 @@ func (pb *ParagraphBuilder) AddRun(text string) *RunBuilder
 func (pb *ParagraphBuilder) Shape() *ShapeBuilder
 ```
 
-
+Shape returns the parent ShapeBuilder.
 
 <a name="PresentationBuilder"></a>
 ## type PresentationBuilder
 
-
+PresentationBuilder provides a fluent API for building presentations.
 
 ```go
 type PresentationBuilder struct {
@@ -2019,7 +2100,7 @@ type PresentationBuilder struct {
 func NewPresentationBuilder() *PresentationBuilder
 ```
 
-
+NewPresentationBuilder creates a new PresentationBuilder.
 
 <a name="PresentationBuilder.AddSlide"></a>
 ### func \(\*PresentationBuilder\) AddSlide
@@ -2028,7 +2109,7 @@ func NewPresentationBuilder() *PresentationBuilder
 func (pb *PresentationBuilder) AddSlide() *SlideBuilder
 ```
 
-
+AddSlide adds a new slide to the presentation and returns a SlideBuilder.
 
 <a name="PresentationBuilder.Build"></a>
 ### func \(\*PresentationBuilder\) Build
@@ -2037,7 +2118,7 @@ func (pb *PresentationBuilder) AddSlide() *SlideBuilder
 func (pb *PresentationBuilder) Build() (*Document, error)
 ```
 
-
+Build returns the constructed Document or the first error encountered.
 
 <a name="ProcessMode"></a>
 ## type ProcessMode
@@ -2066,7 +2147,7 @@ const (
 <a name="RunBuilder"></a>
 ## type RunBuilder
 
-
+RunBuilder provides a fluent API for building text runs.
 
 ```go
 type RunBuilder struct {
@@ -2082,7 +2163,7 @@ type RunBuilder struct {
 func (rb *RunBuilder) Bold(bold bool) *RunBuilder
 ```
 
-
+Bold sets the bold property of the text run.
 
 <a name="RunBuilder.Paragraph"></a>
 ### func \(\*RunBuilder\) Paragraph
@@ -2091,7 +2172,7 @@ func (rb *RunBuilder) Bold(bold bool) *RunBuilder
 func (rb *RunBuilder) Paragraph() *ParagraphBuilder
 ```
 
-
+Paragraph returns the parent ParagraphBuilder.
 
 <a name="RunBuilder.Size"></a>
 ### func \(\*RunBuilder\) Size
@@ -2100,12 +2181,12 @@ func (rb *RunBuilder) Paragraph() *ParagraphBuilder
 func (rb *RunBuilder) Size(size int) *RunBuilder
 ```
 
-
+Size sets the font size of the text run.
 
 <a name="ShapeBuilder"></a>
 ## type ShapeBuilder
 
-
+ShapeBuilder provides a fluent API for building shapes.
 
 ```go
 type ShapeBuilder struct {
@@ -2118,42 +2199,42 @@ type ShapeBuilder struct {
 ### func \(\*ShapeBuilder\) AddParagraph
 
 ```go
-func (shb *ShapeBuilder) AddParagraph(text string) *ParagraphBuilder
+func (sh *ShapeBuilder) AddParagraph(text string) *ParagraphBuilder
 ```
 
-
+AddParagraph adds a new paragraph to the shape and returns a ParagraphBuilder.
 
 <a name="ShapeBuilder.SetType"></a>
 ### func \(\*ShapeBuilder\) SetType
 
 ```go
-func (shb *ShapeBuilder) SetType(shapeType drawingml.ShapeTypeValue) *ShapeBuilder
+func (sh *ShapeBuilder) SetType(shapeType drawingml.ShapeTypeValue) *ShapeBuilder
 ```
 
-
+SetType sets the shape type.
 
 <a name="ShapeBuilder.Shape"></a>
 ### func \(\*ShapeBuilder\) Shape
 
 ```go
-func (shb *ShapeBuilder) Shape() *elements.Shape
+func (sh *ShapeBuilder) Shape() *elements.Shape
 ```
 
-
+Shape returns the underlying shape element.
 
 <a name="ShapeBuilder.Slide"></a>
 ### func \(\*ShapeBuilder\) Slide
 
 ```go
-func (shb *ShapeBuilder) Slide() *SlideBuilder
+func (sh *ShapeBuilder) Slide() *SlideBuilder
 ```
 
-
+Slide returns the parent SlideBuilder.
 
 <a name="SlideBuilder"></a>
 ## type SlideBuilder
 
-
+SlideBuilder provides a fluent API for building slides.
 
 ```go
 type SlideBuilder struct {
@@ -2169,7 +2250,7 @@ type SlideBuilder struct {
 func (sb *SlideBuilder) AddShape() *ShapeBuilder
 ```
 
-
+AddShape adds a new shape to the slide and returns a ShapeBuilder.
 
 <a name="SlideBuilder.AddTitle"></a>
 ### func \(\*SlideBuilder\) AddTitle
@@ -2178,7 +2259,7 @@ func (sb *SlideBuilder) AddShape() *ShapeBuilder
 func (sb *SlideBuilder) AddTitle(text string) *SlideBuilder
 ```
 
-
+AddTitle adds a title shape to the slide with the specified text.
 
 <a name="SlideBuilder.Presentation"></a>
 ### func \(\*SlideBuilder\) Presentation
@@ -2187,7 +2268,7 @@ func (sb *SlideBuilder) AddTitle(text string) *SlideBuilder
 func (sb *SlideBuilder) Presentation() *PresentationBuilder
 ```
 
-
+Presentation returns the parent PresentationBuilder.
 
 <a name="SlideBuilder.SlidePart"></a>
 ### func \(\*SlideBuilder\) SlidePart
@@ -2196,7 +2277,7 @@ func (sb *SlideBuilder) Presentation() *PresentationBuilder
 func (sb *SlideBuilder) SlidePart() *parts.SlidePart
 ```
 
-
+SlidePart returns the underlying slide part.
 
 <a name="Table"></a>
 ## type Table
@@ -2422,16 +2503,13 @@ TextBody returns the underlying DrawingML TextBody for advanced formatting.
 <a name="Video"></a>
 ## type Video
 
-
+Video represents a video shape on a slide with a fluent API.
 
 ```go
 type Video struct {
     slide *parts.SlidePart
-
-    part parts.MediaPart
-
-    pic *elements.Picture
-
+    part  parts.MediaPart
+    pic   *elements.Picture
     props elements.MediaProperties
 }
 ```
@@ -2443,7 +2521,7 @@ type Video struct {
 func (v *Video) SetAutoStart(auto bool) *Video
 ```
 
-
+SetAutoStart sets whether the video starts automatically.
 
 <a name="Video.SetLoop"></a>
 ### func \(\*Video\) SetLoop
@@ -2452,7 +2530,7 @@ func (v *Video) SetAutoStart(auto bool) *Video
 func (v *Video) SetLoop(loop bool) *Video
 ```
 
-
+SetLoop sets whether the video loops.
 
 <a name="Video.SetMuted"></a>
 ### func \(\*Video\) SetMuted
@@ -2461,7 +2539,7 @@ func (v *Video) SetLoop(loop bool) *Video
 func (v *Video) SetMuted(muted bool) *Video
 ```
 
-
+SetMuted sets whether the video is muted.
 
 <a name="Video.SetPosition"></a>
 ### func \(\*Video\) SetPosition
@@ -2470,7 +2548,7 @@ func (v *Video) SetMuted(muted bool) *Video
 func (v *Video) SetPosition(x, y int) *Video
 ```
 
-
+SetPosition sets the position of the video in EMUs.
 
 <a name="Video.SetPoster"></a>
 ### func \(\*Video\) SetPoster
@@ -2479,7 +2557,7 @@ func (v *Video) SetPosition(x, y int) *Video
 func (v *Video) SetPoster(img *parts.ImagePart) *Video
 ```
 
-
+SetPoster sets the poster image for the video.
 
 <a name="Video.SetSize"></a>
 ### func \(\*Video\) SetSize
@@ -2488,7 +2566,7 @@ func (v *Video) SetPoster(img *parts.ImagePart) *Video
 func (v *Video) SetSize(w, h int) *Video
 ```
 
-
+SetSize sets the size of the video in EMUs.
 
 <a name="Video.SetVolume"></a>
 ### func \(\*Video\) SetVolume
@@ -2497,7 +2575,7 @@ func (v *Video) SetSize(w, h int) *Video
 func (v *Video) SetVolume(vol int) *Video
 ```
 
-
+SetVolume sets the video volume \(0\-100000\).
 
 <a name="Video.applyProps"></a>
 ### func \(\*Video\) applyProps

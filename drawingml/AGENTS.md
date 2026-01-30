@@ -6,7 +6,7 @@
 import "github.com/connerohnesorge/goffice/drawingml"
 ```
 
-and effects.
+Package drawingml implements chart types and effects.
 
 This file implements chart types for the DrawingML Chart namespace \(c:\).
 
@@ -22,17 +22,17 @@ and effects.
 
 This file implements chart element types \(Title, Legend, DataLabels, etc.\).
 
-and effects.
+Package drawingml provides chart enumeration types and effects.
 
 This file contains chart enumeration types used across chart files.
 
-This file implements extended chart types \(Office 2016\+\).
+Package drawingml implements extended chart types \(Office 2016\+\).
 
-and effects.
+Package drawingml implements chart series types and effects.
 
 This file implements chart series types.
 
-and effects.
+Package drawingml provides shared DrawingML types for shapes, images, charts, diagrams, and effects used across Office Open XML documents.
 
 This file implements chart type structs \(BarChart, LineChart, etc.\).
 
@@ -67,7 +67,9 @@ DrawingML defines several XML namespaces for different aspects of drawing:
 - SpreadsheetDrawing \(xdr:\) \- Drawing positioning in Excel
 - ChartDrawing \(cdr:\) \- Drawing in charts
 
-and effects. DrawingML \(Drawing Markup Language\) is the common drawing specification used across Office Open XML documents for charts, diagrams, and graphical content.
+Package drawingml provides shared DrawingML types for shapes, images, charts, diagrams, and effects.
+
+DrawingML \(Drawing Markup Language\) is the common drawing specification used across Office Open XML documents for charts, diagrams, and graphical content.
 
 and effects.
 
@@ -105,12 +107,14 @@ and effects.
 - [func GetImageDimensionsFromReader\(r io.Reader\) \(width, height int, err error\)](<#GetImageDimensionsFromReader>)
 - [func GetNamespaceForPrefix\(prefix string\) string](<#GetNamespaceForPrefix>)
 - [func GetPrefixForNamespace\(namespaceURI string\) string](<#GetPrefixForNamespace>)
+- [func GetPresetColorHex\(pcv PresetColorValue\) string](<#GetPresetColorHex>)
 - [func ImageExtension\(contentType string\) string](<#ImageExtension>)
 - [func IsRTL\(text string\) bool](<#IsRTL>)
 - [func PercentToUnits\(percent float64\) int](<#PercentToUnits>)
 - [func UnitsToPercent\(units int\) float64](<#UnitsToPercent>)
 - [func colorToHex\(r, g, b uint8\) string](<#colorToHex>)
 - [func formatUint32\(val uint32\) string](<#formatUint32>)
+- [func wrapCompositeElement\(elem openxml.Element\) \*openxml.CompositeElementBase](<#wrapCompositeElement>)
 - [type AlphaBiLevelEffect](<#AlphaBiLevelEffect>)
   - [func NewAlphaBiLevelEffect\(thresh int\) \*AlphaBiLevelEffect](<#NewAlphaBiLevelEffect>)
   - [func \(a \*AlphaBiLevelEffect\) SetThreshold\(thresh int\)](<#AlphaBiLevelEffect.SetThreshold>)
@@ -310,10 +314,16 @@ and effects.
 - [type ChartText](<#ChartText>)
   - [func NewChartText\(name string\) \*ChartText](<#NewChartText>)
   - [func \(ct \*ChartText\) Clone\(\) openxml.Element](<#ChartText.Clone>)
+- [type ColorScheme](<#ColorScheme>)
+  - [func NewColorScheme\(name string\) \*ColorScheme](<#NewColorScheme>)
+  - [func \(cs \*ColorScheme\) ResolveColor\(colorName SchemeColorValue\) string](<#ColorScheme.ResolveColor>)
+  - [func \(cs \*ColorScheme\) SetColor\(name string, color openxml.Element\)](<#ColorScheme.SetColor>)
+  - [func \(cs \*ColorScheme\) SetSrgbColor\(name, hexColor string\)](<#ColorScheme.SetSrgbColor>)
+  - [func \(cs \*ColorScheme\) SetSysColor\(name string, sysColor SystemColorValue, lastColor string\)](<#ColorScheme.SetSysColor>)
 - [type ColorTransformationType](<#ColorTransformationType>)
 - [type CompoundLineValue](<#CompoundLineValue>)
 - [type Connection](<#Connection>)
-  - [func NewConnection\(name string, id string, idx int\) \*Connection](<#NewConnection>)
+  - [func NewConnection\(name, id string, idx int\) \*Connection](<#NewConnection>)
   - [func \(c \*Connection\) Id\(\) string](<#Connection.Id>)
   - [func \(c \*Connection\) Index\(\) int](<#Connection.Index>)
   - [func \(c \*Connection\) SetId\(id string\)](<#Connection.SetId>)
@@ -447,6 +457,8 @@ and effects.
   - [func \(e \*EffectList\) SetReflection\(reflection \*Reflection\)](<#EffectList.SetReflection>)
   - [func \(e \*EffectList\) SetSoftEdge\(softEdge \*SoftEdge\)](<#EffectList.SetSoftEdge>)
   - [func \(e \*EffectList\) SoftEdge\(\) \*SoftEdge](<#EffectList.SoftEdge>)
+- [type EffectStyleList](<#EffectStyleList>)
+  - [func NewEffectStyleList\(\) \*EffectStyleList](<#NewEffectStyleList>)
 - [type ErrorBars](<#ErrorBars>)
   - [func NewErrorBars\(\) \*ErrorBars](<#NewErrorBars>)
   - [func \(e \*ErrorBars\) Clone\(\) openxml.Element](<#ErrorBars.Clone>)
@@ -465,6 +477,10 @@ and effects.
   - [func \(e Extent\) ScaleToHeight\(height EMU\) Extent](<#Extent.ScaleToHeight>)
   - [func \(e Extent\) ScaleToWidth\(width EMU\) Extent](<#Extent.ScaleToWidth>)
   - [func \(e Extent\) Width\(\) EMU](<#Extent.Width>)
+- [type ExtraColorScheme](<#ExtraColorScheme>)
+  - [func NewExtraColorScheme\(\) \*ExtraColorScheme](<#NewExtraColorScheme>)
+- [type ExtraColorSchemeList](<#ExtraColorSchemeList>)
+  - [func NewExtraColorSchemeList\(\) \*ExtraColorSchemeList](<#NewExtraColorSchemeList>)
 - [type FillOverlay](<#FillOverlay>)
   - [func NewFillOverlay\(blend BlendModeValue\) \*FillOverlay](<#NewFillOverlay>)
   - [func \(f \*FillOverlay\) Blend\(\) BlendModeValue](<#FillOverlay.Blend>)
@@ -476,7 +492,32 @@ and effects.
   - [func \(f \*FillOverlay\) SetSolidFill\(fill \*SolidFill\)](<#FillOverlay.SetSolidFill>)
   - [func \(f \*FillOverlay\) SolidFill\(\) \*SolidFill](<#FillOverlay.SolidFill>)
   - [func \(f \*FillOverlay\) removeFillElements\(\)](<#FillOverlay.removeFillElements>)
+- [type FillStyleList](<#FillStyleList>)
+  - [func NewFillStyleList\(\) \*FillStyleList](<#NewFillStyleList>)
+  - [func \(fsl \*FillStyleList\) AddSolidFill\(hexColor string\) \*SolidFill](<#FillStyleList.AddSolidFill>)
 - [type FontAlignValue](<#FontAlignValue>)
+- [type FontCollection](<#FontCollection>)
+  - [func NewFontCollection\(localName string\) \*FontCollection](<#NewFontCollection>)
+  - [func \(fc \*FontCollection\) SetCsFont\(typeface string\)](<#FontCollection.SetCsFont>)
+  - [func \(fc \*FontCollection\) SetEaFont\(typeface string\)](<#FontCollection.SetEaFont>)
+  - [func \(fc \*FontCollection\) SetLatinFont\(typeface string\)](<#FontCollection.SetLatinFont>)
+  - [func \(fc \*FontCollection\) setFont\(name, typeface string\)](<#FontCollection.setFont>)
+- [type FontScheme](<#FontScheme>)
+  - [func NewFontScheme\(name string\) \*FontScheme](<#NewFontScheme>)
+  - [func \(fs \*FontScheme\) GetOrCreateMajorFont\(\) \*FontCollection](<#FontScheme.GetOrCreateMajorFont>)
+  - [func \(fs \*FontScheme\) GetOrCreateMinorFont\(\) \*FontCollection](<#FontScheme.GetOrCreateMinorFont>)
+  - [func \(fs \*FontScheme\) MajorFont\(\) \*FontCollection](<#FontScheme.MajorFont>)
+  - [func \(fs \*FontScheme\) MinorFont\(\) \*FontCollection](<#FontScheme.MinorFont>)
+- [type FormatScheme](<#FormatScheme>)
+  - [func NewFormatScheme\(name string\) \*FormatScheme](<#NewFormatScheme>)
+  - [func \(fs \*FormatScheme\) BackgroundFillStyleList\(\) \*FillStyleList](<#FormatScheme.BackgroundFillStyleList>)
+  - [func \(fs \*FormatScheme\) EffectStyleList\(\) \*EffectStyleList](<#FormatScheme.EffectStyleList>)
+  - [func \(fs \*FormatScheme\) FillStyleList\(\) \*FillStyleList](<#FormatScheme.FillStyleList>)
+  - [func \(fs \*FormatScheme\) GetOrCreateBackgroundFillStyleList\(\) \*FillStyleList](<#FormatScheme.GetOrCreateBackgroundFillStyleList>)
+  - [func \(fs \*FormatScheme\) GetOrCreateEffectStyleList\(\) \*EffectStyleList](<#FormatScheme.GetOrCreateEffectStyleList>)
+  - [func \(fs \*FormatScheme\) GetOrCreateFillStyleList\(\) \*FillStyleList](<#FormatScheme.GetOrCreateFillStyleList>)
+  - [func \(fs \*FormatScheme\) GetOrCreateLineStyleList\(\) \*LineStyleList](<#FormatScheme.GetOrCreateLineStyleList>)
+  - [func \(fs \*FormatScheme\) LineStyleList\(\) \*LineStyleList](<#FormatScheme.LineStyleList>)
 - [type Glow](<#Glow>)
   - [func NewGlow\(\) \*Glow](<#NewGlow>)
   - [func NewGlowWithParams\(radius EMU, colorHex string\) \*Glow](<#NewGlowWithParams>)
@@ -649,6 +690,9 @@ and effects.
   - [func \(l \*LineProperties\) removeDash\(\)](<#LineProperties.removeDash>)
   - [func \(l \*LineProperties\) removeFill\(\)](<#LineProperties.removeFill>)
   - [func \(l \*LineProperties\) removeJoin\(\)](<#LineProperties.removeJoin>)
+- [type LineStyleList](<#LineStyleList>)
+  - [func NewLineStyleList\(\) \*LineStyleList](<#NewLineStyleList>)
+  - [func \(lsl \*LineStyleList\) AddLine\(\) \*LineProperties](<#LineStyleList.AddLine>)
 - [type LuminanceEffect](<#LuminanceEffect>)
   - [func NewLuminanceEffect\(bright, contrast int\) \*LuminanceEffect](<#NewLuminanceEffect>)
   - [func \(l \*LuminanceEffect\) Brightness\(\) int](<#LuminanceEffect.Brightness>)
@@ -811,7 +855,7 @@ and effects.
   - [func \(pa \*PlotAreaEx\) AddPlotAreaRegion\(region \*PlotAreaRegion\)](<#PlotAreaEx.AddPlotAreaRegion>)
 - [type PlotAreaRegion](<#PlotAreaRegion>)
   - [func NewPlotAreaRegion\(\) \*PlotAreaRegion](<#NewPlotAreaRegion>)
-  - [func \(par \*PlotAreaRegion\) AddSeries\(series \*SeriesEx\)](<#PlotAreaRegion.AddSeries>)
+  - [func \(p \*PlotAreaRegion\) AddSeries\(series \*SeriesEx\)](<#PlotAreaRegion.AddSeries>)
 - [type Point2D](<#Point2D>)
   - [func NewPoint2D\(x, y EMU\) Point2D](<#NewPoint2D>)
   - [func NewPoint2DFromCm\(x, y float64\) Point2D](<#NewPoint2DFromCm>)
@@ -947,6 +991,7 @@ and effects.
   - [func \(c \*SchemeColor\) AddShade\(value int\)](<#SchemeColor.AddShade>)
   - [func \(c \*SchemeColor\) AddTint\(value int\)](<#SchemeColor.AddTint>)
   - [func \(c \*SchemeColor\) Clone\(\) openxml.Element](<#SchemeColor.Clone>)
+  - [func \(c \*SchemeColor\) Resolve\(cs \*ColorScheme\) string](<#SchemeColor.Resolve>)
   - [func \(c \*SchemeColor\) SetValue\(value SchemeColorValue\)](<#SchemeColor.SetValue>)
   - [func \(c \*SchemeColor\) Value\(\) SchemeColorValue](<#SchemeColor.Value>)
   - [func \(c \*SchemeColor\) addTransformation\(name string, value int\)](<#SchemeColor.addTransformation>)
@@ -1357,11 +1402,21 @@ and effects.
 - [type TextWrapValue](<#TextWrapValue>)
 - [type Theme](<#Theme>)
   - [func NewTheme\(name string\) \*Theme](<#NewTheme>)
-  - [func \(t \*Theme\) ExtraClrSchemeLst\(\) openxml.Element](<#Theme.ExtraClrSchemeLst>)
+  - [func \(t \*Theme\) ExtraClrSchemeLst\(\) \*ExtraColorSchemeList](<#Theme.ExtraClrSchemeLst>)
+  - [func \(t \*Theme\) GetOrCreateExtraClrSchemeLst\(\) \*ExtraColorSchemeList](<#Theme.GetOrCreateExtraClrSchemeLst>)
+  - [func \(t \*Theme\) GetOrCreateThemeElements\(\) \*ThemeElements](<#Theme.GetOrCreateThemeElements>)
   - [func \(t \*Theme\) Name\(\) string](<#Theme.Name>)
   - [func \(t \*Theme\) ObjectDefaults\(\) openxml.Element](<#Theme.ObjectDefaults>)
   - [func \(t \*Theme\) SetName\(name string\)](<#Theme.SetName>)
-  - [func \(t \*Theme\) ThemeElements\(\) openxml.Element](<#Theme.ThemeElements>)
+  - [func \(t \*Theme\) ThemeElements\(\) \*ThemeElements](<#Theme.ThemeElements>)
+- [type ThemeElements](<#ThemeElements>)
+  - [func NewThemeElements\(\) \*ThemeElements](<#NewThemeElements>)
+  - [func \(te \*ThemeElements\) ColorScheme\(\) \*ColorScheme](<#ThemeElements.ColorScheme>)
+  - [func \(te \*ThemeElements\) FontScheme\(\) \*FontScheme](<#ThemeElements.FontScheme>)
+  - [func \(te \*ThemeElements\) FormatScheme\(\) \*FormatScheme](<#ThemeElements.FormatScheme>)
+  - [func \(te \*ThemeElements\) GetOrCreateColorScheme\(name string\) \*ColorScheme](<#ThemeElements.GetOrCreateColorScheme>)
+  - [func \(te \*ThemeElements\) GetOrCreateFontScheme\(name string\) \*FontScheme](<#ThemeElements.GetOrCreateFontScheme>)
+  - [func \(te \*ThemeElements\) GetOrCreateFormatScheme\(name string\) \*FormatScheme](<#ThemeElements.GetOrCreateFormatScheme>)
 - [type TickLabelPositionValue](<#TickLabelPositionValue>)
 - [type TickMarkValue](<#TickMarkValue>)
 - [type TileFlipValue](<#TileFlipValue>)
@@ -1770,6 +1825,32 @@ const (
 )
 ```
 
+<a name="elemExtrusionClr"></a>Element name constants for 3D scene.
+
+```go
+const (
+    // elemExtrusionClr is the "extrusionClr" element name.
+    elemExtrusionClr = "extrusionClr"
+    // elemContourClr is the "contourClr" element name.
+    elemContourClr = "contourClr"
+    // elemPrst is the "prst" (preset) attribute name.
+    elemPrst = "prst"
+    // elemRot is the "rot" (rotation) element name.
+    elemRot = "rot"
+)
+```
+
+<a name="defaultBevelSize"></a>Numeric constants for 3D scene.
+
+```go
+const (
+    // defaultBevelSize is the default bevel size in EMUs (76200 = 6pt).
+    defaultBevelSize = 76200
+    // fullPercentage is the value representing 100% (100000).
+    fullPercentage = 100000
+)
+```
+
 <a name="elemOff"></a>Element name constants.
 
 ```go
@@ -1823,6 +1904,15 @@ const (
 )
 ```
 
+<a name="attrThresh"></a>Attribute name constants.
+
+```go
+const (
+    // attrThresh is the threshold attribute name.
+    attrThresh = "thresh"
+)
+```
+
 <a name="attrValueOne"></a>attrValueOne is the string value "1" used for boolean attributes.
 
 ```go
@@ -1847,6 +1937,15 @@ const bitSize64 = 64
 const defaultDPI = 96
 ```
 
+<a name="fullAlpha"></a>Magic number constants.
+
+```go
+const (
+    // fullAlpha is the value representing 100% alpha (100000).
+    fullAlpha = 100000
+)
+```
+
 <a name="localNameChOff"></a>localNameChOff is the local name for child offset element.
 
 ```go
@@ -1857,6 +1956,15 @@ const localNameChOff = "chOff"
 
 ```go
 const minImageHeaderSize = 12
+```
+
+<a name="relNamespace"></a>Relationship namespace constants.
+
+```go
+const (
+    // relNamespace is the namespace for relationship attributes.
+    relNamespace = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+)
 ```
 
 ## Variables
@@ -2050,6 +2158,15 @@ func GetPrefixForNamespace(namespaceURI string) string
 
 GetPrefixForNamespace returns the conventional prefix for a DrawingML namespace URI. Returns an empty string if the namespace is not recognized.
 
+<a name="GetPresetColorHex"></a>
+## func GetPresetColorHex
+
+```go
+func GetPresetColorHex(pcv PresetColorValue) string
+```
+
+GetPresetColorHex returns the hexadecimal string for a given preset color value. This is a placeholder for a more comprehensive mapping if needed.
+
 <a name="ImageExtension"></a>
 ## func ImageExtension
 
@@ -2103,6 +2220,15 @@ func formatUint32(val uint32) string
 ```
 
 formatUint32 formats a uint32 value as a string.
+
+<a name="wrapCompositeElement"></a>
+## func wrapCompositeElement
+
+```go
+func wrapCompositeElement(elem openxml.Element) *openxml.CompositeElementBase
+```
+
+wrapCompositeElement attempts to wrap an element as a CompositeElementBase.
 
 <a name="AlphaBiLevelEffect"></a>
 ## type AlphaBiLevelEffect
@@ -3765,7 +3891,9 @@ ChartDataBinding defines the interface for data binding in charts.
 
 ```go
 type ChartDataBinding interface {
+    // Formula returns the formula string for the data binding.
     Formula() string
+    // SetFormula sets the formula string for the data binding.
     SetFormula(formula string)
 }
 ```
@@ -3818,7 +3946,9 @@ ChartNumericBinding defines the interface for numeric data binding.
 ```go
 type ChartNumericBinding interface {
     ChartDataBinding
+    // SetCache sets cached numeric values for the data binding.
     SetCache(values []float64)
+    // SetCacheWithFormat sets cached numeric values with a custom format code.
     SetCacheWithFormat(values []float64, formatCode string)
 }
 ```
@@ -4044,6 +4174,7 @@ ChartStringBinding defines the interface for string data binding.
 ```go
 type ChartStringBinding interface {
     ChartDataBinding
+    // SetCache sets cached string values for the data binding.
     SetCache(values []string)
 }
 ```
@@ -4076,6 +4207,62 @@ func (ct *ChartText) Clone() openxml.Element
 ```
 
 Clone creates a deep copy of this ChartText.
+
+<a name="ColorScheme"></a>
+## type ColorScheme
+
+ColorScheme represents a color scheme \(a:clrScheme\).
+
+```go
+type ColorScheme struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewColorScheme"></a>
+### func NewColorScheme
+
+```go
+func NewColorScheme(name string) *ColorScheme
+```
+
+NewColorScheme creates a new color scheme with the given name.
+
+<a name="ColorScheme.ResolveColor"></a>
+### func \(\*ColorScheme\) ResolveColor
+
+```go
+func (cs *ColorScheme) ResolveColor(colorName SchemeColorValue) string
+```
+
+ResolveColor resolves a scheme color name to its concrete hex color string.
+
+<a name="ColorScheme.SetColor"></a>
+### func \(\*ColorScheme\) SetColor
+
+```go
+func (cs *ColorScheme) SetColor(name string, color openxml.Element)
+```
+
+SetColor sets a color for a specific scheme element. name is one of: dk1, lt1, dk2, lt2, accent1\-6, hlink, folHlink.
+
+<a name="ColorScheme.SetSrgbColor"></a>
+### func \(\*ColorScheme\) SetSrgbColor
+
+```go
+func (cs *ColorScheme) SetSrgbColor(name, hexColor string)
+```
+
+SetSrgbColor sets a solid RGB color for a scheme element.
+
+<a name="ColorScheme.SetSysColor"></a>
+### func \(\*ColorScheme\) SetSysColor
+
+```go
+func (cs *ColorScheme) SetSysColor(name string, sysColor SystemColorValue, lastColor string)
+```
+
+SetSysColor sets a system color for a scheme element.
 
 <a name="ColorTransformationType"></a>
 ## type ColorTransformationType
@@ -4185,7 +4372,7 @@ type Connection struct {
 ### func NewConnection
 
 ```go
-func NewConnection(name string, id string, idx int) *Connection
+func NewConnection(name, id string, idx int) *Connection
 ```
 
 NewConnection creates a new connection element. name is either "stCxn" or "endCxn".
@@ -4578,7 +4765,9 @@ DataLabelProvider defines the interface for elements that support data labels.
 
 ```go
 type DataLabelProvider interface {
+    // DataLabels returns the data labels element.
     DataLabels() *DataLabels
+    // SetDataLabels sets the data labels element.
     SetDataLabels(dl *DataLabels)
 }
 ```
@@ -5492,6 +5681,26 @@ func (e *EffectList) SoftEdge() *SoftEdge
 
 SoftEdge returns the soft edge effect, or nil if not set.
 
+<a name="EffectStyleList"></a>
+## type EffectStyleList
+
+EffectStyleList represents a list of effect styles \(a:effectStyleLst\).
+
+```go
+type EffectStyleList struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewEffectStyleList"></a>
+### func NewEffectStyleList
+
+```go
+func NewEffectStyleList() *EffectStyleList
+```
+
+NewEffectStyleList creates a new effect style list.
+
 <a name="ErrorBars"></a>
 ## type ErrorBars
 
@@ -5661,6 +5870,46 @@ func (e Extent) Width() EMU
 
 Width returns the width \(Cx\) of the extent.
 
+<a name="ExtraColorScheme"></a>
+## type ExtraColorScheme
+
+ExtraColorScheme represents an extra color scheme \(a:extraClrScheme\).
+
+```go
+type ExtraColorScheme struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewExtraColorScheme"></a>
+### func NewExtraColorScheme
+
+```go
+func NewExtraColorScheme() *ExtraColorScheme
+```
+
+NewExtraColorScheme creates a new extra color scheme.
+
+<a name="ExtraColorSchemeList"></a>
+## type ExtraColorSchemeList
+
+ExtraColorSchemeList represents a list of extra color schemes \(a:extraClrSchemeLst\).
+
+```go
+type ExtraColorSchemeList struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewExtraColorSchemeList"></a>
+### func NewExtraColorSchemeList
+
+```go
+func NewExtraColorSchemeList() *ExtraColorSchemeList
+```
+
+NewExtraColorSchemeList creates a new extra color scheme list.
+
 <a name="FillOverlay"></a>
 ## type FillOverlay
 
@@ -5762,6 +6011,35 @@ func (f *FillOverlay) removeFillElements()
 
 removeFillElements removes all fill child elements.
 
+<a name="FillStyleList"></a>
+## type FillStyleList
+
+FillStyleList represents a list of fill styles \(a:fillStyleLst\).
+
+```go
+type FillStyleList struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewFillStyleList"></a>
+### func NewFillStyleList
+
+```go
+func NewFillStyleList() *FillStyleList
+```
+
+NewFillStyleList creates a new fill style list.
+
+<a name="FillStyleList.AddSolidFill"></a>
+### func \(\*FillStyleList\) AddSolidFill
+
+```go
+func (fsl *FillStyleList) AddSolidFill(hexColor string) *SolidFill
+```
+
+AddSolidFill adds a solid color fill to the list.
+
 <a name="FontAlignValue"></a>
 ## type FontAlignValue
 
@@ -5782,6 +6060,210 @@ const (
     FontAlignBottom FontAlignValue = "b"
 )
 ```
+
+<a name="FontCollection"></a>
+## type FontCollection
+
+FontCollection represents a font collection \(CT\_FontCollection\).
+
+```go
+type FontCollection struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewFontCollection"></a>
+### func NewFontCollection
+
+```go
+func NewFontCollection(localName string) *FontCollection
+```
+
+NewFontCollection creates a new font collection element.
+
+<a name="FontCollection.SetCsFont"></a>
+### func \(\*FontCollection\) SetCsFont
+
+```go
+func (fc *FontCollection) SetCsFont(typeface string)
+```
+
+SetCsFont sets the Complex Script font.
+
+<a name="FontCollection.SetEaFont"></a>
+### func \(\*FontCollection\) SetEaFont
+
+```go
+func (fc *FontCollection) SetEaFont(typeface string)
+```
+
+SetEaFont sets the East Asian font.
+
+<a name="FontCollection.SetLatinFont"></a>
+### func \(\*FontCollection\) SetLatinFont
+
+```go
+func (fc *FontCollection) SetLatinFont(typeface string)
+```
+
+SetLatinFont sets the Latin font.
+
+<a name="FontCollection.setFont"></a>
+### func \(\*FontCollection\) setFont
+
+```go
+func (fc *FontCollection) setFont(name, typeface string)
+```
+
+
+
+<a name="FontScheme"></a>
+## type FontScheme
+
+FontScheme represents a font scheme \(a:fontScheme\).
+
+```go
+type FontScheme struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewFontScheme"></a>
+### func NewFontScheme
+
+```go
+func NewFontScheme(name string) *FontScheme
+```
+
+NewFontScheme creates a new font scheme with the given name.
+
+<a name="FontScheme.GetOrCreateMajorFont"></a>
+### func \(\*FontScheme\) GetOrCreateMajorFont
+
+```go
+func (fs *FontScheme) GetOrCreateMajorFont() *FontCollection
+```
+
+GetOrCreateMajorFont returns or creates the major font collection.
+
+<a name="FontScheme.GetOrCreateMinorFont"></a>
+### func \(\*FontScheme\) GetOrCreateMinorFont
+
+```go
+func (fs *FontScheme) GetOrCreateMinorFont() *FontCollection
+```
+
+GetOrCreateMinorFont returns or creates the minor font collection.
+
+<a name="FontScheme.MajorFont"></a>
+### func \(\*FontScheme\) MajorFont
+
+```go
+func (fs *FontScheme) MajorFont() *FontCollection
+```
+
+MajorFont returns the major font collection.
+
+<a name="FontScheme.MinorFont"></a>
+### func \(\*FontScheme\) MinorFont
+
+```go
+func (fs *FontScheme) MinorFont() *FontCollection
+```
+
+MinorFont returns the minor font collection.
+
+<a name="FormatScheme"></a>
+## type FormatScheme
+
+FormatScheme represents a format scheme \(a:fmtScheme\).
+
+```go
+type FormatScheme struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewFormatScheme"></a>
+### func NewFormatScheme
+
+```go
+func NewFormatScheme(name string) *FormatScheme
+```
+
+NewFormatScheme creates a new format scheme element.
+
+<a name="FormatScheme.BackgroundFillStyleList"></a>
+### func \(\*FormatScheme\) BackgroundFillStyleList
+
+```go
+func (fs *FormatScheme) BackgroundFillStyleList() *FillStyleList
+```
+
+BackgroundFillStyleList returns the background fill style list.
+
+<a name="FormatScheme.EffectStyleList"></a>
+### func \(\*FormatScheme\) EffectStyleList
+
+```go
+func (fs *FormatScheme) EffectStyleList() *EffectStyleList
+```
+
+EffectStyleList returns the effect style list.
+
+<a name="FormatScheme.FillStyleList"></a>
+### func \(\*FormatScheme\) FillStyleList
+
+```go
+func (fs *FormatScheme) FillStyleList() *FillStyleList
+```
+
+FillStyleList returns the fill style list.
+
+<a name="FormatScheme.GetOrCreateBackgroundFillStyleList"></a>
+### func \(\*FormatScheme\) GetOrCreateBackgroundFillStyleList
+
+```go
+func (fs *FormatScheme) GetOrCreateBackgroundFillStyleList() *FillStyleList
+```
+
+GetOrCreateBackgroundFillStyleList returns or creates the background fill style list.
+
+<a name="FormatScheme.GetOrCreateEffectStyleList"></a>
+### func \(\*FormatScheme\) GetOrCreateEffectStyleList
+
+```go
+func (fs *FormatScheme) GetOrCreateEffectStyleList() *EffectStyleList
+```
+
+GetOrCreateEffectStyleList returns or creates the effect style list.
+
+<a name="FormatScheme.GetOrCreateFillStyleList"></a>
+### func \(\*FormatScheme\) GetOrCreateFillStyleList
+
+```go
+func (fs *FormatScheme) GetOrCreateFillStyleList() *FillStyleList
+```
+
+GetOrCreateFillStyleList returns or creates the fill style list.
+
+<a name="FormatScheme.GetOrCreateLineStyleList"></a>
+### func \(\*FormatScheme\) GetOrCreateLineStyleList
+
+```go
+func (fs *FormatScheme) GetOrCreateLineStyleList() *LineStyleList
+```
+
+GetOrCreateLineStyleList returns or creates the line style list.
+
+<a name="FormatScheme.LineStyleList"></a>
+### func \(\*FormatScheme\) LineStyleList
+
+```go
+func (fs *FormatScheme) LineStyleList() *LineStyleList
+```
+
+LineStyleList returns the line style list.
 
 <a name="Glow"></a>
 ## type Glow
@@ -7448,6 +7930,35 @@ func (l *LineProperties) removeJoin()
 
 removeJoin removes any existing join element.
 
+<a name="LineStyleList"></a>
+## type LineStyleList
+
+LineStyleList represents a list of line styles \(a:lnStyleLst\).
+
+```go
+type LineStyleList struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewLineStyleList"></a>
+### func NewLineStyleList
+
+```go
+func NewLineStyleList() *LineStyleList
+```
+
+NewLineStyleList creates a new line style list.
+
+<a name="LineStyleList.AddLine"></a>
+### func \(\*LineStyleList\) AddLine
+
+```go
+func (lsl *LineStyleList) AddLine() *LineProperties
+```
+
+AddLine adds a line properties element to the list.
+
 <a name="LuminanceEffect"></a>
 ## type LuminanceEffect
 
@@ -9077,7 +9588,7 @@ NewPlotAreaRegion creates a new plot area region.
 ### func \(\*PlotAreaRegion\) AddSeries
 
 ```go
-func (par *PlotAreaRegion) AddSeries(series *SeriesEx)
+func (p *PlotAreaRegion) AddSeries(series *SeriesEx)
 ```
 
 AddSeries adds a series to the plot area region.
@@ -10559,6 +11070,15 @@ func (c *SchemeColor) Clone() openxml.Element
 ```
 
 Clone creates a deep copy of this SchemeColor element.
+
+<a name="SchemeColor.Resolve"></a>
+### func \(\*SchemeColor\) Resolve
+
+```go
+func (c *SchemeColor) Resolve(cs *ColorScheme) string
+```
+
+Resolve returns the actual hex color string for this scheme color, given a ColorScheme to resolve against.
 
 <a name="SchemeColor.SetValue"></a>
 ### func \(\*SchemeColor\) SetValue
@@ -14656,10 +15176,28 @@ NewTheme creates a new Theme element with the given name.
 ### func \(\*Theme\) ExtraClrSchemeLst
 
 ```go
-func (t *Theme) ExtraClrSchemeLst() openxml.Element
+func (t *Theme) ExtraClrSchemeLst() *ExtraColorSchemeList
 ```
 
 ExtraClrSchemeLst returns the extra color scheme list child element \(a:extraClrSchemeLst\).
+
+<a name="Theme.GetOrCreateExtraClrSchemeLst"></a>
+### func \(\*Theme\) GetOrCreateExtraClrSchemeLst
+
+```go
+func (t *Theme) GetOrCreateExtraClrSchemeLst() *ExtraColorSchemeList
+```
+
+GetOrCreateExtraClrSchemeLst returns or creates the extra color scheme list.
+
+<a name="Theme.GetOrCreateThemeElements"></a>
+### func \(\*Theme\) GetOrCreateThemeElements
+
+```go
+func (t *Theme) GetOrCreateThemeElements() *ThemeElements
+```
+
+GetOrCreateThemeElements returns or creates the theme elements.
 
 <a name="Theme.Name"></a>
 ### func \(\*Theme\) Name
@@ -14692,10 +15230,84 @@ SetName sets the name attribute of the theme.
 ### func \(\*Theme\) ThemeElements
 
 ```go
-func (t *Theme) ThemeElements() openxml.Element
+func (t *Theme) ThemeElements() *ThemeElements
 ```
 
 ThemeElements returns the theme elements child element \(a:themeElements\).
+
+<a name="ThemeElements"></a>
+## type ThemeElements
+
+ThemeElements represents the theme elements \(a:themeElements\).
+
+```go
+type ThemeElements struct {
+    *openxml.CompositeElementBase
+}
+```
+
+<a name="NewThemeElements"></a>
+### func NewThemeElements
+
+```go
+func NewThemeElements() *ThemeElements
+```
+
+NewThemeElements creates a new theme elements container.
+
+<a name="ThemeElements.ColorScheme"></a>
+### func \(\*ThemeElements\) ColorScheme
+
+```go
+func (te *ThemeElements) ColorScheme() *ColorScheme
+```
+
+ColorScheme returns the color scheme element.
+
+<a name="ThemeElements.FontScheme"></a>
+### func \(\*ThemeElements\) FontScheme
+
+```go
+func (te *ThemeElements) FontScheme() *FontScheme
+```
+
+FontScheme returns the font scheme element.
+
+<a name="ThemeElements.FormatScheme"></a>
+### func \(\*ThemeElements\) FormatScheme
+
+```go
+func (te *ThemeElements) FormatScheme() *FormatScheme
+```
+
+FormatScheme returns the format scheme element.
+
+<a name="ThemeElements.GetOrCreateColorScheme"></a>
+### func \(\*ThemeElements\) GetOrCreateColorScheme
+
+```go
+func (te *ThemeElements) GetOrCreateColorScheme(name string) *ColorScheme
+```
+
+GetOrCreateColorScheme returns or creates the color scheme.
+
+<a name="ThemeElements.GetOrCreateFontScheme"></a>
+### func \(\*ThemeElements\) GetOrCreateFontScheme
+
+```go
+func (te *ThemeElements) GetOrCreateFontScheme(name string) *FontScheme
+```
+
+GetOrCreateFontScheme returns or creates the font scheme.
+
+<a name="ThemeElements.GetOrCreateFormatScheme"></a>
+### func \(\*ThemeElements\) GetOrCreateFormatScheme
+
+```go
+func (te *ThemeElements) GetOrCreateFormatScheme(name string) *FormatScheme
+```
+
+GetOrCreateFormatScheme returns or creates the format scheme.
 
 <a name="TickLabelPositionValue"></a>
 ## type TickLabelPositionValue

@@ -14,8 +14,6 @@ This file implements chart axis functionality.
 
 This file implements chart series functionality.
 
-This file implements chart data cache synchronization.
-
 Package spreadsheet provides SpreadsheetML support for Excel documents.
 
 This package implements the document\-level API for creating, reading, and modifying .xlsx files \(and related formats like .xlsm, .xltx, .xltm, .xlam\).
@@ -357,7 +355,6 @@ This file implements the high\-level Table API.
   - [func \(c \*Chart\) Series\(index int\) \*ChartSeries](<#Chart.Series>)
   - [func \(c \*Chart\) SeriesCount\(\) int](<#Chart.SeriesCount>)
   - [func \(c \*Chart\) SetTitle\(title string\)](<#Chart.SetTitle>)
-  - [func \(c \*Chart\) Synchronize\(\) error](<#Chart.Synchronize>)
   - [func \(c \*Chart\) Title\(\) string](<#Chart.Title>)
   - [func \(c \*Chart\) Type\(\) ChartType](<#Chart.Type>)
   - [func \(c \*Chart\) ValueAxis\(\) \*ChartAxis](<#Chart.ValueAxis>)
@@ -2271,15 +2268,6 @@ func (c *Chart) SetTitle(title string)
 ```
 
 SetTitle sets the chart title.
-
-<a name="Chart.Synchronize"></a>
-### func \(\*Chart\) Synchronize
-
-```go
-func (c *Chart) Synchronize() error
-```
-
-Synchronize updates the chart data cache from the sheet data.
 
 <a name="Chart.Title"></a>
 ### func \(\*Chart\) Title

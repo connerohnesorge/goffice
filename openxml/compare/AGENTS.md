@@ -8,11 +8,16 @@ import "github.com/connerohnesorge/goffice/openxml/compare"
 
 Package compare provides utilities for comparing OOXML documents.
 
+Package compare provides utilities for comparing and merging OpenXML elements.
+
+Package compare provides utilities for comparing and merging OpenXML elements. It supports diff generation, three\-way merging with conflict resolution, and HTML/JSON reporting of comparison results.
+
 ## Index
 
+- [Constants](<#constants>)
 - [func Hash\(el openxml.Element\) string](<#Hash>)
 - [func countDiffStats\(d \*Diff, stats \*Statistics\)](<#countDiffStats>)
-- [func writeDiffHTML\(sb \*strings.Builder, d Diff\)](<#writeDiffHTML>)
+- [func writeDiffHTML\(sb \*strings.Builder, d \*Diff\)](<#writeDiffHTML>)
 - [type Comparator](<#Comparator>)
 - [type ComparisonResult](<#ComparisonResult>)
   - [func GenerateReport\(diffs \[\]Diff, conflicts \[\]Conflict\) \*ComparisonResult](<#GenerateReport>)
@@ -25,7 +30,7 @@ Package compare provides utilities for comparing OOXML documents.
 - [type ElementComparator](<#ElementComparator>)
   - [func NewElementComparator\(\) \*ElementComparator](<#NewElementComparator>)
   - [func \(c \*ElementComparator\) Compare\(a, b openxml.Element\) \[\]Diff](<#ElementComparator.Compare>)
-  - [func \(c \*ElementComparator\) compareAttributes\(a, b openxml.Element\) \[\]Diff](<#ElementComparator.compareAttributes>)
+  - [func \(\*ElementComparator\) compareAttributes\(a, b openxml.Element\) \[\]Diff](<#ElementComparator.compareAttributes>)
   - [func \(c \*ElementComparator\) compareChildren\(a, b openxml.CompositeElement\) \[\]Diff](<#ElementComparator.compareChildren>)
 - [type ElementMerger](<#ElementMerger>)
   - [func NewElementMerger\(\) \*ElementMerger](<#NewElementMerger>)
@@ -57,6 +62,14 @@ Package compare provides utilities for comparing OOXML documents.
   - [func \(s \*StrategyTheirsWins\) Resolve\(conflict Conflict\) \(interface\{\}, error\)](<#StrategyTheirsWins.Resolve>)
 
 
+## Constants
+
+<a name="MessageTextContentChanged"></a>MessageTextContentChanged is the message used when text content differs between elements.
+
+```go
+const MessageTextContentChanged = "Text content changed"
+```
+
 <a name="Hash"></a>
 ## func Hash
 
@@ -64,7 +77,7 @@ Package compare provides utilities for comparing OOXML documents.
 func Hash(el openxml.Element) string
 ```
 
-Hash computes a SHA\-256 hash of the element's XML representation.
+Hash computes a SHA\-256 hash of the element's XML representation. Returns an empty string if the element is nil. The hash is computed from the element's OuterXml\(\) output, providing a stable identifier for the element's current state.
 
 <a name="countDiffStats"></a>
 ## func countDiffStats
@@ -79,10 +92,10 @@ func countDiffStats(d *Diff, stats *Statistics)
 ## func writeDiffHTML
 
 ```go
-func writeDiffHTML(sb *strings.Builder, d Diff)
+func writeDiffHTML(sb *strings.Builder, d *Diff)
 ```
 
-
+writeDiffHTML writes a single diff entry as HTML to the string builder. It applies appropriate CSS classes based on the diff type and recursively handles child diffs for nested changes.
 
 <a name="Comparator"></a>
 ## type Comparator
@@ -91,6 +104,8 @@ Comparator is the interface for comparing OpenXML elements.
 
 ```go
 type Comparator interface {
+    // Compare compares two OpenXML elements and returns a list of differences.
+    // The returned diffs describe what changed between element a and element b.
     Compare(a, b openxml.Element) []Diff
 }
 ```
@@ -124,7 +139,7 @@ GenerateReport generates a comparison result from diffs and conflicts.
 func (r *ComparisonResult) ToHTML() string
 ```
 
-ToHTML generates a simple HTML report of the comparison result.
+ToHTML generates a simple HTML report of the comparison result. The output includes styling for different diff types \(added, deleted, modified, conflict\) and shows a summary of statistics along with detailed differences.
 
 <a name="ComparisonResult.ToJSON"></a>
 ### func \(\*ComparisonResult\) ToJSON
@@ -248,7 +263,7 @@ Compare compares two OpenXML elements and returns a list of differences.
 ### func \(\*ElementComparator\) compareAttributes
 
 ```go
-func (c *ElementComparator) compareAttributes(a, b openxml.Element) []Diff
+func (*ElementComparator) compareAttributes(a, b openxml.Element) []Diff
 ```
 
 

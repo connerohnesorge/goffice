@@ -163,7 +163,6 @@ Part operations should be performed through the parent document's thread\-safe A
 - [func getContentTypeFromFilename\(filename string\) string](<#getContentTypeFromFilename>)
 - [func getFileExtension\(filename string\) string](<#getFileExtension>)
 - [func init\(\)](<#init>)
-- [func shouldUseStreamingForSize\(size int64\) bool](<#shouldUseStreamingForSize>)
 - [type AudioPart](<#AudioPart>)
   - [func NewAudioPartForSlide\(slidePart \*SlidePart, audioType AudioType, streaming bool\) \(\*AudioPart, error\)](<#NewAudioPartForSlide>)
   - [func \(ap \*AudioPart\) AudioType\(\) AudioType](<#AudioPart.AudioType>)
@@ -256,7 +255,6 @@ Part operations should be performed through the parent document's thread\-safe A
   - [func GetSupportedAudioFormats\(\) \[\]\*MediaFormat](<#GetSupportedAudioFormats>)
   - [func GetSupportedVideoFormats\(\) \[\]\*MediaFormat](<#GetSupportedVideoFormats>)
 - [type MediaPart](<#MediaPart>)
-  - [func createVideoPartForSlideWithSize\(slidePart \*SlidePart, videoType VideoType, size int64\) \(MediaPart, error\)](<#createVideoPartForSlideWithSize>)
 - [type MediaRegistry](<#MediaRegistry>)
   - [func \(mr \*MediaRegistry\) DetectFormat\(data \[\]byte, filename string\) \(\*MediaFormat, error\)](<#MediaRegistry.DetectFormat>)
   - [func \(mr \*MediaRegistry\) GetSupportedFormats\(mediaType MediaType\) \[\]\*MediaFormat](<#MediaRegistry.GetSupportedFormats>)
@@ -274,10 +272,12 @@ Part operations should be performed through the parent document's thread\-safe A
   - [func \(nmp \*NotesMasterPart\) initializeContent\(\)](<#NotesMasterPart.initializeContent>)
 - [type NotesSlidePart](<#NotesSlidePart>)
   - [func newNotesSlidePart\(slidePart \*SlidePart\) \(\*NotesSlidePart, error\)](<#newNotesSlidePart>)
+  - [func \(nsp \*NotesSlidePart\) EffectiveHeaderFooter\(\) \*elements.ExtHeaderFooter](<#NotesSlidePart.EffectiveHeaderFooter>)
   - [func \(\*NotesSlidePart\) FixedContentType\(\) string](<#NotesSlidePart.FixedContentType>)
   - [func \(nsp \*NotesSlidePart\) GetOrCreateCommonSlideData\(\) \*elements.CommonSlideData](<#NotesSlidePart.GetOrCreateCommonSlideData>)
   - [func \(nsp \*NotesSlidePart\) GetOrCreateTextBody\(\) \*elements.TextBody](<#NotesSlidePart.GetOrCreateTextBody>)
   - [func \(nsp \*NotesSlidePart\) GetStream\(\) io.Reader](<#NotesSlidePart.GetStream>)
+  - [func \(nsp \*NotesSlidePart\) NotesMasterPart\(\) \*NotesMasterPart](<#NotesSlidePart.NotesMasterPart>)
   - [func \(nsp \*NotesSlidePart\) NotesSlide\(\) \*elements.NotesSlide](<#NotesSlidePart.NotesSlide>)
   - [func \(nsp \*NotesSlidePart\) SetNotes\(text string\)](<#NotesSlidePart.SetNotes>)
   - [func \(nsp \*NotesSlidePart\) initializeContent\(\)](<#NotesSlidePart.initializeContent>)
@@ -313,15 +313,23 @@ Part operations should be performed through the parent document's thread\-safe A
   - [func NewSlideLayoutPart\(presPart \*PresentationPart\) \(\*SlideLayoutPart, error\)](<#NewSlideLayoutPart>)
   - [func newSlideLayoutPart\(slideMasterPart \*SlideMasterPart, uri string\) \(\*SlideLayoutPart, error\)](<#newSlideLayoutPart>)
   - [func \(slp \*SlideLayoutPart\) AddPlaceholder\(phType elements.PlaceholderType, idx int\) \*elements.Shape](<#SlideLayoutPart.AddPlaceholder>)
+  - [func \(slp \*SlideLayoutPart\) EffectiveColorMap\(\) \*elements.PresentationColorMap](<#SlideLayoutPart.EffectiveColorMap>)
+  - [func \(slp \*SlideLayoutPart\) EffectiveExtensionList\(\) \*elements.ExtensionListModify](<#SlideLayoutPart.EffectiveExtensionList>)
+  - [func \(slp \*SlideLayoutPart\) EffectiveHeaderFooter\(\) \*elements.ExtHeaderFooter](<#SlideLayoutPart.EffectiveHeaderFooter>)
+  - [func \(slp \*SlideLayoutPart\) EffectiveTextStyles\(\) \*elements.TextStyles](<#SlideLayoutPart.EffectiveTextStyles>)
+  - [func \(slp \*SlideLayoutPart\) EffectiveTiming\(\) \*elements.SlideTiming](<#SlideLayoutPart.EffectiveTiming>)
+  - [func \(slp \*SlideLayoutPart\) EffectiveTransition\(\) \*elements.SlideTransition](<#SlideLayoutPart.EffectiveTransition>)
   - [func \(\*SlideLayoutPart\) FixedContentType\(\) string](<#SlideLayoutPart.FixedContentType>)
   - [func \(slp \*SlideLayoutPart\) GetStream\(\) io.Reader](<#SlideLayoutPart.GetStream>)
   - [func \(slp \*SlideLayoutPart\) SlideLayout\(\) \*elements.SlideLayout](<#SlideLayoutPart.SlideLayout>)
+  - [func \(slp \*SlideLayoutPart\) SlideMasterPart\(\) \*SlideMasterPart](<#SlideLayoutPart.SlideMasterPart>)
   - [func \(slp \*SlideLayoutPart\) initializeContent\(\)](<#SlideLayoutPart.initializeContent>)
 - [type SlideMasterPart](<#SlideMasterPart>)
   - [func newSlideMasterPart\(presentationPart \*PresentationPart, uri string\) \(\*SlideMasterPart, error\)](<#newSlideMasterPart>)
   - [func \(smp \*SlideMasterPart\) AddSlideLayoutPart\(\) \(\*SlideLayoutPart, error\)](<#SlideMasterPart.AddSlideLayoutPart>)
   - [func \(smp \*SlideMasterPart\) AddThemePart\(\) \(\*ThemePart, error\)](<#SlideMasterPart.AddThemePart>)
   - [func \(\*SlideMasterPart\) FixedContentType\(\) string](<#SlideMasterPart.FixedContentType>)
+  - [func \(smp \*SlideMasterPart\) GetLayoutByName\(name string\) \*SlideLayoutPart](<#SlideMasterPart.GetLayoutByName>)
   - [func \(smp \*SlideMasterPart\) GetStream\(\) io.Reader](<#SlideMasterPart.GetStream>)
   - [func \(smp \*SlideMasterPart\) SlideLayoutParts\(\) \[\]\*SlideLayoutPart](<#SlideMasterPart.SlideLayoutParts>)
   - [func \(smp \*SlideMasterPart\) SlideMaster\(\) \*elements.SlideMaster](<#SlideMasterPart.SlideMaster>)
@@ -346,8 +354,10 @@ Part operations should be performed through the parent document's thread\-safe A
   - [func \(sp \*SlidePart\) ImageParts\(\) \[\]\*ImagePart](<#SlidePart.ImageParts>)
   - [func \(sp \*SlidePart\) NotesSlidePart\(\) \*NotesSlidePart](<#SlidePart.NotesSlidePart>)
   - [func \(sp \*SlidePart\) SetNotes\(text string\) error](<#SlidePart.SetNotes>)
+  - [func \(sp \*SlidePart\) SetSlideLayoutPart\(slp \*SlideLayoutPart\) error](<#SlidePart.SetSlideLayoutPart>)
   - [func \(sp \*SlidePart\) Slide\(\) \*elements.Slide](<#SlidePart.Slide>)
   - [func \(sp \*SlidePart\) SlideCommentsPart\(\) \*SlideCommentsPart](<#SlidePart.SlideCommentsPart>)
+  - [func \(sp \*SlidePart\) SlideLayoutPart\(\) \*SlideLayoutPart](<#SlidePart.SlideLayoutPart>)
   - [func \(sp \*SlidePart\) addChildPart\(uri, contentType, relType string\) \(\*packaging.Part, string, error\)](<#SlidePart.addChildPart>)
   - [func \(sp \*SlidePart\) initializeContent\(\)](<#SlidePart.initializeContent>)
 - [type StreamingAudioPart](<#StreamingAudioPart>)
@@ -427,6 +437,32 @@ Part operations should be performed through the parent document's thread\-safe A
 
 
 ## Constants
+
+<a name="extMP3"></a>Audio extension constants.
+
+```go
+const (
+    extMP3  = ".mp3"
+    extWAV  = ".wav"
+    extWMA  = ".wma"
+    extM4A  = ".m4a"
+    extOGG  = ".ogg"
+    extFLAC = ".flac"
+)
+```
+
+<a name="contentTypeAudioMPEG"></a>Audio content type constants.
+
+```go
+const (
+    contentTypeAudioMPEG = "audio/mpeg"
+    contentTypeAudioWAV  = "audio/wav"
+    contentTypeAudioWMA  = "audio/x-ms-wma"
+    contentTypeAudioMP4  = "audio/mp4"
+    contentTypeAudioOGG  = "audio/ogg"
+    contentTypeAudioFLAC = "audio/flac"
+)
+```
 
 <a name="imageFormatPng"></a>
 
@@ -558,6 +594,34 @@ const (
 )
 ```
 
+<a name="extMP4"></a>Video extension constants.
+
+```go
+const (
+    extMP4  = ".mp4"
+    extAVI  = ".avi"
+    extMOV  = ".mov"
+    extWMV  = ".wmv"
+    extWEBM = ".webm"
+    extMKV  = ".mkv"
+    extOGV  = ".ogv"
+)
+```
+
+<a name="contentTypeVideoMP4"></a>Video content type constants.
+
+```go
+const (
+    contentTypeVideoMP4       = "video/mp4"
+    contentTypeVideoAVI       = "video/x-msvideo"
+    contentTypeVideoQuickTime = "video/quicktime"
+    contentTypeVideoWMV       = "video/x-ms-wmv"
+    contentTypeVideoWebM      = "video/webm"
+    contentTypeVideoMatroska  = "video/x-matroska"
+    contentTypeVideoOGG       = "video/ogg"
+)
+```
+
 <a name="streamingThreshold"></a>Streaming threshold \(100MB\) \- videos larger than this will use streaming.
 
 ```go
@@ -633,9 +697,6 @@ var (
 
     // AVI signature - "RIFF" + file size + "AVI "
     aviMagic = []byte{0x52, 0x49, 0x46, 0x46}
-
-    // MOV signature - same as MP4 (both are QuickTime containers)
-    movMagic = mp4Magic
 
     // WMV/ASF signature - typically starts with 0x30 0x26 0xB2 0x75
     wmvMagic = []byte{0x30, 0x26, 0xB2, 0x75}
@@ -1102,16 +1163,7 @@ getFileExtension extracts the file extension from a filename.
 func init()
 ```
 
-Register the HandoutMasterPart type.
-
-<a name="shouldUseStreamingForSize"></a>
-## func shouldUseStreamingForSize
-
-```go
-func shouldUseStreamingForSize(size int64) bool
-```
-
-Helper function to determine if streaming should be used.
+Register audio content types.
 
 <a name="AudioPart"></a>
 ## type AudioPart
@@ -2110,15 +2162,6 @@ var _ MediaPart = (*StreamingAudioPart)(nil)
 var _ MediaPart = (*VideoPart)(nil)
 ```
 
-<a name="createVideoPartForSlideWithSize"></a>
-### func createVideoPartForSlideWithSize
-
-```go
-func createVideoPartForSlideWithSize(slidePart *SlidePart, videoType VideoType, size int64) (MediaPart, error)
-```
-
-Helper function to create appropriate video part based on size.
-
 <a name="MediaRegistry"></a>
 ## type MediaRegistry
 
@@ -2290,6 +2333,15 @@ func newNotesSlidePart(slidePart *SlidePart) (*NotesSlidePart, error)
 
 newNotesSlidePart creates a new notes slide part.
 
+<a name="NotesSlidePart.EffectiveHeaderFooter"></a>
+### func \(\*NotesSlidePart\) EffectiveHeaderFooter
+
+```go
+func (nsp *NotesSlidePart) EffectiveHeaderFooter() *elements.ExtHeaderFooter
+```
+
+EffectiveHeaderFooter returns the effective ExtHeaderFooter for this notes slide, resolving from NotesMaster if not present locally.
+
 <a name="NotesSlidePart.FixedContentType"></a>
 ### func \(\*NotesSlidePart\) FixedContentType
 
@@ -2325,6 +2377,15 @@ func (nsp *NotesSlidePart) GetStream() io.Reader
 ```
 
 GetStream returns a reader for the part content.
+
+<a name="NotesSlidePart.NotesMasterPart"></a>
+### func \(\*NotesSlidePart\) NotesMasterPart
+
+```go
+func (nsp *NotesSlidePart) NotesMasterPart() *NotesMasterPart
+```
+
+NotesMasterPart returns the NotesMasterPart that this NotesSlide is associated with.
 
 <a name="NotesSlidePart.NotesSlide"></a>
 ### func \(\*NotesSlidePart\) NotesSlide
@@ -2650,6 +2711,60 @@ func (slp *SlideLayoutPart) AddPlaceholder(phType elements.PlaceholderType, idx 
 
 AddPlaceholder adds a placeholder to the layout.
 
+<a name="SlideLayoutPart.EffectiveColorMap"></a>
+### func \(\*SlideLayoutPart\) EffectiveColorMap
+
+```go
+func (slp *SlideLayoutPart) EffectiveColorMap() *elements.PresentationColorMap
+```
+
+EffectiveColorMap returns the effective PresentationColorMap for this layout, retrieved from the associated SlideMaster.
+
+<a name="SlideLayoutPart.EffectiveExtensionList"></a>
+### func \(\*SlideLayoutPart\) EffectiveExtensionList
+
+```go
+func (slp *SlideLayoutPart) EffectiveExtensionList() *elements.ExtensionListModify
+```
+
+EffectiveExtensionList returns the effective ExtensionListModify for this layout, resolving from SlideMaster if not present locally.
+
+<a name="SlideLayoutPart.EffectiveHeaderFooter"></a>
+### func \(\*SlideLayoutPart\) EffectiveHeaderFooter
+
+```go
+func (slp *SlideLayoutPart) EffectiveHeaderFooter() *elements.ExtHeaderFooter
+```
+
+EffectiveHeaderFooter returns the effective ExtHeaderFooter for this layout, resolving from SlideMaster if not present locally.
+
+<a name="SlideLayoutPart.EffectiveTextStyles"></a>
+### func \(\*SlideLayoutPart\) EffectiveTextStyles
+
+```go
+func (slp *SlideLayoutPart) EffectiveTextStyles() *elements.TextStyles
+```
+
+EffectiveTextStyles returns the effective TextStyles for this layout, resolving from SlideMaster if not present locally.
+
+<a name="SlideLayoutPart.EffectiveTiming"></a>
+### func \(\*SlideLayoutPart\) EffectiveTiming
+
+```go
+func (slp *SlideLayoutPart) EffectiveTiming() *elements.SlideTiming
+```
+
+EffectiveTiming returns the effective SlideTiming for this layout, resolving from SlideMaster if not present locally.
+
+<a name="SlideLayoutPart.EffectiveTransition"></a>
+### func \(\*SlideLayoutPart\) EffectiveTransition
+
+```go
+func (slp *SlideLayoutPart) EffectiveTransition() *elements.SlideTransition
+```
+
+EffectiveTransition returns the effective SlideTransition for this layout, resolving from SlideMaster if not present locally.
+
 <a name="SlideLayoutPart.FixedContentType"></a>
 ### func \(\*SlideLayoutPart\) FixedContentType
 
@@ -2676,6 +2791,15 @@ func (slp *SlideLayoutPart) SlideLayout() *elements.SlideLayout
 ```
 
 SlideLayout returns the root SlideLayout element.
+
+<a name="SlideLayoutPart.SlideMasterPart"></a>
+### func \(\*SlideLayoutPart\) SlideMasterPart
+
+```go
+func (slp *SlideLayoutPart) SlideMasterPart() *SlideMasterPart
+```
+
+SlideMasterPart returns the slide master part associated with this layout.
 
 <a name="SlideLayoutPart.initializeContent"></a>
 ### func \(\*SlideLayoutPart\) initializeContent
@@ -2732,6 +2856,15 @@ func (*SlideMasterPart) FixedContentType() string
 ```
 
 FixedContentType returns the content type for this part.
+
+<a name="SlideMasterPart.GetLayoutByName"></a>
+### func \(\*SlideMasterPart\) GetLayoutByName
+
+```go
+func (smp *SlideMasterPart) GetLayoutByName(name string) *SlideLayoutPart
+```
+
+GetLayoutByName returns the slide layout part with the given name.
 
 <a name="SlideMasterPart.GetStream"></a>
 ### func \(\*SlideMasterPart\) GetStream
@@ -2958,6 +3091,15 @@ func (sp *SlidePart) SetNotes(text string) error
 
 SetNotes sets the plain text notes for this slide.
 
+<a name="SlidePart.SetSlideLayoutPart"></a>
+### func \(\*SlidePart\) SetSlideLayoutPart
+
+```go
+func (sp *SlidePart) SetSlideLayoutPart(slp *SlideLayoutPart) error
+```
+
+SetSlideLayoutPart sets the slide layout part for this slide.
+
 <a name="SlidePart.Slide"></a>
 ### func \(\*SlidePart\) Slide
 
@@ -2975,6 +3117,15 @@ func (sp *SlidePart) SlideCommentsPart() *SlideCommentsPart
 ```
 
 SlideCommentsPart returns the comments part if present.
+
+<a name="SlidePart.SlideLayoutPart"></a>
+### func \(\*SlidePart\) SlideLayoutPart
+
+```go
+func (sp *SlidePart) SlideLayoutPart() *SlideLayoutPart
+```
+
+SlideLayoutPart returns the slide layout part associated with this slide.
 
 <a name="SlidePart.addChildPart"></a>
 ### func \(\*SlidePart\) addChildPart
