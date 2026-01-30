@@ -19,17 +19,16 @@ const (
 	RelationshipTypeCustomXmlProperties = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXmlProps"
 )
 
-// newCustomXmlPropertiesPart creates a new custom XML properties part.
-func newCustomXmlPropertiesPart(
-	parent *CustomXmlPart,
-) (*CustomXmlPropertiesPart, error) {
-	// Logic handled by caller (AddCustomXmlPropertiesPart)
-	return nil, nil
-}
-
 // GetStream returns a reader for the part content.
 func (cp *CustomXmlPropertiesPart) GetStream() io.Reader {
 	return cp.OpenXmlPartData.GetStream()
+}
+
+// initializeContent sets up minimal custom XML properties content.
+func (cp *CustomXmlPropertiesPart) initializeContent() {
+	props := elements.NewDatastoreItem()
+	props.ItemID = "{00000000-0000-0000-0000-000000000000}"
+	_ = cp.SetProperties(props)
 }
 
 // Properties returns the properties element.
@@ -42,6 +41,7 @@ func (cp *CustomXmlPropertiesPart) Properties() *elements.DatastoreItem {
 	if err := cp.unmarshal(&props); err != nil {
 		return nil
 	}
+
 	return &props
 }
 
@@ -55,12 +55,14 @@ func (cp *CustomXmlPropertiesPart) SetProperties(props *elements.DatastoreItem) 
 	content := []byte(xml.Header)
 	content = append(content, data...)
 	cp.SetData(content)
+
 	return nil
 }
 
 // unmarshal deserializes the part data into the given value.
 func (cp *CustomXmlPropertiesPart) unmarshal(v interface{}) error {
 	data := cp.GetData()
+
 	return xml.Unmarshal(data, v)
 }
 

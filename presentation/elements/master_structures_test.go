@@ -1,12 +1,8 @@
 package elements_test
 
 import (
-	"bytes"
-	"encoding/xml"
 	"testing"
 
-	"github.com/connerohnesorge/goffice/openxml"
-	"github.com/connerohnesorge/goffice/openxml/types"
 	. "github.com/connerohnesorge/goffice/presentation/elements"
 )
 
@@ -70,7 +66,7 @@ func TestSlideMasterProperties(t *testing.T) {
 	sm.AppendChild(newHf)
 	hf = sm.HeaderFooter()
 	if hf == nil {
-		t.Errorf("Expected non-nil HeaderFooter after adding")
+		t.Fatalf("Expected non-nil HeaderFooter after adding")
 	}
 	hf.SetSlideNumber(true)
 	if !hf.SlideNumber.Value() {
@@ -156,7 +152,7 @@ func TestSlideLayoutProperties(t *testing.T) {
 	sl.AppendChild(newHf)
 	hf = sl.HeaderFooter()
 	if hf == nil {
-		t.Errorf("Expected non-nil HeaderFooter after adding")
+		t.Fatalf("Expected non-nil HeaderFooter after adding")
 	}
 	hf.SetFooter(true)
 	if !hf.Footer.Value() {
@@ -188,7 +184,7 @@ func TestNotesSlideProperties(t *testing.T) {
 	ns.AppendChild(newHf)
 	hf = ns.HeaderFooter()
 	if hf == nil {
-		t.Errorf("Expected non-nil HeaderFooter after adding")
+		t.Fatalf("Expected non-nil HeaderFooter after adding")
 	}
 	hf.SetDateTime(true)
 	if !hf.DateTime.Value() {
@@ -199,9 +195,9 @@ func TestNotesSlideProperties(t *testing.T) {
 func TestPlaceholderShapeProperties(t *testing.T) {
 	ph := NewPlaceholderShape()
 
-	ph.SetOrientation(DirectionVertical)
-	if ph.Orientation.Value() != DirectionVertical {
-		t.Errorf("Expected orientation to be %s, got %s", DirectionVertical, ph.Orientation.Value())
+	ph.SetOrientation(DirectionValuesVert)
+	if ph.Orientation.Value() != DirectionValuesVert {
+		t.Errorf("Expected orientation to be %s, got %s", DirectionValuesVert, ph.Orientation.Value())
 	}
 
 	ph.SetSize(PlaceholderSizeValuesFull)

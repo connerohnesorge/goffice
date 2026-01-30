@@ -1,4 +1,4 @@
-// This file implements extended chart types (Office 2016+).
+// Package drawingml implements extended chart types (Office 2016+).
 package drawingml
 
 import (
@@ -55,6 +55,7 @@ func NewChartData() *ChartData {
 		"chartData",
 		PrefixChartEx,
 	)
+
 	return &ChartData{CompositeElementBase: elem}
 }
 
@@ -70,6 +71,7 @@ func NewChartEx() *ChartEx {
 		"chart",
 		PrefixChartEx,
 	)
+
 	return &ChartEx{CompositeElementBase: elem}
 }
 
@@ -85,6 +87,7 @@ func NewPlotAreaEx() *PlotAreaEx {
 		"plotArea",
 		PrefixChartEx,
 	)
+
 	return &PlotAreaEx{CompositeElementBase: elem}
 }
 
@@ -110,6 +113,7 @@ func NewPlotAreaRegion() *PlotAreaRegion {
 		"plotAreaRegion",
 		PrefixChartEx,
 	)
+
 	return &PlotAreaRegion{CompositeElementBase: elem}
 }
 
@@ -130,12 +134,13 @@ func NewSeriesEx() *SeriesEx {
 		"series",
 		PrefixChartEx,
 	)
+
 	return &SeriesEx{CompositeElementBase: elem}
 }
 
 // AddSeries adds a series to the plot area region.
-func (par *PlotAreaRegion) AddSeries(series *SeriesEx) {
-	par.AppendChild(series)
+func (p *PlotAreaRegion) AddSeries(series *SeriesEx) {
+	p.AppendChild(series)
 }
 
 // SetLayout sets the layout ID for the series (e.g., "waterfall", "sunburst").

@@ -359,10 +359,11 @@ func (s *ShapeProperties) SetEffectList(effects *EffectList) {
 // insertInOrder inserts the element in the correct position based on predecessors.
 func (s *ShapeProperties) insertInOrder(elem openxml.Element, name string, predecessors ...string) {
 	// Try to find any of the predecessors in order (reverse to find the latest one)
-	for i := 0; i < len(predecessors); i++ {
+	for i := range predecessors {
 		predName := predecessors[i]
 		if pred := s.GetElement(predName, NamespaceMain); pred != nil {
 			s.InsertAfter(elem, pred)
+
 			return
 		}
 	}
@@ -426,6 +427,7 @@ func (s *ShapeProperties) ShapeLocks() *ShapeLocks {
 			LeafElementBase: leaf,
 		}
 	}
+
 	return nil
 }
 

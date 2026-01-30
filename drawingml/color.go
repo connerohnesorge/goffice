@@ -553,6 +553,7 @@ func (c *PresetColor) Clone() openxml.Element {
 
 // GetPresetColorHex returns the hexadecimal string for a given preset color value.
 // This is a placeholder for a more comprehensive mapping if needed.
+//nolint:exhaustive // Intentionally only mapping specific colors, default handles rest
 func GetPresetColorHex(pcv PresetColorValue) string {
 	switch pcv {
 	case PresetColorBlack:

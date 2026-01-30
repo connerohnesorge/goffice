@@ -36,6 +36,28 @@ const (
 	VideoTypeOgv
 )
 
+// Video extension constants.
+const (
+	extMP4   = ".mp4"
+	extAVI   = ".avi"
+	extMOV   = ".mov"
+	extWMV   = ".wmv"
+	extWEBM  = ".webm"
+	extMKV   = ".mkv"
+	extOGV   = ".ogv"
+)
+
+// Video content type constants.
+const (
+	contentTypeVideoMP4        = "video/mp4"
+	contentTypeVideoAVI        = "video/x-msvideo"
+	contentTypeVideoQuickTime  = "video/quicktime"
+	contentTypeVideoWMV        = "video/x-ms-wmv"
+	contentTypeVideoWebM       = "video/webm"
+	contentTypeVideoMatroska   = "video/x-matroska"
+	contentTypeVideoOGG        = "video/ogg"
+)
+
 // String returns the string representation of the video type.
 func (vt VideoType) String() string {
 	switch vt {
@@ -62,21 +84,21 @@ func (vt VideoType) String() string {
 func (vt VideoType) Extension() string {
 	switch vt {
 	case VideoTypeMp4:
-		return ".mp4"
+		return extMP4
 	case VideoTypeAvi:
-		return ".avi"
+		return extAVI
 	case VideoTypeMov:
-		return ".mov"
+		return extMOV
 	case VideoTypeWmv:
-		return ".wmv"
+		return extWMV
 	case VideoTypeWebm:
-		return ".webm"
+		return extWEBM
 	case VideoTypeMkv:
-		return ".mkv"
+		return extMKV
 	case VideoTypeOgv:
-		return ".ogv"
+		return extOGV
 	default:
-		return ".mp4"
+		return extMP4
 	}
 }
 
@@ -84,21 +106,21 @@ func (vt VideoType) Extension() string {
 func (vt VideoType) ContentType() string {
 	switch vt {
 	case VideoTypeMp4:
-		return "video/mp4"
+		return contentTypeVideoMP4
 	case VideoTypeAvi:
-		return "video/x-msvideo"
+		return contentTypeVideoAVI
 	case VideoTypeMov:
-		return "video/quicktime"
+		return contentTypeVideoQuickTime
 	case VideoTypeWmv:
-		return "video/x-ms-wmv"
+		return contentTypeVideoWMV
 	case VideoTypeWebm:
-		return "video/webm"
+		return contentTypeVideoWebM
 	case VideoTypeMkv:
-		return "video/x-matroska"
+		return contentTypeVideoMatroska
 	case VideoTypeOgv:
-		return "video/ogg"
+		return contentTypeVideoOGG
 	default:
-		return "video/mp4"
+		return contentTypeVideoMP4
 	}
 }
 
@@ -109,8 +131,10 @@ func (vt VideoType) IsSupported() bool {
 		return true // Native support
 	case VideoTypeAvi, VideoTypeMov:
 		return true // May require codec, but generally supported
+	case VideoTypeWebm, VideoTypeMkv, VideoTypeOgv:
+		return false // Not natively supported
 	default:
-		return false // WebM, MKV, OGV not natively supported
+		return false
 	}
 }
 
@@ -250,6 +274,7 @@ func (vp *VideoPart) FeedDataBytes(data []byte) error {
 	// For non-streaming, use the default implementation
 	vp.SetData(data)
 	vp.setSize(int64(len(data)))
+
 	return nil
 }
 
@@ -317,19 +342,19 @@ func videoTypeFromContentType(
 	contentType string,
 ) VideoType {
 	switch contentType {
-	case "video/mp4":
+	case contentTypeVideoMP4:
 		return VideoTypeMp4
-	case "video/x-msvideo", "video/avi":
+	case contentTypeVideoAVI, "video/avi":
 		return VideoTypeAvi
-	case "video/quicktime":
+	case contentTypeVideoQuickTime:
 		return VideoTypeMov
-	case "video/x-ms-wmv":
+	case contentTypeVideoWMV:
 		return VideoTypeWmv
-	case "video/webm":
+	case contentTypeVideoWebM:
 		return VideoTypeWebm
-	case "video/x-matroska":
+	case contentTypeVideoMatroska:
 		return VideoTypeMkv
-	case "video/ogg":
+	case contentTypeVideoOGG:
 		return VideoTypeOgv
 	default:
 		return VideoTypeMp4
@@ -341,19 +366,19 @@ func VideoTypeFromExtension(
 	ext string,
 ) VideoType {
 	switch ext {
-	case ".mp4":
+	case extMP4:
 		return VideoTypeMp4
-	case ".avi":
+	case extAVI:
 		return VideoTypeAvi
-	case ".mov":
+	case extMOV:
 		return VideoTypeMov
-	case ".wmv":
+	case extWMV:
 		return VideoTypeWmv
-	case ".webm":
+	case extWEBM:
 		return VideoTypeWebm
-	case ".mkv":
+	case extMKV:
 		return VideoTypeMkv
-	case ".ogv":
+	case extOGV:
 		return VideoTypeOgv
 	default:
 		return VideoTypeMp4
@@ -365,6 +390,7 @@ func VideoTypeFromFilename(
 	filename string,
 ) VideoType {
 	ext := getFileExtension(filename)
+
 	return VideoTypeFromExtension(ext)
 }
 
@@ -378,6 +404,7 @@ func getFileExtension(filename string) string {
 			break
 		}
 	}
+
 	return ""
 }
 
@@ -392,9 +419,6 @@ var (
 
 	// AVI signature - "RIFF" + file size + "AVI "
 	aviMagic = []byte{0x52, 0x49, 0x46, 0x46}
-
-	// MOV signature - same as MP4 (both are QuickTime containers)
-	movMagic = mp4Magic
 
 	// WMV/ASF signature - typically starts with 0x30 0x26 0xB2 0x75
 	wmvMagic = []byte{0x30, 0x26, 0xB2, 0x75}
@@ -486,6 +510,7 @@ type sizeCounter struct {
 
 func (sc *sizeCounter) Write(p []byte) (n int, err error) {
 	*sc.size += int64(len(p))
+
 	return len(p), nil
 }
 

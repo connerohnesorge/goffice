@@ -15,7 +15,7 @@ The system SHALL validate document structure against ECMA-376 schema with suppor
 - AND minOccurs and maxOccurs constraints are enforced
 - AND ordering constraints are checked
 
-### Requirement: Semantic Validation
+### Requirement: Semantic Constraint Validation
 The system SHALL validate element relationships and constraints beyond schema structure.
 
 #### Scenario: Validate relationship
@@ -24,7 +24,7 @@ The system SHALL validate element relationships and constraints beyond schema st
 - AND both elements are verified to support the relationship
 - AND circular dependencies are detected
 
-### Requirement: Validation Error Reporting
+### Requirement: Comprehensive Validation Error Reporting
 The system SHALL collect and report validation errors with detailed context and severity levels.
 
 #### Scenario: Collect validation errors

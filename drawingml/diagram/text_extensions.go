@@ -1,3 +1,5 @@
+// Package diagram provides types and functions for working with SmartArt diagrams
+// in Office Open XML documents.
 package diagram
 
 import (
@@ -21,14 +23,16 @@ func (tb *TextBody) AddParagraph(text string) *drawingml.TextParagraph {
 func (tb *TextBody) Paragraphs() []*drawingml.TextParagraph {
 	var paragraphs []*drawingml.TextParagraph
 	for child := range tb.Children() {
-		if child.LocalName() == "p" &&
-			child.NamespaceURI() == drawingml.NamespaceMain {
-			switch v := child.(type) {
-			case *drawingml.TextParagraph:
-				paragraphs = append(paragraphs, v)
-			case *openxml.CompositeElementBase:
-				paragraphs = append(paragraphs, &drawingml.TextParagraph{CompositeElementBase: v})
-			}
+		if child.LocalName() != "p" ||
+			child.NamespaceURI() != drawingml.NamespaceMain {
+			continue
+		}
+
+		switch v := child.(type) {
+		case *drawingml.TextParagraph:
+			paragraphs = append(paragraphs, v)
+		case *openxml.CompositeElementBase:
+			paragraphs = append(paragraphs, &drawingml.TextParagraph{CompositeElementBase: v})
 		}
 	}
 

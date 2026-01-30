@@ -1,3 +1,6 @@
+// Package compare provides utilities for comparing and merging OpenXML elements.
+// It supports diff generation, three-way merging with conflict resolution, and
+// HTML/JSON reporting of comparison results.
 package compare
 
 import (
@@ -7,6 +10,8 @@ import (
 )
 
 // ToHTML generates a simple HTML report of the comparison result.
+// The output includes styling for different diff types (added, deleted, modified, conflict)
+// and shows a summary of statistics along with detailed differences.
 func (r *ComparisonResult) ToHTML() string {
 	var sb strings.Builder
 	sb.WriteString("<html><head><style>")
@@ -30,18 +35,24 @@ func (r *ComparisonResult) ToHTML() string {
 	}
 
 	sb.WriteString("<h2>Differences</h2><ul>")
-	for _, d := range r.Diffs {
-		writeDiffHTML(&sb, d)
+	for i := range r.Diffs {
+		writeDiffHTML(&sb, &r.Diffs[i])
 	}
 	sb.WriteString("</ul>")
 
 	sb.WriteString("</body></html>")
+
 	return sb.String()
 }
 
-func writeDiffHTML(sb *strings.Builder, d Diff) {
+// writeDiffHTML writes a single diff entry as HTML to the string builder.
+// It applies appropriate CSS classes based on the diff type and recursively
+// handles child diffs for nested changes.
+func writeDiffHTML(sb *strings.Builder, d *Diff) {
 	class := ""
 	switch d.Type {
+	case NoDiff:
+		// No styling needed for no difference
 	case Added:
 		class = "added"
 	case Deleted:
@@ -50,14 +61,14 @@ func writeDiffHTML(sb *strings.Builder, d Diff) {
 		class = "modified"
 	}
 
-	sb.WriteString(fmt.Sprintf("<li class='%s'>%s", class, html.EscapeString(d.Message)))
+	fmt.Fprintf(sb, "<li class='%s'>%s", class, html.EscapeString(d.Message))
 	if d.Key != "" {
-		sb.WriteString(fmt.Sprintf(" (Key: %s)", html.EscapeString(d.Key)))
+		fmt.Fprintf(sb, " (Key: %s)", html.EscapeString(d.Key))
 	}
 	if len(d.ChildDiffs) > 0 {
 		sb.WriteString("<ul>")
-		for _, child := range d.ChildDiffs {
-			writeDiffHTML(sb, child)
+		for i := range d.ChildDiffs {
+			writeDiffHTML(sb, &d.ChildDiffs[i])
 		}
 		sb.WriteString("</ul>")
 	}

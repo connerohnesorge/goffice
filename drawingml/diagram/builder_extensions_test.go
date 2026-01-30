@@ -18,18 +18,22 @@ func TestDataModelBuilder_WithText(t *testing.T) {
 	// Verify text
 	var found bool
 	for pt := range openxml.Elements[*diagram.Point](dataModel.PointList) {
-		if pt.TextBody != nil {
-			// Accessing text content might require traversing paragraphs
-			// Since TextBody implementation is in drawingml package, we can check basic structure
-			if pt.TextBody.Paragraphs() != nil {
-				found = true
-				// We can't easily check text content without exposing more methods or casting
-				// But existence of TextBody and Paragraphs is a good sign
-				paras := pt.TextBody.Paragraphs()
-				if len(paras) == 0 {
-					t.Error("Expected paragraphs in text body")
-				}
-			}
+		if pt.TextBody == nil {
+			continue
+		}
+
+		// Accessing text content might require traversing paragraphs
+		// Since TextBody implementation is in drawingml package, we can check basic structure
+		if pt.TextBody.Paragraphs() == nil {
+			continue
+		}
+
+		found = true
+		// We can't easily check text content without exposing more methods or casting
+		// But existence of TextBody and Paragraphs is a good sign
+		paras := pt.TextBody.Paragraphs()
+		if len(paras) == 0 {
+			t.Error("Expected paragraphs in text body")
 		}
 	}
 

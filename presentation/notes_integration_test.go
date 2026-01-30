@@ -11,7 +11,7 @@ func TestAddNotes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 
 	slide, _ := pres.AddSlide()
 

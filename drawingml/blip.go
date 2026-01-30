@@ -18,6 +18,24 @@ const (
 	BlipCompressionNone    BlipCompression = "none"
 )
 
+// Relationship namespace constants.
+const (
+	// relNamespace is the namespace for relationship attributes.
+	relNamespace = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+)
+
+// Attribute name constants.
+const (
+	// attrThresh is the threshold attribute name.
+	attrThresh = "thresh"
+)
+
+// Magic number constants.
+const (
+	// fullAlpha is the value representing 100% alpha (100000).
+	fullAlpha = 100000
+)
+
 // Blip represents a Binary Large Image or Picture (a:blip).
 type Blip struct {
 	*openxml.CompositeElementBase
@@ -40,6 +58,7 @@ func (b *Blip) CompressionState() BlipCompression {
 	if !found {
 		return BlipCompressionNone
 	}
+
 	return BlipCompression(attr.Value())
 }
 
@@ -47,6 +66,7 @@ func (b *Blip) CompressionState() BlipCompression {
 func (b *Blip) SetCompressionState(state BlipCompression) {
 	if state == BlipCompressionNone || state == "" {
 		b.RemoveAttribute("cstate", "")
+
 		return
 	}
 	b.SetAttribute(openxml.NewAttribute("", "cstate", "", string(state)))
@@ -54,17 +74,18 @@ func (b *Blip) SetCompressionState(state BlipCompression) {
 
 // Embed returns the embedded relationship ID.
 func (b *Blip) Embed() string {
-	attr, found := b.GetAttribute("embed", "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
+	attr, found := b.GetAttribute("embed", relNamespace)
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
 // SetEmbed sets the embedded relationship ID.
 func (b *Blip) SetEmbed(embedId string) {
 	b.SetAttribute(openxml.NewAttribute(
-		"http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+		relNamespace,
 		"embed",
 		"r",
 		embedId,
@@ -73,17 +94,18 @@ func (b *Blip) SetEmbed(embedId string) {
 
 // Link returns the linked relationship ID.
 func (b *Blip) Link() string {
-	attr, found := b.GetAttribute("link", "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
+	attr, found := b.GetAttribute("link", relNamespace)
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
 // SetLink sets the linked relationship ID.
 func (b *Blip) SetLink(linkId string) {
 	b.SetAttribute(openxml.NewAttribute(
-		"http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+		relNamespace,
 		"link",
 		"r",
 		linkId,
@@ -109,6 +131,7 @@ func NewLuminanceEffect(bright, contrast int) *LuminanceEffect {
 	}
 	lum.SetBrightness(bright)
 	lum.SetContrast(contrast)
+
 	return lum
 }
 
@@ -119,6 +142,7 @@ func (l *LuminanceEffect) Brightness() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -126,6 +150,7 @@ func (l *LuminanceEffect) Brightness() int {
 func (l *LuminanceEffect) SetBrightness(bright int) {
 	if bright == 0 {
 		l.RemoveAttribute("bright", "")
+
 		return
 	}
 	l.SetAttribute(openxml.NewAttribute("", "bright", "", strconv.Itoa(bright)))
@@ -138,6 +163,7 @@ func (l *LuminanceEffect) Contrast() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -145,6 +171,7 @@ func (l *LuminanceEffect) Contrast() int {
 func (l *LuminanceEffect) SetContrast(contrast int) {
 	if contrast == 0 {
 		l.RemoveAttribute("contrast", "")
+
 		return
 	}
 	l.SetAttribute(openxml.NewAttribute("", "contrast", "", strconv.Itoa(contrast)))
@@ -168,22 +195,24 @@ func NewBiLevelEffect(thresh int) *BiLevelEffect {
 		LeafElementBase: openxml.NewLeafElement(NamespaceMain, "biLevel", PrefixMain),
 	}
 	bl.SetThreshold(thresh)
+
 	return bl
 }
 
 // Threshold returns the threshold value.
 func (b *BiLevelEffect) Threshold() int {
-	attr, found := b.GetAttribute("thresh", "")
+	attr, found := b.GetAttribute(attrThresh, "")
 	if !found {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
 // SetThreshold sets the threshold value.
 func (b *BiLevelEffect) SetThreshold(thresh int) {
-	b.SetAttribute(openxml.NewAttribute("", "thresh", "", strconv.Itoa(thresh)))
+	b.SetAttribute(openxml.NewAttribute("", attrThresh, "", strconv.Itoa(thresh)))
 }
 
 // AddBiLevelEffect adds a bi-level effect to the Blip.
@@ -205,6 +234,7 @@ func NewHSLEffect(hue, sat, lum int) *HSLEffect {
 	h.SetHue(hue)
 	h.SetSaturation(sat)
 	h.SetLuminance(lum)
+
 	return h
 }
 
@@ -215,6 +245,7 @@ func (h *HSLEffect) Hue() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -230,6 +261,7 @@ func (h *HSLEffect) Saturation() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -245,6 +277,7 @@ func (h *HSLEffect) Luminance() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -288,22 +321,24 @@ func NewAlphaBiLevelEffect(thresh int) *AlphaBiLevelEffect {
 		LeafElementBase: openxml.NewLeafElement(NamespaceMain, "alphaBiLevel", PrefixMain),
 	}
 	a.SetThreshold(thresh)
+
 	return a
 }
 
 // Threshold returns the threshold value.
 func (a *AlphaBiLevelEffect) Threshold() int {
-	attr, found := a.GetAttribute("thresh", "")
+	attr, found := a.GetAttribute(attrThresh, "")
 	if !found {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
 // SetThreshold sets the threshold value.
 func (a *AlphaBiLevelEffect) SetThreshold(thresh int) {
-	a.SetAttribute(openxml.NewAttribute("", "thresh", "", strconv.Itoa(thresh)))
+	a.SetAttribute(openxml.NewAttribute("", attrThresh, "", strconv.Itoa(thresh)))
 }
 
 // AddAlphaBiLevelEffect adds an alpha bi-level effect to the Blip.
@@ -348,6 +383,7 @@ func NewAlphaFixedEffect(amt int) *AlphaFixedEffect {
 		LeafElementBase: openxml.NewLeafElement(NamespaceMain, "alphaModFix", PrefixMain),
 	}
 	a.SetAmount(amt)
+
 	return a
 }
 
@@ -355,9 +391,10 @@ func NewAlphaFixedEffect(amt int) *AlphaFixedEffect {
 func (a *AlphaFixedEffect) Amount() int {
 	attr, found := a.GetAttribute("amt", "")
 	if !found {
-		return 100000
+		return fullAlpha
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 

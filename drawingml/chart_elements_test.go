@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestTitleProperties(t *testing.T) {
+func TestTitleProperties(_ *testing.T) {
 	title := NewTitle()
 
 	// Test SetOverlay
@@ -13,7 +13,7 @@ func TestTitleProperties(t *testing.T) {
 	// Assuming OuterXml works
 }
 
-func TestLegendProperties(t *testing.T) {
+func TestLegendProperties(_ *testing.T) {
 	legend := NewLegend()
 
 	// Test SetLayout
@@ -30,7 +30,7 @@ func TestLegendProperties(t *testing.T) {
 	legend.SetTextProperties(txPr)
 }
 
-func TestDataLabelsProperties(t *testing.T) {
+func TestDataLabelsProperties(_ *testing.T) {
 	dl := NewDataLabels()
 
 	dl.SetPosition(DataLabelPositionBestFit)
@@ -43,7 +43,7 @@ func TestDataLabelsProperties(t *testing.T) {
 	dl.SetTextProperties(txPr)
 }
 
-func TestDataTable(t *testing.T) {
+func TestDataTable(_ *testing.T) {
 	dt := NewDataTable()
 
 	dt.SetShowHorizontalBorder(true)
@@ -58,12 +58,12 @@ func TestDataTable(t *testing.T) {
 	dt.SetTextProperties(txPr)
 }
 
-func TestScalingLogBase(t *testing.T) {
+func TestScalingLogBase(_ *testing.T) {
 	s := NewScaling()
 	s.SetLogBase(10)
 }
 
-func TestPlotAreaDataTable(t *testing.T) {
+func TestPlotAreaDataTable(_ *testing.T) {
 	pa := NewPlotArea()
 	dt := NewDataTable()
 	pa.SetDataTable(dt)

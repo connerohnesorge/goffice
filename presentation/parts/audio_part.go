@@ -33,6 +33,26 @@ const (
 	AudioTypeFlac
 )
 
+// Audio extension constants.
+const (
+	extMP3   = ".mp3"
+	extWAV   = ".wav"
+	extWMA   = ".wma"
+	extM4A   = ".m4a"
+	extOGG   = ".ogg"
+	extFLAC  = ".flac"
+)
+
+// Audio content type constants.
+const (
+	contentTypeAudioMPEG  = "audio/mpeg"
+	contentTypeAudioWAV   = "audio/wav"
+	contentTypeAudioWMA   = "audio/x-ms-wma"
+	contentTypeAudioMP4   = "audio/mp4"
+	contentTypeAudioOGG   = "audio/ogg"
+	contentTypeAudioFLAC  = "audio/flac"
+)
+
 // String returns the string representation of the audio type.
 func (at AudioType) String() string {
 	switch at {
@@ -57,19 +77,19 @@ func (at AudioType) String() string {
 func (at AudioType) Extension() string {
 	switch at {
 	case AudioTypeMp3:
-		return ".mp3"
+		return extMP3
 	case AudioTypeWav:
-		return ".wav"
+		return extWAV
 	case AudioTypeWma:
-		return ".wma"
+		return extWMA
 	case AudioTypeM4a:
-		return ".m4a"
+		return extM4A
 	case AudioTypeOgg:
-		return ".ogg"
+		return extOGG
 	case AudioTypeFlac:
-		return ".flac"
+		return extFLAC
 	default:
-		return ".mp3"
+		return extMP3
 	}
 }
 
@@ -77,19 +97,19 @@ func (at AudioType) Extension() string {
 func (at AudioType) ContentType() string {
 	switch at {
 	case AudioTypeMp3:
-		return "audio/mpeg"
+		return contentTypeAudioMPEG
 	case AudioTypeWav:
-		return "audio/wav"
+		return contentTypeAudioWAV
 	case AudioTypeWma:
-		return "audio/x-ms-wma"
+		return contentTypeAudioWMA
 	case AudioTypeM4a:
-		return "audio/mp4"
+		return contentTypeAudioMP4
 	case AudioTypeOgg:
-		return "audio/ogg"
+		return contentTypeAudioOGG
 	case AudioTypeFlac:
-		return "audio/flac"
+		return contentTypeAudioFLAC
 	default:
-		return "audio/mpeg"
+		return contentTypeAudioMPEG
 	}
 }
 
@@ -98,8 +118,10 @@ func (at AudioType) IsSupported() bool {
 	switch at {
 	case AudioTypeMp3, AudioTypeWav, AudioTypeWma, AudioTypeM4a:
 		return true // Native support
+	case AudioTypeOgg, AudioTypeFlac:
+		return false // Not natively supported
 	default:
-		return false // Ogg, FLAC not natively supported
+		return false
 	}
 }
 
@@ -226,6 +248,7 @@ func (ap *AudioPart) FeedDataBytes(data []byte) error {
 
 	ap.SetData(data)
 	ap.setSize(int64(len(data)))
+
 	return nil
 }
 
@@ -266,17 +289,17 @@ func audioTypeFromContentType(
 	contentType string,
 ) AudioType {
 	switch contentType {
-	case "audio/mpeg", "audio/mp3":
+	case contentTypeAudioMPEG, "audio/mp3":
 		return AudioTypeMp3
-	case "audio/wav", "audio/x-wav", "audio/wave":
+	case contentTypeAudioWAV, "audio/x-wav", "audio/wave":
 		return AudioTypeWav
-	case "audio/x-ms-wma":
+	case contentTypeAudioWMA:
 		return AudioTypeWma
-	case "audio/mp4", "audio/x-m4a":
+	case contentTypeAudioMP4, "audio/x-m4a":
 		return AudioTypeM4a
-	case "audio/ogg":
+	case contentTypeAudioOGG:
 		return AudioTypeOgg
-	case "audio/flac":
+	case contentTypeAudioFLAC:
 		return AudioTypeFlac
 	default:
 		return AudioTypeMp3
@@ -288,17 +311,17 @@ func AudioTypeFromExtension(
 	ext string,
 ) AudioType {
 	switch ext {
-	case ".mp3":
+	case extMP3:
 		return AudioTypeMp3
-	case ".wav":
+	case extWAV:
 		return AudioTypeWav
-	case ".wma":
+	case extWMA:
 		return AudioTypeWma
-	case ".m4a":
+	case extM4A:
 		return AudioTypeM4a
-	case ".ogg":
+	case extOGG:
 		return AudioTypeOgg
-	case ".flac":
+	case extFLAC:
 		return AudioTypeFlac
 	default:
 		return AudioTypeMp3
@@ -310,6 +333,7 @@ func AudioTypeFromFilename(
 	filename string,
 ) AudioType {
 	ext := getFileExtension(filename)
+
 	return AudioTypeFromExtension(ext)
 }
 

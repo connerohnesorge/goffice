@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	testRelID       = "rId1"
-	testDocumentXML = "/word/document.xml"
+	testRelID          = "rId1"
+	testDocumentXML    = "/word/document.xml"
+	testContentTypeXML = "application/xml"
 )
 
 // Test OpenXmlPackage initialization
@@ -96,7 +97,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 		func(t *testing.T) {
 			part := NewOpenXmlPartData(
 				testDocumentXML,
-				"application/xml",
+				testContentTypeXML,
 				nil,
 				oxPkg,
 			)
@@ -137,7 +138,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 		func(t *testing.T) {
 			part := NewOpenXmlPartData(
 				"/word/styles.xml",
-				"application/xml",
+				testContentTypeXML,
 				nil,
 				oxPkg,
 			)
@@ -162,7 +163,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 		func(t *testing.T) {
 			part := NewOpenXmlPartData(
 				testDocumentXML,
-				"application/xml",
+				testContentTypeXML,
 				nil,
 				oxPkg,
 			)
@@ -186,7 +187,7 @@ func TestOpenXmlPackageAddPart(t *testing.T) {
 
 			part := NewOpenXmlPartData(
 				testDocumentXML,
-				"application/xml",
+				testContentTypeXML,
 				nil,
 				oxPkg2,
 			)
@@ -258,7 +259,7 @@ func TestOpenXmlPackageAddNewPart(t *testing.T) {
 		func(t *testing.T) {
 			_, err := oxPkg.AddNewPart(
 				testDocumentXML,
-				"application/xml",
+				testContentTypeXML,
 				"",
 			)
 			if err != ErrPartExists {
@@ -405,7 +406,7 @@ func TestOpenXmlPackageDeletePart(t *testing.T) {
 
 	part, _ := oxPkg.AddNewPart(
 		testDocumentXML,
-		"application/xml",
+		testContentTypeXML,
 		"",
 	)
 
@@ -487,7 +488,7 @@ func TestOpenXmlPackageIsDirty(t *testing.T) {
 		func(t *testing.T) {
 			part := NewOpenXmlPartData(
 				testDocumentXML,
-				"application/xml",
+				testContentTypeXML,
 				nil,
 				oxPkg,
 			)
@@ -511,7 +512,7 @@ func TestOpenXmlPackageIsDirty(t *testing.T) {
 
 			part := NewOpenXmlPartData(
 				testDocumentXML,
-				"application/xml",
+				testContentTypeXML,
 				nil,
 				oxPkg2,
 			)
@@ -542,7 +543,7 @@ func TestOpenXmlPackageMainPart(t *testing.T) {
 	t.Run("SetMainPart", func(t *testing.T) {
 		part := NewOpenXmlPartData(
 			testDocumentXML,
-			"application/xml",
+			testContentTypeXML,
 			nil,
 			oxPkg,
 		)
@@ -610,7 +611,7 @@ func TestOpenXmlPackageSaveClose(t *testing.T) {
 
 		part, _ := oxPkg.AddNewPart(
 			testDocumentXML,
-			"application/xml",
+			testContentTypeXML,
 			"",
 		)
 		part.SetData(
@@ -643,7 +644,7 @@ func TestOpenXmlPackageSaveClose(t *testing.T) {
 
 		part, _ := oxPkg.AddNewPart(
 			testDocumentXML,
-			"application/xml",
+			testContentTypeXML,
 			"",
 		)
 		part.SetData(
@@ -739,7 +740,7 @@ func TestOpenXmlPackageFeatures(t *testing.T) {
 			// Add a part with content type
 			_, _ = pkg.CreatePart(
 				testDocumentXML,
-				"application/xml",
+				testContentTypeXML,
 			)
 
 			ct, err := ctFeat.GetContentType(
@@ -751,7 +752,7 @@ func TestOpenXmlPackageFeatures(t *testing.T) {
 					err,
 				)
 			}
-			if ct != "application/xml" {
+			if ct != testContentTypeXML {
 				t.Errorf(
 					"GetContentType() = %q, want application/xml",
 					ct,
@@ -811,7 +812,7 @@ func TestOpenXmlPackageHelpers(t *testing.T) {
 		pkg, _ := packaging.Create(tmpPath)
 		_, _ = pkg.CreatePart(
 			testDocumentXML,
-			"application/xml",
+			testContentTypeXML,
 		)
 		_, _ = pkg.CreateRelationship(
 			testDocumentXML,
@@ -859,7 +860,7 @@ func TestOpenXmlPackageHelpers(t *testing.T) {
 			pkg, _ := packaging.Create(tmpPath)
 			_, _ = pkg.CreatePart(
 				testDocumentXML,
-				"application/xml",
+				testContentTypeXML,
 			)
 			_ = pkg.Save()
 			_ = pkg.Close()
@@ -894,7 +895,7 @@ func TestOpenXmlPackageGetPackagingPart(
 
 	packPart, _ := pkg.CreatePart(
 		testDocumentXML,
-		"application/xml",
+		testContentTypeXML,
 	)
 
 	oxPkg := NewOpenXmlPackage(pkg)

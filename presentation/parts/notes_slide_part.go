@@ -112,6 +112,7 @@ func (nsp *NotesSlidePart) EffectiveHeaderFooter() *elements.ExtHeaderFooter {
 	if nmp := nsp.NotesMasterPart(); nmp != nil {
 		return nmp.NotesMaster().HeaderFooter
 	}
+
 	return nil
 }
 
@@ -131,6 +132,7 @@ func (nsp *NotesSlidePart) GetOrCreateCommonSlideData() *elements.CommonSlideDat
 
 	csd := elements.NewCommonSlideData()
 	ns.AppendChild(csd)
+
 	return csd
 }
 
@@ -170,6 +172,7 @@ func (nsp *NotesSlidePart) GetOrCreateTextBody() *elements.TextBody {
 
 	// Create new shape with text body
 	shape := st.AddShape()
+
 	return shape.GetOrCreateTextBody()
 }
 

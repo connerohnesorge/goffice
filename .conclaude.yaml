@@ -33,8 +33,8 @@ stop:
   #   maxOutputLines: 100
   #   timeout: 300
 
-  infinite: false
-  infiniteMessage: "continue working on the task"
+  infinite: true
+  infiniteMessage: "continue calling spectr:apply on each of the spectr change proposals in order."
 
 # Subagent stop hook - runs when subagents finish
 subagentStop:

@@ -251,6 +251,7 @@ func (ns *NotesSlide) HeaderFooter() *ExtHeaderFooter {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -456,6 +457,7 @@ func (sl *SlideLayout) GetOrCreateCommonSlideData() *CommonSlideData {
 	}
 	csd = NewCommonSlideData()
 	sl.AppendChild(csd)
+
 	return csd
 }
 
@@ -480,6 +482,7 @@ func (sl *SlideLayout) AddPlaceholder(phType PlaceholderType, idx int) *Shape {
 	st := csd.GetOrCreateShapeTree()
 	shape := st.AddShape()
 	shape.NonVisualShapeProperties().SetPlaceholder(phType, idx)
+
 	return shape
 }
 
@@ -500,6 +503,7 @@ func (sl *SlideLayout) ColorMapOverride() *ColorMapOverride {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -520,6 +524,7 @@ func (sl *SlideLayout) Transition() *SlideTransition {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -540,6 +545,7 @@ func (sl *SlideLayout) Timing() *SlideTiming {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -560,6 +566,7 @@ func (sl *SlideLayout) HeaderFooter() *ExtHeaderFooter {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -567,7 +574,7 @@ func (sl *SlideLayout) HeaderFooter() *ExtHeaderFooter {
 func (sl *SlideLayout) ExtensionList() *ExtensionListModify {
 	elem := sl.GetElement(
 		"extLst",
-		NamespacePresentationML,
+		NamespacePowerPoint2010,
 	)
 	if elem == nil {
 		return nil
@@ -580,6 +587,7 @@ func (sl *SlideLayout) ExtensionList() *ExtensionListModify {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -600,6 +608,7 @@ func (sl *SlideLayout) TextStyles() *TextStyles {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -684,8 +693,10 @@ func (sm *SlideMaster) ColorMap() *PresentationColorMap {
 		// Note: We might need a better way to wrap if strict validation is needed
 		cm := NewPresentationColorMap()
 		cm.CompositeElementBase = comp
+
 		return cm
 	}
+
 	return nil
 }
 
@@ -706,6 +717,7 @@ func (sm *SlideMaster) SlideLayoutIdList() *SlideLayoutIdList {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -726,6 +738,7 @@ func (sm *SlideMaster) Transition() *SlideTransition {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -746,6 +759,7 @@ func (sm *SlideMaster) Timing() *SlideTiming {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -766,6 +780,7 @@ func (sm *SlideMaster) HeaderFooter() *ExtHeaderFooter {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -786,6 +801,7 @@ func (sm *SlideMaster) TextStyles() *TextStyles {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -793,7 +809,7 @@ func (sm *SlideMaster) TextStyles() *TextStyles {
 func (sm *SlideMaster) ExtensionList() *ExtensionListModify {
 	elem := sm.GetElement(
 		"extLst",
-		NamespacePresentationML,
+		NamespacePowerPoint2010,
 	)
 	if elem == nil {
 		return nil
@@ -806,6 +822,7 @@ func (sm *SlideMaster) ExtensionList() *ExtensionListModify {
 			CompositeElementBase: comp,
 		}
 	}
+
 	return nil
 }
 
@@ -920,6 +937,7 @@ func NewPresentationColorMap() *PresentationColorMap {
 // Clone creates a deep copy of this PresentationColorMap.
 func (m *PresentationColorMap) Clone() openxml.Element {
 	cloned := m.ColorMappingType.Clone()
+
 	return &PresentationColorMap{
 		ColorMappingType: cloned.(*ColorMappingType),
 	}

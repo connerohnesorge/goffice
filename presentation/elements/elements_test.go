@@ -364,7 +364,7 @@ func TestSlideMaster(t *testing.T) {
 
 // TestSlideIdList tests SlideIdList element.
 func TestSlideIdList(t *testing.T) {
-	sil := NewSlideIdList()
+	sil := WrapSlideIdList(NewSlideIdList())
 
 	// Initially empty
 	if sil.Count() != 0 {
@@ -397,7 +397,7 @@ func TestSlideIdList(t *testing.T) {
 
 // TestSlideMasterIdList tests SlideMasterIdList element.
 func TestSlideMasterIdList(t *testing.T) {
-	smil := NewSlideMasterIdList()
+	smil := WrapSlideMasterIdList(NewSlideMasterIdList())
 
 	// Add slide master IDs
 	smil.AddSlideMasterId(2147483648, "rId1")
@@ -412,7 +412,7 @@ func TestSlideMasterIdList(t *testing.T) {
 
 // TestNotesSize tests NotesSize element.
 func TestNotesSize(t *testing.T) {
-	ns := NewNotesSize(6858000, 9144000)
+	ns := WrapNotesSize(NewNotesSize(6858000, 9144000))
 
 	// Check dimensions
 	if ns.Cx() != 6858000 {

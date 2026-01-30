@@ -1,4 +1,6 @@
-// and effects.
+// Package drawingml provides shared DrawingML types for shapes, images, charts,
+// diagrams, and effects.
+//
 // DrawingML (Drawing Markup Language) is the common drawing specification used
 // across Office Open XML documents for charts, diagrams, and graphical content.
 package drawingml
@@ -17,18 +19,6 @@ func wrapCompositeElement(
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return comp
 	}
-	return nil
-}
 
-// wrapLeafElement attempts to wrap an element as a LeafElementBase.
-func wrapLeafElement(
-	elem openxml.Element,
-) *openxml.LeafElementBase {
-	if elem == nil {
-		return nil
-	}
-	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
-		return leaf
-	}
 	return nil
 }

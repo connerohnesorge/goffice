@@ -13,7 +13,7 @@ func TestImportHTMLTable(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 
 	_, err = pres.AddSlide()
 	if err != nil {
@@ -77,7 +77,7 @@ func TestImportHTMLText(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 
 	_, err = pres.AddSlide()
 	if err != nil {
@@ -117,7 +117,7 @@ func TestImportHTMLTable_WithFormatting(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 
 	_, err = pres.AddSlide()
 	if err != nil {
@@ -162,7 +162,7 @@ func TestImportHTMLTable_WithLists(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 
 	_, err = pres.AddSlide()
 	if err != nil {
@@ -216,7 +216,7 @@ func TestImportHTMLTable_WithLinks(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 
 	_, err = pres.AddSlide()
 	if err != nil {

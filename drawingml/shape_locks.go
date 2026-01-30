@@ -137,13 +137,15 @@ func (s *ShapeLocks) getBoolAttr(name string, defaultVal bool) bool {
 		return defaultVal
 	}
 	val := attr.Value()
-	return val == "1" || val == "true"
+
+	return val == "1" || val == attrTrue
 }
 
 // setBoolAttr sets a boolean attribute value.
 func (s *ShapeLocks) setBoolAttr(name string, value, defaultVal bool) {
 	if value == defaultVal {
 		s.RemoveAttribute(name, "")
+
 		return
 	}
 	var strVal string

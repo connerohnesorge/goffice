@@ -6,8 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/connerohnesorge/goffice/presentation/parts"
 )
 
 // TestAddAudioFromFile tests adding an audio file from a file path.
@@ -17,8 +15,8 @@ func TestAddAudioFromFile(t *testing.T) {
 
 	// Write minimal MP3 header (ID3 tag)
 	audioData := make([]byte, 16)
-	copy(audioData, []byte("ID3"))
-	if err := os.WriteFile(audioFile, audioData, 0644); err != nil {
+	copy(audioData, "ID3")
+	if err := os.WriteFile(audioFile, audioData, 0o644); err != nil {
 		t.Fatalf("Failed to create test audio file: %v", err)
 	}
 
@@ -27,7 +25,7 @@ func TestAddAudioFromFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, _ = pres.AddSlide()
 
 	// Add audio from file
@@ -59,27 +57,23 @@ func TestGetAudios(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, _ = pres.AddSlide()
 
 	// Add two audio files
 	audioData := make([]byte, 16)
-	copy(audioData, []byte("ID3"))
+	copy(audioData, "ID3")
 
-	_, err = pres.AddAudioFromFile(0, "", &AddAudioOptions{
-		AutoDetectType: false,
-		AudioType:      parts.AudioTypeMp3,
-	})
 	// Wait, AddAudioFromFile requires a real file.
 	// I'll use a hack or just create real temp files.
 	temp1 := filepath.Join(t.TempDir(), "1.mp3")
 	temp2 := filepath.Join(t.TempDir(), "2.wav")
-	os.WriteFile(temp1, audioData, 0644)
-	copy(audioData, []byte("RIFFxxxxWAVE"))
-	os.WriteFile(temp2, audioData, 0644)
+	_ = os.WriteFile(temp1, audioData, 0o644)
+	copy(audioData, "RIFFxxxxWAVE")
+	_ = os.WriteFile(temp2, audioData, 0o644)
 
-	pres.AddAudioFromFile(0, temp1, nil)
-	pres.AddAudioFromFile(0, temp2, nil)
+	_, _ = pres.AddAudioFromFile(0, temp1, nil)
+	_, _ = pres.AddAudioFromFile(0, temp2, nil)
 
 	audios := pres.GetAudios()
 	if len(audios) != 2 {

@@ -28,6 +28,47 @@ type Table struct {
 	table        *drawtable.Table
 }
 
+// LinkGraphicFrameToTable sets up a GraphicFrame to contain a table.
+// This creates the proper <a:graphic><a:graphicData> structure with the table element.
+func LinkGraphicFrameToTable(gf *elements.GraphicFrame, tbl *drawtable.Table) {
+	// Create or get the graphic element
+	graphicElem := gf.GetElement("graphic", elements.NamespaceDrawingML)
+	var graphic *openxml.CompositeElementBase
+	if graphicElem != nil {
+		graphic, _ = graphicElem.(*openxml.CompositeElementBase)
+	}
+	if graphic == nil {
+		graphic = openxml.NewCompositeElement(
+			elements.NamespaceDrawingML,
+			"graphic",
+			elements.PrefixA,
+		)
+		gf.AppendChild(graphic)
+	}
+
+	// Create graphicData element
+	graphicData := openxml.NewCompositeElement(
+		elements.NamespaceDrawingML,
+		"graphicData",
+		elements.PrefixA,
+	)
+	graphicData.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"uri",
+			"",
+			"http://schemas.openxmlformats.org/drawingml/2006/table",
+		),
+	)
+
+	// Add the table element to graphicData
+	if tbl != nil {
+		graphicData.AppendChild(tbl)
+	}
+
+	graphic.AppendChild(graphicData)
+}
+
 // NewTableFromGraphicFrame wraps an existing GraphicFrame that contains a table.
 // This is used for reading existing tables from documents.
 func NewTableFromGraphicFrame(gf *elements.GraphicFrame) *Table {
@@ -302,9 +343,7 @@ func NewTable(slide *elements.Slide, rows, cols int) *Table {
 	tbl := drawtable.NewTable(rows, cols)
 
 	// Link table to graphic frame
-	// TODO: Implement LinkGraphicFrameToTable
-	_ = tbl
-	_ = gf
+	LinkGraphicFrameToTable(gf, tbl)
 
 	// Set default position and size
 	// Default position: 1 inch from top-left

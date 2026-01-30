@@ -19,18 +19,21 @@ func NewWorkbookBuilder() *WorkbookBuilder {
 	if err != nil {
 		wb.errors = append(wb.errors, err)
 	}
+
 	return wb
 }
 
 func (wb *WorkbookBuilder) AddSheet(name string) *SheetBuilder {
 	if wb.doc == nil {
 		wb.errors = append(wb.errors, fmt.Errorf("document is nil"))
+
 		return &SheetBuilder{wb: wb}
 	}
 
 	sheet, err := wb.doc.AddSheet(name)
 	if err != nil {
 		wb.errors = append(wb.errors, err)
+
 		return &SheetBuilder{wb: wb}
 	}
 
@@ -44,6 +47,7 @@ func (wb *WorkbookBuilder) Build() (*Document, error) {
 	if len(wb.errors) > 0 {
 		return nil, wb.errors[0]
 	}
+
 	return wb.doc, nil
 }
 
@@ -58,6 +62,7 @@ func (sb *SheetBuilder) AddRow() *RowBuilder {
 	}
 
 	row := sb.sheet.AddRow()
+
 	return &RowBuilder{
 		sb:  sb,
 		row: row,
@@ -83,6 +88,7 @@ func (rb *RowBuilder) Cell(col uint32) *CellBuilder {
 	}
 
 	cell := rb.row.Cell(col)
+
 	return &CellBuilder{
 		rb:   rb,
 		cell: cell,
@@ -106,6 +112,7 @@ func (cb *CellBuilder) SetString(value string) *CellBuilder {
 	if cb.cell != nil {
 		cb.cell.SetString(value)
 	}
+
 	return cb
 }
 
@@ -113,6 +120,7 @@ func (cb *CellBuilder) SetNumber(value float64) *CellBuilder {
 	if cb.cell != nil {
 		cb.cell.SetNumber(value)
 	}
+
 	return cb
 }
 
@@ -120,6 +128,7 @@ func (cb *CellBuilder) SetInt(value int) *CellBuilder {
 	if cb.cell != nil {
 		cb.cell.SetNumber(float64(value))
 	}
+
 	return cb
 }
 
@@ -127,6 +136,7 @@ func (cb *CellBuilder) SetBool(value bool) *CellBuilder {
 	if cb.cell != nil {
 		cb.cell.SetBoolean(value)
 	}
+
 	return cb
 }
 
@@ -134,6 +144,7 @@ func (cb *CellBuilder) SetStyle(style *Style) *CellBuilder {
 	if cb.cell != nil {
 		cb.cell.SetStyle(style)
 	}
+
 	return cb
 }
 
@@ -178,6 +189,7 @@ func (rb *RangeBuilder) SetStyle(style *Style) *RangeBuilder {
 	if rb.rnge != nil {
 		rb.rnge.SetStyle(style)
 	}
+
 	return rb
 }
 
@@ -185,6 +197,7 @@ func (rb *RangeBuilder) SetValue(value interface{}) *RangeBuilder {
 	if rb.rnge != nil {
 		rb.rnge.SetValue(value)
 	}
+
 	return rb
 }
 
@@ -192,6 +205,7 @@ func (rb *RangeBuilder) Merge() *RangeBuilder {
 	if rb.rnge != nil {
 		_ = rb.sb.sheet.MergeCells(rb.rnge.String())
 	}
+
 	return rb
 }
 

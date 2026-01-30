@@ -276,7 +276,7 @@ The system SHALL support pivot table slicers and timelines.
 - THEN timeline is created with date range
 - AND timeline filtering updates pivot table
 
-### Requirement: Cell Comments
+### Requirement: Threaded Cell Comments
 The system SHALL support cell comments with threading.
 
 #### Scenario: Add comment to cell

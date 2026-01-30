@@ -20,49 +20,6 @@ type ChartExPart struct {
 	*openxml.OpenXmlPartData
 }
 
-// newChartExPart creates a new extended chart part.
-func newChartExPart(
-	drawingsPart *DrawingsPart,
-	uri string,
-) (*ChartExPart, error) {
-	packPart, relID, err := drawingsPart.addChildPart(
-		uri,
-		ContentTypeChartEx,
-		RelationshipTypeChartEx,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	partData := openxml.NewOpenXmlPartData(
-		uri,
-		ContentTypeChartEx,
-		packPart,
-		drawingsPart,
-	)
-	partData.SetRelationshipID(relID)
-
-	cp := &ChartExPart{
-		OpenXmlPartData: partData,
-	}
-
-	// Initialize with minimal chart content
-	cp.initializeContent()
-
-	// Add to drawings part's child parts
-	if err := drawingsPart.AddPart(cp, relID); err != nil {
-		return nil, err
-	}
-
-	return cp, nil
-}
-
-// initializeContent sets up minimal extended chart content.
-func (cp *ChartExPart) initializeContent() {
-	chartSpace := drawingml.NewChartSpaceEx()
-	cp.SetRootElement(chartSpace)
-}
-
 // FixedContentType returns the content type for this part.
 func (*ChartExPart) FixedContentType() string {
 	return ContentTypeChartEx

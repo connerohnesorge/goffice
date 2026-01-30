@@ -188,7 +188,7 @@ func TestElementMerger_ThreeWayMerge(t *testing.T) {
 		theirs.SetInnerText("Theirs")
 
 		merger.SetStrategy(&compare.StrategyCombined{Separator: " | "})
-		merged, conflicts, err := merger.ThreeWayMerge(base, ours, theirs)
+		merged, _, err := merger.ThreeWayMerge(base, ours, theirs)
 		if err != nil {
 			t.Fatalf("ThreeWayMerge failed: %v", err)
 		}
@@ -207,11 +207,6 @@ func TestElementMerger_ThreeWayMerge(t *testing.T) {
 		leaf, ok := merged.(openxml.LeafElement)
 		if !ok {
 			t.Fatal("merged is not leaf")
-		}
-
-		// Temporary check to see what happens before fix
-		if len(conflicts) > 0 {
-			// t.Logf("Conflict type: %v", conflicts[0].Type)
 		}
 
 		if leaf.InnerText() != "Ours | Theirs" {

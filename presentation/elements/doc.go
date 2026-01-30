@@ -66,6 +66,7 @@ const (
 	NamespaceDrawingMLPicture = openxml.NamespaceDrawingMLPicture
 	NamespaceDrawingMLChart   = openxml.NamespaceDrawingMLChart
 	NamespaceRelationships    = openxml.NamespaceRelationships
+	NamespacePowerPoint2010   = openxml.NamespacePowerPoint2010
 	PrefixP                   = "p"
 	PrefixA                   = "a"
 	PrefixPic                 = "pic"
@@ -158,18 +159,6 @@ func wrapCompositeElement(
 	if comp, ok := elem.(*openxml.CompositeElementBase); ok {
 		return comp
 	}
-	return nil
-}
 
-// wrapLeafElement attempts to wrap an element as a LeafElementBase.
-func wrapLeafElement(
-	elem openxml.Element,
-) *openxml.LeafElementBase {
-	if elem == nil {
-		return nil
-	}
-	if leaf, ok := elem.(*openxml.LeafElementBase); ok {
-		return leaf
-	}
 	return nil
 }

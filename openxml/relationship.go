@@ -3,6 +3,7 @@
 package openxml
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 	"sync/atomic"
@@ -10,8 +11,17 @@ import (
 	"github.com/connerohnesorge/goffice/packaging"
 )
 
+// Relationship errors.
+var (
+	ErrRelationshipExternal = errors.New("relationship targets external resource")
+	ErrRelationshipNotPart  = errors.New("relationship does not target a part")
+)
+
 // TargetMode specifies how a relationship target should be interpreted.
 type TargetMode int
+
+// RelationshipType identifies the kind of relationship.
+type RelationshipType string
 
 const (
 	// TargetModeInternal indicates the target is a part within the package.
@@ -48,6 +58,10 @@ type OpenXmlRelationship interface {
 
 	// Container returns the part or package that owns this relationship.
 	Container() OpenXmlPartContainer
+
+	// GetPart returns the target part if the relationship targets a part.
+	// Returns error for external relationships or if the part is not found.
+	GetPart() (OpenXmlPart, error)
 }
 
 // Compile-time checks to ensure types implement OpenXmlRelationship.
@@ -100,6 +114,21 @@ func (r *baseRelationship) Container() OpenXmlPartContainer {
 	return r.container
 }
 
+// GetPart returns the target part.
+func (r *baseRelationship) GetPart() (OpenXmlPart, error) {
+	if r == nil {
+		return nil, ErrRelationshipNotPart
+	}
+	if r.targetMode == TargetModeExternal {
+		return nil, ErrRelationshipExternal
+	}
+	if r.container == nil {
+		return nil, ErrRelationshipNotPart
+	}
+
+	return r.container.GetPartById(r.id)
+}
+
 // PartRelationship represents an internal relationship to another part.
 type PartRelationship struct {
 	baseRelationship
@@ -129,6 +158,15 @@ func (r *PartRelationship) TargetPart() OpenXmlPart {
 	return r.targetPart
 }
 
+// GetPart returns the target part.
+func (r *PartRelationship) GetPart() (OpenXmlPart, error) {
+	if r.targetPart != nil {
+		return r.targetPart, nil
+	}
+
+	return r.baseRelationship.GetPart()
+}
+
 // ExternalRelationship represents an external URI relationship.
 type ExternalRelationship struct {
 	baseRelationship
@@ -148,6 +186,11 @@ func NewExternalRelationship(
 			container:  container,
 		},
 	}
+}
+
+// GetPart returns error for external relationships.
+func (r *ExternalRelationship) GetPart() (OpenXmlPart, error) {
+	return nil, ErrRelationshipExternal
 }
 
 // HyperlinkRelationship represents a hyperlink relationship.
@@ -184,6 +227,16 @@ func NewHyperlinkRelationship(
 // IsExternal returns true if the hyperlink points to an external resource.
 func (r *HyperlinkRelationship) IsExternal() bool {
 	return r.isExternal
+}
+
+// GetPart returns error for hyperlinks unless they target a specific part which they usually don't.
+// Internal hyperlinks target bookmarks in the same document.
+func (r *HyperlinkRelationship) GetPart() (OpenXmlPart, error) {
+	if r.isExternal {
+		return nil, ErrRelationshipExternal
+	}
+	// Internal hyperlinks target locations, not parts.
+	return nil, ErrRelationshipNotPart
 }
 
 // DataPartReferenceRelationship represents a relationship to a data part.

@@ -345,9 +345,9 @@ The system SHALL support advanced footnote and endnote settings.
 - THEN footnotes are converted to endnotes
 - AND endnotes appear at document/section end
 
-## MODIFIED Requirements
+## ADDED Requirements
 
-### Requirement: Create WordprocessingDocument
+### Requirement: Create WordprocessingDocument With Advanced Builder
 The system SHALL support creating new Word documents with extended builder options.
 
 #### Scenario: Create with advanced builder

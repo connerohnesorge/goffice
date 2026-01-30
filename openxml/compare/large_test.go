@@ -16,7 +16,7 @@ func TestLargeMerge(t *testing.T) {
 
 	// Create large base document (1000 paragraphs)
 	base := openxml.NewCompositeElement("http://example.com", "root", "ex")
-	for i := 0; i < 1000; i++ {
+	for i := range 1000 {
 		p := openxml.NewCompositeElement("http://example.com", "p", "ex")
 		p.SetAttribute(openxml.NewAttribute("", "id", "", fmt.Sprintf("p%d", i)))
 		tEl := openxml.NewLeafElement("http://example.com", "t", "ex")

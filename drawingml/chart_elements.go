@@ -269,7 +269,7 @@ func (l *Legend) SetLayout(layout *Layout) {
 
 // SetShapeProperties sets the shape properties for the legend.
 func (l *Legend) SetShapeProperties(props *ChartShapeProperties) {
-	if existing := l.GetElement("spPr", NamespaceChart); existing != nil {
+	if existing := l.GetElement(elemSpPr, NamespaceChart); existing != nil {
 		l.RemoveChild(existing)
 	}
 	if props != nil {
@@ -366,7 +366,7 @@ func (d *DataLabels) SetNumberFormat(formatCode string, sourceLinked bool) {
 
 // SetShapeProperties sets the shape properties for the data labels.
 func (d *DataLabels) SetShapeProperties(props *ChartShapeProperties) {
-	if existing := d.GetElement("spPr", NamespaceChart); existing != nil {
+	if existing := d.GetElement(elemSpPr, NamespaceChart); existing != nil {
 		d.RemoveChild(existing)
 	}
 	if props != nil {
@@ -550,6 +550,7 @@ func NewDataTable() *DataTable {
 		"dTable",
 		PrefixChart,
 	)
+
 	return &DataTable{CompositeElementBase: elem}
 }
 
@@ -635,7 +636,7 @@ func (d *DataTable) SetShowKeys(show bool) {
 
 // SetShapeProperties sets the shape properties for the data table.
 func (d *DataTable) SetShapeProperties(props *ChartShapeProperties) {
-	if existing := d.GetElement("spPr", NamespaceChart); existing != nil {
+	if existing := d.GetElement(elemSpPr, NamespaceChart); existing != nil {
 		d.RemoveChild(existing)
 	}
 	if props != nil {
@@ -660,6 +661,7 @@ func (d *DataTable) Clone() openxml.Element {
 	if !ok {
 		return nil
 	}
+
 	return &DataTable{CompositeElementBase: cloned}
 }
 
@@ -792,7 +794,7 @@ type ChartShapeProperties struct {
 func NewChartShapeProperties() *ChartShapeProperties {
 	elem := openxml.NewCompositeElement(
 		NamespaceChart,
-		"spPr",
+		elemSpPr,
 		PrefixChart,
 	)
 
@@ -980,7 +982,7 @@ func NewDataPoint(index uint32) *DataPoint {
 func (d *DataPoint) SetShapeProperties(
 	props *ChartShapeProperties,
 ) {
-	if existing := d.GetElement("spPr", NamespaceChart); existing != nil {
+	if existing := d.GetElement(elemSpPr, NamespaceChart); existing != nil {
 		d.RemoveChild(existing)
 	}
 	if props != nil {
@@ -1331,5 +1333,6 @@ func (ct *ChartText) Clone() openxml.Element {
 	}
 	// Re-wrap in TextBody
 	tb := &TextBody{CompositeElementBase: cloned}
+
 	return &ChartText{TextBody: tb}
 }

@@ -25,6 +25,7 @@ func (te *ThemeElements) ColorScheme() *ColorScheme {
 	if cs, ok := elem.(*ColorScheme); ok {
 		return cs
 	}
+
 	return nil
 }
 
@@ -36,6 +37,7 @@ func (te *ThemeElements) GetOrCreateColorScheme(name string) *ColorScheme {
 	}
 	cs = NewColorScheme(name)
 	te.AppendChild(cs)
+
 	return cs
 }
 
@@ -48,6 +50,7 @@ func (te *ThemeElements) FontScheme() *FontScheme {
 	if fs, ok := elem.(*FontScheme); ok {
 		return fs
 	}
+
 	return nil
 }
 
@@ -59,6 +62,7 @@ func (te *ThemeElements) GetOrCreateFontScheme(name string) *FontScheme {
 	}
 	fs = NewFontScheme(name)
 	te.AppendChild(fs)
+
 	return fs
 }
 
@@ -71,6 +75,7 @@ func (te *ThemeElements) FormatScheme() *FormatScheme {
 	if fs, ok := elem.(*FormatScheme); ok {
 		return fs
 	}
+
 	return nil
 }
 
@@ -82,6 +87,7 @@ func (te *ThemeElements) GetOrCreateFormatScheme(name string) *FormatScheme {
 	}
 	fs = NewFormatScheme(name)
 	te.AppendChild(fs)
+
 	return fs
 }
 
@@ -101,6 +107,7 @@ func NewColorScheme(name string) *ColorScheme {
 	if name != "" {
 		cs.SetAttribute(openxml.NewAttribute("", "name", "", name))
 	}
+
 	return cs
 }
 
@@ -111,7 +118,7 @@ func (cs *ColorScheme) SetColor(name string, color openxml.Element) {
 	if existing := cs.GetElement(name, NamespaceMain); existing != nil {
 		cs.RemoveChild(existing)
 	}
-	
+
 	// Create container element (e.g. <a:dk1>)
 	container := openxml.NewCompositeElement(NamespaceMain, name, PrefixMain)
 	container.AppendChild(color)
@@ -119,7 +126,7 @@ func (cs *ColorScheme) SetColor(name string, color openxml.Element) {
 }
 
 // SetSrgbColor sets a solid RGB color for a scheme element.
-func (cs *ColorScheme) SetSrgbColor(name string, hexColor string) {
+func (cs *ColorScheme) SetSrgbColor(name, hexColor string) {
 	cs.SetColor(name, NewRgbColor(hexColor))
 }
 
@@ -191,6 +198,7 @@ func NewFontScheme(name string) *FontScheme {
 	if name != "" {
 		fs.SetAttribute(openxml.NewAttribute("", "name", "", name))
 	}
+
 	return fs
 }
 
@@ -203,6 +211,7 @@ func (fs *FontScheme) MajorFont() *FontCollection {
 	if fc, ok := elem.(*FontCollection); ok {
 		return fc
 	}
+
 	return nil
 }
 
@@ -214,6 +223,7 @@ func (fs *FontScheme) GetOrCreateMajorFont() *FontCollection {
 	}
 	fc = NewFontCollection("majorFont")
 	fs.PrependChild(fc)
+
 	return fc
 }
 
@@ -226,6 +236,7 @@ func (fs *FontScheme) MinorFont() *FontCollection {
 	if fc, ok := elem.(*FontCollection); ok {
 		return fc
 	}
+
 	return nil
 }
 
@@ -242,6 +253,7 @@ func (fs *FontScheme) GetOrCreateMinorFont() *FontCollection {
 	} else {
 		fs.PrependChild(fc)
 	}
+
 	return fc
 }
 
@@ -257,6 +269,7 @@ type FontCollection struct {
 // NewFontCollection creates a new font collection element.
 func NewFontCollection(localName string) *FontCollection {
 	elem := openxml.NewCompositeElement(NamespaceMain, localName, PrefixMain)
+
 	return &FontCollection{CompositeElementBase: elem}
 }
 
@@ -275,7 +288,7 @@ func (fc *FontCollection) SetCsFont(typeface string) {
 	fc.setFont("cs", typeface)
 }
 
-func (fc *FontCollection) setFont(name string, typeface string) {
+func (fc *FontCollection) setFont(name, typeface string) {
 	if existing := fc.GetElement(name, NamespaceMain); existing != nil {
 		fc.RemoveChild(existing)
 	}
@@ -300,6 +313,7 @@ func NewFormatScheme(name string) *FormatScheme {
 	if name != "" {
 		fs.SetAttribute(openxml.NewAttribute("", "name", "", name))
 	}
+
 	return fs
 }
 
@@ -312,6 +326,7 @@ func (fs *FormatScheme) FillStyleList() *FillStyleList {
 	if fsl, ok := elem.(*FillStyleList); ok {
 		return fsl
 	}
+
 	return nil
 }
 
@@ -323,6 +338,7 @@ func (fs *FormatScheme) GetOrCreateFillStyleList() *FillStyleList {
 	}
 	fsl = NewFillStyleList()
 	fs.AppendChild(fsl)
+
 	return fsl
 }
 
@@ -335,6 +351,7 @@ func (fs *FormatScheme) LineStyleList() *LineStyleList {
 	if lsl, ok := elem.(*LineStyleList); ok {
 		return lsl
 	}
+
 	return nil
 }
 
@@ -346,6 +363,7 @@ func (fs *FormatScheme) GetOrCreateLineStyleList() *LineStyleList {
 	}
 	lsl = NewLineStyleList()
 	fs.AppendChild(lsl)
+
 	return lsl
 }
 
@@ -358,6 +376,7 @@ func (fs *FormatScheme) EffectStyleList() *EffectStyleList {
 	if esl, ok := elem.(*EffectStyleList); ok {
 		return esl
 	}
+
 	return nil
 }
 
@@ -369,6 +388,7 @@ func (fs *FormatScheme) GetOrCreateEffectStyleList() *EffectStyleList {
 	}
 	esl = NewEffectStyleList()
 	fs.AppendChild(esl)
+
 	return esl
 }
 
@@ -381,6 +401,7 @@ func (fs *FormatScheme) BackgroundFillStyleList() *FillStyleList {
 	if fsl, ok := elem.(*FillStyleList); ok {
 		return fsl
 	}
+
 	return nil
 }
 
@@ -394,6 +415,7 @@ func (fs *FormatScheme) GetOrCreateBackgroundFillStyleList() *FillStyleList {
 	// Override tag name to bgFillStyleLst
 	fsl.CompositeElementBase = openxml.NewCompositeElement(NamespaceMain, "bgFillStyleLst", PrefixMain)
 	fs.AppendChild(fsl)
+
 	return fsl
 }
 
@@ -409,6 +431,7 @@ type FillStyleList struct {
 // NewFillStyleList creates a new fill style list.
 func NewFillStyleList() *FillStyleList {
 	elem := openxml.NewCompositeElement(NamespaceMain, "fillStyleLst", PrefixMain)
+
 	return &FillStyleList{CompositeElementBase: elem}
 }
 
@@ -416,6 +439,7 @@ func NewFillStyleList() *FillStyleList {
 func (fsl *FillStyleList) AddSolidFill(hexColor string) *SolidFill {
 	sf := NewSolidFillWithRgb(hexColor)
 	fsl.AppendChild(sf)
+
 	return sf
 }
 
@@ -427,6 +451,7 @@ type LineStyleList struct {
 // NewLineStyleList creates a new line style list.
 func NewLineStyleList() *LineStyleList {
 	elem := openxml.NewCompositeElement(NamespaceMain, "lnStyleLst", PrefixMain)
+
 	return &LineStyleList{CompositeElementBase: elem}
 }
 
@@ -434,6 +459,7 @@ func NewLineStyleList() *LineStyleList {
 func (lsl *LineStyleList) AddLine() *LineProperties {
 	lp := NewLineProperties()
 	lsl.AppendChild(lp)
+
 	return lp
 }
 
@@ -445,6 +471,7 @@ type EffectStyleList struct {
 // NewEffectStyleList creates a new effect style list.
 func NewEffectStyleList() *EffectStyleList {
 	elem := openxml.NewCompositeElement(NamespaceMain, "effectStyleLst", PrefixMain)
+
 	return &EffectStyleList{CompositeElementBase: elem}
 }
 
@@ -460,6 +487,7 @@ type ExtraColorSchemeList struct {
 // NewExtraColorSchemeList creates a new extra color scheme list.
 func NewExtraColorSchemeList() *ExtraColorSchemeList {
 	elem := openxml.NewCompositeElement(NamespaceMain, "extraClrSchemeLst", PrefixMain)
+
 	return &ExtraColorSchemeList{CompositeElementBase: elem}
 }
 
@@ -475,5 +503,6 @@ type ExtraColorScheme struct {
 // NewExtraColorScheme creates a new extra color scheme.
 func NewExtraColorScheme() *ExtraColorScheme {
 	elem := openxml.NewCompositeElement(NamespaceMain, "extraClrScheme", PrefixMain)
+
 	return &ExtraColorScheme{CompositeElementBase: elem}
 }

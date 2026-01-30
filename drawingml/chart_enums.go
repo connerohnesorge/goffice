@@ -1,6 +1,6 @@
 //revive:disable:max-public-structs enum type definitions must be public
 
-// and effects.
+// Package drawingml provides chart enumeration types and effects.
 //
 // This file contains chart enumeration types used across chart files.
 package drawingml

@@ -9,7 +9,7 @@ import (
 
 func TestChartAxis_SetLogScale(t *testing.T) {
 	doc := createTestWorkbook(t)
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	sheet, _ := doc.AddSheet("TestData")
 	addSampleData(sheet)
@@ -30,7 +30,7 @@ func TestChartAxis_SetLogScale(t *testing.T) {
 
 func TestChartAxis_SetOrientation(t *testing.T) {
 	doc := createTestWorkbook(t)
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	sheet, _ := doc.AddSheet("TestData")
 	addSampleData(sheet)
@@ -50,7 +50,7 @@ func TestChartAxis_SetOrientation(t *testing.T) {
 
 func TestChartAxis_SetReverseOrder(t *testing.T) {
 	doc := createTestWorkbook(t)
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	sheet, _ := doc.AddSheet("TestData")
 	addSampleData(sheet)
@@ -70,7 +70,7 @@ func TestChartAxis_SetReverseOrder(t *testing.T) {
 
 func TestChartAxis_SetAxisPosition(t *testing.T) {
 	doc := createTestWorkbook(t)
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	sheet, _ := doc.AddSheet("TestData")
 	addSampleData(sheet)
@@ -103,7 +103,7 @@ func TestChart_CreationWithAxisFormatting(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			doc := createTestWorkbook(t)
-			defer doc.Close()
+			defer func() { _ = doc.Close() }()
 
 			sheet, _ := doc.AddSheet("TestData")
 			addSampleData(sheet)
@@ -138,7 +138,7 @@ func TestChart_CreationWithAxisFormatting(t *testing.T) {
 
 func TestChart_BasicAxisFormatting(t *testing.T) {
 	doc := createTestWorkbook(t)
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	sheet, _ := doc.AddSheet("TestData")
 	addSampleData(sheet)
@@ -172,20 +172,21 @@ func createTestWorkbook(t *testing.T) *Document {
 	if err != nil {
 		t.Fatalf("Failed to create workbook: %v", err)
 	}
+
 	return doc
 }
 
 func addSampleData(sheet *Sheet) {
 	// Add headers
-	sheet.SetCellValue("A1", "Category")
-	sheet.SetCellValue("B1", "Value")
+	_ = sheet.SetCellValue("A1", "Category")
+	_ = sheet.SetCellValue("B1", "Value")
 
 	// Add data rows
 	data := []float64{25, 30, 45, 20, 35}
 	for i, value := range data {
 		row := i + 2
-		sheet.SetCellValue(RowCol(row, 1), fmt.Sprintf("Item %d", i+1))
-		sheet.SetCellValue(RowCol(row, 2), value)
+		_ = sheet.SetCellValue(RowCol(row, 1), fmt.Sprintf("Item %d", i+1))
+		_ = sheet.SetCellValue(RowCol(row, 2), value)
 	}
 }
 

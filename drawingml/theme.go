@@ -69,6 +69,7 @@ func (t *Theme) ThemeElements() *ThemeElements {
 	if te, ok := elem.(*ThemeElements); ok {
 		return te
 	}
+
 	return nil
 }
 
@@ -80,6 +81,7 @@ func (t *Theme) GetOrCreateThemeElements() *ThemeElements {
 	}
 	te = NewThemeElements()
 	t.AppendChild(te)
+
 	return te
 }
 
@@ -104,6 +106,7 @@ func (t *Theme) ExtraClrSchemeLst() *ExtraColorSchemeList {
 	if ecsl, ok := elem.(*ExtraColorSchemeList); ok {
 		return ecsl
 	}
+
 	return nil
 }
 
@@ -115,5 +118,6 @@ func (t *Theme) GetOrCreateExtraClrSchemeLst() *ExtraColorSchemeList {
 	}
 	ecsl = NewExtraColorSchemeList()
 	t.AppendChild(ecsl)
+
 	return ecsl
 }

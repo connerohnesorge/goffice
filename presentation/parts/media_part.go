@@ -96,6 +96,7 @@ func (bmp *baseMediaPart) GetData() ([]byte, error) {
 func (bmp *baseMediaPart) FeedDataBytes(data []byte) error {
 	bmp.SetData(data)
 	bmp.setSize(int64(len(data)))
+
 	return nil
 }
 

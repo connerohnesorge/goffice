@@ -19,6 +19,7 @@ func (e CommentValidationError) Error() string {
 	if e.Value != "" {
 		return fmt.Sprintf("comment validation error in %s: %s (value: %s)", e.Field, e.Message, e.Value)
 	}
+
 	return fmt.Sprintf("comment validation error in %s: %s", e.Field, e.Message)
 }
 
@@ -127,6 +128,7 @@ func isValidUsername(username string) bool {
 
 	// Allow alphanumeric characters, underscores, and hyphens
 	matched, _ := regexp.MatchString(`^[a-zA-Z0-9_-]+$`, username)
+
 	return matched
 }
 

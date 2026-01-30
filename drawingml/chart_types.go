@@ -1,7 +1,8 @@
 //revive:disable:file-length-limit chart type definitions need to be together
 //revive:disable:max-public-structs chart types have many public structs
 
-// and effects.
+// Package drawingml provides shared DrawingML types for shapes, images, charts, diagrams,
+// and effects used across Office Open XML documents.
 //
 // This file implements chart type structs (BarChart, LineChart, etc.).
 package drawingml

@@ -754,7 +754,7 @@ func (ss *ShapeStyle) SetFontReference(
 			"",
 			"idx",
 			"",
-			string(idx),
+			idx,
 		),
 	)
 

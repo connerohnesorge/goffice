@@ -23,18 +23,21 @@ func NewPresentationBuilder() *PresentationBuilder {
 	if err != nil {
 		pb.errors = append(pb.errors, err)
 	}
+
 	return pb
 }
 
 func (pb *PresentationBuilder) AddSlide() *SlideBuilder {
 	if pb.doc == nil {
 		pb.errors = append(pb.errors, fmt.Errorf("document is nil"))
+
 		return &SlideBuilder{pb: pb}
 	}
 
 	slidePart, err := pb.doc.AddSlide()
 	if err != nil {
 		pb.errors = append(pb.errors, err)
+
 		return &SlideBuilder{pb: pb}
 	}
 
@@ -48,6 +51,7 @@ func (pb *PresentationBuilder) Build() (*Document, error) {
 	if len(pb.errors) > 0 {
 		return nil, pb.errors[0]
 	}
+
 	return pb.doc, nil
 }
 
@@ -63,6 +67,7 @@ func (sb *SlideBuilder) AddShape() *ShapeBuilder {
 
 	slide := sb.slidePart.Slide()
 	shape := slide.AddShape()
+
 	return &ShapeBuilder{
 		sb:    sb,
 		shape: shape,
@@ -99,6 +104,7 @@ func (shb *ShapeBuilder) SetType(shapeType drawingml.ShapeTypeValue) *ShapeBuild
 		spPr := shb.shape.GetOrCreateShapeProperties()
 		spPr.SetPresetGeometry(string(shapeType))
 	}
+
 	return shb
 }
 
@@ -135,6 +141,7 @@ func (pb *ParagraphBuilder) AddRun(text string) *RunBuilder {
 	}
 
 	r := pb.p.AddRun(text)
+
 	return &RunBuilder{
 		pb: pb,
 		r:  r,
@@ -154,6 +161,7 @@ func (rb *RunBuilder) Bold(bold bool) *RunBuilder {
 	if rb.r != nil {
 		rb.r.SetBold(bold)
 	}
+
 	return rb
 }
 
@@ -161,6 +169,7 @@ func (rb *RunBuilder) Size(size int) *RunBuilder {
 	if rb.r != nil {
 		rb.r.SetFontSize(size)
 	}
+
 	return rb
 }
 

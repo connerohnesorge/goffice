@@ -1,6 +1,6 @@
 //revive:disable:file-length-limit comprehensive chart series implementation
 
-// and effects.
+// Package drawingml implements chart series types and effects.
 //
 // This file implements chart series types.
 package drawingml

@@ -22,6 +22,7 @@ type Statistics struct {
 // GenerateReport generates a comparison result from diffs and conflicts.
 func GenerateReport(diffs []Diff, conflicts []Conflict) *ComparisonResult {
 	stats := calculateStats(diffs, conflicts)
+
 	return &ComparisonResult{
 		Diffs:     diffs,
 		Conflicts: conflicts,

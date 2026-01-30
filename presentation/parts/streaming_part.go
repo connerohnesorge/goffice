@@ -100,6 +100,7 @@ func (sp *StreamingPart) GetStream() io.Reader {
 func (sp *StreamingPart) GetSize() int64 {
 	sp.mu.RLock()
 	defer sp.mu.RUnlock()
+
 	return sp.size
 }
 
@@ -164,9 +165,10 @@ func (acr *autoCloseReader) Read(p []byte) (n int, err error) {
 	if err == io.EOF {
 		// Close the file when EOF is reached
 		acr.once.Do(func() {
-			acr.file.Close()
+			_ = acr.file.Close()
 		})
 	}
+
 	return n, err
 }
 
@@ -213,7 +215,7 @@ func (svp *StreamingVideoPart) SetStream(r io.Reader) error {
 	}
 
 	// Update the video part's size
-	svp.VideoPart.setSize(svp.StreamingPart.GetSize())
+	svp.setSize(svp.StreamingPart.GetSize())
 
 	return nil
 }
@@ -331,7 +333,7 @@ func (sap *StreamingAudioPart) SetStream(r io.Reader) error {
 	}
 
 	// Update the audio part's size
-	sap.AudioPart.setSize(sap.StreamingPart.GetSize())
+	sap.setSize(sap.StreamingPart.GetSize())
 
 	return nil
 }
@@ -404,23 +406,4 @@ func StreamingAudioPartFactory(
 		AudioPart:     ap,
 		StreamingPart: streamingPart,
 	}
-}
-
-// Helper function to determine if streaming should be used.
-func shouldUseStreamingForSize(size int64) bool {
-	return size > streamingThreshold
-}
-
-// Helper function to create appropriate video part based on size.
-func createVideoPartForSlideWithSize(
-	slidePart *SlidePart,
-	videoType VideoType,
-	size int64,
-) (MediaPart, error) {
-	if shouldUseStreamingForSize(size) {
-		return NewStreamingVideoPartForSlide(slidePart, videoType)
-	}
-
-	// Use regular video part for smaller files
-	return NewVideoPartForSlide(slidePart, videoType, false)
 }

@@ -25,7 +25,7 @@ The system SHALL support memory-efficient sequential writing of document parts w
 - AND the document remains valid after partial writes
 
 ### Requirement: Streaming Validation
-The system SHOULD validate document parts during streaming without loading the full part content.
+The system SHALL validate document parts during streaming without loading the full part content.
 
 #### Scenario: Validate while streaming
 - WHEN validation is performed during streaming

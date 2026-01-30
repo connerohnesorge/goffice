@@ -22,6 +22,7 @@ func (d *Document) ImportHTMLTable(slideIndex int, htmlStr string) (*Table, erro
 	findTable = func(n *html.Node) {
 		if n.Type == html.ElementNode && n.Data == "table" {
 			tableNode = n
+
 			return
 		}
 		for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -78,6 +79,7 @@ func (d *Document) ImportHTMLTable(slideIndex int, htmlStr string) (*Table, erro
 		if rel != nil {
 			return rel.ID()
 		}
+
 		return ""
 	}
 
@@ -114,6 +116,7 @@ func (d *Document) ImportHTMLText(slideIndex int, x, y, w, h float64, htmlStr st
 		if rel != nil {
 			return rel.ID()
 		}
+
 		return ""
 	}
 
@@ -129,6 +132,7 @@ func parseRowNodes(n *html.Node) []*html.Node {
 			cells = append(cells, c)
 		}
 	}
+
 	return cells
 }
 
@@ -174,6 +178,7 @@ func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string
 					for _, attr := range n.Attr {
 						if attr.Key == "href" {
 							newLinkId = relFn(attr.Val)
+
 							break
 						}
 					}
@@ -182,12 +187,14 @@ func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string
 				p = tb.AddParagraph("")
 				if newListType != "" {
 					p.SetLevel(newLevel)
-					if newListType == "ul" {
+					switch newListType {
+					case "ul":
 						p.SetCharacterBullet("•")
-					} else if newListType == "ol" {
+					case "ol":
 						p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
 					}
 				}
+
 				return
 			case "ul", "ol":
 				newListType = n.Data
@@ -195,9 +202,10 @@ func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string
 			case "li":
 				p = tb.AddParagraph("")
 				p.SetLevel(newLevel - 1)
-				if listType == "ul" {
+				switch listType {
+				case "ul":
 					p.SetCharacterBullet("•")
-				} else if listType == "ol" {
+				case "ol":
 					// Simplified: always start at 1 or should we track it?
 					// For now let's just use arabic period.
 					p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
@@ -207,25 +215,13 @@ func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string
 			for c := n.FirstChild; c != nil; c = c.NextSibling {
 				f(c, newBold, newItalic, newUnderline, newLevel, newListType, newLinkId)
 			}
+		case html.ErrorNode, html.DocumentNode, html.CommentNode, html.DoctypeNode, html.RawNode:
+			// These node types are not processed for text content
+			return
 		}
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		f(c, false, false, false, 0, "", "")
 	}
-}
-
-func getText(n *html.Node) string {
-	var b strings.Builder
-	var f func(*html.Node)
-	f = func(n *html.Node) {
-		if n.Type == html.TextNode {
-			b.WriteString(n.Data)
-		}
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			f(c)
-		}
-	}
-	f(n)
-	return strings.TrimSpace(b.String())
 }

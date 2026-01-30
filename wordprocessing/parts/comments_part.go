@@ -130,6 +130,7 @@ func (cp *CommentsPart) GetCommentThreads() []*elements.CommentThread {
 				for _, thread := range threads {
 					if thread.Root.Id() == parent.Id() {
 						thread.AddReply(comment)
+
 						break
 					}
 				}
@@ -146,12 +147,14 @@ func (cp *CommentsPart) GetCommentThreads() []*elements.CommentThread {
 // GetCommentsByAuthor returns all comments by a specific author.
 func (cp *CommentsPart) GetCommentsByAuthor(author string) []*elements.Comment {
 	comments := cp.GetOrCreateComments()
+
 	return comments.ByAuthor(author)
 }
 
 // GetCommentsByDateRange returns comments within a date range.
 func (cp *CommentsPart) GetCommentsByDateRange(from, to time.Time) []*elements.Comment {
 	comments := cp.GetOrCreateComments()
+
 	return comments.ByDateRange(from, to)
 }
 
@@ -164,6 +167,7 @@ func (cp *CommentsPart) GetCommentsByStatus(resolved bool) []*elements.Comment {
 			result = append(result, comment)
 		}
 	}
+
 	return result
 }
 
@@ -183,6 +187,7 @@ func (cp *CommentsPart) AddCommentWithParent(author, text string, parentId int) 
 	if parentId > 0 {
 		comment.SetParentId(parentId)
 	}
+
 	return comment, nil
 }
 
@@ -237,6 +242,7 @@ func (cp *CommentsPart) MarkThreadResolved(rootId int) error {
 	for comment := range comments.Comments() {
 		if comment.Id() == rootId {
 			rootComment = comment
+
 			break
 		}
 	}
@@ -262,6 +268,7 @@ func (cp *CommentsPart) AddCommentValidation(comment *elements.Comment) error {
 			"",
 			validationErr.Error(),
 		))
+
 		return validationErr
 	}
 

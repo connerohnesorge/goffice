@@ -143,6 +143,7 @@ func (mr *MediaRegistry) GetSupportedFormats(
 			result = append(result, format)
 		}
 	}
+
 	return result
 }
 
@@ -156,6 +157,7 @@ func equalBytes(a, b []byte) bool {
 			return false
 		}
 	}
+
 	return true
 }
 

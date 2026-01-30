@@ -1,18 +1,27 @@
-# Guardrails
+---
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash(spectr:*)
+description: Change Proposal Application/Acceptance Process (project)
+subtask: false
+---
+# Change Proposal Application/Acceptance Process
+
+## Guardrails
 
 - Favor straightforward, minimal implementations first and add complexity only
   when it is requested or clearly required.
 - Keep changes tightly scoped to the requested outcome.
 - Refer to `spectr/AGENTS.md` and `spectr/project.md` (located inside
-  the `spectr/` directory—run `ls spectr`) if you need
-  additional Spectr conventions or clarifications.
+  the `spectr/` directory—run `ls spectr`) for project and
+  Spectr conventions or clarifications.
 
 ## Steps
 
 Track these steps as TODOs and complete them one by one.
 
 1. Run `spectr accept <id>` to convert `tasks.md` to `tasks.jsonc` format for
-   stable task tracking.
+   stable task tracking. Note: Both `tasks.md` (human-readable source) and
+   `tasks.jsonc` (runtime source of truth) coexist after accept—update task
+   statuses in `tasks.jsonc`.
 2. Read `spectr/changes/<id>/proposal.md`, `design.md` (if present), and
    `tasks.jsonc` to confirm scope and acceptance criteria.
 3. Work through tasks sequentially, keeping edits minimal and focused on the

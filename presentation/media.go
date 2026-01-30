@@ -51,7 +51,7 @@ func (d *Document) AddVideoFromFile(
 	if err != nil {
 		return nil, fmt.Errorf("failed to open video file: %w", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// Get file info
 	fileInfo, err := file.Stat()
@@ -68,7 +68,7 @@ func (d *Document) AddVideoFromFile(
 		// Read first few bytes for detection
 		header := make([]byte, 1024)
 		n, _ := file.Read(header)
-		file.Seek(0, 0) // Reset position
+		_, _ = file.Seek(0, 0) // Reset position
 
 		videoType = parts.DetectVideoType(header[:n], filePath)
 	} else {
@@ -79,7 +79,7 @@ func (d *Document) AddVideoFromFile(
 	if opts.ValidateFormat {
 		header := make([]byte, 1024)
 		n, _ := file.Read(header)
-		file.Seek(0, 0) // Reset position
+		_, _ = file.Seek(0, 0) // Reset position
 
 		if err := parts.ValidateMedia(header[:n], filePath); err != nil {
 			return nil, fmt.Errorf("media validation failed: %w", err)
@@ -381,6 +381,7 @@ func isFormatSupported(contentType string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -416,7 +417,7 @@ func (d *Document) AddAudioFromFile(
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	fileInfo, err := file.Stat()
 	if err != nil {
@@ -429,7 +430,7 @@ func (d *Document) AddAudioFromFile(
 	if opts.AutoDetectType {
 		header := make([]byte, 1024)
 		n, _ := file.Read(header)
-		file.Seek(0, 0)
+		_, _ = file.Seek(0, 0)
 		audioType = parts.DetectAudioType(header[:n], filePath)
 	} else {
 		audioType = opts.AudioType
@@ -438,7 +439,7 @@ func (d *Document) AddAudioFromFile(
 	if opts.ValidateFormat {
 		header := make([]byte, 1024)
 		n, _ := file.Read(header)
-		file.Seek(0, 0)
+		_, _ = file.Seek(0, 0)
 		if err := parts.ValidateMedia(header[:n], filePath); err != nil {
 			return nil, err
 		}
@@ -599,6 +600,7 @@ func (d *Document) GetAudios() []parts.MediaPart {
 			}
 		}
 	}
+
 	return audios
 }
 
@@ -658,5 +660,6 @@ func isAudioFormatSupported(contentType string) bool {
 			return true
 		}
 	}
+
 	return false
 }

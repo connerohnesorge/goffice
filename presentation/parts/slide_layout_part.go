@@ -133,6 +133,7 @@ func (slp *SlideLayoutPart) EffectiveColorMap() *elements.PresentationColorMap {
 	if smp := slp.SlideMasterPart(); smp != nil {
 		return smp.SlideMaster().ColorMap()
 	}
+
 	return nil
 }
 
@@ -145,6 +146,7 @@ func (slp *SlideLayoutPart) EffectiveTransition() *elements.SlideTransition {
 	if smp := slp.SlideMasterPart(); smp != nil {
 		return smp.SlideMaster().Transition()
 	}
+
 	return nil
 }
 
@@ -157,6 +159,7 @@ func (slp *SlideLayoutPart) EffectiveTiming() *elements.SlideTiming {
 	if smp := slp.SlideMasterPart(); smp != nil {
 		return smp.SlideMaster().Timing()
 	}
+
 	return nil
 }
 
@@ -169,6 +172,7 @@ func (slp *SlideLayoutPart) EffectiveHeaderFooter() *elements.ExtHeaderFooter {
 	if smp := slp.SlideMasterPart(); smp != nil {
 		return smp.SlideMaster().HeaderFooter()
 	}
+
 	return nil
 }
 
@@ -181,6 +185,7 @@ func (slp *SlideLayoutPart) EffectiveTextStyles() *elements.TextStyles {
 	if smp := slp.SlideMasterPart(); smp != nil {
 		return smp.SlideMaster().TextStyles()
 	}
+
 	return nil
 }
 
@@ -193,6 +198,7 @@ func (slp *SlideLayoutPart) EffectiveExtensionList() *elements.ExtensionListModi
 	if smp := slp.SlideMasterPart(); smp != nil {
 		return smp.SlideMaster().ExtensionList()
 	}
+
 	return nil
 }
 

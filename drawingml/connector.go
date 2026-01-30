@@ -13,12 +13,13 @@ type Connection struct {
 
 // NewConnection creates a new connection element.
 // name is either "stCxn" or "endCxn".
-func NewConnection(name string, id string, idx int) *Connection {
+func NewConnection(name, id string, idx int) *Connection {
 	c := &Connection{
 		LeafElementBase: openxml.NewLeafElement(NamespaceMain, name, PrefixMain),
 	}
 	c.SetId(id)
 	c.SetIndex(idx)
+
 	return c
 }
 
@@ -28,6 +29,7 @@ func (c *Connection) Id() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -43,6 +45,7 @@ func (c *Connection) Index() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -174,6 +177,7 @@ func (s *ConnectorLocks) getBoolAttr(name string, defaultVal bool) bool {
 		return defaultVal
 	}
 	val := attr.Value()
+
 	return val == "1" || val == "true"
 }
 
@@ -181,6 +185,7 @@ func (s *ConnectorLocks) getBoolAttr(name string, defaultVal bool) bool {
 func (s *ConnectorLocks) setBoolAttr(name string, value, defaultVal bool) {
 	if value == defaultVal {
 		s.RemoveAttribute(name, "")
+
 		return
 	}
 	var strVal string

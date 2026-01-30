@@ -790,6 +790,58 @@ func (gf *GraphicFrame) Clone() openxml.Element {
 	}
 }
 
+// LinkGraphicFrameToChart sets up a GraphicFrame to reference a chart part.
+// This creates the proper <a:graphic><a:graphicData> structure with a chart reference.
+func LinkGraphicFrameToChart(gf *GraphicFrame, chartRelID string) {
+	// Create or get the graphic element
+	graphicElem := gf.GetElement("graphic", NamespaceDrawingML)
+	var graphic *openxml.CompositeElementBase
+	if graphicElem != nil {
+		graphic, _ = graphicElem.(*openxml.CompositeElementBase)
+	}
+	if graphic == nil {
+		graphic = openxml.NewCompositeElement(
+			NamespaceDrawingML,
+			"graphic",
+			PrefixA,
+		)
+		gf.AppendChild(graphic)
+	}
+
+	// Create graphicData element
+	graphicData := openxml.NewCompositeElement(
+		NamespaceDrawingML,
+		"graphicData",
+		PrefixA,
+	)
+	graphicData.SetAttribute(
+		openxml.NewAttribute(
+			"",
+			"uri",
+			"",
+			"http://schemas.openxmlformats.org/drawingml/2006/chart",
+		),
+	)
+
+	// Create chart reference
+	chartRef := openxml.NewCompositeElement(
+		"http://schemas.openxmlformats.org/drawingml/2006/chart",
+		"chart",
+		"c",
+	)
+	chartRef.SetAttribute(
+		openxml.NewAttribute(
+			NamespaceRelationships,
+			"id",
+			"r",
+			chartRelID,
+		),
+	)
+
+	graphicData.AppendChild(chartRef)
+	graphic.AppendChild(graphicData)
+}
+
 // ===========================================================================
 // ConnectionShape (p:cxnSp)
 // ===========================================================================

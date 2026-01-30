@@ -53,6 +53,7 @@ func (g *RelationshipGraph) GetDependencies(partURI string) []string {
 	deps := g.dependencies[partURI]
 	result := make([]string, len(deps))
 	copy(result, deps)
+
 	return result
 }
 
@@ -64,6 +65,7 @@ func (g *RelationshipGraph) GetDependents(partURI string) []string {
 	deps := g.reverse[partURI]
 	result := make([]string, len(deps))
 	copy(result, deps)
+
 	return result
 }
 
@@ -74,6 +76,7 @@ func (g *RelationshipGraph) DetectCircularDependency(from, to string) bool {
 
 	// If "to" is reachable from "from", adding this edge creates a cycle
 	visited := make(map[string]bool)
+
 	return g.isReachable(to, from, visited)
 }
 
@@ -109,13 +112,16 @@ func (g *RelationshipGraph) TopologicalSort(parts []string) ([]string, error) {
 		inDegree[part] = 0
 	}
 
-	// Calculate in-degrees
+	// Calculate in-degrees (count of dependencies each part has)
 	for _, part := range parts {
+		count := 0
 		for _, dep := range g.dependencies[part] {
+			// Only count dependencies that are in our parts list
 			if _, exists := inDegree[dep]; exists {
-				inDegree[dep]++
+				count++
 			}
 		}
+		inDegree[part] = count
 	}
 
 	// Queue nodes with no incoming edges
@@ -163,6 +169,7 @@ func (g *RelationshipGraph) GetOrphanedParts(allParts []string) []string {
 			orphaned = append(orphaned, part)
 		}
 	}
+
 	return orphaned
 }
 
@@ -174,6 +181,7 @@ func (g *RelationshipGraph) GetTransitiveDependencies(partURI string) []string {
 	visited := make(map[string]bool)
 	result := make([]string, 0)
 	g.visitDependencies(partURI, visited, &result)
+
 	return result
 }
 
@@ -272,6 +280,7 @@ func (v *RelationshipValidator) ValidateNoCycles(parts []string) error {
 	if err != nil {
 		return fmt.Errorf("validation failed: %w", err)
 	}
+
 	return nil
 }
 
@@ -286,6 +295,7 @@ func (v *RelationshipValidator) ValidateNoOrphans(allParts, rootParts []string) 
 		for _, root := range rootParts {
 			if orphan == root {
 				isRoot = true
+
 				break
 			}
 		}
@@ -311,6 +321,7 @@ func (p *RelationshipPath) Length() int {
 	if len(p.Parts) == 0 {
 		return 0
 	}
+
 	return len(p.Parts) - 1
 }
 
@@ -319,6 +330,7 @@ func (p *RelationshipPath) LastPart() OpenXmlPart {
 	if len(p.Parts) == 0 {
 		return nil
 	}
+
 	return p.Parts[len(p.Parts)-1]
 }
 
@@ -332,6 +344,7 @@ func NewRelationshipPathFinder(maxDepth int) *RelationshipPathFinder {
 	if maxDepth <= 0 {
 		maxDepth = 10 // Default max depth
 	}
+
 	return &RelationshipPathFinder{
 		maxDepth: maxDepth,
 	}
@@ -375,6 +388,7 @@ func (f *RelationshipPathFinder) findPathRecursive(
 		if partURI == targetURI {
 			// Found target
 			path.Parts = append(path.Parts, part)
+
 			return true
 		}
 
@@ -406,6 +420,7 @@ func contains(slice []string, item string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -416,5 +431,6 @@ func remove(slice []string, item string) []string {
 			result = append(result, s)
 		}
 	}
+
 	return result
 }

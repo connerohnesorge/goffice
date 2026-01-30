@@ -30,7 +30,7 @@ The system SHALL support creating, reading, updating, and deleting named ranges 
 - THEN it is only accessible from that specific sheet
 
 ### Requirement: Formula Evaluation
-The system SHOULD evaluate spreadsheet formulas to compute cell values, supporting standard Excel functions and operations.
+The system SHALL evaluate spreadsheet formulas to compute cell values, supporting standard Excel functions and operations.
 
 #### Scenario: Basic arithmetic formula
 - WHEN a formula contains arithmetic operators (+, -, *, /)

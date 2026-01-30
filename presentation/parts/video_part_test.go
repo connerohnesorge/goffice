@@ -371,5 +371,6 @@ func (m *mockContainer) GetPackagingPart(uri string) *packaging.Part {
 	if uri == "/ppt/media/video1.mp4" {
 		return m.packPart
 	}
+
 	return nil
 }

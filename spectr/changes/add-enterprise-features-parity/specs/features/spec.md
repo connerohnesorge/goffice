@@ -31,7 +31,7 @@ The system SHALL support document signing and signature validation.
 - AND timestamp is verified if present
 
 ### Requirement: Performance Optimization
-The system SHOULD minimize memory usage and improve processing speed through caching and lazy loading.
+The system SHALL minimize memory usage and improve processing speed through caching and lazy loading.
 
 #### Scenario: Open large document
 - WHEN a large document is opened

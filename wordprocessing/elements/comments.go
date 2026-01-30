@@ -122,6 +122,7 @@ func (ct *CommentThread) GetAllComments() []*Comment {
 	all := make([]*Comment, 0, len(ct.Replies)+1)
 	all = append(all, ct.Root)
 	all = append(all, ct.Replies...)
+
 	return all
 }
 
@@ -617,6 +618,7 @@ func (c *Comment) ContentWithMentions() *CommentContent {
 	}
 
 	content.Text = allText.String()
+
 	return content
 }
 
@@ -664,6 +666,7 @@ func (c *Comment) GetReplies(comments *Comments) []*Comment {
 			replies = append(replies, comment)
 		}
 	}
+
 	return replies
 }
 

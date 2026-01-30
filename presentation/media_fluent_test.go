@@ -14,7 +14,7 @@ func TestFluentMediaAPI(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 
 	_, err = pres.AddSlide()
 	if err != nil {
@@ -24,8 +24,8 @@ func TestFluentMediaAPI(t *testing.T) {
 	// Create a dummy video file
 	videoFile := filepath.Join(tempDir, "test.mp4")
 	videoData := make([]byte, 16)
-	copy(videoData[4:], []byte("ftyp"))
-	if err := os.WriteFile(videoFile, videoData, 0644); err != nil {
+	copy(videoData[4:], "ftyp")
+	if err := os.WriteFile(videoFile, videoData, 0o644); err != nil {
 		t.Fatalf("failed to create test video file: %v", err)
 	}
 
@@ -45,8 +45,8 @@ func TestFluentMediaAPI(t *testing.T) {
 	// Create a dummy audio file
 	audioFile := filepath.Join(tempDir, "test.mp3")
 	audioData := make([]byte, 16)
-	copy(audioData, []byte("ID3"))
-	if err := os.WriteFile(audioFile, audioData, 0644); err != nil {
+	copy(audioData, "ID3")
+	if err := os.WriteFile(audioFile, audioData, 0o644); err != nil {
 		t.Fatalf("failed to create test audio file: %v", err)
 	}
 

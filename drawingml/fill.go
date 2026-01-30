@@ -661,6 +661,7 @@ func (b *BlipFill) Blip() *Blip {
 	if elem == nil {
 		blip := NewBlip()
 		b.PrependChild(blip)
+
 		return blip
 	}
 	if blip, ok := elem.(*Blip); ok {
@@ -679,14 +680,17 @@ func (b *BlipFill) Blip() *Blip {
 		// Replace in parent
 		b.RemoveChild(leaf)
 		b.PrependChild(comp)
+
 		return &Blip{CompositeElementBase: comp}
 	}
+
 	return nil
 }
 
 // Embed returns the embedded relationship ID.
 func (b *BlipFill) Embed() string {
 	blip := b.Blip()
+
 	return blip.Embed()
 }
 

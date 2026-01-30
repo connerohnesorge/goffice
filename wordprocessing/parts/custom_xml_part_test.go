@@ -18,7 +18,7 @@ func TestCustomXml(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create document: %s", err)
 	}
-	defer doc.Close()
+	defer func() { _ = doc.Close() }()
 
 	// Add custom XML part
 	cxp, err := doc.MainPart().AddCustomXmlPart()

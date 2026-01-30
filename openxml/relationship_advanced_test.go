@@ -12,16 +12,16 @@ import (
 func TestRelationshipGraph_AddDependency(t *testing.T) {
 	graph := NewRelationshipGraph()
 
-	graph.AddDependency("/word/document.xml", "/word/styles.xml")
-	graph.AddDependency("/word/document.xml", "/word/numbering.xml")
+	graph.AddDependency(testDocumentXML, "/word/styles.xml")
+	graph.AddDependency(testDocumentXML, "/word/numbering.xml")
 
-	deps := graph.GetDependencies("/word/document.xml")
+	deps := graph.GetDependencies(testDocumentXML)
 	if len(deps) != 2 {
 		t.Errorf("expected 2 dependencies, got %d", len(deps))
 	}
 
 	dependents := graph.GetDependents("/word/styles.xml")
-	if len(dependents) != 1 || dependents[0] != "/word/document.xml" {
+	if len(dependents) != 1 || dependents[0] != testDocumentXML {
 		t.Errorf("expected document.xml as dependent of styles.xml")
 	}
 }
@@ -29,10 +29,10 @@ func TestRelationshipGraph_AddDependency(t *testing.T) {
 func TestRelationshipGraph_RemoveDependency(t *testing.T) {
 	graph := NewRelationshipGraph()
 
-	graph.AddDependency("/word/document.xml", "/word/styles.xml")
-	graph.RemoveDependency("/word/document.xml", "/word/styles.xml")
+	graph.AddDependency(testDocumentXML, "/word/styles.xml")
+	graph.RemoveDependency(testDocumentXML, "/word/styles.xml")
 
-	deps := graph.GetDependencies("/word/document.xml")
+	deps := graph.GetDependencies(testDocumentXML)
 	if len(deps) != 0 {
 		t.Errorf("expected no dependencies after removal, got %d", len(deps))
 	}
@@ -90,7 +90,7 @@ func TestRelationshipGraph_TopologicalSort(t *testing.T) {
 			abstractNumIdx = i
 		case "/word/numbering.xml":
 			numberingIdx = i
-		case "/word/document.xml":
+		case testDocumentXML:
 			docIdx = i
 		}
 	}
@@ -143,7 +143,7 @@ func TestRelationshipGraph_GetOrphanedParts(t *testing.T) {
 	hasDocument := false
 	hasOrphaned := false
 	for _, part := range orphaned {
-		if part == "/word/document.xml" {
+		if part == testDocumentXML {
 			hasDocument = true
 		}
 		if part == "/word/orphaned.xml" {
@@ -185,11 +185,12 @@ func TestRelationshipCloner_CloneRelationship(t *testing.T) {
 
 	// Create original relationship
 	mockPart := &mockPart{uri: "/word/styles.xml"}
-	origRel := NewPartRelationship("rId1", RelationshipTypeStyles, mockPart, container)
+	origRel := NewPartRelationship("rId5", RelationshipTypeStyles, mockPart, container)
 
-	// Clone with new ID
+	// Clone with explicit ID mapping
 	options := RelationshipCloneOptions{
 		PreserveIDs: false,
+		IDMapping:   map[string]string{"rId5": "rId10"},
 	}
 	cloner := NewRelationshipCloner(options)
 
@@ -198,8 +199,13 @@ func TestRelationshipCloner_CloneRelationship(t *testing.T) {
 		t.Fatalf("cloning failed: %v", err)
 	}
 
+	t.Logf("Original ID: %s, New ID: %s", origRel.ID(), newRel.ID())
 	if newRel.ID() == origRel.ID() {
-		t.Error("cloned relationship should have different ID")
+		t.Errorf("cloned relationship should have different ID, both are %s", origRel.ID())
+	}
+
+	if newRel.ID() != "rId10" {
+		t.Errorf("cloned relationship should have mapped ID rId10, got %s", newRel.ID())
 	}
 
 	if newRel.Type() != origRel.Type() {
@@ -220,6 +226,7 @@ func TestRelationshipCloner_CloneWithCallback(t *testing.T) {
 			if oldRel.Type() != newRel.Type() {
 				t.Error("callback received different types")
 			}
+
 			return nil
 		},
 	}
@@ -377,6 +384,7 @@ func (m *mockPartContainer) GetPartsOfType(contentType string) iter.Seq[OpenXmlP
 
 func (m *mockPartContainer) AddPart(part OpenXmlPart, id string) error {
 	m.parts = append(m.parts, part)
+
 	return nil
 }
 
@@ -401,9 +409,8 @@ func (m *mockPartContainer) URI() string {
 }
 
 type mockPart struct {
-	uri           string
-	relationships []OpenXmlRelationship
-	parts         []OpenXmlPart
+	uri   string
+	parts []OpenXmlPart
 }
 
 func (m *mockPart) URI() string {
@@ -430,6 +437,7 @@ func (m *mockPart) GetPartsOfType(contentType string) iter.Seq[OpenXmlPart] {
 
 func (m *mockPart) AddPart(part OpenXmlPart, id string) error {
 	m.parts = append(m.parts, part)
+
 	return nil
 }
 
@@ -459,3 +467,17 @@ func (m *mockPart) RootElement() PartRootElement {
 
 func (m *mockPart) SetData(data []byte) {
 }
+
+func (m *mockPart) Package() *packaging.Package {
+	return nil
+}
+
+func (m *mockPart) GetPackagingPart(uri string) *packaging.Part {
+	return nil
+}
+
+// Ensure mockPart implements both interfaces
+var (
+	_ OpenXmlPart          = (*mockPart)(nil)
+	_ OpenXmlPartContainer = (*mockPart)(nil)
+)

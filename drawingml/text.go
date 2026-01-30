@@ -808,8 +808,9 @@ func (p *TextParagraph) AutoDetectRTL() {
 // IsRTL returns true if the text contains predominantly RTL characters.
 func IsRTL(text string) bool {
 	p := bidi.Paragraph{}
-	p.SetString(text)
+	_, _ = p.SetString(text)
 	direction := p.Direction()
+
 	return direction == bidi.RightToLeft
 }
 

@@ -73,6 +73,7 @@ func getOrCreateParagraphProps(
 	newPPr.CompositeElementBase = elem
 
 	c.AppendChild(newPPr)
+
 	return newPPr
 }
 
@@ -118,6 +119,14 @@ func (bs *BodyStyle) DefaultParagraphProperties() *drawingml.TextParagraphProper
 
 func (bs *BodyStyle) GetOrCreateDefaultParagraphProperties() *drawingml.TextParagraphProperties {
 	return getOrCreateParagraphProps(bs.CompositeElementBase, 0)
+}
+
+func (bs *BodyStyle) Level1ParagraphProperties() *drawingml.TextParagraphProperties {
+	return getParagraphProps(bs.CompositeElementBase, 1)
+}
+
+func (bs *BodyStyle) GetOrCreateLevel1ParagraphProperties() *drawingml.TextParagraphProperties {
+	return getOrCreateParagraphProps(bs.CompositeElementBase, 1)
 }
 
 func (bs *BodyStyle) LevelParagraphProperties(level int) *drawingml.TextParagraphProperties {

@@ -403,6 +403,7 @@ func (anvp *ApplicationNonVisualProperties) GetOrCreateMediaExtensionList() *Med
 
 	extLst := NewMediaExtensionList()
 	anvp.AppendChild(extLst)
+
 	return extLst
 }
 
@@ -435,6 +436,7 @@ func (el *MediaExtensionList) GetOrCreateMediaExtension(uri string) *MediaExtens
 
 	ext := NewMediaExtension(uri)
 	el.AppendChild(ext)
+
 	return ext
 }
 
@@ -449,6 +451,7 @@ func NewMediaExtension(uri string) *MediaExtension {
 		CompositeElementBase: openxml.NewCompositeElement(NamespacePresentationML, "ext", PrefixP),
 	}
 	ext.SetAttribute(openxml.NewAttribute("", "uri", "", uri))
+
 	return ext
 }
 

@@ -6,6 +6,26 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+// Element name constants for 3D scene.
+const (
+	// elemExtrusionClr is the "extrusionClr" element name.
+	elemExtrusionClr = "extrusionClr"
+	// elemContourClr is the "contourClr" element name.
+	elemContourClr = "contourClr"
+	// elemPrst is the "prst" (preset) attribute name.
+	elemPrst = "prst"
+	// elemRot is the "rot" (rotation) element name.
+	elemRot = "rot"
+)
+
+// Numeric constants for 3D scene.
+const (
+	// defaultBevelSize is the default bevel size in EMUs (76200 = 6pt).
+	defaultBevelSize = 76200
+	// fullPercentage is the value representing 100% (100000).
+	fullPercentage = 100000
+)
+
 // Scene3D represents the 3D scene properties (a:scene3d).
 type Scene3D struct {
 	*openxml.CompositeElementBase
@@ -31,6 +51,7 @@ func (s *Scene3D) Camera() *Camera {
 	if c, ok := elem.(*Camera); ok {
 		return c
 	}
+
 	return &Camera{CompositeElementBase: elem.(*openxml.CompositeElementBase)}
 }
 
@@ -53,6 +74,7 @@ func (s *Scene3D) LightRig() *LightRig {
 	if l, ok := elem.(*LightRig); ok {
 		return l
 	}
+
 	return &LightRig{CompositeElementBase: elem.(*openxml.CompositeElementBase)}
 }
 
@@ -75,6 +97,7 @@ func (s *Scene3D) Backdrop() *Backdrop {
 	if b, ok := elem.(*Backdrop); ok {
 		return b
 	}
+
 	return &Backdrop{CompositeElementBase: elem.(*openxml.CompositeElementBase)}
 }
 
@@ -113,6 +136,7 @@ func (s *Shape3D) BevelTop() *Bevel {
 	if b, ok := elem.(*Bevel); ok {
 		return b
 	}
+
 	return &Bevel{LeafElementBase: elem.(*openxml.LeafElementBase)}
 }
 
@@ -135,6 +159,7 @@ func (s *Shape3D) BevelBottom() *Bevel {
 	if b, ok := elem.(*Bevel); ok {
 		return b
 	}
+
 	return &Bevel{LeafElementBase: elem.(*openxml.LeafElementBase)}
 }
 
@@ -150,14 +175,14 @@ func (s *Shape3D) SetBevelBottom(b *Bevel) {
 
 // ExtrusionColor returns the extrusion color container element.
 func (s *Shape3D) ExtrusionColor() openxml.Element {
-	return s.GetElement("extrusionClr", NamespaceMain)
+	return s.GetElement(elemExtrusionClr, NamespaceMain)
 }
 
 // SetExtrusionColorRgb sets the extrusion color to an RGB color.
 func (s *Shape3D) SetExtrusionColorRgb(hex string) {
 	s.removeExtrusionColor()
 	clr := NewRgbColor(hex)
-	wrapper := openxml.NewCompositeElement(NamespaceMain, "extrusionClr", PrefixMain)
+	wrapper := openxml.NewCompositeElement(NamespaceMain, elemExtrusionClr, PrefixMain)
 	wrapper.AppendChild(clr)
 	s.AppendChild(wrapper)
 }
@@ -166,27 +191,27 @@ func (s *Shape3D) SetExtrusionColorRgb(hex string) {
 func (s *Shape3D) SetExtrusionColorScheme(color SchemeColorValue) {
 	s.removeExtrusionColor()
 	clr := NewSchemeColor(color)
-	wrapper := openxml.NewCompositeElement(NamespaceMain, "extrusionClr", PrefixMain)
+	wrapper := openxml.NewCompositeElement(NamespaceMain, elemExtrusionClr, PrefixMain)
 	wrapper.AppendChild(clr)
 	s.AppendChild(wrapper)
 }
 
 func (s *Shape3D) removeExtrusionColor() {
-	if elem := s.GetElement("extrusionClr", NamespaceMain); elem != nil {
+	if elem := s.GetElement(elemExtrusionClr, NamespaceMain); elem != nil {
 		s.RemoveChild(elem)
 	}
 }
 
 // ContourColor returns the contour color container element.
 func (s *Shape3D) ContourColor() openxml.Element {
-	return s.GetElement("contourClr", NamespaceMain)
+	return s.GetElement(elemContourClr, NamespaceMain)
 }
 
 // SetContourColorRgb sets the contour color to an RGB color.
 func (s *Shape3D) SetContourColorRgb(hex string) {
 	s.removeContourColor()
 	clr := NewRgbColor(hex)
-	wrapper := openxml.NewCompositeElement(NamespaceMain, "contourClr", PrefixMain)
+	wrapper := openxml.NewCompositeElement(NamespaceMain, elemContourClr, PrefixMain)
 	wrapper.AppendChild(clr)
 	s.AppendChild(wrapper)
 }
@@ -195,13 +220,13 @@ func (s *Shape3D) SetContourColorRgb(hex string) {
 func (s *Shape3D) SetContourColorScheme(color SchemeColorValue) {
 	s.removeContourColor()
 	clr := NewSchemeColor(color)
-	wrapper := openxml.NewCompositeElement(NamespaceMain, "contourClr", PrefixMain)
+	wrapper := openxml.NewCompositeElement(NamespaceMain, elemContourClr, PrefixMain)
 	wrapper.AppendChild(clr)
 	s.AppendChild(wrapper)
 }
 
 func (s *Shape3D) removeContourColor() {
-	if elem := s.GetElement("contourClr", NamespaceMain); elem != nil {
+	if elem := s.GetElement(elemContourClr, NamespaceMain); elem != nil {
 		s.RemoveChild(elem)
 	}
 }
@@ -212,13 +237,14 @@ func (s *Shape3D) Z() EMU {
 	if !found {
 		return 0
 	}
-	val, _ := strconv.ParseInt(attr.Value(), 10, 64)
+	val, _ := strconv.ParseInt(attr.Value(), base10, bitSize64)
+
 	return EMU(val)
 }
 
 // SetZ sets the z-coordinate in EMUs.
 func (s *Shape3D) SetZ(z EMU) {
-	s.SetAttribute(openxml.NewAttribute("", "z", "", strconv.FormatInt(int64(z), 10)))
+	s.SetAttribute(openxml.NewAttribute("", "z", "", strconv.FormatInt(int64(z), base10)))
 }
 
 // ExtrusionHeight returns the extrusion height in EMUs.
@@ -227,13 +253,14 @@ func (s *Shape3D) ExtrusionHeight() EMU {
 	if !found {
 		return 0
 	}
-	val, _ := strconv.ParseInt(attr.Value(), 10, 64)
+	val, _ := strconv.ParseInt(attr.Value(), base10, bitSize64)
+
 	return EMU(val)
 }
 
 // SetExtrusionHeight sets the extrusion height in EMUs.
 func (s *Shape3D) SetExtrusionHeight(h EMU) {
-	s.SetAttribute(openxml.NewAttribute("", "extrusionH", "", strconv.FormatInt(int64(h), 10)))
+	s.SetAttribute(openxml.NewAttribute("", "extrusionH", "", strconv.FormatInt(int64(h), base10)))
 }
 
 // ContourWidth returns the contour width in EMUs.
@@ -242,13 +269,14 @@ func (s *Shape3D) ContourWidth() EMU {
 	if !found {
 		return 0
 	}
-	val, _ := strconv.ParseInt(attr.Value(), 10, 64)
+	val, _ := strconv.ParseInt(attr.Value(), base10, bitSize64)
+
 	return EMU(val)
 }
 
 // SetContourWidth sets the contour width in EMUs.
 func (s *Shape3D) SetContourWidth(w EMU) {
-	s.SetAttribute(openxml.NewAttribute("", "contourW", "", strconv.FormatInt(int64(w), 10)))
+	s.SetAttribute(openxml.NewAttribute("", "contourW", "", strconv.FormatInt(int64(w), base10)))
 }
 
 // PresetMaterial returns the preset material type.
@@ -257,6 +285,7 @@ func (s *Shape3D) PresetMaterial() string {
 	if !found {
 		return "warmMatte"
 	}
+
 	return attr.Value()
 }
 
@@ -285,44 +314,47 @@ func NewBevel(name string) *Bevel {
 func (b *Bevel) Width() EMU {
 	attr, found := b.GetAttribute("w", "")
 	if !found {
-		return 76200 // Default 6pt
+		return defaultBevelSize // Default 6pt
 	}
-	val, _ := strconv.ParseInt(attr.Value(), 10, 64)
+	val, _ := strconv.ParseInt(attr.Value(), base10, bitSize64)
+
 	return EMU(val)
 }
 
 // SetWidth sets the width in EMUs.
 func (b *Bevel) SetWidth(w EMU) {
-	b.SetAttribute(openxml.NewAttribute("", "w", "", strconv.FormatInt(int64(w), 10)))
+	b.SetAttribute(openxml.NewAttribute("", "w", "", strconv.FormatInt(int64(w), base10)))
 }
 
 // Height returns the height in EMUs.
 func (b *Bevel) Height() EMU {
 	attr, found := b.GetAttribute("h", "")
 	if !found {
-		return 76200 // Default 6pt
+		return defaultBevelSize // Default 6pt
 	}
-	val, _ := strconv.ParseInt(attr.Value(), 10, 64)
+	val, _ := strconv.ParseInt(attr.Value(), base10, bitSize64)
+
 	return EMU(val)
 }
 
 // SetHeight sets the height in EMUs.
 func (b *Bevel) SetHeight(h EMU) {
-	b.SetAttribute(openxml.NewAttribute("", "h", "", strconv.FormatInt(int64(h), 10)))
+	b.SetAttribute(openxml.NewAttribute("", "h", "", strconv.FormatInt(int64(h), base10)))
 }
 
 // Preset returns the preset bevel type.
 func (b *Bevel) Preset() string {
-	attr, found := b.GetAttribute("prst", "")
+	attr, found := b.GetAttribute(elemPrst, "")
 	if !found {
 		return "circle"
 	}
+
 	return attr.Value()
 }
 
 // SetPreset sets the preset bevel type.
 func (b *Bevel) SetPreset(p string) {
-	b.SetAttribute(openxml.NewAttribute("", "prst", "", p))
+	b.SetAttribute(openxml.NewAttribute("", elemPrst, "", p))
 }
 
 // Camera represents a camera (a:camera).
@@ -347,6 +379,7 @@ func (c *Camera) Preset() string {
 	if !found {
 		return ""
 	}
+
 	return attr.Value()
 }
 
@@ -362,6 +395,7 @@ func (c *Camera) FieldOfView() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -374,9 +408,10 @@ func (c *Camera) SetFieldOfView(fov int) {
 func (c *Camera) Zoom() int {
 	attr, found := c.GetAttribute("zoom", "")
 	if !found {
-		return 100000
+		return fullPercentage
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -387,19 +422,20 @@ func (c *Camera) SetZoom(z int) {
 
 // Rotation returns the rotation element.
 func (c *Camera) Rotation() *Rotation3D {
-	elem := c.GetElement("rot", NamespaceMain)
+	elem := c.GetElement(elemRot, NamespaceMain)
 	if elem == nil {
 		return nil
 	}
 	if r, ok := elem.(*Rotation3D); ok {
 		return r
 	}
+
 	return &Rotation3D{LeafElementBase: elem.(*openxml.LeafElementBase)}
 }
 
 // SetRotation sets the rotation element.
 func (c *Camera) SetRotation(r *Rotation3D) {
-	if existing := c.GetElement("rot", NamespaceMain); existing != nil {
+	if existing := c.GetElement(elemRot, NamespaceMain); existing != nil {
 		c.RemoveChild(existing)
 	}
 	if r != nil {
@@ -429,6 +465,7 @@ func (l *LightRig) Rig() string {
 	if !found {
 		return "legacyFlat1"
 	}
+
 	return attr.Value()
 }
 
@@ -443,6 +480,7 @@ func (l *LightRig) Direction() string {
 	if !found {
 		return "t"
 	}
+
 	return attr.Value()
 }
 
@@ -460,6 +498,7 @@ func (l *LightRig) Rotation() *Rotation3D {
 	if r, ok := elem.(*Rotation3D); ok {
 		return r
 	}
+
 	return &Rotation3D{LeafElementBase: elem.(*openxml.LeafElementBase)}
 }
 
@@ -496,6 +535,7 @@ func (r *Rotation3D) Lat() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -511,6 +551,7 @@ func (r *Rotation3D) Lon() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 
@@ -526,6 +567,7 @@ func (r *Rotation3D) Rev() int {
 		return 0
 	}
 	val, _ := strconv.Atoi(attr.Value())
+
 	return val
 }
 

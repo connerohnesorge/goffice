@@ -34,6 +34,8 @@ type Diff struct {
 
 // Comparator is the interface for comparing OpenXML elements.
 type Comparator interface {
+	// Compare compares two OpenXML elements and returns a list of differences.
+	// The returned diffs describe what changed between element a and element b.
 	Compare(a, b openxml.Element) []Diff
 }
 
@@ -78,7 +80,7 @@ func (c *ElementComparator) Compare(a, b openxml.Element) []Diff {
 		if leafA.InnerText() != leafB.InnerText() {
 			diffs = append(diffs, Diff{
 				Type:     Modified,
-				Message:  "Text content changed",
+				Message:  MessageTextContentChanged,
 				OldValue: leafA.InnerText(),
 				NewValue: leafB.InnerText(),
 			})
@@ -101,7 +103,7 @@ func (c *ElementComparator) Compare(a, b openxml.Element) []Diff {
 	return diffs
 }
 
-func (c *ElementComparator) compareAttributes(a, b openxml.Element) []Diff {
+func (*ElementComparator) compareAttributes(a, b openxml.Element) []Diff {
 	var diffs []Diff
 	attrsA := a.Attributes()
 	attrsB := b.Attributes()
@@ -160,7 +162,7 @@ func (c *ElementComparator) compareChildren(a, b openxml.CompositeElement) []Dif
 		maxLen = len(childrenB)
 	}
 
-	for i := 0; i < maxLen; i++ {
+	for i := range maxLen {
 		var childA, childB openxml.Element
 		if i < len(childrenA) {
 			childA = childrenA[i]
@@ -178,7 +180,6 @@ func (c *ElementComparator) compareChildren(a, b openxml.CompositeElement) []Dif
 				ChildDiffs: childDiffs,
 			})
 		}
-
 	}
 
 	return diffs

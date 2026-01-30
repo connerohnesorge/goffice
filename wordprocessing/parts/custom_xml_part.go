@@ -2,11 +2,13 @@
 package parts
 
 import (
+	"encoding/xml"
 	"fmt"
 	"io"
 	"sync/atomic"
 
 	"github.com/connerohnesorge/goffice/openxml"
+	"github.com/connerohnesorge/goffice/packaging"
 )
 
 // CustomXmlPart represents a custom XML part.
@@ -87,6 +89,94 @@ func (cp *CustomXmlPart) GetXmlData() []byte {
 // GetStream returns a reader for the part content.
 func (cp *CustomXmlPart) GetStream() io.Reader {
 	return cp.OpenXmlPartData.GetStream()
+}
+
+// Marshal serializes the given value to XML and stores it in the part.
+func (cp *CustomXmlPart) Marshal(v interface{}) error {
+	data, err := xml.Marshal(v)
+	if err != nil {
+		return err
+	}
+	// Add XML header
+	content := []byte(xml.Header)
+	content = append(content, data...)
+	cp.SetData(content)
+
+	return nil
+}
+
+// Unmarshal deserializes the part data into the given value.
+func (cp *CustomXmlPart) Unmarshal(v interface{}) error {
+	data := cp.GetData()
+
+	return xml.Unmarshal(data, v)
+}
+
+// AddPropertiesPart adds a custom XML properties part to this custom XML part.
+func (cp *CustomXmlPart) AddPropertiesPart() (*CustomXmlPropertiesPart, error) {
+	// Generate URI for the properties part
+	uri := cp.URI() + "Props.xml"
+
+	// Create the child part
+	packPart, relID, err := cp.addChildPart(
+		uri,
+		ContentTypeCustomXmlProperties,
+		RelationshipTypeCustomXmlProperties,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	partData := openxml.NewOpenXmlPartData(
+		uri,
+		ContentTypeCustomXmlProperties,
+		packPart,
+		cp,
+	)
+	partData.SetRelationshipID(relID)
+
+	propsPart := &CustomXmlPropertiesPart{
+		OpenXmlPartData: partData,
+	}
+
+	// Initialize with minimal properties content
+	propsPart.initializeContent()
+
+	// Add to this part's child parts
+	if err := cp.AddPart(propsPart, relID); err != nil {
+		return nil, err
+	}
+
+	return propsPart, nil
+}
+
+// addChildPart is a helper to add a child part.
+func (cp *CustomXmlPart) addChildPart(
+	uri string,
+	contentType string,
+	relationshipType string,
+) (*packaging.Part, string, error) {
+	pkg := cp.Package()
+	if pkg == nil {
+		return nil, "", fmt.Errorf("package is nil")
+	}
+
+	packPart, err := pkg.CreatePart(uri, contentType)
+	if err != nil {
+		return nil, "", err
+	}
+
+	rel, err := pkg.CreatePartRelationship(
+		cp.URI(),
+		uri,
+		relationshipType,
+		"",
+	)
+	if err != nil {
+		return nil, "", err
+	}
+
+	return packPart, rel.ID(), nil
 }
 
 // Ensure CustomXmlPart implements OpenXmlPart.

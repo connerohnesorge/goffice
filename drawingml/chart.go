@@ -1,6 +1,6 @@
 //revive:disable:file-length-limit chart types need to be together
 
-// and effects.
+// Package drawingml implements chart types and effects.
 //
 // This file implements chart types for the DrawingML Chart namespace (c:).
 package drawingml

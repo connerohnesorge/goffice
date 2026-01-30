@@ -21,8 +21,8 @@ func TestAddVideoFromFile(t *testing.T) {
 
 	// Write test video data (simulated MP4 with ftyp header)
 	videoData := make([]byte, 16)
-	copy(videoData[4:], []byte("ftyp"))
-	if err := os.WriteFile(videoFile, videoData, 0644); err != nil {
+	copy(videoData[4:], "ftyp")
+	if err := os.WriteFile(videoFile, videoData, 0o644); err != nil {
 		t.Fatalf("Failed to create test video file: %v", err)
 	}
 
@@ -31,7 +31,7 @@ func TestAddVideoFromFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, err = pres.AddSlide()
 	if err != nil {
 		t.Fatalf("Failed to add slide: %v", err)
@@ -49,8 +49,8 @@ func TestAddVideoFromFile(t *testing.T) {
 	}
 
 	// Check video properties
-	if videoPart.GetContentType() != "video/mp4" {
-		t.Errorf("ContentType = %v, want %v", videoPart.GetContentType(), "video/mp4")
+	if videoPart.GetContentType() != parts.VideoTypeMp4.ContentType() {
+		t.Errorf("ContentType = %v, want %v", videoPart.GetContentType(), parts.VideoTypeMp4.ContentType())
 	}
 
 	// Verify data
@@ -75,7 +75,7 @@ func TestAddVideoFromReader(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, err = pres.AddSlide()
 	if err != nil {
 		t.Fatalf("Failed to add slide: %v", err)
@@ -83,7 +83,7 @@ func TestAddVideoFromReader(t *testing.T) {
 
 	// Create test video data
 	videoData := make([]byte, 16)
-	copy(videoData[4:], []byte("ftyp"))
+	copy(videoData[4:], "ftyp")
 	reader := bytes.NewReader(videoData)
 
 	// Add video from reader
@@ -114,7 +114,7 @@ func TestAddVideoFromBytes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, err = pres.AddSlide()
 	if err != nil {
 		t.Fatalf("Failed to add slide: %v", err)
@@ -122,7 +122,7 @@ func TestAddVideoFromBytes(t *testing.T) {
 
 	// Create test video data
 	videoData := make([]byte, 16)
-	copy(videoData[4:], []byte("ftyp"))
+	copy(videoData[4:], "ftyp")
 
 	// Add video from bytes
 	videoPart, err := pres.AddVideoFromBytes(0, videoData, "video.mp4", nil)
@@ -152,7 +152,7 @@ func TestAddVideoValidation(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, err = pres.AddSlide()
 	if err != nil {
 		t.Fatalf("Failed to add slide: %v", err)
@@ -210,7 +210,7 @@ func TestGetVideos(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 
 	// Add multiple slides with videos
 	_, err = pres.AddSlide()
@@ -224,7 +224,7 @@ func TestGetVideos(t *testing.T) {
 
 	// Add videos
 	videoData1 := make([]byte, 16)
-	copy(videoData1[4:], []byte("ftyp")) // MP4
+	copy(videoData1[4:], "ftyp") // MP4
 	videoData2 := make([]byte, 16)
 	copy(videoData2, []byte{0x52, 0x49, 0x46, 0x46, 0x00, 0x00, 0x00, 0x00, 0x41, 0x56, 0x49, 0x20}) // AVI
 
@@ -269,7 +269,7 @@ func TestRemoveVideo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, err = pres.AddSlide()
 	if err != nil {
 		t.Fatalf("Failed to add slide: %v", err)
@@ -277,7 +277,7 @@ func TestRemoveVideo(t *testing.T) {
 
 	// Add a video
 	videoData := make([]byte, 16)
-	copy(videoData[4:], []byte("ftyp"))
+	copy(videoData[4:], "ftyp")
 	video, err := pres.AddVideoFromBytes(0, videoData, "video.mp4", nil)
 	if err != nil {
 		t.Fatalf("Failed to add video: %v", err)
@@ -308,7 +308,7 @@ func TestStreamingVideo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, err = pres.AddSlide()
 	if err != nil {
 		t.Fatalf("Failed to add slide: %v", err)
@@ -316,7 +316,7 @@ func TestStreamingVideo(t *testing.T) {
 
 	// Create a large video data (simulating a large file)
 	largeVideoData := make([]byte, 150*1024*1024) // 150MB
-	copy(largeVideoData[4:], []byte("ftyp"))      // MP4 header
+	copy(largeVideoData[4:], "ftyp")      // MP4 header
 
 	// Add video with streaming threshold below file size
 	opts := &AddVideoOptions{
@@ -348,7 +348,7 @@ func TestGetVideoInfo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, err = pres.AddSlide()
 	if err != nil {
 		t.Fatalf("Failed to add slide: %v", err)
@@ -356,7 +356,7 @@ func TestGetVideoInfo(t *testing.T) {
 
 	// Add a video
 	videoData := make([]byte, 16)
-	copy(videoData[4:], []byte("ftyp"))
+	copy(videoData[4:], "ftyp")
 	video, err := pres.AddVideoFromBytes(0, videoData, "video.mp4", nil)
 	if err != nil {
 		t.Fatalf("Failed to add video: %v", err)
@@ -401,7 +401,7 @@ func TestVideoRoundTrip(t *testing.T) {
 
 	// Add a video
 	videoData := make([]byte, 16)
-	copy(videoData[4:], []byte("ftyp"))
+	copy(videoData[4:], "ftyp")
 	_, err = pres.AddVideoFromBytes(0, videoData, "video.mp4", nil)
 	if err != nil {
 		t.Fatalf("Failed to add video: %v", err)
@@ -411,14 +411,14 @@ func TestVideoRoundTrip(t *testing.T) {
 	if err := pres.Save(); err != nil {
 		t.Fatalf("Failed to save presentation: %v", err)
 	}
-	pres.Close()
+	_ = pres.Close()
 
 	// Load presentation
 	loadedPres, err := Open(tempFile, false)
 	if err != nil {
 		t.Fatalf("Failed to load presentation: %v", err)
 	}
-	defer loadedPres.Close()
+	defer func() { _ = loadedPres.Close() }()
 
 	// Verify video is preserved
 	videos := loadedPres.GetVideos()
@@ -443,7 +443,7 @@ func TestVideoPlaybackConfiguration(t *testing.T) {
 
 	// Add a dummy video
 	videoData := make([]byte, 16)
-	copy(videoData[4:], []byte("ftyp"))
+	copy(videoData[4:], "ftyp")
 	videoPart, _ := pres.AddVideoFromBytes(0, videoData, "video.mp4", nil)
 
 	// Add video to slide
@@ -467,7 +467,7 @@ func TestVideoPlaybackConfiguration(t *testing.T) {
 func TestMediaRegistry(t *testing.T) {
 	// Test video format detection
 	mp4Data := make([]byte, 16)
-	copy(mp4Data[4:], []byte("ftyp"))
+	copy(mp4Data[4:], "ftyp")
 	format, err := parts.DetectMediaFormat(mp4Data, "video.mp4")
 	if err != nil {
 		t.Fatalf("DetectMediaFormat() error = %v", err)
@@ -511,7 +511,7 @@ func TestStreamingPart(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create presentation: %v", err)
 	}
-	defer pres.Close()
+	defer func() { _ = pres.Close() }()
 	_, _ = pres.AddSlide()
 	slide, err := pres.GetSlide(0)
 	if err != nil {

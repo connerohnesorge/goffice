@@ -142,6 +142,7 @@ func (sp *SlidePart) GetOrCreateNotesSlidePart() (*NotesSlidePart, error) {
 	if nsp := sp.NotesSlidePart(); nsp != nil {
 		return nsp, nil
 	}
+
 	return sp.AddNotesSlidePart()
 }
 
@@ -152,6 +153,7 @@ func (sp *SlidePart) SetNotes(text string) error {
 		return err
 	}
 	nsp.SetNotes(text)
+
 	return nil
 }
 

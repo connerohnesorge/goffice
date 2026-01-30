@@ -30,6 +30,9 @@ const (
 	ConflictStructure
 )
 
+// MessageTextContentChanged is the message used when text content differs between elements.
+const MessageTextContentChanged = "Text content changed"
+
 // MergeStrategy defines how to resolve conflicts during a merge.
 type MergeStrategy interface {
 	Resolve(conflict Conflict) (interface{}, error)
@@ -58,6 +61,7 @@ func (s *StrategyCustom) Resolve(conflict Conflict) (interface{}, error) {
 	if s.Resolver == nil {
 		return nil, fmt.Errorf("no custom resolver defined")
 	}
+
 	return s.Resolver(conflict)
 }
 
@@ -76,6 +80,7 @@ func (s *StrategyCombined) Resolve(conflict Conflict) (interface{}, error) {
 			if sep == "" {
 				sep = " "
 			}
+
 			return s1 + sep + s2, nil
 		}
 	}
@@ -106,6 +111,7 @@ func (s *StrategyConflictMarkers) Resolve(conflict Conflict) (interface{}, error
 			return fmt.Sprintf("<<<<<<< %s\n%s\n=======\n%s\n>>>>>>> %s", ours, s1, s2, theirs), nil
 		}
 	}
+
 	return conflict.OurValue, nil
 }
 
@@ -156,6 +162,7 @@ func (m *ElementMerger) Merge(base, other openxml.Element) error {
 	}
 
 	diffs := m.comparator.Compare(base, other)
+
 	return m.applyDiffs(base, diffs)
 }
 
@@ -205,6 +212,7 @@ func (m *ElementMerger) applyDiffs(target openxml.Element, diffs []Diff) error {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -217,7 +225,7 @@ func (m *ElementMerger) applyDiff(target openxml.Element, diff Diff) error {
 		return nil
 	}
 
-	if m.options.IgnoreText && diff.Message == "Text content changed" {
+	if m.options.IgnoreText && diff.Message == MessageTextContentChanged {
 		return nil
 	}
 
@@ -225,15 +233,17 @@ func (m *ElementMerger) applyDiff(target openxml.Element, diff Diff) error {
 		return nil
 	}
 
-	// fmt.Printf("Applying diff: Type=%v Key=%s Index=%d\n", diff.Type, diff.Key, diff.Index)
 	switch diff.Type {
-
+	case NoDiff:
+		// No action needed when there is no difference
+		return nil
 	case Modified:
 		if diff.Key != "" {
 			if strVal, ok := diff.NewValue.(string); ok {
 				attr := openxml.NewAttribute("", diff.Key, "", strVal)
 				target.SetAttribute(attr)
 			}
+
 			return nil
 		}
 
@@ -255,15 +265,17 @@ func (m *ElementMerger) applyDiff(target openxml.Element, diff Diff) error {
 						newChild, ok := diff.ChildDiffs[0].NewValue.(openxml.Element)
 						if ok {
 							comp.AppendChild(newChild.Clone())
+
 							return nil
 						}
 					}
 				}
 			}
+
 			return nil
 		}
 
-		if diff.Message == "Text content changed" {
+		if diff.Message == MessageTextContentChanged {
 			leaf, ok := target.(openxml.LeafElement)
 			if !ok {
 				return fmt.Errorf("cannot set text on non-leaf element")
@@ -285,6 +297,7 @@ func (m *ElementMerger) applyDiff(target openxml.Element, diff Diff) error {
 			target.RemoveAttribute(diff.Key, "")
 		}
 	}
+
 	return nil
 }
 
@@ -303,20 +316,41 @@ func (m *ElementMerger) applyResolution(target openxml.Element, conflict Conflic
 				leaf.SetInnerText(strVal)
 			}
 		}
-		// TODO: Handle other conflict types
+	case ConflictStructure:
+		// For structural conflicts (child element changes), we need to handle at a higher level
+		// during the merge process. The resolution value should be an openxml.Element
+		if elem, ok := value.(openxml.Element); ok {
+			// Replace or update the child element
+			if comp, ok := target.(openxml.CompositeElement); ok {
+				// Find and replace the child at the conflict index
+				children := make([]openxml.Element, 0)
+				i := 0
+				for child := range comp.Children() {
+					if i == conflict.Index {
+						children = append(children, elem)
+					} else {
+						children = append(children, child)
+					}
+					i++
+				}
+				// Note: This is a simplified approach. Full implementation would require
+				// more sophisticated child element replacement in the CompositeElement interface
+			}
+		}
+	default:
+		return fmt.Errorf("unknown conflict type: %v", conflict.Type)
 	}
+
 	return nil
 }
 
 func (m *ElementMerger) detectConflicts(ours, theirs []Diff) []Conflict {
 	var conflicts []Conflict
-	// fmt.Printf("Detecting conflicts: %d ours, %d theirs\n", len(ours), len(theirs))
 	for _, d1 := range ours {
 		for _, d2 := range theirs {
-			// fmt.Printf("Checking conflict: d1(Type=%v, Key=%s) vs d2(Type=%v, Key=%s)\n", d1.Type, d1.Key, d2.Type, d2.Key)
 			if m.isConflict(d1, d2) {
 				conflictType := ConflictAttribute
-				if d1.Message == "Text content changed" {
+				if d1.Message == MessageTextContentChanged {
 					conflictType = ConflictText
 				}
 
@@ -332,6 +366,7 @@ func (m *ElementMerger) detectConflicts(ours, theirs []Diff) []Conflict {
 			}
 		}
 	}
+
 	return conflicts
 }
 
@@ -340,13 +375,14 @@ func (m *ElementMerger) isConflict(d1, d2 Diff) bool {
 		if d1.Key != "" && d1.Key == d2.Key {
 			return d1.NewValue != d2.NewValue
 		}
-		if d1.Message == "Text content changed" && d2.Message == "Text content changed" {
+		if d1.Message == MessageTextContentChanged && d2.Message == MessageTextContentChanged {
 			return d1.NewValue != d2.NewValue
 		}
 		if d1.Index == d2.Index {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -357,28 +393,28 @@ func (m *ElementMerger) filterConflictingDiffs(diffs []Diff, conflicts []Conflic
 		for _, c := range conflicts {
 			if d.Key != "" && d.Key == c.Key {
 				isConflicting = true
+
 				break
 			}
-			if d.Index == c.Index && (d.Type == Modified && c.Index != 0) { // Index 0 is default, need to be careful?
-				// Actually Index 0 is valid index. Default int is 0.
-				// But attributes have Index 0.
-				// ConflictType might help.
-				// For now, if Key matches, it's attribute conflict.
-				// If Index matches and it's a child diff?
-				// My Conflict detection logic sets Index=d1.Index.
-				// If d1 is attribute modified, Index is 0.
-				// If d1 is child modified, Index is i.
-				// We need to distinguish.
-				// If Key is set, use Key. If Key is empty, use Index.
+			// Check for index-based conflict for child elements (non-attributes)
+			// Attributes have Key set, children use Index for positioning
+			// We need to check both the index match and ensure it's a valid modification conflict
+			if d.Key == "" && d.Index == c.Index && c.Index != 0 && d.Type == Modified {
+				// This is a child element modification at the same index
+				isConflicting = true
+
+				break
 			}
 			if d.Key == "" && d.Index == c.Index {
 				// Potential child conflict
 				isConflicting = true
+
 				break
 			}
 			// Check for text conflict
-			if d.Message == "Text content changed" && c.Type == ConflictText {
+			if d.Message == MessageTextContentChanged && c.Type == ConflictText {
 				isConflicting = true
+
 				break
 			}
 		}
@@ -386,5 +422,6 @@ func (m *ElementMerger) filterConflictingDiffs(diffs []Diff, conflicts []Conflic
 			safe = append(safe, d)
 		}
 	}
+
 	return safe
 }

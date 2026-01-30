@@ -1,3 +1,6 @@
+// Package main provides code generation for presentation elements.
+// This file contains methods for generating constructor, clone, and validation
+// functions for presentation schema types.
 package main
 
 import (

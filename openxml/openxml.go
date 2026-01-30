@@ -1,3 +1,4 @@
+// Package openxml provides core infrastructure for Open Office XML document
 // processing.
 // This includes element types, features, and validation infrastructure shared
 // across all document types (Word, Excel, PowerPoint).
