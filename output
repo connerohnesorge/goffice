@@ -1,0 +1,856 @@
+presentation/elements/text_styles.go:17:2: ifElseChain: rewrite if-else to switch statement (gocritic)
+	if level == 0 {
+	^
+presentation/media.go:183:2: typeAssertChain: rewrite if-else to type switch statement (gocritic)
+	if r, ok := reader.(interface{ Size() int64 }); ok {
+	^
+presentation/media.go:230:2: ifElseChain: rewrite if-else to switch statement (gocritic)
+	if opts.AutoDetectType && filename != "" {
+	^
+presentation/media.go:513:2: typeAssertChain: rewrite if-else to type switch statement (gocritic)
+	if r, ok := reader.(interface{ Size() int64 }); ok {
+	^
+presentation/media.go:551:2: ifElseChain: rewrite if-else to switch statement (gocritic)
+	if opts.AutoDetectType && filename != "" {
+	^
+wordprocessing/elements/comments.go:62:3: nestingReduce: invert if cond, replace body with `continue`, move old body after the statement (gocritic)
+		if len(match) >= 2 {
+		^
+presentation/elements/picture.go:460:2: Consider pre-allocating `toRemove` (prealloc)
+	var toRemove []openxml.Element
+	^
+presentation/elements/presentation.go:259:2: Consider pre-allocating `result` (prealloc)
+	var result []openxml.Element
+	^
+presentation/elements/presentation.go:293:2: Consider pre-allocating `result` (prealloc)
+	var result []openxml.Element
+	^
+openxml/compare/large_test.go:29:11: unchecked-type-assertion: type cast result is unchecked in base.Clone().(openxml.CompositeElement) - type assertion will panic if not matched (revive)
+	other := base.Clone().(openxml.CompositeElement)
+	         ^
+openxml/compare/merge_test.go:161:40: use-any: since Go 1.18 'interface{}' can be replaced by 'any' (revive)
+			Resolver: func(c compare.Conflict) (interface{}, error) {
+			                                    ^
+openxml/compare/roundtrip_test.go:22:2: var-naming: don't use underscores in Go names; var child1_mod should be child1Mod (revive)
+	child1_mod := openxml.NewLeafElement("http://example.com", "child", "ex")
+	^
+openxml/compare/roundtrip_test.go:39:2: early-return: if c { ... } can be rewritten if !c { return } ... to reduce nesting (revive)
+	if len(diffs) > 0 {
+		t.Errorf("Roundtrip failed, expected 0 diffs, got %d", len(diffs))
+		for _, d := range diffs {
+			t.Logf("Diff: %v", d)
+		}
+	}
+openxml/relationship_advanced.go:144:4: early-return: if c { ... } can be rewritten if !c { continue } ... to reduce nesting (move short variable declaration to its own line if necessary) (revive)
+			if _, exists := inDegree[dependent]; exists {
+				inDegree[dependent]--
+				if inDegree[dependent] == 0 {
+					queue = append(queue, dependent)
+				}
+			}
+openxml/relationship_advanced_test.go:332:18: enforce-slice-style: use make([]type) instead of []type{} (or declare nil slice) (revive)
+		relationships: []OpenXmlRelationship{},
+		               ^
+openxml/relationship_advanced_test.go:377:41: unused-parameter: parameter 'id' seems to be unused, consider removing or renaming it to match ^_ (revive)
+func (m *mockPartContainer) GetPartById(id string) (OpenXmlPart, error) {
+                                        ^
+openxml/relationship_advanced_test.go:381:44: unused-parameter: parameter 'contentType' seems to be unused, consider removing or renaming it to match ^_ (revive)
+func (m *mockPartContainer) GetPartsOfType(contentType string) iter.Seq[OpenXmlPart] {
+                                           ^
+openxml/relationship_advanced_test.go:382:14: unused-parameter: parameter 'yield' seems to be unused, consider removing or renaming it to match ^_ (revive)
+	return func(yield func(OpenXmlPart) bool) {}
+	            ^
+openxml/relationship_advanced_test.go:385:55: unused-parameter: parameter 'id' seems to be unused, consider removing or renaming it to match ^_ (revive)
+func (m *mockPartContainer) AddPart(part OpenXmlPart, id string) error {
+                                                      ^
+openxml/relationship_advanced_test.go:391:40: unused-parameter: parameter 'id' seems to be unused, consider removing or renaming it to match ^_ (revive)
+func (m *mockPartContainer) DeletePart(id string) error {
+                                       ^
+openxml/relationship_advanced_test.go:399:46: unused-parameter: parameter 'uri' seems to be unused, consider removing or renaming it to match ^_ (revive)
+func (m *mockPartContainer) GetPackagingPart(uri string) *packaging.Part {
+                                             ^
+openxml/relationship_advanced_test.go:434:35: unused-parameter: parameter 'contentType' seems to be unused, consider removing or renaming it to match ^_ (revive)
+func (m *mockPart) GetPartsOfType(contentType string) iter.Seq[OpenXmlPart] {
+                                  ^
+openxml/relationship_advanced_test.go:435:14: unused-parameter: parameter 'yield' seems to be unused, consider removing or renaming it to match ^_ (revive)
+	return func(yield func(OpenXmlPart) bool) {}
+	            ^
+openxml/relationship_advanced_test.go:468:28: unused-parameter: parameter 'data' seems to be unused, consider removing or renaming it to match ^_ (revive)
+func (m *mockPart) SetData(data []byte) {
+                           ^
+openxml/relationship_advanced_test.go:475:37: unused-parameter: parameter 'uri' seems to be unused, consider removing or renaming it to match ^_ (revive)
+func (m *mockPart) GetPackagingPart(uri string) *packaging.Part {
+                                    ^
+presentation/builder.go:1:1: comments-density: the file has a comment density of  0% (0 comment lines for 68 code lines) but expected a minimum of 15% (revive)
+package presentation
+
+import (
+	"fmt"
+	"io"
+
+	"github.com/connerohnesorge/goffice/drawingml"
+	"github.com/connerohnesorge/goffice/presentation/elements"
+	"github.com/connerohnesorge/goffice/presentation/parts"
+)
+
+type PresentationBuilder struct {
+	doc    *Document
+	errors []error
+}
+
+func NewPresentationBuilder() *PresentationBuilder {
+	doc, err := NewWriter(io.Discard, DocTypePresentation)
+	pb := &PresentationBuilder{
+		doc:    doc,
+		errors: make([]error, 0),
+	}
+	if err != nil {
+		pb.errors = append(pb.errors, err)
+	}
+
+	return pb
+}
+
+func (pb *PresentationBuilder) AddSlide() *SlideBuilder {
+	if pb.doc == nil {
+		pb.errors = append(pb.errors, fmt.Errorf("document is nil"))
+
+		return &SlideBuilder{pb: pb}
+	}
+
+	slidePart, err := pb.doc.AddSlide()
+	if err != nil {
+		pb.errors = append(pb.errors, err)
+
+		return &SlideBuilder{pb: pb}
+	}
+
+	return &SlideBuilder{
+		pb:        pb,
+		slidePart: slidePart,
+	}
+}
+
+func (pb *PresentationBuilder) Build() (*Document, error) {
+	if len(pb.errors) > 0 {
+		return nil, pb.errors[0]
+	}
+
+	return pb.doc, nil
+}
+
+type SlideBuilder struct {
+	pb        *PresentationBuilder
+	slidePart *parts.SlidePart
+}
+
+func (sb *SlideBuilder) AddShape() *ShapeBuilder {
+	if sb.slidePart == nil {
+		return &ShapeBuilder{sb: sb}
+	}
+
+	slide := sb.slidePart.Slide()
+	shape := slide.AddShape()
+
+	return &ShapeBuilder{
+		sb:    sb,
+		shape: shape,
+	}
+}
+
+func (sb *SlideBuilder) AddTitle(text string) *SlideBuilder {
+	if sb.slidePart == nil {
+		return sb
+	}
+
+	shape := sb.AddShape()
+	shape.SetType(drawingml.ShapeTypeRectangle)
+	shape.AddParagraph(text)
+
+	return sb
+}
+
+func (sb *SlideBuilder) Presentation() *PresentationBuilder {
+	return sb.pb
+}
+
+func (sb *SlideBuilder) SlidePart() *parts.SlidePart {
+	return sb.slidePart
+}
+
+type ShapeBuilder struct {
+	sb    *SlideBuilder
+	shape *elements.Shape
+}
+
+func (shb *ShapeBuilder) SetType(shapeType drawingml.ShapeTypeValue) *ShapeBuilder {
+	if shb.shape != nil {
+		spPr := shb.shape.GetOrCreateShapeProperties()
+		spPr.SetPresetGeometry(string(shapeType))
+	}
+
+	return shb
+}
+
+func (shb *ShapeBuilder) AddParagraph(text string) *ParagraphBuilder {
+	if shb.shape == nil {
+		return &ParagraphBuilder{shb: shb}
+	}
+
+	tb := shb.shape.GetOrCreateTextBody()
+	p := tb.AddParagraph(text)
+
+	return &ParagraphBuilder{
+		shb: shb,
+		p:   p,
+	}
+}
+
+func (shb *ShapeBuilder) Slide() *SlideBuilder {
+	return shb.sb
+}
+
+func (shb *ShapeBuilder) Shape() *elements.Shape {
+	return shb.shape
+}
+
+type ParagraphBuilder struct {
+	shb *ShapeBuilder
+	p   *drawingml.TextParagraph
+}
+
+func (pb *ParagraphBuilder) AddRun(text string) *RunBuilder {
+	if pb.p == nil {
+		return &RunBuilder{pb: pb}
+	}
+
+	r := pb.p.AddRun(text)
+
+	return &RunBuilder{
+		pb: pb,
+		r:  r,
+	}
+}
+
+func (pb *ParagraphBuilder) Shape() *ShapeBuilder {
+	return pb.shb
+}
+
+type RunBuilder struct {
+	pb *ParagraphBuilder
+	r  *drawingml.TextRun
+}
+
+func (rb *RunBuilder) Bold(bold bool) *RunBuilder {
+	if rb.r != nil {
+		rb.r.SetBold(bold)
+	}
+
+	return rb
+}
+
+func (rb *RunBuilder) Size(size int) *RunBuilder {
+	if rb.r != nil {
+		rb.r.SetFontSize(size)
+	}
+
+	return rb
+}
+
+func (rb *RunBuilder) Paragraph() *ParagraphBuilder {
+	return rb.pb
+}
+presentation/builder.go:32:33: use-errors-new: replace fmt.Errorf by errors.New (revive)
+		pb.errors = append(pb.errors, fmt.Errorf("document is nil"))
+		                              ^
+presentation/builder.go:102:1: receiver-naming: receiver name shb is longer than 2 characters (revive)
+func (shb *ShapeBuilder) SetType(shapeType drawingml.ShapeTypeValue) *ShapeBuilder {
+	if shb.shape != nil {
+		spPr := shb.shape.GetOrCreateShapeProperties()
+		spPr.SetPresetGeometry(string(shapeType))
+	}
+
+	return shb
+}
+presentation/builder.go:111:1: receiver-naming: receiver name shb is longer than 2 characters (revive)
+func (shb *ShapeBuilder) AddParagraph(text string) *ParagraphBuilder {
+	if shb.shape == nil {
+		return &ParagraphBuilder{shb: shb}
+	}
+
+	tb := shb.shape.GetOrCreateTextBody()
+	p := tb.AddParagraph(text)
+
+	return &ParagraphBuilder{
+		shb: shb,
+		p:   p,
+	}
+}
+presentation/builder.go:125:1: receiver-naming: receiver name shb is longer than 2 characters (revive)
+func (shb *ShapeBuilder) Slide() *SlideBuilder {
+	return shb.sb
+}
+presentation/elements/master_structures_test.go:6:2: dot-imports: should not use dot imports (revive)
+	. "github.com/connerohnesorge/goffice/presentation/elements"
+	^
+presentation/elements/master_structures_test.go:21:3: unnecessary-format: unnecessary use of formatting function "t.Errorf", you can replace it with "t.Error" (revive)
+		t.Errorf("Expected non-nil ColorMap after adding")
+		^
+presentation/elements/master_structures_test.go:33:3: unnecessary-format: unnecessary use of formatting function "t.Errorf", you can replace it with "t.Error" (revive)
+		t.Errorf("Expected non-nil SlideLayoutIdList after adding")
+		^
+presentation/elements/master_structures_test.go:45:3: unnecessary-format: unnecessary use of formatting function "t.Errorf", you can replace it with "t.Error" (revive)
+		t.Errorf("Expected non-nil Transition after adding")
+		^
+presentation/elements/text_styles.go:19:35: add-constant: avoid magic numbers like '9', create a named constant for it (revive)
+	} else if level >= 1 && level <= 9 {
+	                                 ^
+presentation/elements/text_styles.go:51:35: add-constant: avoid magic numbers like '9', create a named constant for it (revive)
+	} else if level >= 1 && level <= 9 {
+	                                 ^
+presentation/html.go:1:1: comments-density: the file has a comment density of  5% (8 comment lines for 144 code lines) but expected a minimum of 15% (revive)
+package presentation
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/connerohnesorge/goffice/drawingml"
+	"github.com/connerohnesorge/goffice/presentation/elements"
+	"golang.org/x/net/html"
+)
+
+// ImportHTMLTable imports an HTML table into the specified slide.
+func (d *Document) ImportHTMLTable(slideIndex int, htmlStr string) (*Table, error) {
+	doc, err := html.Parse(strings.NewReader(htmlStr))
+	if err != nil {
+		return nil, err
+	}
+
+	// Find the first <table> element
+	var tableNode *html.Node
+	var findTable func(*html.Node)
+	findTable = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "table" {
+			tableNode = n
+
+			return
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			findTable(c)
+			if tableNode != nil {
+				return
+			}
+		}
+	}
+	findTable(doc)
+
+	if tableNode == nil {
+		return nil, fmt.Errorf("no table found in HTML")
+	}
+
+	// Parse rows and cells
+	var rows [][]*html.Node
+	for r := tableNode.FirstChild; r != nil; r = r.NextSibling {
+		if r.Type == html.ElementNode && (r.Data == "tr" || r.Data == "thead" || r.Data == "tbody") {
+			if r.Data == "tr" {
+				rows = append(rows, parseRowNodes(r))
+			} else {
+				// Handle thead/tbody by looking for tr inside them
+				for c := r.FirstChild; c != nil; c = c.NextSibling {
+					if c.Type == html.ElementNode && c.Data == "tr" {
+						rows = append(rows, parseRowNodes(c))
+					}
+				}
+			}
+		}
+	}
+
+	if len(rows) == 0 {
+		return nil, fmt.Errorf("table has no rows")
+	}
+
+	numRows := len(rows)
+	numCols := 0
+	for _, row := range rows {
+		if len(row) > numCols {
+			numCols = len(row)
+		}
+	}
+
+	slide, err := d.GetSlide(slideIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	table := NewTable(slide.Slide(), numRows, numCols)
+
+	relFn := func(url string) string {
+		rel, _ := slide.PackagingPart().CreateRelationship(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", "External")
+		if rel != nil {
+			return rel.ID()
+		}
+
+		return ""
+	}
+
+	for rIdx, row := range rows {
+		for cIdx, cellNode := range row {
+			cell, _ := table.GetCell(rIdx, cIdx)
+			if cell != nil {
+				applyHTMLToTextBody(cell.TextBody(), cellNode, relFn)
+			}
+		}
+	}
+
+	return table, nil
+}
+
+// ImportHTMLText imports an HTML string into a text shape on the specified slide.
+func (d *Document) ImportHTMLText(slideIndex int, x, y, w, h float64, htmlStr string) (*elements.Shape, error) {
+	doc, err := html.Parse(strings.NewReader(htmlStr))
+	if err != nil {
+		return nil, err
+	}
+
+	slide, err := d.GetSlide(slideIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	shape := slide.Slide().GetOrCreateCommonSlideData().GetOrCreateShapeTree().AddShape()
+	shape.SetPosition(int(drawingml.PointsToEmu(x)), int(drawingml.PointsToEmu(y)))
+	shape.SetSize(int(drawingml.PointsToEmu(w)), int(drawingml.PointsToEmu(h)))
+
+	relFn := func(url string) string {
+		rel, _ := slide.PackagingPart().CreateRelationship(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", "External")
+		if rel != nil {
+			return rel.ID()
+		}
+
+		return ""
+	}
+
+	applyHTMLToTextBody(shape.GetOrCreateTextBody(), doc, relFn)
+
+	return shape, nil
+}
+
+func parseRowNodes(n *html.Node) []*html.Node {
+	var cells []*html.Node
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if c.Type == html.ElementNode && (c.Data == "td" || c.Data == "th") {
+			cells = append(cells, c)
+		}
+	}
+
+	return cells
+}
+
+func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string) string) {
+	tb.ClearParagraphs()
+	p := tb.AddParagraph("")
+
+	var f func(*html.Node, bool, bool, bool, int, string, string)
+	f = func(n *html.Node, bold, italic, underline bool, level int, listType string, linkId string) {
+		switch n.Type {
+		case html.TextNode:
+			text := strings.TrimSpace(n.Data)
+			if text != "" {
+				run := p.AddRun(text)
+				if bold {
+					run.SetBold(true)
+				}
+				if italic {
+					run.SetItalic(true)
+				}
+				if underline || linkId != "" {
+					run.SetUnderline(drawingml.UnderlineSingle)
+				}
+				if linkId != "" {
+					run.SetHyperlink(linkId)
+				}
+			}
+		case html.ElementNode:
+			newBold, newItalic, newUnderline := bold, italic, underline
+			newLevel := level
+			newListType := listType
+			newLinkId := linkId
+
+			switch n.Data {
+			case "b", "strong":
+				newBold = true
+			case "i", "em":
+				newItalic = true
+			case "u":
+				newUnderline = true
+			case "a":
+				if relFn != nil {
+					for _, attr := range n.Attr {
+						if attr.Key == "href" {
+							newLinkId = relFn(attr.Val)
+
+							break
+						}
+					}
+				}
+			case "br":
+				p = tb.AddParagraph("")
+				if newListType != "" {
+					p.SetLevel(newLevel)
+					switch newListType {
+					case "ul":
+						p.SetCharacterBullet("•")
+					case "ol":
+						p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
+					}
+				}
+
+				return
+			case "ul", "ol":
+				newListType = n.Data
+				newLevel++
+			case "li":
+				p = tb.AddParagraph("")
+				p.SetLevel(newLevel - 1)
+				switch listType {
+				case "ul":
+					p.SetCharacterBullet("•")
+				case "ol":
+					// Simplified: always start at 1 or should we track it?
+					// For now let's just use arabic period.
+					p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
+				}
+			}
+
+			for c := n.FirstChild; c != nil; c = c.NextSibling {
+				f(c, newBold, newItalic, newUnderline, newLevel, newListType, newLinkId)
+			}
+		case html.ErrorNode, html.DocumentNode, html.CommentNode, html.DoctypeNode, html.RawNode:
+			// These node types are not processed for text content
+			return
+		}
+	}
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		f(c, false, false, false, 0, "", "")
+	}
+}
+presentation/html.go:13:1: function-length: maximum number of statements per function exceeded; max 27 but got 46 (revive)
+func (d *Document) ImportHTMLTable(slideIndex int, htmlStr string) (*Table, error) {
+	doc, err := html.Parse(strings.NewReader(htmlStr))
+	if err != nil {
+		return nil, err
+	}
+
+	// Find the first <table> element
+	var tableNode *html.Node
+	var findTable func(*html.Node)
+	findTable = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "table" {
+			tableNode = n
+
+			return
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			findTable(c)
+			if tableNode != nil {
+				return
+			}
+		}
+	}
+	findTable(doc)
+
+	if tableNode == nil {
+		return nil, fmt.Errorf("no table found in HTML")
+	}
+
+	// Parse rows and cells
+	var rows [][]*html.Node
+	for r := tableNode.FirstChild; r != nil; r = r.NextSibling {
+		if r.Type == html.ElementNode && (r.Data == "tr" || r.Data == "thead" || r.Data == "tbody") {
+			if r.Data == "tr" {
+				rows = append(rows, parseRowNodes(r))
+			} else {
+				// Handle thead/tbody by looking for tr inside them
+				for c := r.FirstChild; c != nil; c = c.NextSibling {
+					if c.Type == html.ElementNode && c.Data == "tr" {
+						rows = append(rows, parseRowNodes(c))
+					}
+				}
+			}
+		}
+	}
+
+	if len(rows) == 0 {
+		return nil, fmt.Errorf("table has no rows")
+	}
+
+	numRows := len(rows)
+	numCols := 0
+	for _, row := range rows {
+		if len(row) > numCols {
+			numCols = len(row)
+		}
+	}
+
+	slide, err := d.GetSlide(slideIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	table := NewTable(slide.Slide(), numRows, numCols)
+
+	relFn := func(url string) string {
+		rel, _ := slide.PackagingPart().CreateRelationship(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", "External")
+		if rel != nil {
+			return rel.ID()
+		}
+
+		return ""
+	}
+
+	for rIdx, row := range rows {
+		for cIdx, cellNode := range row {
+			cell, _ := table.GetCell(rIdx, cIdx)
+			if cell != nil {
+				applyHTMLToTextBody(cell.TextBody(), cellNode, relFn)
+			}
+		}
+	}
+
+	return table, nil
+}
+presentation/html.go:38:15: use-errors-new: replace fmt.Errorf by errors.New (revive)
+		return nil, fmt.Errorf("no table found in HTML")
+		            ^
+presentation/html.go:44:3: early-return: if c { ... } can be rewritten if !c { continue } ... to reduce nesting (revive)
+		if r.Type == html.ElementNode && (r.Data == "tr" || r.Data == "thead" || r.Data == "tbody") {
+			if r.Data == "tr" {
+				rows = append(rows, parseRowNodes(r))
+			} else {
+				// Handle thead/tbody by looking for tr inside them
+				for c := r.FirstChild; c != nil; c = c.NextSibling {
+					if c.Type == html.ElementNode && c.Data == "tr" {
+						rows = append(rows, parseRowNodes(c))
+					}
+				}
+			}
+		}
+presentation/html.go:49:5: max-control-nesting: control flow nesting exceeds 3 (revive)
+				for c := r.FirstChild; c != nil; c = c.NextSibling {
+					if c.Type == html.ElementNode && c.Data == "tr" {
+						rows = append(rows, parseRowNodes(c))
+					}
+				}
+presentation/html.go:59:15: use-errors-new: replace fmt.Errorf by errors.New (revive)
+		return nil, fmt.Errorf("table has no rows")
+		            ^
+presentation/html.go:99:1: argument-limit: maximum number of arguments per function exceeded; max 4 but got 6 (revive)
+func (d *Document) ImportHTMLText(slideIndex int, x, y, w, h float64, htmlStr string) (*elements.Shape, error) {
+^
+presentation/html.go:139:1: function-length: maximum number of statements per function exceeded; max 27 but got 48 (revive)
+func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string) string) {
+	tb.ClearParagraphs()
+	p := tb.AddParagraph("")
+
+	var f func(*html.Node, bool, bool, bool, int, string, string)
+	f = func(n *html.Node, bold, italic, underline bool, level int, listType string, linkId string) {
+		switch n.Type {
+		case html.TextNode:
+			text := strings.TrimSpace(n.Data)
+			if text != "" {
+				run := p.AddRun(text)
+				if bold {
+					run.SetBold(true)
+				}
+				if italic {
+					run.SetItalic(true)
+				}
+				if underline || linkId != "" {
+					run.SetUnderline(drawingml.UnderlineSingle)
+				}
+				if linkId != "" {
+					run.SetHyperlink(linkId)
+				}
+			}
+		case html.ElementNode:
+			newBold, newItalic, newUnderline := bold, italic, underline
+			newLevel := level
+			newListType := listType
+			newLinkId := linkId
+
+			switch n.Data {
+			case "b", "strong":
+				newBold = true
+			case "i", "em":
+				newItalic = true
+			case "u":
+				newUnderline = true
+			case "a":
+				if relFn != nil {
+					for _, attr := range n.Attr {
+						if attr.Key == "href" {
+							newLinkId = relFn(attr.Val)
+
+							break
+						}
+					}
+				}
+			case "br":
+				p = tb.AddParagraph("")
+				if newListType != "" {
+					p.SetLevel(newLevel)
+					switch newListType {
+					case "ul":
+						p.SetCharacterBullet("•")
+					case "ol":
+						p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
+					}
+				}
+
+				return
+			case "ul", "ol":
+				newListType = n.Data
+				newLevel++
+			case "li":
+				p = tb.AddParagraph("")
+				p.SetLevel(newLevel - 1)
+				switch listType {
+				case "ul":
+					p.SetCharacterBullet("•")
+				case "ol":
+					// Simplified: always start at 1 or should we track it?
+					// For now let's just use arabic period.
+					p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
+				}
+			}
+
+			for c := n.FirstChild; c != nil; c = c.NextSibling {
+				f(c, newBold, newItalic, newUnderline, newLevel, newListType, newLinkId)
+			}
+		case html.ErrorNode, html.DocumentNode, html.CommentNode, html.DoctypeNode, html.RawNode:
+			// These node types are not processed for text content
+			return
+		}
+	}
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		f(c, false, false, false, 0, "", "")
+	}
+}
+presentation/html.go:148:4: early-return: if c { ... } can be rewritten if !c { break } ... to reduce nesting (revive)
+			if text != "" {
+				run := p.AddRun(text)
+				if bold {
+					run.SetBold(true)
+				}
+				if italic {
+					run.SetItalic(true)
+				}
+				if underline || linkId != "" {
+					run.SetUnderline(drawingml.UnderlineSingle)
+				}
+				if linkId != "" {
+					run.SetHyperlink(linkId)
+				}
+			}
+presentation/html.go:177:5: early-return: if c { ... } can be rewritten if !c { break } ... to reduce nesting (revive)
+				if relFn != nil {
+					for _, attr := range n.Attr {
+						if attr.Key == "href" {
+							newLinkId = relFn(attr.Val)
+
+							break
+						}
+					}
+				}
+presentation/html.go:179:7: max-control-nesting: control flow nesting exceeds 3 (revive)
+						if attr.Key == "href" {
+							newLinkId = relFn(attr.Val)
+
+							break
+						}
+presentation/html.go:191:6: max-control-nesting: control flow nesting exceeds 3 (revive)
+					case "ul":
+						p.SetCharacterBullet("•")
+presentation/html_test.go:104:3: unnecessary-format: unnecessary use of formatting function "t.Fatalf", you can replace it with "t.Fatal" (revive)
+		t.Fatalf("shape is nil")
+		^
+presentation/html_test.go:142:3: unnecessary-format: unnecessary use of formatting function "t.Fatalf", you can replace it with "t.Fatal" (revive)
+		t.Fatalf("cell not found")
+		^
+presentation/html_test.go:196:3: unnecessary-format: unnecessary use of formatting function "t.Fatalf", you can replace it with "t.Fatal" (revive)
+		t.Fatalf("cell not found")
+		^
+presentation/media_fluent.go:22:78: empty-lines: extra empty line at the start of a block (revive)
+func (d *Document) AddVideo(slideIndex int, filePath string) (*Video, error) {
+
+	part, err := d.AddVideoFromFile(slideIndex, filePath, nil)
+
+	if err != nil {
+
+		return nil, err
+
+	}
+
+	slide, err := d.GetSlide(slideIndex)
+
+	if err != nil {
+
+		return nil, err
+
+	}
+
+	// Add the video to the slide's XML
+
+	pic := slide.AddVideo(part.RelationshipID(), "")
+
+	v := &Video{
+
+		slide: slide,
+
+		part: part,
+
+		pic: pic,
+
+		props: elements.MediaProperties{
+
+			EmbedRelId: part.RelationshipID(),
+		},
+	}
+
+	return v, nil
+
+}
+presentation/media_fluent.go:26:16: empty-lines: extra empty line at the start of a block (revive)
+	if err != nil {
+
+		return nil, err
+
+	}
+presentation/media_fluent.go:34:16: empty-lines: extra empty line at the start of a block (revive)
+	if err != nil {
+
+		return nil, err
+
+	}
+spreadsheet/parts/chart_ex_part.go:1:1: package-comments: package comment should be of the form "Package parts ..." (revive)
+// This file implements the extended chart part (Office 2016+).
+^
+wordprocessing/compare.go:25:15: unnecessary-format: unnecessary use of formatting function "fmt.Errorf", you can replace it with "errors.New" (revive)
+		return nil, fmt.Errorf("cannot compare nil documents")
+		            ^
+wordprocessing/compare.go:32:15: unnecessary-format: unnecessary use of formatting function "fmt.Errorf", you can replace it with "errors.New" (revive)
+		return nil, fmt.Errorf("document main part is missing or invalid")
+		            ^
+wordprocessing/compare.go:53:10: unnecessary-format: unnecessary use of formatting function "fmt.Errorf", you can replace it with "errors.New" (revive)
+		return fmt.Errorf("cannot merge nil documents")
+		       ^
+wordprocessing/wordprocessing.go:1:1: package-comments: package comment should be of the form "Package wordprocessing ..." (revive)
+// This package implements the document-level API for creating, reading,
+// and modifying .docx files.
+59 issues:
+* gocritic: 6
+* prealloc: 3
+* revive: 50

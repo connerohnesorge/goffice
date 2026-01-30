@@ -256,7 +256,7 @@ func (s *SlideIdListWrapper) SlideIds() []openxml.Element {
 	if !ok {
 		return nil
 	}
-	var result []openxml.Element
+	result := make([]openxml.Element, 0, comp.ChildCount())
 	for child := range comp.Children() {
 		result = append(result, child)
 	}
@@ -290,7 +290,7 @@ func (s *SlideMasterIdListWrapper) SlideMasterIds() []openxml.Element {
 	if !ok {
 		return nil
 	}
-	var result []openxml.Element
+	result := make([]openxml.Element, 0, comp.ChildCount())
 	for child := range comp.Children() {
 		result = append(result, child)
 	}

@@ -39,6 +39,10 @@ type RenderingContext struct {
 	// It can be set via WithPage() or SetPage() after construction.
 	Page PageDrawer
 
+	// Document provides access to the PDF document for resource registration.
+	// This is needed for registering gradients, patterns, and other resources.
+	Document *Document
+
 	// ImageResolver resolves embedded relationship IDs to raw image data.
 	// DrawingML image renderers use this to load image bytes.
 	ImageResolver ImageResolver
@@ -211,6 +215,23 @@ func (rc *RenderingContext) SetImageResolver(
 	resolver ImageResolver,
 ) {
 	rc.ImageResolver = resolver
+}
+
+// SetDocument sets the Document field for resource registration.
+// This is needed for registering gradients, patterns, and other resources.
+func (rc *RenderingContext) SetDocument(
+	doc *Document,
+) {
+	rc.Document = doc
+}
+
+// WithDocument sets the Document field and returns the context for method chaining.
+func (rc *RenderingContext) WithDocument(
+	doc *Document,
+) *RenderingContext {
+	rc.Document = doc
+
+	return rc
 }
 
 // WithPage sets the Page field and returns the context for method chaining.

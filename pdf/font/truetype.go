@@ -57,6 +57,37 @@ type GlyphMetrics struct {
 	LeftBearing  int // Left side bearing
 }
 
+// KerningPair represents a kerning adjustment between two glyphs.
+type KerningPair struct {
+	LeftGlyph  uint16 // Glyph index of the left character
+	RightGlyph uint16 // Glyph index of the right character
+	Value      int16  // Kerning value in font design units (negative = closer)
+}
+
+// KerningTable contains all kerning pairs for a font.
+type KerningTable struct {
+	Pairs map[uint32]int16 // Combined key: (left << 16) | right -> kerning value
+}
+
+// GetKerning returns the kerning adjustment for a glyph pair.
+// The key combines left and right glyph indices for efficient lookup.
+func (kt *KerningTable) GetKerning(leftGlyph, rightGlyph uint16) int16 {
+	if kt == nil || kt.Pairs == nil {
+		return 0
+	}
+	key := (uint32(leftGlyph) << 16) | uint32(rightGlyph)
+	return kt.Pairs[key]
+}
+
+// AddKerning adds a kerning pair to the table.
+func (kt *KerningTable) AddKerning(leftGlyph, rightGlyph uint16, value int16) {
+	if kt.Pairs == nil {
+		kt.Pairs = make(map[uint32]int16)
+	}
+	key := (uint32(leftGlyph) << 16) | uint32(rightGlyph)
+	kt.Pairs[key] = value
+}
+
 // Font represents a parsed TrueType font with all data needed for PDF embedding.
 type Font struct {
 	Family    string                // Font family name
@@ -64,6 +95,9 @@ type Font struct {
 	Metrics   FontMetrics           // Font-level metrics
 	GlyphData map[rune]GlyphMetrics // Character to glyph metrics mapping
 	Data      []byte                // Raw font data for embedding
+	Kerning   *KerningTable         // Kerning pairs table (nil if no kerning)
+	// glyphToRune maps glyph indices back to runes for kerning lookups
+	glyphToRune map[uint16]rune
 }
 
 // Error definitions for font parsing
@@ -96,6 +130,7 @@ const (
 	tagOS2  = "OS/2"
 	tagName = "name"
 	tagMaxp = "maxp"
+	tagKern = "kern"
 )
 
 // ttfHeader represents the font file header
@@ -313,6 +348,9 @@ func ParseTrueType(data []byte) (*Font, error) {
 	if err := parseCmapTable(data, tables, glyphWidths, font); err != nil {
 		return nil, err
 	}
+
+	// Parse 'kern' table for kerning pairs (optional)
+	font.Kerning = parseKernTable(data, tables)
 
 	return font, nil
 }
@@ -982,6 +1020,9 @@ func parseCmapFormat4(
 		)
 	}
 
+	// Initialize glyph to rune mapping
+	font.glyphToRune = make(map[uint16]rune)
+
 	// Map characters to glyphs
 	for seg := range segCount {
 		start := startCodes[seg]
@@ -1018,6 +1059,7 @@ func parseCmapFormat4(
 					glyphWidths,
 				) {
 				font.GlyphData[rune(c)] = glyphWidths[glyphIndex]
+				font.glyphToRune[glyphIndex] = rune(c)
 			}
 		}
 	}
@@ -1067,6 +1109,9 @@ func parseCmapFormat12(
 		numGroups = 100000
 	}
 
+	// Build glyph to rune mapping for kerning lookups
+	font.glyphToRune = make(map[uint16]rune)
+
 	for range numGroups {
 		var startCharCode, endCharCode, startGlyphID uint32
 		_ = binary.Read(
@@ -1098,11 +1143,313 @@ func parseCmapFormat12(
 				glyphWidths,
 			) {
 				font.GlyphData[rune(c)] = glyphWidths[glyphIndex]
+				font.glyphToRune[uint16(glyphIndex)] = rune(c)
 			}
 		}
 	}
 
 	return nil
+}
+
+// parseKernTable parses the 'kern' table for kerning pairs.
+// Returns nil if the table is not present or empty.
+func parseKernTable(
+	data []byte,
+	tables map[string]tableRecord,
+) *KerningTable {
+	tableData, err := getTableData(data, tables, tagKern)
+	if err != nil {
+		return nil // kern table is optional
+	}
+
+	if len(tableData) < 4 {
+		return nil
+	}
+
+	r := bytes.NewReader(tableData)
+
+	// Read version
+	var version uint16
+	if err := binary.Read(r, binary.BigEndian, &version); err != nil {
+		return nil
+	}
+
+	kerningTable := &KerningTable{
+		Pairs: make(map[uint32]int16),
+	}
+
+	if version == 0 {
+		// Version 0 format (Apple-style)
+		parseKernVersion0(tableData, kerningTable)
+	} else if version == 1 {
+		// Version 1 format (Microsoft-style)
+		parseKernVersion1(tableData, kerningTable)
+	}
+
+	if len(kerningTable.Pairs) == 0 {
+		return nil
+	}
+
+	return kerningTable
+}
+
+// parseKernVersion0 parses Apple-style kern table (version 0).
+func parseKernVersion0(data []byte, kerningTable *KerningTable) {
+	if len(data) < 4 {
+		return
+	}
+
+	r := bytes.NewReader(data)
+
+	var version, nTables uint16
+	_ = binary.Read(r, binary.BigEndian, &version)
+	_ = binary.Read(r, binary.BigEndian, &nTables)
+
+	// Limit number of subtables
+	if nTables > 100 {
+		nTables = 100
+	}
+
+	for i := uint16(0); i < nTables; i++ {
+		if r.Len() < 8 {
+			break
+		}
+
+		var length, coverage uint16
+		var tupleIndex uint16
+
+		_ = binary.Read(r, binary.BigEndian, &length)
+		_ = binary.Read(r, binary.BigEndian, &coverage)
+		_ = binary.Read(r, binary.BigEndian, &tupleIndex)
+
+		// Check if this is a horizontal kerning subtable
+		// coverage bits: 0=horizontal, 1=minimum, 2=cross-stream, 3=override
+		isHorizontal := coverage&0x0001 != 0
+		isMinimum := coverage&0x0002 != 0
+		isCrossStream := coverage&0x0004 != 0
+
+		if !isHorizontal || isCrossStream || isMinimum {
+			// Skip this subtable
+			_, _ = r.Seek(int64(length)-8, io.SeekCurrent)
+			continue
+		}
+
+		format := (coverage >> 8) & 0xFF
+
+		switch format {
+		case 0:
+			parseKernFormat0(r, kerningTable)
+		case 2:
+			parseKernFormat2(r, kerningTable)
+		default:
+			// Skip unknown format
+			_, _ = r.Seek(int64(length)-8, io.SeekCurrent)
+		}
+	}
+}
+
+// parseKernVersion1 parses Microsoft-style kern table (version 1).
+func parseKernVersion1(data []byte, kerningTable *KerningTable) {
+	if len(data) < 8 {
+		return
+	}
+
+	r := bytes.NewReader(data)
+
+	var version uint16
+	var nTables uint32
+
+	_ = binary.Read(r, binary.BigEndian, &version)
+	_ = binary.Read(r, binary.BigEndian, &nTables)
+
+	// Limit number of subtables
+	if nTables > 100 {
+		nTables = 100
+	}
+
+	for i := uint32(0); i < nTables; i++ {
+		if r.Len() < 8 {
+			break
+		}
+
+		var length uint32
+		var coverage uint16
+		var tupleIndex uint16
+
+		_ = binary.Read(r, binary.BigEndian, &length)
+		_ = binary.Read(r, binary.BigEndian, &coverage)
+		_ = binary.Read(r, binary.BigEndian, &tupleIndex)
+
+		// Check if this is a horizontal kerning subtable
+		isHorizontal := coverage&0x0001 != 0
+		isMinimum := coverage&0x0002 != 0
+		isCrossStream := coverage&0x0004 != 0
+
+		if !isHorizontal || isCrossStream || isMinimum {
+			// Skip this subtable
+			_, _ = r.Seek(int64(length)-8, io.SeekCurrent)
+			continue
+		}
+
+		format := coverage & 0x00FF
+
+		switch format {
+		case 0:
+			parseKernFormat0MS(r, kerningTable)
+		default:
+			// Skip unknown format
+			_, _ = r.Seek(int64(length)-8, io.SeekCurrent)
+		}
+	}
+}
+
+// parseKernFormat0 parses format 0 kerning subtable (Apple-style).
+func parseKernFormat0(r *bytes.Reader, kerningTable *KerningTable) {
+	var nPairs, searchRange, entrySelector, rangeShift uint16
+
+	_ = binary.Read(r, binary.BigEndian, &nPairs)
+	_ = binary.Read(r, binary.BigEndian, &searchRange)
+	_ = binary.Read(r, binary.BigEndian, &entrySelector)
+	_ = binary.Read(r, binary.BigEndian, &rangeShift)
+
+	// Limit number of pairs
+	if nPairs > 10000 {
+		nPairs = 10000
+	}
+
+	for i := uint16(0); i < nPairs; i++ {
+		if r.Len() < 6 {
+			break
+		}
+
+		var left, right uint16
+		var value int16
+
+		_ = binary.Read(r, binary.BigEndian, &left)
+		_ = binary.Read(r, binary.BigEndian, &right)
+		_ = binary.Read(r, binary.BigEndian, &value)
+
+		if value != 0 {
+			key := (uint32(left) << 16) | uint32(right)
+			kerningTable.Pairs[key] = value
+		}
+	}
+}
+
+// parseKernFormat0MS parses format 0 kerning subtable (Microsoft-style).
+func parseKernFormat0MS(r *bytes.Reader, kerningTable *KerningTable) {
+	// Microsoft format 0 is similar but uses 32-bit length
+	var nPairs, searchRange, entrySelector, rangeShift uint16
+
+	_ = binary.Read(r, binary.BigEndian, &nPairs)
+	_ = binary.Read(r, binary.BigEndian, &searchRange)
+	_ = binary.Read(r, binary.BigEndian, &entrySelector)
+	_ = binary.Read(r, binary.BigEndian, &rangeShift)
+
+	// Limit number of pairs
+	if nPairs > 10000 {
+		nPairs = 10000
+	}
+
+	for i := uint16(0); i < nPairs; i++ {
+		if r.Len() < 6 {
+			break
+		}
+
+		var left, right uint16
+		var value int16
+
+		_ = binary.Read(r, binary.BigEndian, &left)
+		_ = binary.Read(r, binary.BigEndian, &right)
+		_ = binary.Read(r, binary.BigEndian, &value)
+
+		if value != 0 {
+			key := (uint32(left) << 16) | uint32(right)
+			kerningTable.Pairs[key] = value
+		}
+	}
+}
+
+// parseKernFormat2 parses format 2 kerning subtable (class-based).
+func parseKernFormat2(r *bytes.Reader, kerningTable *KerningTable) {
+	// Format 2 uses class-based kerning
+	var rowWidth uint16
+	var leftOffsetTable, rightOffsetTable, arrayOffset uint16
+
+	_ = binary.Read(r, binary.BigEndian, &rowWidth)
+	_ = binary.Read(r, binary.BigEndian, &leftOffsetTable)
+	_ = binary.Read(r, binary.BigEndian, &rightOffsetTable)
+	_ = binary.Read(r, binary.BigEndian, &arrayOffset)
+
+	// Format 2 is more complex and less common
+	// For now, we skip detailed parsing
+	// TODO: Implement full class-based kerning support
+}
+
+// GetKerningForRunes returns the kerning adjustment for a pair of characters.
+// This looks up the kerning value based on glyph indices.
+func (f *Font) GetKerningForRunes(left, right rune) int16 {
+	if f.Kerning == nil {
+		return 0
+	}
+
+	// Find glyph indices for the runes
+	// We need to reverse-lookup from the cmap data
+	leftGlyph := f.findGlyphIndex(left)
+	rightGlyph := f.findGlyphIndex(right)
+
+	if leftGlyph == 0 || rightGlyph == 0 {
+		return 0
+	}
+
+	return f.Kerning.GetKerning(leftGlyph, rightGlyph)
+}
+
+// findGlyphIndex finds the glyph index for a rune.
+// Returns 0 if not found (0 is typically the .notdef glyph).
+func (f *Font) findGlyphIndex(r rune) uint16 {
+	// This is a simplified lookup - in practice, we'd need to store
+	// the reverse mapping from cmap parsing
+	// For now, use a simple heuristic based on glyphData
+	if f.glyphToRune != nil {
+		for glyphIdx, char := range f.glyphToRune {
+			if char == r {
+				return glyphIdx
+			}
+		}
+	}
+
+	// Fallback: for ASCII characters, glyph index often equals char code
+	if r < 256 {
+		return uint16(r)
+	}
+
+	return 0
+}
+
+// TextWidthWithKerning calculates the total width of a string including kerning adjustments.
+func (f *Font) TextWidthWithKerning(s string) int {
+	if f.Kerning == nil || len(s) < 2 {
+		return f.TextWidth(s)
+	}
+
+	var width int
+	var prevRune rune
+	var hasPrev bool
+
+	for _, r := range s {
+		width += f.GlyphWidth(r)
+
+		if hasPrev {
+			kern := f.GetKerningForRunes(prevRune, r)
+			width += int(kern)
+		}
+
+		prevRune = r
+		hasPrev = true
+	}
+
+	return width
 }
 
 // GlyphWidth returns the advance width for a character in font design units.

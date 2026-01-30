@@ -26,7 +26,10 @@ func TestLargeMerge(t *testing.T) {
 	}
 
 	// Create other document with some modifications
-	other := base.Clone().(openxml.CompositeElement)
+	other, ok := base.Clone().(openxml.CompositeElement)
+	if !ok {
+		t.Fatal("Cloned element is not a CompositeElement")
+	}
 
 	// Modify 100 random paragraphs
 	// Add 50 new paragraphs

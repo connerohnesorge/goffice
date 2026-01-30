@@ -95,13 +95,13 @@ func TestImportHTMLText(t *testing.T) {
 		</div>
 	`
 
-	shape, err := pres.ImportHTMLText(0, 50, 50, 300, 200, htmlStr)
+	shape, err := pres.ImportHTMLText(0, HTMLRect{X: 50, Y: 50, W: 300, H: 200}, htmlStr)
 	if err != nil {
 		t.Fatalf("ImportHTMLText failed: %v", err)
 	}
 
 	if shape == nil {
-		t.Fatalf("shape is nil")
+		t.Fatal("shape is nil")
 	}
 
 	if err := pres.Save(); err != nil {
@@ -139,7 +139,7 @@ func TestImportHTMLTable_WithFormatting(t *testing.T) {
 
 	cell, _ := table.GetCell(0, 0)
 	if cell == nil {
-		t.Fatalf("cell not found")
+		t.Fatal("cell not found")
 	}
 
 	runs := cell.TextBody().Paragraphs()[0].Runs()
@@ -193,7 +193,7 @@ func TestImportHTMLTable_WithLists(t *testing.T) {
 
 	cell, _ := table.GetCell(0, 0)
 	if cell == nil {
-		t.Fatalf("cell not found")
+		t.Fatal("cell not found")
 	}
 
 	paras := cell.TextBody().Paragraphs()
@@ -238,7 +238,7 @@ func TestImportHTMLTable_WithLinks(t *testing.T) {
 
 	cell, _ := table.GetCell(0, 0)
 	if cell == nil {
-		t.Fatalf("cell not found")
+		t.Fatal("cell not found")
 	}
 
 	run := cell.TextBody().Paragraphs()[0].Runs()[0]

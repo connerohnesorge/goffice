@@ -329,7 +329,7 @@ func TestRelationshipPathFinder_FindPath(t *testing.T) {
 
 func TestRelationshipPathFinder_NoPath(t *testing.T) {
 	container := &mockPartContainer{
-		relationships: []OpenXmlRelationship{},
+		relationships: make([]OpenXmlRelationship, 0),
 	}
 
 	finder := NewRelationshipPathFinder(10)
@@ -374,21 +374,21 @@ func (m *mockPartContainer) Parts() iter.Seq[OpenXmlPart] {
 	}
 }
 
-func (m *mockPartContainer) GetPartById(id string) (OpenXmlPart, error) {
+func (m *mockPartContainer) GetPartById(_ string) (OpenXmlPart, error) {
 	return nil, nil
 }
 
-func (m *mockPartContainer) GetPartsOfType(contentType string) iter.Seq[OpenXmlPart] {
-	return func(yield func(OpenXmlPart) bool) {}
+func (m *mockPartContainer) GetPartsOfType(_ string) iter.Seq[OpenXmlPart] {
+	return func(_ func(OpenXmlPart) bool) {}
 }
 
-func (m *mockPartContainer) AddPart(part OpenXmlPart, id string) error {
+func (m *mockPartContainer) AddPart(part OpenXmlPart, _ string) error {
 	m.parts = append(m.parts, part)
 
 	return nil
 }
 
-func (m *mockPartContainer) DeletePart(id string) error {
+func (m *mockPartContainer) DeletePart(_ string) error {
 	return nil
 }
 
@@ -396,7 +396,7 @@ func (m *mockPartContainer) Features() *features.FeatureCollection {
 	return nil
 }
 
-func (m *mockPartContainer) GetPackagingPart(uri string) *packaging.Part {
+func (m *mockPartContainer) GetPackagingPart(_ string) *packaging.Part {
 	return nil
 }
 
@@ -427,21 +427,21 @@ func (m *mockPart) Parts() iter.Seq[OpenXmlPart] {
 	}
 }
 
-func (m *mockPart) GetPartById(id string) (OpenXmlPart, error) {
+func (m *mockPart) GetPartById(_ string) (OpenXmlPart, error) {
 	return nil, nil
 }
 
-func (m *mockPart) GetPartsOfType(contentType string) iter.Seq[OpenXmlPart] {
-	return func(yield func(OpenXmlPart) bool) {}
+func (m *mockPart) GetPartsOfType(_ string) iter.Seq[OpenXmlPart] {
+	return func(_ func(OpenXmlPart) bool) {}
 }
 
-func (m *mockPart) AddPart(part OpenXmlPart, id string) error {
+func (m *mockPart) AddPart(part OpenXmlPart, _ string) error {
 	m.parts = append(m.parts, part)
 
 	return nil
 }
 
-func (m *mockPart) DeletePart(id string) error {
+func (m *mockPart) DeletePart(_ string) error {
 	return nil
 }
 
@@ -465,14 +465,14 @@ func (m *mockPart) RootElement() PartRootElement {
 	return nil
 }
 
-func (m *mockPart) SetData(data []byte) {
+func (m *mockPart) SetData(_ []byte) {
 }
 
 func (m *mockPart) Package() *packaging.Package {
 	return nil
 }
 
-func (m *mockPart) GetPackagingPart(uri string) *packaging.Part {
+func (m *mockPart) GetPackagingPart(_ string) *packaging.Part {
 	return nil
 }
 

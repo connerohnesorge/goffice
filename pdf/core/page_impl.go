@@ -449,6 +449,18 @@ func (p *PageImpl) WriteContent(content string) {
 	}
 }
 
+// RegisterGradient registers a gradient as a shading pattern on this page.
+// Returns the pattern name (e.g., "P1") that can be used with SetGradientFill.
+func (p *PageImpl) RegisterGradient(
+	gradient *LinearGradient,
+	bounds Rectangle,
+) (string, error) {
+	if p.doc == nil || p.page == nil {
+		return "", fmt.Errorf("PageImpl not attached to document")
+	}
+	return p.doc.RegisterGradient(p.page, gradient, bounds)
+}
+
 // GetContent returns the accumulated PDF content stream.
 func (p *PageImpl) GetContent() string {
 	return p.content.String()

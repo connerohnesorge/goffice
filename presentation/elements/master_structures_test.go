@@ -3,22 +3,22 @@ package elements_test
 import (
 	"testing"
 
-	. "github.com/connerohnesorge/goffice/presentation/elements"
+	"github.com/connerohnesorge/goffice/presentation/elements"
 )
 
 func TestSlideMasterProperties(t *testing.T) {
-	sm := NewSlideMaster()
+	sm := elements.NewSlideMaster()
 
 	// Test ColorMap
 	cm := sm.ColorMap()
 	if cm != nil {
 		t.Errorf("Expected nil ColorMap initially, got %+v", cm)
 	}
-	newCm := NewPresentationColorMap()
+	newCm := elements.NewPresentationColorMap()
 	sm.AppendChild(newCm)
 	cm = sm.ColorMap()
 	if cm == nil {
-		t.Errorf("Expected non-nil ColorMap after adding")
+		t.Error("Expected non-nil ColorMap after adding")
 	}
 
 	// Test SlideLayoutIdList
@@ -26,11 +26,11 @@ func TestSlideMasterProperties(t *testing.T) {
 	if slil != nil {
 		t.Errorf("Expected nil SlideLayoutIdList initially, got %+v", slil)
 	}
-	newSlil := NewSlideLayoutIdList()
+	newSlil := elements.NewSlideLayoutIdList()
 	sm.AppendChild(newSlil)
 	slil = sm.SlideLayoutIdList()
 	if slil == nil {
-		t.Errorf("Expected non-nil SlideLayoutIdList after adding")
+		t.Error("Expected non-nil SlideLayoutIdList after adding")
 	}
 
 	// Test Transition
@@ -38,11 +38,11 @@ func TestSlideMasterProperties(t *testing.T) {
 	if tr != nil {
 		t.Errorf("Expected nil Transition initially, got %+v", tr)
 	}
-	newTr := NewSlideTransition()
+	newTr := elements.NewSlideTransition()
 	sm.AppendChild(newTr)
 	tr = sm.Transition()
 	if tr == nil {
-		t.Errorf("Expected non-nil Transition after adding")
+		t.Error("Expected non-nil Transition after adding")
 	}
 
 	// Test Timing
@@ -50,11 +50,11 @@ func TestSlideMasterProperties(t *testing.T) {
 	if tm != nil {
 		t.Errorf("Expected nil Timing initially, got %+v", tm)
 	}
-	newTm := NewSlideTiming()
+	newTm := elements.NewSlideTiming()
 	sm.AppendChild(newTm)
 	tm = sm.Timing()
 	if tm == nil {
-		t.Errorf("Expected non-nil Timing after adding")
+		t.Error("Expected non-nil Timing after adding")
 	}
 
 	// Test HeaderFooter
@@ -62,11 +62,11 @@ func TestSlideMasterProperties(t *testing.T) {
 	if hf != nil {
 		t.Errorf("Expected nil HeaderFooter initially, got %+v", hf)
 	}
-	newHf := NewExtHeaderFooter()
+	newHf := elements.NewExtHeaderFooter()
 	sm.AppendChild(newHf)
 	hf = sm.HeaderFooter()
 	if hf == nil {
-		t.Fatalf("Expected non-nil HeaderFooter after adding")
+		t.Fatal("Expected non-nil HeaderFooter after adding")
 	}
 	hf.SetSlideNumber(true)
 	if !hf.SlideNumber.Value() {
@@ -78,11 +78,11 @@ func TestSlideMasterProperties(t *testing.T) {
 	if ts != nil {
 		t.Errorf("Expected nil TextStyles initially, got %+v", ts)
 	}
-	newTs := NewTextStyles()
+	newTs := elements.NewTextStyles()
 	sm.AppendChild(newTs)
 	ts = sm.TextStyles()
 	if ts == nil {
-		t.Errorf("Expected non-nil TextStyles after adding")
+		t.Error("Expected non-nil TextStyles after adding")
 	}
 
 	// Test ExtensionList
@@ -90,16 +90,16 @@ func TestSlideMasterProperties(t *testing.T) {
 	if extLst != nil {
 		t.Errorf("Expected nil ExtensionList initially, got %+v", extLst)
 	}
-	newExtLst := NewExtensionListModify()
+	newExtLst := elements.NewExtensionListModify()
 	sm.AppendChild(newExtLst)
 	extLst = sm.ExtensionList()
 	if extLst == nil {
-		t.Errorf("Expected non-nil ExtensionList after adding")
+		t.Error("Expected non-nil ExtensionList after adding")
 	}
 }
 
 func TestSlideLayoutProperties(t *testing.T) {
-	sl := NewSlideLayout()
+	sl := elements.NewSlideLayout()
 
 	// Test Name/SetName
 	sl.SetName("My Custom Layout")
@@ -112,11 +112,11 @@ func TestSlideLayoutProperties(t *testing.T) {
 	if cmo != nil {
 		t.Errorf("Expected nil ColorMapOverride initially, got %+v", cmo)
 	}
-	newCmo := NewColorMapOverride()
+	newCmo := elements.NewColorMapOverride()
 	sl.AppendChild(newCmo)
 	cmo = sl.ColorMapOverride()
 	if cmo == nil {
-		t.Errorf("Expected non-nil ColorMapOverride after adding")
+		t.Error("Expected non-nil ColorMapOverride after adding")
 	}
 
 	// Test Transition
@@ -124,11 +124,11 @@ func TestSlideLayoutProperties(t *testing.T) {
 	if tr != nil {
 		t.Errorf("Expected nil Transition initially, got %+v", tr)
 	}
-	newTr := NewSlideTransition()
+	newTr := elements.NewSlideTransition()
 	sl.AppendChild(newTr)
 	tr = sl.Transition()
 	if tr == nil {
-		t.Errorf("Expected non-nil Transition after adding")
+		t.Error("Expected non-nil Transition after adding")
 	}
 
 	// Test Timing
@@ -136,11 +136,11 @@ func TestSlideLayoutProperties(t *testing.T) {
 	if tm != nil {
 		t.Errorf("Expected nil Timing initially, got %+v", tm)
 	}
-	newTm := NewSlideTiming()
+	newTm := elements.NewSlideTiming()
 	sl.AppendChild(newTm)
 	tm = sl.Timing()
 	if tm == nil {
-		t.Errorf("Expected non-nil Timing after adding")
+		t.Error("Expected non-nil Timing after adding")
 	}
 
 	// Test HeaderFooter
@@ -148,11 +148,11 @@ func TestSlideLayoutProperties(t *testing.T) {
 	if hf != nil {
 		t.Errorf("Expected nil HeaderFooter initially, got %+v", hf)
 	}
-	newHf := NewExtHeaderFooter()
+	newHf := elements.NewExtHeaderFooter()
 	sl.AppendChild(newHf)
 	hf = sl.HeaderFooter()
 	if hf == nil {
-		t.Fatalf("Expected non-nil HeaderFooter after adding")
+		t.Fatal("Expected non-nil HeaderFooter after adding")
 	}
 	hf.SetFooter(true)
 	if !hf.Footer.Value() {
@@ -164,27 +164,27 @@ func TestSlideLayoutProperties(t *testing.T) {
 	if extLst != nil {
 		t.Errorf("Expected nil ExtensionList initially, got %+v", extLst)
 	}
-	newExtLst := NewExtensionListModify()
+	newExtLst := elements.NewExtensionListModify()
 	sl.AppendChild(newExtLst)
 	extLst = sl.ExtensionList()
 	if extLst == nil {
-		t.Errorf("Expected non-nil ExtensionList after adding")
+		t.Error("Expected non-nil ExtensionList after adding")
 	}
 }
 
 func TestNotesSlideProperties(t *testing.T) {
-	ns := NewNotesSlide()
+	ns := elements.NewNotesSlide()
 
 	// Test HeaderFooter
 	hf := ns.HeaderFooter()
 	if hf != nil {
 		t.Errorf("Expected nil HeaderFooter initially, got %+v", hf)
 	}
-	newHf := NewExtHeaderFooter()
+	newHf := elements.NewExtHeaderFooter()
 	ns.AppendChild(newHf)
 	hf = ns.HeaderFooter()
 	if hf == nil {
-		t.Fatalf("Expected non-nil HeaderFooter after adding")
+		t.Fatal("Expected non-nil HeaderFooter after adding")
 	}
 	hf.SetDateTime(true)
 	if !hf.DateTime.Value() {
@@ -193,16 +193,16 @@ func TestNotesSlideProperties(t *testing.T) {
 }
 
 func TestPlaceholderShapeProperties(t *testing.T) {
-	ph := NewPlaceholderShape()
+	ph := elements.NewPlaceholderShape()
 
-	ph.SetOrientation(DirectionValuesVert)
-	if ph.Orientation.Value() != DirectionValuesVert {
-		t.Errorf("Expected orientation to be %s, got %s", DirectionValuesVert, ph.Orientation.Value())
+	ph.SetOrientation(elements.DirectionValuesVert)
+	if ph.Orientation.Value() != elements.DirectionValuesVert {
+		t.Errorf("Expected orientation to be %s, got %s", elements.DirectionValuesVert, ph.Orientation.Value())
 	}
 
-	ph.SetSize(PlaceholderSizeValuesFull)
-	if ph.Size.Value() != PlaceholderSizeValuesFull {
-		t.Errorf("Expected size to be %s, got %s", PlaceholderSizeValuesFull, ph.Size.Value())
+	ph.SetSize(elements.PlaceholderSizeValuesFull)
+	if ph.Size.Value() != elements.PlaceholderSizeValuesFull {
+		t.Errorf("Expected size to be %s, got %s", elements.PlaceholderSizeValuesFull, ph.Size.Value())
 	}
 
 	ph.SetHasCustomPrompt(true)
@@ -212,20 +212,20 @@ func TestPlaceholderShapeProperties(t *testing.T) {
 }
 
 func TestTextStylesParagraphProperties(t *testing.T) {
-	ts := NewTextStyles()
+	ts := elements.NewTextStyles()
 
 	// Test TitleStyle
 	if ts.TitleStyle == nil {
-		ts.TitleStyle = NewTitleStyle()
+		ts.TitleStyle = elements.NewTitleStyle()
 	}
-	ts.TitleStyle.GetOrCreateDefaultParagraphProperties().SetAlignment(TextAlignCenter)
-	if ts.TitleStyle.DefaultParagraphProperties().Alignment() != TextAlignCenter {
-		t.Errorf("Expected title style alignment to be %s, got %s", TextAlignCenter, ts.TitleStyle.DefaultParagraphProperties().Alignment())
+	ts.TitleStyle.GetOrCreateDefaultParagraphProperties().SetAlignment(elements.TextAlignCenter)
+	if ts.TitleStyle.DefaultParagraphProperties().Alignment() != elements.TextAlignCenter {
+		t.Errorf("Expected title style alignment to be %s, got %s", elements.TextAlignCenter, ts.TitleStyle.DefaultParagraphProperties().Alignment())
 	}
 
 	// Test BodyStyle
 	if ts.BodyStyle == nil {
-		ts.BodyStyle = NewBodyStyle()
+		ts.BodyStyle = elements.NewBodyStyle()
 	}
 	ts.BodyStyle.GetOrCreateLevel1ParagraphProperties().SetLeftMargin(1000)
 	if ts.BodyStyle.Level1ParagraphProperties().LeftMargin() != 1000 {

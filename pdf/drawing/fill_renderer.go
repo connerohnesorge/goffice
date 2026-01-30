@@ -1,6 +1,8 @@
 package drawing
 
 import (
+	"fmt"
+
 	"github.com/connerohnesorge/goffice-pdf/core"
 	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/openxml"
@@ -76,7 +78,7 @@ func NewGradientFillRenderer(
 	return &GradientFillRenderer{fill: fill}
 }
 
-// Apply applies the gradient fill.
+// Apply applies the gradient fill using PDF shading patterns.
 func (r *GradientFillRenderer) Apply(
 	ctx *core.RenderingContext,
 	path *PathBuilder,
@@ -85,63 +87,158 @@ func (r *GradientFillRenderer) Apply(
 		return nil
 	}
 
-	// For now, approximate gradient with solid fill using first stop color
-	// Full gradient support would require shading patterns in PDF
-
-	// Get gradient stops
-	gsLst := r.fill.GetElement(
-		"gsLst",
-		drawingml.NamespaceMain,
-	)
-	if gsLst == nil {
-		// No stops, use default color
-		ctx.Page.SetFillColor(0.5, 0.5, 0.5)
-		ctx.Page.WriteContent(path.Fill())
-
-		return nil
+	// Extract gradient stops and angle from the gradient fill
+	gradient, bounds := r.extractGradientInfo(path)
+	if gradient == nil || len(gradient.Stops) < 2 {
+		// Fall back to solid fill if we can't extract gradient info
+		return r.applyFallbackFill(ctx, path)
 	}
 
-	// Get first stop
+	// Get the PageImpl to access document registration
+	pageImpl, ok := ctx.Page.(*core.PageImpl)
+	if !ok {
+		// Fall back to solid fill if we can't access PageImpl
+		return r.applyFallbackFill(ctx, path)
+	}
+
+	// Register the gradient as a PDF shading pattern
+	patternName, err := pageImpl.RegisterGradient(gradient, bounds)
+	if err != nil {
+		// Fall back to solid fill on error
+		return r.applyFallbackFill(ctx, path)
+	}
+
+	// Apply the gradient pattern fill
+	pageImpl.SetGradientFill(patternName)
+	ctx.Page.WriteContent(path.Fill())
+
+	return nil
+}
+
+// extractGradientInfo extracts gradient stops and angle from DrawingML GradientFill.
+func (r *GradientFillRenderer) extractGradientInfo(path *PathBuilder) (*core.LinearGradient, core.Rectangle) {
+	// Get path bounds for the gradient
+	pathBounds, _ := path.Bounds()
+	bounds := core.NewRectangleFromSize(
+		pathBounds.X,
+		pathBounds.Y,
+		pathBounds.Width,
+		pathBounds.Height,
+	)
+
+	// Get gradient stops
+	gsLst := r.fill.GetElement("gsLst", drawingml.NamespaceMain)
+	if gsLst == nil {
+		return nil, bounds
+	}
+
+	var stops []core.GradientStop
+
 	if composite, ok := gsLst.(openxml.CompositeElement); ok {
 		for child := range composite.Children() {
-			if child.LocalName() == "gs" &&
-				child.NamespaceURI() == drawingml.NamespaceMain {
-				// Get color from first stop
+			if child.LocalName() == "gs" && child.NamespaceURI() == drawingml.NamespaceMain {
+				// Get position attribute
+				posAttr, found := child.GetAttribute("pos", "")
+				if !found {
+					continue
+				}
+
+				// Position is in thousandths of a percent (0-100000)
+				var pos int
+				_, err := fmt.Sscanf(posAttr.Value(), "%d", &pos)
+				if err != nil {
+					continue
+				}
+				position := float64(pos) / 100000.0
+
+				// Get color from child
+				var r, g, b float64
 				if childComposite, ok := child.(openxml.CompositeElement); ok {
 					for colorChild := range childComposite.Children() {
 						if colorChild.LocalName() == "srgbClr" {
-							hexAttr, found := colorChild.GetAttribute(
-								"val",
-								"",
-							)
+							hexAttr, found := colorChild.GetAttribute("val", "")
 							if found {
-								color := ParseColor(
-									hexAttr.Value(),
-								)
-								ctx.Page.SetFillColor(
-									color.R,
-									color.G,
-									color.B,
-								)
-								ctx.Page.WriteContent(
-									path.Fill(),
-								)
-
-								return nil
+								color := ParseColor(hexAttr.Value())
+								r, g, b = color.R, color.G, color.B
+								break
 							}
 						}
 					}
 				}
 
+				stops = append(stops, core.GradientStop{
+					Position: position,
+					R:        r,
+					G:        g,
+					B:        b,
+				})
+			}
+		}
+	}
+
+	if len(stops) < 2 {
+		return nil, bounds
+	}
+
+	// Get gradient angle from lin or path element
+	angle := 0.0 // Default angle (left to right)
+
+	// Check for linear gradient
+	if linElem := r.fill.GetElement("lin", drawingml.NamespaceMain); linElem != nil {
+		if angAttr, found := linElem.GetAttribute("ang", ""); found {
+			// Angle is in 1/60000 of a degree
+			var ang int
+			_, err := fmt.Sscanf(angAttr.Value(), "%d", &ang)
+			if err == nil {
+				// Convert to degrees and adjust for PDF coordinate system
+				// DrawingML: 0 degrees = vertical down, increases clockwise
+				// PDF: 0 degrees = horizontal right, increases counter-clockwise
+				angle = -(float64(ang) / 60000.0) + 90
+			}
+		}
+	}
+
+	return &core.LinearGradient{
+		Angle: angle,
+		Stops: stops,
+	}, bounds
+}
+
+// applyFallbackFill applies a solid fill using the first gradient stop color.
+func (r *GradientFillRenderer) applyFallbackFill(
+	ctx *core.RenderingContext,
+	path *PathBuilder,
+) error {
+	gsLst := r.fill.GetElement("gsLst", drawingml.NamespaceMain)
+	if gsLst == nil {
+		ctx.Page.SetFillColor(0.5, 0.5, 0.5)
+		ctx.Page.WriteContent(path.Fill())
+		return nil
+	}
+
+	if composite, ok := gsLst.(openxml.CompositeElement); ok {
+		for child := range composite.Children() {
+			if child.LocalName() == "gs" && child.NamespaceURI() == drawingml.NamespaceMain {
+				if childComposite, ok := child.(openxml.CompositeElement); ok {
+					for colorChild := range childComposite.Children() {
+						if colorChild.LocalName() == "srgbClr" {
+							hexAttr, found := colorChild.GetAttribute("val", "")
+							if found {
+								color := ParseColor(hexAttr.Value())
+								ctx.Page.SetFillColor(color.R, color.G, color.B)
+								ctx.Page.WriteContent(path.Fill())
+								return nil
+							}
+						}
+					}
+				}
 				break
 			}
 		}
 	}
 
-	// Default fallback
 	ctx.Page.SetFillColor(0.5, 0.5, 0.5)
 	ctx.Page.WriteContent(path.Fill())
-
 	return nil
 }
 

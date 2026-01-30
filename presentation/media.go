@@ -143,9 +143,10 @@ func (d *Document) AddVideoFromReader(
 
 	// If auto-detection is enabled and we have a filename, detect from filename
 	var videoType parts.VideoType
-	if opts.AutoDetectType && filename != "" {
+	switch {
+	case opts.AutoDetectType && filename != "":
 		videoType = parts.VideoTypeFromFilename(filename)
-	} else {
+	default:
 		videoType = opts.VideoType
 	}
 
@@ -180,11 +181,12 @@ func (d *Document) AddVideoFromReader(
 	// Create the video part
 	var videoPart parts.MediaPart
 	useStreaming := false
-	if r, ok := reader.(interface{ Size() int64 }); ok {
+	switch r := reader.(type) {
+	case interface{ Size() int64 }:
 		if r.Size() > opts.StreamingThreshold {
 			useStreaming = true
 		}
-	} else if r, ok := reader.(interface{ Len() int }); ok {
+	case interface{ Len() int }:
 		if int64(r.Len()) > opts.StreamingThreshold {
 			useStreaming = true
 		}
@@ -482,9 +484,10 @@ func (d *Document) AddAudioFromReader(
 	}
 
 	var audioType parts.AudioType
-	if opts.AutoDetectType && filename != "" {
+	switch {
+	case opts.AutoDetectType && filename != "":
 		audioType = parts.AudioTypeFromFilename(filename)
-	} else {
+	default:
 		audioType = opts.AudioType
 	}
 
@@ -510,11 +513,12 @@ func (d *Document) AddAudioFromReader(
 
 	var audioPart parts.MediaPart
 	useStreaming := false
-	if r, ok := reader.(interface{ Size() int64 }); ok {
+	switch r := reader.(type) {
+	case interface{ Size() int64 }:
 		if r.Size() > opts.StreamingThreshold {
 			useStreaming = true
 		}
-	} else if r, ok := reader.(interface{ Len() int }); ok {
+	case interface{ Len() int }:
 		if int64(r.Len()) > opts.StreamingThreshold {
 			useStreaming = true
 		}

@@ -59,25 +59,27 @@ func splitTextWithMentions(text string) []CommentRun {
 	matches := re.FindAllStringSubmatch(text, -1)
 	for _, match := range matches {
 		// Add text before mention
-		if len(match) >= 2 {
-			mentionText := match[0]
-			mentionIndex := strings.Index(text, mentionText)
-
-			if mentionIndex > lastIndex {
-				runs = append(runs, CommentRun{
-					Text:      text[lastIndex:mentionIndex],
-					IsMention: false,
-				})
-			}
-
-			// Add the mention itself
-			runs = append(runs, CommentRun{
-				Text:      mentionText,
-				IsMention: true,
-			})
-
-			lastIndex = mentionIndex + len(mentionText)
+		if len(match) < 2 {
+			continue
 		}
+
+		mentionText := match[0]
+		mentionIndex := strings.Index(text, mentionText)
+
+		if mentionIndex > lastIndex {
+			runs = append(runs, CommentRun{
+				Text:      text[lastIndex:mentionIndex],
+				IsMention: false,
+			})
+		}
+
+		// Add the mention itself
+		runs = append(runs, CommentRun{
+			Text:      mentionText,
+			IsMention: true,
+		})
+
+		lastIndex = mentionIndex + len(mentionText)
 	}
 
 	// Add remaining text

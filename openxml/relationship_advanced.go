@@ -141,11 +141,13 @@ func (g *RelationshipGraph) TopologicalSort(parts []string) ([]string, error) {
 
 		// Reduce in-degree of dependents
 		for _, dependent := range g.reverse[current] {
-			if _, exists := inDegree[dependent]; exists {
-				inDegree[dependent]--
-				if inDegree[dependent] == 0 {
-					queue = append(queue, dependent)
-				}
+			if _, exists := inDegree[dependent]; !exists {
+				continue
+			}
+
+			inDegree[dependent]--
+			if inDegree[dependent] == 0 {
+				queue = append(queue, dependent)
 			}
 		}
 	}

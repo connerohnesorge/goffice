@@ -1,7 +1,7 @@
 package presentation
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 
 	"github.com/connerohnesorge/goffice/drawingml"
@@ -16,47 +16,14 @@ func (d *Document) ImportHTMLTable(slideIndex int, htmlStr string) (*Table, erro
 		return nil, err
 	}
 
-	// Find the first <table> element
-	var tableNode *html.Node
-	var findTable func(*html.Node)
-	findTable = func(n *html.Node) {
-		if n.Type == html.ElementNode && n.Data == "table" {
-			tableNode = n
-
-			return
-		}
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			findTable(c)
-			if tableNode != nil {
-				return
-			}
-		}
-	}
-	findTable(doc)
-
+	tableNode := findTableNode(doc)
 	if tableNode == nil {
-		return nil, fmt.Errorf("no table found in HTML")
+		return nil, errors.New("no table found in HTML")
 	}
 
-	// Parse rows and cells
-	var rows [][]*html.Node
-	for r := tableNode.FirstChild; r != nil; r = r.NextSibling {
-		if r.Type == html.ElementNode && (r.Data == "tr" || r.Data == "thead" || r.Data == "tbody") {
-			if r.Data == "tr" {
-				rows = append(rows, parseRowNodes(r))
-			} else {
-				// Handle thead/tbody by looking for tr inside them
-				for c := r.FirstChild; c != nil; c = c.NextSibling {
-					if c.Type == html.ElementNode && c.Data == "tr" {
-						rows = append(rows, parseRowNodes(c))
-					}
-				}
-			}
-		}
-	}
-
+	rows := parseHTMLRows(tableNode)
 	if len(rows) == 0 {
-		return nil, fmt.Errorf("table has no rows")
+		return nil, errors.New("table has no rows")
 	}
 
 	numRows := len(rows)
@@ -73,15 +40,7 @@ func (d *Document) ImportHTMLTable(slideIndex int, htmlStr string) (*Table, erro
 	}
 
 	table := NewTable(slide.Slide(), numRows, numCols)
-
-	relFn := func(url string) string {
-		rel, _ := slide.PackagingPart().CreateRelationship(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", "External")
-		if rel != nil {
-			return rel.ID()
-		}
-
-		return ""
-	}
+	relFn := createRelFn(slide)
 
 	for rIdx, row := range rows {
 		for cIdx, cellNode := range row {
@@ -95,8 +54,60 @@ func (d *Document) ImportHTMLTable(slideIndex int, htmlStr string) (*Table, erro
 	return table, nil
 }
 
+func findTableNode(n *html.Node) *html.Node {
+	if n.Type == html.ElementNode && n.Data == "table" {
+		return n
+	}
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if res := findTableNode(c); res != nil {
+			return res
+		}
+	}
+
+	return nil
+}
+
+func parseHTMLRows(tableNode *html.Node) [][]*html.Node {
+	var rows [][]*html.Node
+	for r := tableNode.FirstChild; r != nil; r = r.NextSibling {
+		if r.Type != html.ElementNode {
+			continue
+		}
+		if r.Data == "tr" {
+			rows = append(rows, parseRowNodes(r))
+
+			continue
+		}
+		if r.Data == "thead" || r.Data == "tbody" || r.Data == "tfoot" {
+			for c := r.FirstChild; c != nil; c = c.NextSibling {
+				if c.Type == html.ElementNode && c.Data == "tr" {
+					rows = append(rows, parseRowNodes(c))
+				}
+			}
+		}
+	}
+
+	return rows
+}
+
+func createRelFn(slide *Slide) func(string) string {
+	return func(url string) string {
+		rel, _ := slide.PackagingPart().CreateRelationship(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", "External")
+		if rel != nil {
+			return rel.ID()
+		}
+
+		return ""
+	}
+}
+
+// HTMLRect defines a rectangle for HTML text import.
+type HTMLRect struct {
+	X, Y, W, H float64
+}
+
 // ImportHTMLText imports an HTML string into a text shape on the specified slide.
-func (d *Document) ImportHTMLText(slideIndex int, x, y, w, h float64, htmlStr string) (*elements.Shape, error) {
+func (d *Document) ImportHTMLText(slideIndex int, rect HTMLRect, htmlStr string) (*elements.Shape, error) {
 	doc, err := html.Parse(strings.NewReader(htmlStr))
 	if err != nil {
 		return nil, err
@@ -108,19 +119,10 @@ func (d *Document) ImportHTMLText(slideIndex int, x, y, w, h float64, htmlStr st
 	}
 
 	shape := slide.Slide().GetOrCreateCommonSlideData().GetOrCreateShapeTree().AddShape()
-	shape.SetPosition(int(drawingml.PointsToEmu(x)), int(drawingml.PointsToEmu(y)))
-	shape.SetSize(int(drawingml.PointsToEmu(w)), int(drawingml.PointsToEmu(h)))
+	shape.SetPosition(int(drawingml.PointsToEmu(rect.X)), int(drawingml.PointsToEmu(rect.Y)))
+	shape.SetSize(int(drawingml.PointsToEmu(rect.W)), int(drawingml.PointsToEmu(rect.H)))
 
-	relFn := func(url string) string {
-		rel, _ := slide.PackagingPart().CreateRelationship(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", "External")
-		if rel != nil {
-			return rel.ID()
-		}
-
-		return ""
-	}
-
-	applyHTMLToTextBody(shape.GetOrCreateTextBody(), doc, relFn)
+	applyHTMLToTextBody(shape.GetOrCreateTextBody(), doc, createRelFn(slide))
 
 	return shape, nil
 }
@@ -144,84 +146,94 @@ func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string
 	f = func(n *html.Node, bold, italic, underline bool, level int, listType string, linkId string) {
 		switch n.Type {
 		case html.TextNode:
-			text := strings.TrimSpace(n.Data)
-			if text != "" {
-				run := p.AddRun(text)
-				if bold {
-					run.SetBold(true)
-				}
-				if italic {
-					run.SetItalic(true)
-				}
-				if underline || linkId != "" {
-					run.SetUnderline(drawingml.UnderlineSingle)
-				}
-				if linkId != "" {
-					run.SetHyperlink(linkId)
-				}
-			}
+			handleTextNode(p, n, bold, italic, underline, linkId)
 		case html.ElementNode:
-			newBold, newItalic, newUnderline := bold, italic, underline
-			newLevel := level
-			newListType := listType
-			newLinkId := linkId
-
-			switch n.Data {
-			case "b", "strong":
-				newBold = true
-			case "i", "em":
-				newItalic = true
-			case "u":
-				newUnderline = true
-			case "a":
-				if relFn != nil {
-					for _, attr := range n.Attr {
-						if attr.Key == "href" {
-							newLinkId = relFn(attr.Val)
-
-							break
-						}
-					}
-				}
-			case "br":
-				p = tb.AddParagraph("")
-				if newListType != "" {
-					p.SetLevel(newLevel)
-					switch newListType {
-					case "ul":
-						p.SetCharacterBullet("•")
-					case "ol":
-						p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
-					}
-				}
-
-				return
-			case "ul", "ol":
-				newListType = n.Data
-				newLevel++
-			case "li":
-				p = tb.AddParagraph("")
-				p.SetLevel(newLevel - 1)
-				switch listType {
-				case "ul":
-					p.SetCharacterBullet("•")
-				case "ol":
-					// Simplified: always start at 1 or should we track it?
-					// For now let's just use arabic period.
-					p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
-				}
-			}
-
-			for c := n.FirstChild; c != nil; c = c.NextSibling {
-				f(c, newBold, newItalic, newUnderline, newLevel, newListType, newLinkId)
-			}
-		case html.ErrorNode, html.DocumentNode, html.CommentNode, html.DoctypeNode, html.RawNode:
-			// These node types are not processed for text content
+			handleElementNode(tb, &p, n, bold, italic, underline, level, listType, linkId, relFn, f)
+		default:
 			return
 		}
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		f(c, false, false, false, 0, "", "")
+	}
+}
+
+func handleTextNode(p *drawingml.TextParagraph, n *html.Node, bold, italic, underline bool, linkId string) {
+	text := strings.TrimSpace(n.Data)
+	if text == "" {
+		return
+	}
+	run := p.AddRun(text)
+	if bold {
+		run.SetBold(true)
+	}
+	if italic {
+		run.SetItalic(true)
+	}
+	if underline || linkId != "" {
+		run.SetUnderline(drawingml.UnderlineSingle)
+	}
+	if linkId != "" {
+		run.SetHyperlink(linkId)
+	}
+}
+
+//nolint:revive // argument-limit: recursive HTML parsing requires state
+func handleElementNode(tb *drawingml.TextBody, p **drawingml.TextParagraph, n *html.Node, bold, italic, underline bool, level int, listType string, linkId string, relFn func(string) string, f func(*html.Node, bool, bool, bool, int, string, string)) {
+	newBold, newItalic, newUnderline := bold, italic, underline
+	newLevel, newListType, newLinkId := level, listType, linkId
+
+	switch n.Data {
+	case "b", "strong":
+		newBold = true
+	case "i", "em":
+		newItalic = true
+	case "u":
+		newUnderline = true
+	case "a":
+		newLinkId = getHref(n, relFn)
+	case "br":
+		*p = tb.AddParagraph("")
+		applyListFormatting(*p, newLevel, newListType)
+
+		return
+	case "ul", "ol":
+		newListType = n.Data
+		newLevel++
+	case "li":
+		*p = tb.AddParagraph("")
+		(*p).SetLevel(newLevel - 1)
+		applyListFormatting(*p, 1, newListType)
+	}
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		f(c, newBold, newItalic, newUnderline, newLevel, newListType, newLinkId)
+	}
+}
+
+func getHref(n *html.Node, relFn func(string) string) string {
+	if relFn == nil {
+		return ""
+	}
+	for _, attr := range n.Attr {
+		if attr.Key == "href" {
+			return relFn(attr.Val)
+		}
+	}
+
+	return ""
+}
+
+func applyListFormatting(p *drawingml.TextParagraph, level int, listType string) {
+	if listType == "" {
+		return
+	}
+	p.SetLevel(level)
+	switch listType {
+	case "ul":
+		p.SetCharacterBullet("•")
+	case "ol":
+		p.SetAutoNumberedBullet(drawingml.AutoNumArabicPeriod, 1)
 	}
 }

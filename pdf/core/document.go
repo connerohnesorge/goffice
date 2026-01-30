@@ -822,6 +822,7 @@ type Page struct {
 	resources types.Dict      // Resource dictionary
 	fonts     map[string]bool // Track registered fonts
 	images    map[string]bool // Track registered images
+	patterns  map[string]bool // Track registered patterns
 }
 
 // newPage creates a new page with the given number and size.
@@ -835,6 +836,7 @@ func newPage(number int, size PageSize) *Page {
 		resources: types.NewDict(),
 		fonts:     make(map[string]bool),
 		images:    make(map[string]bool),
+		patterns:  make(map[string]bool),
 	}
 }
 
@@ -859,6 +861,7 @@ func newPageWithOptions(
 		resources: types.NewDict(),
 		fonts:     make(map[string]bool),
 		images:    make(map[string]bool),
+		patterns:  make(map[string]bool),
 	}
 	if effectiveOpts.Boxes != nil {
 		p.boxes = effectiveOpts.Boxes

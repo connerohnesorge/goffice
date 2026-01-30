@@ -7,6 +7,8 @@ import (
 	"github.com/connerohnesorge/goffice/openxml"
 )
 
+const maxTextLevel = 9
+
 // getParagraphProps returns the paragraph properties for the given level.
 // level 0 = defPPr, 1-9 = lvl1pPr...lvl9pPr
 func getParagraphProps(
@@ -14,11 +16,12 @@ func getParagraphProps(
 	level int,
 ) *drawingml.TextParagraphProperties {
 	var name string
-	if level == 0 {
+	switch {
+	case level == 0:
 		name = "defPPr"
-	} else if level >= 1 && level <= 9 {
+	case level >= 1 && level <= maxTextLevel:
 		name = fmt.Sprintf("lvl%dpPr", level)
-	} else {
+	default:
 		return nil
 	}
 
@@ -46,11 +49,12 @@ func getOrCreateParagraphProps(
 	}
 
 	var name string
-	if level == 0 {
+	switch {
+	case level == 0:
 		name = "defPPr"
-	} else if level >= 1 && level <= 9 {
+	case level >= 1 && level <= maxTextLevel:
 		name = fmt.Sprintf("lvl%dpPr", level)
-	} else {
+	default:
 		return nil
 	}
 

@@ -457,7 +457,7 @@ func NewMediaExtension(uri string) *MediaExtension {
 
 // ClearChildren removes all child elements.
 func (e *MediaExtension) ClearChildren() {
-	var toRemove []openxml.Element
+	toRemove := make([]openxml.Element, 0, e.ChildCount())
 	for child := range e.Children() {
 		toRemove = append(toRemove, child)
 	}

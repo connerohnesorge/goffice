@@ -19,9 +19,9 @@ func TestRoundtrip(t *testing.T) {
 	target := openxml.NewCompositeElement("http://example.com", "root", "ex")
 	target.SetAttribute(openxml.NewAttribute("", "attr1", "", "val2")) // Mod
 	target.SetAttribute(openxml.NewAttribute("", "attr2", "", "new"))  // Add
-	child1_mod := openxml.NewLeafElement("http://example.com", "child", "ex")
-	child1_mod.SetInnerText("text1-mod") // Mod text
-	target.AppendChild(child1_mod)
+	child1Mod := openxml.NewLeafElement("http://example.com", "child", "ex")
+	child1Mod.SetInnerText("text1-mod") // Mod text
+	target.AppendChild(child1Mod)
 	child2 := openxml.NewLeafElement("http://example.com", "child2", "ex") // Add child
 	child2.SetInnerText("text2")
 	target.AppendChild(child2)
@@ -36,10 +36,12 @@ func TestRoundtrip(t *testing.T) {
 	comparator := compare.NewElementComparator()
 	diffs := comparator.Compare(base, target)
 
-	if len(diffs) > 0 {
-		t.Errorf("Roundtrip failed, expected 0 diffs, got %d", len(diffs))
-		for _, d := range diffs {
-			t.Logf("Diff: %v", d)
-		}
+	if len(diffs) == 0 {
+		return
+	}
+
+	t.Errorf("Roundtrip failed, expected 0 diffs, got %d", len(diffs))
+	for _, d := range diffs {
+		t.Logf("Diff: %v", d)
 	}
 }

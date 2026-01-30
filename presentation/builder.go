@@ -1,6 +1,8 @@
+// Package presentation provides a fluent API for creating and modifying PowerPoint presentations.
 package presentation
 
 import (
+	"errors"
 	"fmt"
 	"io"
 
@@ -9,11 +11,13 @@ import (
 	"github.com/connerohnesorge/goffice/presentation/parts"
 )
 
+// PresentationBuilder provides a fluent API for building presentations.
 type PresentationBuilder struct {
 	doc    *Document
 	errors []error
 }
 
+// NewPresentationBuilder creates a new PresentationBuilder.
 func NewPresentationBuilder() *PresentationBuilder {
 	doc, err := NewWriter(io.Discard, DocTypePresentation)
 	pb := &PresentationBuilder{
@@ -27,9 +31,10 @@ func NewPresentationBuilder() *PresentationBuilder {
 	return pb
 }
 
+// AddSlide adds a new slide to the presentation and returns a SlideBuilder.
 func (pb *PresentationBuilder) AddSlide() *SlideBuilder {
 	if pb.doc == nil {
-		pb.errors = append(pb.errors, fmt.Errorf("document is nil"))
+		pb.errors = append(pb.errors, errors.New("document is nil"))
 
 		return &SlideBuilder{pb: pb}
 	}
@@ -47,6 +52,7 @@ func (pb *PresentationBuilder) AddSlide() *SlideBuilder {
 	}
 }
 
+// Build returns the constructed Document or the first error encountered.
 func (pb *PresentationBuilder) Build() (*Document, error) {
 	if len(pb.errors) > 0 {
 		return nil, pb.errors[0]
@@ -55,11 +61,13 @@ func (pb *PresentationBuilder) Build() (*Document, error) {
 	return pb.doc, nil
 }
 
+// SlideBuilder provides a fluent API for building slides.
 type SlideBuilder struct {
 	pb        *PresentationBuilder
 	slidePart *parts.SlidePart
 }
 
+// AddShape adds a new shape to the slide and returns a ShapeBuilder.
 func (sb *SlideBuilder) AddShape() *ShapeBuilder {
 	if sb.slidePart == nil {
 		return &ShapeBuilder{sb: sb}
@@ -74,6 +82,7 @@ func (sb *SlideBuilder) AddShape() *ShapeBuilder {
 	}
 }
 
+// AddTitle adds a title shape to the slide with the specified text.
 func (sb *SlideBuilder) AddTitle(text string) *SlideBuilder {
 	if sb.slidePart == nil {
 		return sb
@@ -86,55 +95,64 @@ func (sb *SlideBuilder) AddTitle(text string) *SlideBuilder {
 	return sb
 }
 
+// Presentation returns the parent PresentationBuilder.
 func (sb *SlideBuilder) Presentation() *PresentationBuilder {
 	return sb.pb
 }
 
+// SlidePart returns the underlying slide part.
 func (sb *SlideBuilder) SlidePart() *parts.SlidePart {
 	return sb.slidePart
 }
 
+// ShapeBuilder provides a fluent API for building shapes.
 type ShapeBuilder struct {
 	sb    *SlideBuilder
 	shape *elements.Shape
 }
 
-func (shb *ShapeBuilder) SetType(shapeType drawingml.ShapeTypeValue) *ShapeBuilder {
-	if shb.shape != nil {
-		spPr := shb.shape.GetOrCreateShapeProperties()
+// SetType sets the shape type.
+func (sh *ShapeBuilder) SetType(shapeType drawingml.ShapeTypeValue) *ShapeBuilder {
+	if sh.shape != nil {
+		spPr := sh.shape.GetOrCreateShapeProperties()
 		spPr.SetPresetGeometry(string(shapeType))
 	}
 
-	return shb
+	return sh
 }
 
-func (shb *ShapeBuilder) AddParagraph(text string) *ParagraphBuilder {
-	if shb.shape == nil {
-		return &ParagraphBuilder{shb: shb}
+// AddParagraph adds a new paragraph to the shape and returns a ParagraphBuilder.
+func (sh *ShapeBuilder) AddParagraph(text string) *ParagraphBuilder {
+	if sh.shape == nil {
+		return &ParagraphBuilder{sh: sh}
 	}
 
-	tb := shb.shape.GetOrCreateTextBody()
+	tb := sh.shape.GetOrCreateTextBody()
 	p := tb.AddParagraph(text)
 
 	return &ParagraphBuilder{
-		shb: shb,
-		p:   p,
+		sh: sh,
+		p:  p,
 	}
 }
 
-func (shb *ShapeBuilder) Slide() *SlideBuilder {
-	return shb.sb
+// Slide returns the parent SlideBuilder.
+func (sh *ShapeBuilder) Slide() *SlideBuilder {
+	return sh.sb
 }
 
-func (shb *ShapeBuilder) Shape() *elements.Shape {
-	return shb.shape
+// Shape returns the underlying shape element.
+func (sh *ShapeBuilder) Shape() *elements.Shape {
+	return sh.shape
 }
 
+// ParagraphBuilder provides a fluent API for building paragraphs.
 type ParagraphBuilder struct {
-	shb *ShapeBuilder
-	p   *drawingml.TextParagraph
+	sh *ShapeBuilder
+	p  *drawingml.TextParagraph
 }
 
+// AddRun adds a new text run to the paragraph and returns a RunBuilder.
 func (pb *ParagraphBuilder) AddRun(text string) *RunBuilder {
 	if pb.p == nil {
 		return &RunBuilder{pb: pb}
@@ -148,15 +166,18 @@ func (pb *ParagraphBuilder) AddRun(text string) *RunBuilder {
 	}
 }
 
+// Shape returns the parent ShapeBuilder.
 func (pb *ParagraphBuilder) Shape() *ShapeBuilder {
-	return pb.shb
+	return pb.sh
 }
 
+// RunBuilder provides a fluent API for building text runs.
 type RunBuilder struct {
 	pb *ParagraphBuilder
 	r  *drawingml.TextRun
 }
 
+// Bold sets the bold property of the text run.
 func (rb *RunBuilder) Bold(bold bool) *RunBuilder {
 	if rb.r != nil {
 		rb.r.SetBold(bold)
@@ -165,6 +186,7 @@ func (rb *RunBuilder) Bold(bold bool) *RunBuilder {
 	return rb
 }
 
+// Size sets the font size of the text run.
 func (rb *RunBuilder) Size(size int) *RunBuilder {
 	if rb.r != nil {
 		rb.r.SetFontSize(size)
@@ -173,6 +195,7 @@ func (rb *RunBuilder) Size(size int) *RunBuilder {
 	return rb
 }
 
+// Paragraph returns the parent ParagraphBuilder.
 func (rb *RunBuilder) Paragraph() *ParagraphBuilder {
 	return rb.pb
 }

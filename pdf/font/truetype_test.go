@@ -871,3 +871,189 @@ func TestGetTableData(t *testing.T) {
 		)
 	}
 }
+
+// TestKerningTable tests the kerning table functionality
+func TestKerningTable(t *testing.T) {
+	t.Run("GetKerning", func(t *testing.T) {
+		kern := &KerningTable{
+			Pairs: map[uint32]int16{
+				(uint32(65) << 16) | uint32(86): -100, // A-V kerning
+				(uint32(84) << 16) | uint32(111): -80, // T-o kerning
+			},
+		}
+
+		// Test existing kerning pairs
+		if v := kern.GetKerning(65, 86); v != -100 {
+			t.Errorf("GetKerning(A, V) = %d, want -100", v)
+		}
+		if v := kern.GetKerning(84, 111); v != -80 {
+			t.Errorf("GetKerning(T, o) = %d, want -80", v)
+		}
+
+		// Test non-existing pair
+		if v := kern.GetKerning(65, 65); v != 0 {
+			t.Errorf("GetKerning(A, A) = %d, want 0", v)
+		}
+	})
+
+	t.Run("AddKerning", func(t *testing.T) {
+		kern := &KerningTable{}
+		kern.AddKerning(65, 66, -50)
+
+		if v := kern.GetKerning(65, 66); v != -50 {
+			t.Errorf("GetKerning after AddKerning = %d, want -50", v)
+		}
+	})
+
+	t.Run("NilKerningTable", func(t *testing.T) {
+		var kern *KerningTable
+		if v := kern.GetKerning(65, 66); v != 0 {
+			t.Errorf("GetKerning on nil table = %d, want 0", v)
+		}
+	})
+}
+
+// TestParseKernTable tests parsing of kern tables
+func TestParseKernTable(t *testing.T) {
+	t.Run("Version0Format0", func(t *testing.T) {
+		// Create a minimal kern table (version 0, format 0)
+		buf := &bytes.Buffer{}
+
+		// kern table header (version 0)
+		_ = binary.Write(buf, binary.BigEndian, uint16(0)) // version
+		_ = binary.Write(buf, binary.BigEndian, uint16(1)) // nTables
+
+		// Subtable header
+		_ = binary.Write(buf, binary.BigEndian, uint16(18))   // length
+		_ = binary.Write(buf, binary.BigEndian, uint16(0x0001)) // coverage: horizontal=1
+		_ = binary.Write(buf, binary.BigEndian, uint16(0))    // tupleIndex
+
+		// Format 0 subtable header
+		_ = binary.Write(buf, binary.BigEndian, uint16(2)) // nPairs
+		_ = binary.Write(buf, binary.BigEndian, uint16(4)) // searchRange
+		_ = binary.Write(buf, binary.BigEndian, uint16(1)) // entrySelector
+		_ = binary.Write(buf, binary.BigEndian, uint16(0)) // rangeShift
+
+		// Kerning pairs
+		_ = binary.Write(buf, binary.BigEndian, uint16(65))  // left glyph (A)
+		_ = binary.Write(buf, binary.BigEndian, uint16(86))  // right glyph (V)
+		_ = binary.Write(buf, binary.BigEndian, int16(-100)) // kerning value
+
+		_ = binary.Write(buf, binary.BigEndian, uint16(84))  // left glyph (T)
+		_ = binary.Write(buf, binary.BigEndian, uint16(111)) // right glyph (o)
+		_ = binary.Write(buf, binary.BigEndian, int16(-80))  // kerning value
+
+		kernTable := parseKernTable(buf.Bytes(), map[string]tableRecord{
+			"kern": {Offset: 0, Length: uint32(buf.Len())},
+		})
+
+		if kernTable == nil {
+			t.Fatal("parseKernTable returned nil")
+		}
+
+		if len(kernTable.Pairs) != 2 {
+			t.Errorf("Expected 2 kerning pairs, got %d", len(kernTable.Pairs))
+		}
+
+		// Verify kerning values
+		key1 := (uint32(65) << 16) | uint32(86)
+		if v, ok := kernTable.Pairs[key1]; !ok || v != -100 {
+			t.Errorf("Kerning pair A-V = %d, want -100", v)
+		}
+	})
+
+	t.Run("MissingKernTable", func(t *testing.T) {
+		kernTable := parseKernTable([]byte{}, map[string]tableRecord{})
+		if kernTable != nil {
+			t.Error("parseKernTable should return nil for missing table")
+		}
+	})
+
+	t.Run("EmptyKernTable", func(t *testing.T) {
+		buf := &bytes.Buffer{}
+		_ = binary.Write(buf, binary.BigEndian, uint16(0)) // version
+		_ = binary.Write(buf, binary.BigEndian, uint16(0)) // nTables = 0
+
+		kernTable := parseKernTable(buf.Bytes(), map[string]tableRecord{
+			"kern": {Offset: 0, Length: uint32(buf.Len())},
+		})
+
+		if kernTable != nil {
+			t.Error("parseKernTable should return nil for empty table")
+		}
+	})
+}
+
+// TestFontGetKerningForRunes tests font-level kerning lookup
+func TestFontGetKerningForRunes(t *testing.T) {
+	font := &Font{
+		Kerning: &KerningTable{
+			Pairs: map[uint32]int16{
+				(uint32(65) << 16) | uint32(86): -100, // A-V
+			},
+		},
+		glyphToRune: map[uint16]rune{
+			65: 'A',
+			86: 'V',
+		},
+	}
+
+	// Test with glyph mapping
+	if v := font.GetKerningForRunes('A', 'V'); v != -100 {
+		t.Errorf("GetKerningForRunes(A, V) = %d, want -100", v)
+	}
+
+	// Test without glyph mapping (should return 0)
+	if v := font.GetKerningForRunes('X', 'Y'); v != 0 {
+		t.Errorf("GetKerningForRunes(X, Y) = %d, want 0", v)
+	}
+}
+
+// TestFontTextWidthWithKerning tests text width calculation with kerning
+func TestFontTextWidthWithKerning(t *testing.T) {
+	font := &Font{
+		GlyphData: map[rune]GlyphMetrics{
+			'A': {AdvanceWidth: 500},
+			'V': {AdvanceWidth: 500},
+			'B': {AdvanceWidth: 500},
+		},
+		Kerning: &KerningTable{
+			Pairs: map[uint32]int16{
+				(uint32(65) << 16) | uint32(86): -100, // A-V kerning
+			},
+		},
+		glyphToRune: map[uint16]rune{
+			65: 'A',
+			86: 'V',
+			66: 'B',
+		},
+	}
+
+	// Test without kerning (single character)
+	width := font.TextWidthWithKerning("A")
+	if width != 500 {
+		t.Errorf("TextWidthWithKerning(\"A\") = %d, want 500", width)
+	}
+
+	// Test with kerning pair
+	width = font.TextWidthWithKerning("AV")
+	expected := 500 + 500 - 100 // 900
+	if width != expected {
+		t.Errorf("TextWidthWithKerning(\"AV\") = %d, want %d", width, expected)
+	}
+
+	// Test without kerning (no kerning pair)
+	width = font.TextWidthWithKerning("AB")
+	expected = 500 + 500 // 1000
+	if width != expected {
+		t.Errorf("TextWidthWithKerning(\"AB\") = %d, want %d", width, expected)
+	}
+
+	// Test with nil kerning (should fall back to regular TextWidth)
+	font.Kerning = nil
+	width = font.TextWidthWithKerning("AV")
+	expected = 1000
+	if width != expected {
+		t.Errorf("TextWidthWithKerning(nil kerning) = %d, want %d", width, expected)
+	}
+}

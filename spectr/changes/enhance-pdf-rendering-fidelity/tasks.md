@@ -1,7 +1,7 @@
 # Implementation Tasks: PDF Rendering Fidelity Enhancement
 
 ## 1. Advanced Font Rendering
-- [ ] 1.1 Implement font kerning pairs
+- [x] 1.1 Implement font kerning pairs
 - [ ] 1.2 Add OpenType feature support (ligatures, swashes, etc.)
 - [ ] 1.3 Implement proper font metrics calculation
 - [ ] 1.4 Add font subsetting for embedded fonts
@@ -26,7 +26,7 @@
 - [ ] 3.6 Write shape effect tests
 
 ## 4. Fill and Stroke Rendering
-- [ ] 4.1 Implement linear gradient rendering with angle and stops
+- [x] 4.1 Implement linear gradient rendering with angle and stops
 - [ ] 4.2 Add radial gradient rendering
 - [ ] 4.3 Add path gradient rendering
 - [ ] 4.4 Implement pattern fill rendering (polka dots, stripes, etc.)
@@ -46,7 +46,7 @@
 - [ ] 5.9 Write chart tests
 
 ## 6. Table Rendering
-- [ ] 6.1 Implement table cell merging visual rendering
+- [x] 6.1 Implement table cell merging visual rendering
 - [ ] 6.2 Add cell border rendering with merges
 - [ ] 6.3 Implement cell shading/fill
 - [ ] 6.4 Add table style application to PDF
@@ -54,7 +54,7 @@
 - [ ] 6.6 Write table tests
 
 ## 7. Header and Footer Rendering
-- [ ] 7.1 Implement section-specific headers
+- [x] 7.1 Implement section-specific headers
 - [ ] 7.2 Add section-specific footers
 - [ ] 7.3 Implement different first page header/footer
 - [ ] 7.4 Add different odd/even page headers/footers
