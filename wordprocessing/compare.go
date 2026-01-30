@@ -2,7 +2,6 @@ package wordprocessing
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/connerohnesorge/goffice/openxml"
 	"github.com/connerohnesorge/goffice/openxml/compare"
