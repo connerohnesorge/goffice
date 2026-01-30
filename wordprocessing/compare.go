@@ -1,6 +1,7 @@
 package wordprocessing
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/connerohnesorge/goffice/openxml"
@@ -22,14 +23,14 @@ func NewDocumentComparator() *DocumentComparator {
 // Compare compares two documents and returns the differences.
 func (dc *DocumentComparator) Compare(doc1, doc2 *Document) ([]compare.Diff, error) {
 	if doc1 == nil || doc2 == nil {
-		return nil, fmt.Errorf("cannot compare nil documents")
+		return nil, errors.New("cannot compare nil documents")
 	}
 
 	root1 := doc1.MainPart().Document()
 	root2 := doc2.MainPart().Document()
 
 	if root1 == nil || root2 == nil {
-		return nil, fmt.Errorf("document main part is missing or invalid")
+		return nil, errors.New("document main part is missing or invalid")
 	}
 
 	return dc.comparator.Compare(root1, root2), nil
@@ -50,14 +51,14 @@ func NewDocumentMerger() *DocumentMerger {
 // Merge merges 'other' into 'base'. The 'base' document is modified in place.
 func (dm *DocumentMerger) Merge(base, other *Document) error {
 	if base == nil || other == nil {
-		return fmt.Errorf("cannot merge nil documents")
+		return errors.New("cannot merge nil documents")
 	}
 
 	rootBase := base.MainPart().Document()
 	rootOther := other.MainPart().Document()
 
 	if rootBase == nil || rootOther == nil {
-		return fmt.Errorf("document main part is missing or invalid")
+		return errors.New("document main part is missing or invalid")
 	}
 
 	return dm.merger.Merge(rootBase, rootOther)
@@ -68,7 +69,7 @@ func (dm *DocumentMerger) Merge(base, other *Document) error {
 // It returns the list of conflicts found.
 func (dm *DocumentMerger) ThreeWayMerge(base, ours, theirs *Document) ([]compare.Conflict, error) {
 	if base == nil || ours == nil || theirs == nil {
-		return nil, fmt.Errorf("cannot merge nil documents")
+		return nil, errors.New("cannot merge nil documents")
 	}
 
 	rootBase := base.MainPart().Document()
@@ -76,7 +77,7 @@ func (dm *DocumentMerger) ThreeWayMerge(base, ours, theirs *Document) ([]compare
 	rootTheirs := theirs.MainPart().Document()
 
 	if rootBase == nil || rootOurs == nil || rootTheirs == nil {
-		return nil, fmt.Errorf("document main part is missing or invalid")
+		return nil, errors.New("document main part is missing or invalid")
 	}
 
 	mergedElement, conflicts, err := dm.merger.ThreeWayMerge(rootBase, rootOurs, rootTheirs)
@@ -87,7 +88,7 @@ func (dm *DocumentMerger) ThreeWayMerge(base, ours, theirs *Document) ([]compare
 	if root, ok := mergedElement.(openxml.PartRootElement); ok {
 		base.MainPart().SetRootElement(root)
 	} else {
-		return nil, fmt.Errorf("merged element is not a PartRootElement")
+		return nil, errors.New("merged element is not a PartRootElement")
 	}
 
 	return conflicts, nil

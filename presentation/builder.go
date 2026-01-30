@@ -3,7 +3,6 @@ package presentation
 
 import (
 	"errors"
-	"fmt"
 	"io"
 
 	"github.com/connerohnesorge/goffice/drawingml"

@@ -150,7 +150,7 @@ func (a *Audio) SetLoop(loop bool) *Audio {
 	a.props.Loop = loop
 	a.applyProps()
 
-	return v
+	return a
 }
 
 // SetMuted sets whether the audio is muted.

@@ -1,4 +1,4 @@
-// This file implements the extended chart part (Office 2016+).
+// Package parts implements various OpenXML part types.
 package parts
 
 import (

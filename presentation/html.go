@@ -6,6 +6,7 @@ import (
 
 	"github.com/connerohnesorge/goffice/drawingml"
 	"github.com/connerohnesorge/goffice/presentation/elements"
+	"github.com/connerohnesorge/goffice/presentation/parts"
 	"golang.org/x/net/html"
 )
 
@@ -90,7 +91,7 @@ func parseHTMLRows(tableNode *html.Node) [][]*html.Node {
 	return rows
 }
 
-func createRelFn(slide *Slide) func(string) string {
+func createRelFn(slide *parts.SlidePart) func(string) string {
 	return func(url string) string {
 		rel, _ := slide.PackagingPart().CreateRelationship(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", "External")
 		if rel != nil {
