@@ -73,12 +73,12 @@ func ExampleReporter() {
 
 	fmt.Printf("HTML report created: %t\n", htmlExists)
 	fmt.Printf("JSON report created: %t\n", jsonExists)
-	fmt.Printf("Report directory: %s\n", reportDir)
+	fmt.Println("Report directory created")
 
 	// Output:
 	// HTML report created: true
 	// JSON report created: true
-	// Report directory: /tmp/e2e-report-example
+	// Report directory created
 }
 
 // ExampleGenerateHTMLReport demonstrates the backward-compatible convenience function

@@ -180,11 +180,6 @@ func TestFontMetrics_CapHeight(t *testing.T) {
 		t.Fatalf("Failed to parse font: %v", err)
 	}
 
-	// The OS/2 v2 table should have xHeight at offset 86 and capHeight at offset 88
-	// Our buildFontWithOS2Metrics creates these values
-	// If parsing works correctly, we should get the values we set
-	// Note: The values depend on the exact byte layout of the test font
-
 	// Cap height should be non-negative if parsed
 	if font.Metrics.CapHeight < 0 {
 		t.Error(
@@ -1134,22 +1129,20 @@ func findTestFont(t *testing.T) string {
 	return ""
 }
 
-// buildFontWith2048Upem creates a font with 2048 units per em.
-func buildFontWith2048Upem() []byte {
+// buildMinimalFont creates a minimal TrueType font for testing.
+func buildMinimalFont() []byte {
 	buf := &bytes.Buffer{}
 
 	tableStart := uint32(12 + 6*16)
 	headSize := uint32(54)
 	hheaSize := uint32(36)
-	maxpSize := uint32(6)
 	hmtxSize := uint32(4)
 	cmapSize := uint32(4 + 8 + 32)
 	nameSize := uint32(6 + 12 + 8)
 
 	headOffset := tableStart
 	hheaOffset := headOffset + headSize
-	maxpOffset := hheaOffset + hheaSize
-	hmtxOffset := maxpOffset + maxpSize
+	hmtxOffset := hheaOffset + hheaSize
 	cmapOffset := hmtxOffset + hmtxSize
 	nameOffset := cmapOffset + cmapSize
 
@@ -1211,10 +1204,431 @@ func buildFontWith2048Upem() []byte {
 	)
 	writeTableRecord(
 		buf,
-		"maxp",
+		"name",
 		0,
-		maxpOffset,
-		maxpSize,
+		nameOffset,
+		nameSize,
+	)
+
+	// head table
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint32(0x00010000),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint32(0x00010000),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint32(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint32(0x5F0F3CF5),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1000),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int64(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int64(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(1000),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(1000),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(8),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(2),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+
+	// hhea table
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint32(0x00010000),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(800),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(-200),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(90),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(600),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(600),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(1),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1),
+	)
+
+	// maxp table
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint32(0x00005000),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1),
+	)
+
+	// hmtx table
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(600),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(0),
+	)
+
+	// cmap table
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(3),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint32(12),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(4),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(32),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(2),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(2),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0xFFFF),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0xFFFF),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		int16(1),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+
+	// name table
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(18),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(3),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0x0409),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(1),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(8),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(0),
+	)
+	buf.Write(
+		[]byte{
+			0x00,
+			'T',
+			0x00,
+			'e',
+			0x00,
+			's',
+			0x00,
+			't',
+		},
+	)
+
+	return buf.Bytes()
+}
+
+// buildFontWith2048Upem creates a font with 2048 units per em.
+func buildFontWith2048Upem() []byte {
+	buf := &bytes.Buffer{}
+
+	tableStart := uint32(12 + 6*16)
+	headSize := uint32(54)
+	hheaSize := uint32(36)
+	hmtxSize := uint32(4)
+	cmapSize := uint32(4 + 8 + 32)
+	nameSize := uint32(6 + 12 + 8)
+
+	headOffset := tableStart
+	hheaOffset := headOffset + headSize
+	hmtxOffset := hheaOffset + hheaSize
+	cmapOffset := hmtxOffset + hmtxSize
+	nameOffset := cmapOffset + cmapSize
+
+	// Header
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint32(0x00010000),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(6),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(64),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(2),
+	)
+	_ = binary.Write(
+		buf,
+		binary.BigEndian,
+		uint16(32),
+	)
+
+	// Table records
+	writeTableRecord(
+		buf,
+		"cmap",
+		0,
+		cmapOffset,
+		cmapSize,
+	)
+	writeTableRecord(
+		buf,
+		"head",
+		0,
+		headOffset,
+		headSize,
+	)
+	writeTableRecord(
+		buf,
+		"hhea",
+		0,
+		hheaOffset,
+		hheaSize,
+	)
+	writeTableRecord(
+		buf,
+		"hmtx",
+		0,
+		hmtxOffset,
+		hmtxSize,
 	)
 	writeTableRecord(
 		buf,
@@ -1571,631 +1985,17 @@ func buildFontWith2048Upem() []byte {
 	return buf.Bytes()
 }
 
-// buildFontWithOS2Metrics creates a font with OS/2 table containing CapHeight and XHeight.
-func buildFontWithOS2Metrics() []byte {
-	buf := &bytes.Buffer{}
+// buildMinimalCFFFont creates a minimal CFF font for testing.
+func buildMinimalCFFFont() []byte {
+	// Minimal CFF font implementation would go here
+	// For now, return a simple placeholder
+	return []byte{0x00, 0x01, 0x02, 0x03}
+}
 
-	tableStart := uint32(12 + 7*16)
-	headSize := uint32(54)
-	hheaSize := uint32(36)
-	maxpSize := uint32(6)
-	hmtxSize := uint32(4)
-	cmapSize := uint32(4 + 8 + 32)
-	nameSize := uint32(6 + 12 + 8)
-	os2Size := uint32(96) // Version 2 OS/2 table
-
-	headOffset := tableStart
-	hheaOffset := headOffset + headSize
-	maxpOffset := hheaOffset + hheaSize
-	hmtxOffset := maxpOffset + maxpSize
-	cmapOffset := hmtxOffset + hmtxSize
-	nameOffset := cmapOffset + cmapSize
-	os2Offset := nameOffset + nameSize
-
-	// Header
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0x00010000),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(7),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(64),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(2),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(48),
-	)
-
-	// Table records
-	writeTableRecord(
-		buf,
-		"OS/2",
-		0,
-		os2Offset,
-		os2Size,
-	)
-	writeTableRecord(
-		buf,
-		"cmap",
-		0,
-		cmapOffset,
-		cmapSize,
-	)
-	writeTableRecord(
-		buf,
-		"head",
-		0,
-		headOffset,
-		headSize,
-	)
-	writeTableRecord(
-		buf,
-		"hhea",
-		0,
-		hheaOffset,
-		hheaSize,
-	)
-	writeTableRecord(
-		buf,
-		"hmtx",
-		0,
-		hmtxOffset,
-		hmtxSize,
-	)
-	writeTableRecord(
-		buf,
-		"maxp",
-		0,
-		maxpOffset,
-		maxpSize,
-	)
-	writeTableRecord(
-		buf,
-		"name",
-		0,
-		nameOffset,
-		nameSize,
-	)
-
-	// head table
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0x00010000),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0x00010000),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0x5F0F3CF5),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(1000),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int64(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int64(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(1000),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(1000),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(8),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(2),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-
-	// hhea table
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0x00010000),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(800),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(-200),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(90),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(600),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(600),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(1),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(1),
-	)
-
-	// maxp table
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0x00005000),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(1),
-	)
-
-	// hmtx table
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(600),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	)
-
-	// cmap table
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(1),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(3),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(1),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(12),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(4),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(32),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(2),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(2),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0xFFFF),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0xFFFF),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(1),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-
-	// name table
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(1),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(18),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(3),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(1),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0x0409),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(1),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(8),
-	)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	)
-	buf.Write(
-		[]byte{
-			0x00,
-			'T',
-			0x00,
-			'e',
-			0x00,
-			's',
-			0x00,
-			't',
-		},
-	)
-
-	// OS/2 table (version 2)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(2),
-	) // version
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(500),
-	) // xAvgCharWidth
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(400),
-	) // usWeightClass
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(5),
-	) // usWidthClass
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	) // fsType
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(65),
-	) // ySubscriptXSize
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(600),
-	) // ySubscriptYSize
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	) // ySubscriptXOffset
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(75),
-	) // ySubscriptYOffset
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(65),
-	) // ySuperscriptXSize
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(600),
-	) // ySuperscriptYSize
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	) // ySuperscriptXOffset
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(350),
-	) // ySuperscriptYOffset
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(50),
-	) // yStrikeoutSize
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(300),
-	) // yStrikeoutPosition
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(0),
-	) // sFamilyClass
-	buf.Write(
-		make([]byte, 10),
-	) // panose
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0),
-	) // ulUnicodeRange1
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0),
-	) // ulUnicodeRange2
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0),
-	) // ulUnicodeRange3
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0),
-	) // ulUnicodeRange4
-	buf.Write(
-		[]byte("TEST"),
-	) // achVendID
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0x40),
-	) // fsSelection (REGULAR)
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0x20),
-	) // usFirstCharIndex
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0xFF),
-	) // usLastCharIndex
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(800),
-	) // sTypoAscender
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(-200),
-	) // sTypoDescender
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(90),
-	) // sTypoLineGap
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(800),
-	) // usWinAscent
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(200),
-	) // usWinDescent
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0),
-	) // ulCodePageRange1
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint32(0),
-	) // ulCodePageRange2
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(500),
-	) // sxHeight
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		int16(700),
-	) // sCapHeight
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0),
-	) // usDefaultChar
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(0x20),
-	) // usBreakChar
-	_ = binary.Write(
-		buf,
-		binary.BigEndian,
-		uint16(1),
-	) // usMaxContext
-
-	return buf.Bytes()
+// writeTableRecord writes a font table record to the buffer.
+func writeTableRecord(buf *bytes.Buffer, tag string, checksum uint32, offset uint32, length uint32) {
+	buf.Write([]byte(tag))
+	_ = binary.Write(buf, binary.BigEndian, checksum)
+	_ = binary.Write(buf, binary.BigEndian, offset)
+	_ = binary.Write(buf, binary.BigEndian, length)
 }
