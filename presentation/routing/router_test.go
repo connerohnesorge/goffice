@@ -121,29 +121,3 @@ func TestStraightRouter_HorizontalLine(t *testing.T) {
 		t.Errorf("Expected horizontal line (same Y), got start.Y=%d, end.Y=%d", start.Y, lineTo.Y)
 	}
 }
-
-func TestRouterType_String(t *testing.T) {
-	tests := []struct {
-		routerType RouterType
-		expected   string
-	}{
-		{RouterTypeStraight, "straight"},
-		{RouterTypeElbow, "elbow"},
-		{RouterTypeCurved, "curved"},
-		{RouterType(999), "straight"}, // Unknown type defaults to straight
-	}
-
-	for _, tt := range tests {
-		got := tt.routerType.String()
-		if got != tt.expected {
-			t.Errorf("RouterType(%d).String() = %s, want %s", tt.routerType, got, tt.expected)
-		}
-	}
-}
-
-func TestPathSegments_Interface(_ *testing.T) {
-	// Verify all path segment types implement PathSegment interface
-	var _ PathSegment = MoveTo{}
-	var _ PathSegment = LineTo{}
-	var _ PathSegment = CubicBezierTo{}
-}

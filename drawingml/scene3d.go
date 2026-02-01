@@ -1,3 +1,4 @@
+//revive:disable:file-length-limit scene3d types are grouped together
 package drawingml
 
 import (

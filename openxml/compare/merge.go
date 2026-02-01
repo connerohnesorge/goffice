@@ -1,3 +1,6 @@
+// Package compare provides functionality for comparing and merging OpenXML elements.
+//
+//nolint:revive // max-public-structs: This package intentionally exposes multiple strategy types for flexibility.
 package compare
 
 import (
@@ -35,29 +38,29 @@ const MessageTextContentChanged = "Text content changed"
 
 // MergeStrategy defines how to resolve conflicts during a merge.
 type MergeStrategy interface {
-	Resolve(conflict Conflict) (interface{}, error)
+	Resolve(conflict *Conflict) (any, error)
 }
 
 // StrategyOursWins resolves conflicts by choosing the 'ours' value.
 type StrategyOursWins struct{}
 
-func (s *StrategyOursWins) Resolve(conflict Conflict) (interface{}, error) {
+func (s *StrategyOursWins) Resolve(conflict *Conflict) (any, error) {
 	return conflict.OurValue, nil
 }
 
 // StrategyTheirsWins resolves conflicts by choosing the 'theirs' value.
 type StrategyTheirsWins struct{}
 
-func (s *StrategyTheirsWins) Resolve(conflict Conflict) (interface{}, error) {
+func (s *StrategyTheirsWins) Resolve(conflict *Conflict) (any, error) {
 	return conflict.TheirValue, nil
 }
 
 // StrategyCustom resolves conflicts using a custom function.
 type StrategyCustom struct {
-	Resolver func(conflict Conflict) (interface{}, error)
+	Resolver func(conflict *Conflict) (any, error)
 }
 
-func (s *StrategyCustom) Resolve(conflict Conflict) (interface{}, error) {
+func (s *StrategyCustom) Resolve(conflict *Conflict) (any, error) {
 	if s.Resolver == nil {
 		return nil, fmt.Errorf("no custom resolver defined")
 	}
@@ -71,7 +74,7 @@ type StrategyCombined struct {
 	Separator string
 }
 
-func (s *StrategyCombined) Resolve(conflict Conflict) (interface{}, error) {
+func (s *StrategyCombined) Resolve(conflict *Conflict) (any, error) {
 	if conflict.Type == ConflictText {
 		s1, ok1 := conflict.OurValue.(string)
 		s2, ok2 := conflict.TheirValue.(string)
@@ -94,7 +97,7 @@ type StrategyConflictMarkers struct {
 	TheirsLabel string
 }
 
-func (s *StrategyConflictMarkers) Resolve(conflict Conflict) (interface{}, error) {
+func (s *StrategyConflictMarkers) Resolve(conflict *Conflict) (any, error) {
 	if conflict.Type == ConflictText {
 		s1, ok1 := conflict.OurValue.(string)
 		s2, ok2 := conflict.TheirValue.(string)
@@ -192,13 +195,13 @@ func (m *ElementMerger) ThreeWayMerge(base, ours, theirs openxml.Element) (openx
 	}
 
 	// Resolve conflicts
-	for _, conflict := range conflicts {
-		val, err := m.strategy.Resolve(conflict)
+	for i := range conflicts {
+		val, err := m.strategy.Resolve(&conflicts[i])
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed to resolve conflict: %w", err)
 		}
 
-		if err := m.applyResolution(merged, conflict, val); err != nil {
+		if err := m.applyResolution(merged, &conflicts[i], val); err != nil {
 			return nil, nil, fmt.Errorf("failed to apply resolution: %w", err)
 		}
 	}
@@ -207,8 +210,8 @@ func (m *ElementMerger) ThreeWayMerge(base, ours, theirs openxml.Element) (openx
 }
 
 func (m *ElementMerger) applyDiffs(target openxml.Element, diffs []Diff) error {
-	for _, diff := range diffs {
-		if err := m.applyDiff(target, diff); err != nil {
+	for i := range diffs {
+		if err := m.applyDiff(target, &diffs[i]); err != nil {
 			return err
 		}
 	}
@@ -216,7 +219,7 @@ func (m *ElementMerger) applyDiffs(target openxml.Element, diffs []Diff) error {
 	return nil
 }
 
-func (m *ElementMerger) applyDiff(target openxml.Element, diff Diff) error {
+func (m *ElementMerger) applyDiff(target openxml.Element, diff *Diff) error {
 	// Filter based on options
 	if m.options.IgnoreAttributes && (diff.Key != "" || diff.Type == Modified && (diff.Message == "Attribute modified" || diff.Message == "Attribute added")) {
 		return nil
@@ -301,7 +304,7 @@ func (m *ElementMerger) applyDiff(target openxml.Element, diff Diff) error {
 	return nil
 }
 
-func (m *ElementMerger) applyResolution(target openxml.Element, conflict Conflict, value interface{}) error {
+func (m *ElementMerger) applyResolution(target openxml.Element, conflict *Conflict, value any) error {
 	switch conflict.Type {
 	case ConflictAttribute:
 		// Handle attribute modification
@@ -346,22 +349,22 @@ func (m *ElementMerger) applyResolution(target openxml.Element, conflict Conflic
 
 func (m *ElementMerger) detectConflicts(ours, theirs []Diff) []Conflict {
 	var conflicts []Conflict
-	for _, d1 := range ours {
-		for _, d2 := range theirs {
-			if m.isConflict(d1, d2) {
+	for i := range ours {
+		for j := range theirs {
+			if m.isConflict(&ours[i], &theirs[j]) {
 				conflictType := ConflictAttribute
-				if d1.Message == MessageTextContentChanged {
+				if ours[i].Message == MessageTextContentChanged {
 					conflictType = ConflictText
 				}
 
 				conflicts = append(conflicts, Conflict{
 					Type:        conflictType,
-					Key:         d1.Key,
-					Index:       d1.Index,
-					Description: fmt.Sprintf("Conflict at %s", d1.Key),
-					OurValue:    d1.NewValue,
-					TheirValue:  d2.NewValue,
-					BaseValue:   d1.OldValue,
+					Key:         ours[i].Key,
+					Index:       ours[i].Index,
+					Description: fmt.Sprintf("Conflict at %s", ours[i].Key),
+					OurValue:    ours[i].NewValue,
+					TheirValue:  theirs[j].NewValue,
+					BaseValue:   ours[i].OldValue,
 				})
 			}
 		}
@@ -370,7 +373,7 @@ func (m *ElementMerger) detectConflicts(ours, theirs []Diff) []Conflict {
 	return conflicts
 }
 
-func (m *ElementMerger) isConflict(d1, d2 Diff) bool {
+func (m *ElementMerger) isConflict(d1, d2 *Diff) bool {
 	if d1.Type == Modified && d2.Type == Modified {
 		if d1.Key != "" && d1.Key == d2.Key {
 			return d1.NewValue != d2.NewValue

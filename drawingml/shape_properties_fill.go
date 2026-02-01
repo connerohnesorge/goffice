@@ -1,4 +1,5 @@
-// and effects.
+// Package drawingml implements the DrawingML (Drawing Markup Language) types
+// for Office Open XML documents, including shapes, pictures, charts, and effects.
 package drawingml
 
 import "github.com/connerohnesorge/goffice/openxml"

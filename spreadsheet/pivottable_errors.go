@@ -1,3 +1,4 @@
+// Package spreadsheet implements the Spreadsheet (Excel) API for Office Open XML documents.
 // This file implements error types for PivotTable validation.
 package spreadsheet
 

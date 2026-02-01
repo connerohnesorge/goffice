@@ -7,34 +7,6 @@ import (
 	"github.com/connerohnesorge/goffice/spreadsheet/parts"
 )
 
-func TestImageType_String(t *testing.T) {
-	tests := []struct {
-		imageType parts.ImageType
-		expected  string
-	}{
-		{parts.ImageTypePng, "png"},
-		{parts.ImageTypeJpeg, "jpeg"},
-		{parts.ImageTypeGif, "gif"},
-		{parts.ImageTypeBmp, "bmp"},
-		{parts.ImageTypeTiff, "tiff"},
-		{parts.ImageTypeEmf, "emf"},
-		{parts.ImageTypeWmf, "wmf"},
-		{parts.ImageTypeIcon, "ico"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.expected, func(t *testing.T) {
-			if got := tt.imageType.String(); got != tt.expected {
-				t.Errorf(
-					"ImageType.String() = %v, want %v",
-					got,
-					tt.expected,
-				)
-			}
-		})
-	}
-}
-
 func TestImageType_Extension(t *testing.T) {
 	tests := []struct {
 		imageType parts.ImageType

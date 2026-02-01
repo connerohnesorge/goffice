@@ -1,7 +1,20 @@
-// and effects.
+//revive:disable:file-length-limit shape properties are grouped together
+// Package drawingml implements the DrawingML (Drawing Markup Language) types
+// for Office Open XML documents, including shapes, pictures, charts, and effects.
 package drawingml
 
 import "github.com/connerohnesorge/goffice/openxml"
+
+// Element name constants for shape properties.
+const (
+	elemXfrm      = "xfrm"
+	elemSolidFill = "solidFill"
+	elemGradFill  = "gradFill"
+	elemLn        = "ln"
+	elemScene3d   = "scene3d"
+	elemSp3d      = "sp3d"
+	elemSpLocks   = "spLocks"
+)
 
 // BlackWhiteMode represents black and white mode values for rendering.
 type BlackWhiteMode string
@@ -72,7 +85,7 @@ func (s *ShapeProperties) SetBlackWhiteMode(
 
 // Transform returns the 2D transform element, or nil if not set.
 func (s *ShapeProperties) Transform() *Transform2D {
-	elem := s.GetElement("xfrm", NamespaceMain)
+	elem := s.GetElement(elemXfrm, NamespaceMain)
 	if elem == nil {
 		return nil
 	}
@@ -93,7 +106,7 @@ func (s *ShapeProperties) SetTransform(
 	transform *Transform2D,
 ) {
 	// Remove existing transform
-	if existing := s.GetElement("xfrm", NamespaceMain); existing != nil {
+	if existing := s.GetElement(elemXfrm, NamespaceMain); existing != nil {
 		s.RemoveChild(existing)
 	}
 	if transform != nil {
@@ -199,7 +212,7 @@ func (s *ShapeProperties) removeGeometry() {
 func (s *ShapeProperties) insertAfterTransform(
 	elem openxml.Element,
 ) {
-	xfrm := s.GetElement("xfrm", NamespaceMain)
+	xfrm := s.GetElement(elemXfrm, NamespaceMain)
 	if xfrm != nil {
 		s.InsertAfter(elem, xfrm)
 	} else {
@@ -267,7 +280,7 @@ func (s *ShapeProperties) SetNoOutline() {
 
 // Scene3D returns the 3D scene properties, or nil if not set.
 func (s *ShapeProperties) Scene3D() *Scene3D {
-	elem := s.GetElement("scene3d", NamespaceMain)
+	elem := s.GetElement(elemScene3d, NamespaceMain)
 	if elem == nil {
 		return nil
 	}
@@ -285,7 +298,7 @@ func (s *ShapeProperties) Scene3D() *Scene3D {
 
 // SetScene3D sets the 3D scene properties.
 func (s *ShapeProperties) SetScene3D(scene *Scene3D) {
-	if existing := s.GetElement("scene3d", NamespaceMain); existing != nil {
+	if existing := s.GetElement(elemScene3d, NamespaceMain); existing != nil {
 		s.RemoveChild(existing)
 	}
 	if scene != nil {
@@ -294,13 +307,13 @@ func (s *ShapeProperties) SetScene3D(scene *Scene3D) {
 		// For now, appending or inserting after ln is a reasonable guess if we don't do full validation here.
 		// However, in ShapeProperties, order is: xfrm, geometry, fill, ln, effects, scene3d, sp3d, extLst.
 		// So inserting after ln is good, or appending if ln is missing.
-		s.insertInOrder(scene, "scene3d", "ln", "gradFill", "solidFill", "xfrm")
+		s.insertInOrder(scene, elemScene3d, "ln", elemGradFill, elemSolidFill, elemXfrm)
 	}
 }
 
 // Shape3D returns the 3D shape properties, or nil if not set.
 func (s *ShapeProperties) Shape3D() *Shape3D {
-	elem := s.GetElement("sp3d", NamespaceMain)
+	elem := s.GetElement(elemSp3d, NamespaceMain)
 	if elem == nil {
 		return nil
 	}
@@ -318,12 +331,12 @@ func (s *ShapeProperties) Shape3D() *Shape3D {
 
 // SetShape3D sets the 3D shape properties.
 func (s *ShapeProperties) SetShape3D(sp3d *Shape3D) {
-	if existing := s.GetElement("sp3d", NamespaceMain); existing != nil {
+	if existing := s.GetElement(elemSp3d, NamespaceMain); existing != nil {
 		s.RemoveChild(existing)
 	}
 	if sp3d != nil {
 		// sp3d comes after scene3d
-		s.insertInOrder(sp3d, "sp3d", "scene3d", "ln", "gradFill", "solidFill", "xfrm")
+		s.insertInOrder(sp3d, elemSp3d, elemScene3d, "ln", elemGradFill, elemSolidFill, elemXfrm)
 	}
 }
 
@@ -352,12 +365,12 @@ func (s *ShapeProperties) SetEffectList(effects *EffectList) {
 	}
 	if effects != nil {
 		// effectLst comes after ln and before scene3d
-		s.insertInOrder(effects, "effectLst", "ln", "gradFill", "solidFill", "xfrm")
+		s.insertInOrder(effects, "effectLst", "ln", elemGradFill, elemSolidFill, elemXfrm)
 	}
 }
 
 // insertInOrder inserts the element in the correct position based on predecessors.
-func (s *ShapeProperties) insertInOrder(elem openxml.Element, name string, predecessors ...string) {
+func (s *ShapeProperties) insertInOrder(elem openxml.Element, _ string, predecessors ...string) {
 	// Try to find any of the predecessors in order (reverse to find the latest one)
 	for i := range predecessors {
 		predName := predecessors[i]
@@ -398,8 +411,8 @@ func (s *ShapeProperties) insertAfterFill(
 		"grpFill",
 		"blipFill",
 		"pattFill",
-		"gradFill",
-		"solidFill",
+		elemGradFill,
+		elemSolidFill,
 		"noFill",
 	}
 	for _, name := range fillElements {
@@ -415,7 +428,7 @@ func (s *ShapeProperties) insertAfterFill(
 
 // ShapeLocks returns the shape locks, or nil if not set.
 func (s *ShapeProperties) ShapeLocks() *ShapeLocks {
-	elem := s.GetElement("spLocks", NamespaceMain)
+	elem := s.GetElement(elemSpLocks, NamespaceMain)
 	if elem == nil {
 		return nil
 	}
@@ -433,12 +446,12 @@ func (s *ShapeProperties) ShapeLocks() *ShapeLocks {
 
 // SetShapeLocks sets the shape locks.
 func (s *ShapeProperties) SetShapeLocks(locks *ShapeLocks) {
-	if existing := s.GetElement("spLocks", NamespaceMain); existing != nil {
+	if existing := s.GetElement(elemSpLocks, NamespaceMain); existing != nil {
 		s.RemoveChild(existing)
 	}
 	if locks != nil {
 		// spLocks comes after sp3d, before extLst
-		s.insertInOrder(locks, "spLocks", "sp3d", "scene3d", "ln", "gradFill", "solidFill", "xfrm")
+		s.insertInOrder(locks, elemSpLocks, elemSp3d, elemScene3d, "ln", elemGradFill, elemSolidFill, elemXfrm)
 	}
 }
 

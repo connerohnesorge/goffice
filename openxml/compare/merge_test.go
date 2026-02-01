@@ -158,7 +158,7 @@ func TestElementMerger_ThreeWayMerge(t *testing.T) {
 
 		// Custom strategy: prefer 'base' (reject changes)
 		custom := &compare.StrategyCustom{
-			Resolver: func(c compare.Conflict) (any, error) {
+			Resolver: func(c *compare.Conflict) (any, error) {
 				return c.BaseValue, nil
 			},
 		}

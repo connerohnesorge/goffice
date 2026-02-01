@@ -142,6 +142,8 @@ func (s *ShapeLocks) getBoolAttr(name string, defaultVal bool) bool {
 }
 
 // setBoolAttr sets a boolean attribute value.
+//
+//nolint:revive // flag-parameter: internal helper for boolean attribute handling
 func (s *ShapeLocks) setBoolAttr(name string, value, defaultVal bool) {
 	if value == defaultVal {
 		s.RemoveAttribute(name, "")

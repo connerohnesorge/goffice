@@ -182,6 +182,8 @@ func (s *ConnectorLocks) getBoolAttr(name string, defaultVal bool) bool {
 }
 
 // setBoolAttr sets a boolean attribute value.
+//
+//nolint:revive // flag-parameter: internal helper for boolean attribute handling
 func (s *ConnectorLocks) setBoolAttr(name string, value, defaultVal bool) {
 	if value == defaultVal {
 		s.RemoveAttribute(name, "")

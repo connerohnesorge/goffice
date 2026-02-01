@@ -1,7 +1,8 @@
 //revive:disable:file-length-limit chart data types need to be together
 //revive:disable:max-public-structs chart data has many public types
 
-// and effects.
+// Package drawingml implements the DrawingML (Drawing Markup Language) types
+// for Office Open XML documents, including shapes, pictures, charts, and effects.
 //
 // This file implements chart data reference types.
 package drawingml

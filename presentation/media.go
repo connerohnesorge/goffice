@@ -229,11 +229,12 @@ func (d *Document) AddVideoFromBytes(
 
 	// Detect video type if needed
 	var videoType parts.VideoType
-	if opts.AutoDetectType && filename != "" {
+	switch {
+	case opts.AutoDetectType && filename != "":
 		videoType = parts.DetectVideoType(data, filename)
-	} else if opts.AutoDetectType {
+	case opts.AutoDetectType:
 		videoType, _ = parts.VideoTypeFromMagicBytes(data)
-	} else {
+	default:
 		videoType = opts.VideoType
 	}
 
@@ -552,11 +553,12 @@ func (d *Document) AddAudioFromBytes(
 	}
 
 	var audioType parts.AudioType
-	if opts.AutoDetectType && filename != "" {
+	switch {
+	case opts.AutoDetectType && filename != "":
 		audioType = parts.DetectAudioType(data, filename)
-	} else if opts.AutoDetectType {
+	case opts.AutoDetectType:
 		audioType, _ = parts.AudioTypeFromMagicBytes(data)
-	} else {
+	default:
 		audioType = opts.AudioType
 	}
 

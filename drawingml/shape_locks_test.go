@@ -86,7 +86,11 @@ func TestShapeLocksClone(t *testing.T) {
 	locks.SetNoGrouping(true)
 	locks.SetNoRotation(true)
 
-	clone := locks.Clone().(*ShapeLocks)
+	clonedElem := locks.Clone()
+	clone, ok := clonedElem.(*ShapeLocks)
+	if !ok {
+		t.Fatalf("expected clone to be *ShapeLocks, got %T", clonedElem)
+	}
 
 	if clone == locks {
 		t.Error("expected clone to be a different instance")

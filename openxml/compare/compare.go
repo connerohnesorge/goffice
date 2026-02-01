@@ -27,8 +27,8 @@ type Diff struct {
 	Key        string // Key identifies the changed item (e.g., attribute name)
 	Index      int    // Index identifies the changed item in a list (e.g., child index)
 	Message    string
-	OldValue   interface{}
-	NewValue   interface{}
+	OldValue   any
+	NewValue   any
 	ChildDiffs []Diff
 }
 

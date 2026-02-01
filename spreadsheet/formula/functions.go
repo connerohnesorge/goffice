@@ -4,19 +4,29 @@ import (
 	"math"
 )
 
-// AndFunction implements AND function
+// Excel function argument limits.
+const (
+	excelMaxArgsLogical = 255 // Excel allows up to 255 arguments for AND/OR
+	excelMaxArgsMath    = 255 // Excel allows up to 255 arguments for SUM etc
+	excelMaxArgsIf      = 3   // IF function takes 2-3 arguments
+)
+
+// AndFunction implements AND function.
 type AndFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *AndFunction) Name() string {
 	return "AND"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *AndFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *AndFunction) MaxArgs() int {
-	return 255 // Excel allows up to 255 arguments for AND
+	return excelMaxArgsLogical
 }
 
 func (f *AndFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
@@ -38,21 +48,25 @@ func (f *AndFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	return NewBooleanValue(true), nil
 }
 
-// OrFunction implements OR function
+// OrFunction implements OR function.
 type OrFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *OrFunction) Name() string {
 	return "OR"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *OrFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *OrFunction) MaxArgs() int {
-	return 255 // Excel allows up to 255 arguments for OR
+	return excelMaxArgsLogical
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *OrFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	if len(args) < 1 {
 		return NewErrorValue(ErrValue), nil
@@ -72,21 +86,25 @@ func (f *OrFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	return NewBooleanValue(false), nil
 }
 
-// NotFunction implements NOT function
+// NotFunction implements NOT function.
 type NotFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *NotFunction) Name() string {
 	return "NOT"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *NotFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *NotFunction) MaxArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *NotFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	if len(args) != 1 {
 		return NewErrorValue(ErrValue), nil
@@ -101,23 +119,27 @@ func (f *NotFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	return NewBooleanValue(!val), nil
 }
 
-// IfFunction implements IF function
+// IfFunction implements IF function.
 type IfFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *IfFunction) Name() string {
 	return "IF"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *IfFunction) MinArgs() int {
 	return 2
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *IfFunction) MaxArgs() int {
-	return 3
+	return excelMaxArgsIf
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *IfFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
-	if len(args) < 2 || len(args) > 3 {
+	if len(args) < 2 || len(args) > excelMaxArgsIf {
 		return NewErrorValue(ErrValue), nil
 	}
 	
@@ -131,28 +153,32 @@ func (f *IfFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 		return args[1], nil // TRUE branch
 	}
 	
-	if len(args) >= 3 {
+	if len(args) >= excelMaxArgsIf {
 		return args[2], nil // FALSE branch with else
 	}
 	
 	return NewBooleanValue(false), nil // FALSE branch
 }
 
-// SumFunction implements SUM function
+// SumFunction implements SUM function.
 type SumFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *SumFunction) Name() string {
 	return "SUM"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *SumFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *SumFunction) MaxArgs() int {
-	return 255 // Excel allows up to 255 arguments for SUM
+	return excelMaxArgsMath
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *SumFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	if len(args) < 1 {
 		return NewErrorValue(ErrValue), nil
@@ -170,21 +196,25 @@ func (f *SumFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	return NewNumberValue(sum), nil
 }
 
-// AverageFunction implements AVERAGE function
+// AverageFunction implements AVERAGE function.
 type AverageFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *AverageFunction) Name() string {
 	return "AVERAGE"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *AverageFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *AverageFunction) MaxArgs() int {
-	return 255
+	return excelMaxArgsMath
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *AverageFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	if len(args) < 1 {
 		return NewErrorValue(ErrValue), nil
@@ -208,21 +238,25 @@ func (f *AverageFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	return NewNumberValue(sum / float64(count)), nil
 }
 
-// CountFunction implements COUNT function
+// CountFunction implements COUNT function.
 type CountFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *CountFunction) Name() string {
 	return "COUNT"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *CountFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *CountFunction) MaxArgs() int {
-	return 255
+	return excelMaxArgsMath
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *CountFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	if len(args) < 1 {
 		return NewErrorValue(ErrValue), nil
@@ -238,125 +272,141 @@ func (f *CountFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	return NewNumberValue(float64(count)), nil
 }
 
-// MaxFunction implements MAX function
+// MaxFunction implements MAX function.
 type MaxFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *MaxFunction) Name() string {
 	return "MAX"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *MaxFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *MaxFunction) MaxArgs() int {
-	return 255
+	return excelMaxArgsMath
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *MaxFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	if len(args) < 1 {
 		return NewErrorValue(ErrValue), nil
 	}
-	
-	max := math.Inf(-1)
+
+	maxVal := math.Inf(-1)
 	for _, arg := range args {
 		numVal, err := arg.AsNumber()
 		if err != nil {
 			return NewErrorValue(ErrValue), nil
 		}
-		if numVal > max {
-			max = numVal
+		if numVal > maxVal {
+			maxVal = numVal
 		}
 	}
-	
-	if max == math.Inf(-1) {
+
+	if maxVal == math.Inf(-1) {
 		return NewErrorValue(ErrNA), nil
 	}
-	
-	return NewNumberValue(max), nil
+
+	return NewNumberValue(maxVal), nil
 }
 
-// MinFunction implements MIN function
+// MinFunction implements MIN function.
 type MinFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *MinFunction) Name() string {
 	return "MIN"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *MinFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *MinFunction) MaxArgs() int {
-	return 255
+	return excelMaxArgsMath
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *MinFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	if len(args) < 1 {
 		return NewErrorValue(ErrValue), nil
 	}
-	
-	min := math.Inf(1)
+
+	minVal := math.Inf(1)
 	for _, arg := range args {
 		numVal, err := arg.AsNumber()
 		if err != nil {
 			return NewErrorValue(ErrValue), nil
 		}
-		if numVal < min {
-			min = numVal
+		if numVal < minVal {
+			minVal = numVal
 		}
 	}
-	
-	if min == math.Inf(1) {
+
+	if minVal == math.Inf(1) {
 		return NewErrorValue(ErrNA), nil
 	}
-	
-	return NewNumberValue(min), nil
+
+	return NewNumberValue(minVal), nil
 }
 
-// ConcatenateFunction implements CONCATENATE function
+// ConcatenateFunction implements CONCATENATE function.
 type ConcatenateFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *ConcatenateFunction) Name() string {
 	return "CONCATENATE"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *ConcatenateFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *ConcatenateFunction) MaxArgs() int {
-	return 255
+	return excelMaxArgsMath
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *ConcatenateFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	if len(args) < 1 {
 		return NewErrorValue(ErrValue), nil
 	}
-	
+
 	result := ""
 	for _, arg := range args {
 		result += arg.AsString()
 	}
-	
+
 	return NewStringValue(result), nil
 }
 
-// LenFunction implements LEN function
+// LenFunction implements LEN function.
 type LenFunction struct{}
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *LenFunction) Name() string {
 	return "LEN"
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *LenFunction) MinArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *LenFunction) MaxArgs() int {
 	return 1
 }
 
+//nolint:revive // unused-receiver: standard function interface
 func (f *LenFunction) Call(ctx *EvalContext, args []Value) (Value, error) {
 	if len(args) != 1 {
 		return NewErrorValue(ErrValue), nil

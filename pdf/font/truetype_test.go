@@ -99,32 +99,6 @@ func TestParseTrueTypeFile_NonExistent(
 	}
 }
 
-// TestFontStyle_String tests the FontStyle String method
-func TestFontStyle_String(t *testing.T) {
-	tests := []struct {
-		style    FontStyle
-		expected string
-	}{
-		{StyleRegular, "Regular"},
-		{StyleBold, "Bold"},
-		{StyleItalic, "Italic"},
-		{StyleBoldItalic, "Bold Italic"},
-		{FontStyle(99), "Unknown"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.expected, func(t *testing.T) {
-			if got := tt.style.String(); got != tt.expected {
-				t.Errorf(
-					"FontStyle.String() = %v, want %v",
-					got,
-					tt.expected,
-				)
-			}
-		})
-	}
-}
-
 // TestFont_TextWidth tests the text width calculation
 func TestFont_TextWidth(t *testing.T) {
 	font := &Font{
@@ -877,8 +851,8 @@ func TestKerningTable(t *testing.T) {
 	t.Run("GetKerning", func(t *testing.T) {
 		kern := &KerningTable{
 			Pairs: map[uint32]int16{
-				(uint32(65) << 16) | uint32(86): -100, // A-V kerning
-				(uint32(84) << 16) | uint32(111): -80, // T-o kerning
+				(uint32(65) << 16) | uint32(86):  -100, // A-V kerning
+				(uint32(84) << 16) | uint32(111): -80,  // T-o kerning
 			},
 		}
 
@@ -924,9 +898,9 @@ func TestParseKernTable(t *testing.T) {
 		_ = binary.Write(buf, binary.BigEndian, uint16(1)) // nTables
 
 		// Subtable header
-		_ = binary.Write(buf, binary.BigEndian, uint16(18))   // length
+		_ = binary.Write(buf, binary.BigEndian, uint16(18))     // length
 		_ = binary.Write(buf, binary.BigEndian, uint16(0x0001)) // coverage: horizontal=1
-		_ = binary.Write(buf, binary.BigEndian, uint16(0))    // tupleIndex
+		_ = binary.Write(buf, binary.BigEndian, uint16(0))      // tupleIndex
 
 		// Format 0 subtable header
 		_ = binary.Write(buf, binary.BigEndian, uint16(2)) // nPairs

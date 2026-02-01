@@ -52,11 +52,11 @@ func parseMentions(text string) []CommentMention {
 
 // splitTextWithMentions splits text into runs, marking mentions separately.
 func splitTextWithMentions(text string) []CommentRun {
-	var runs []CommentRun
 	re := regexp.MustCompile(`@(\w+)`)
+	matches := re.FindAllStringSubmatch(text, -1)
+	runs := make([]CommentRun, 0, len(matches)*2)
 	lastIndex := 0
 
-	matches := re.FindAllStringSubmatch(text, -1)
 	for _, match := range matches {
 		// Add text before mention
 		if len(match) < 2 {

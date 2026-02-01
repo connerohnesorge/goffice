@@ -150,7 +150,7 @@ func applyHTMLToTextBody(tb *drawingml.TextBody, n *html.Node, relFn func(string
 			handleTextNode(p, n, bold, italic, underline, linkId)
 		case html.ElementNode:
 			handleElementNode(tb, &p, n, bold, italic, underline, level, listType, linkId, relFn, f)
-		default:
+		case html.ErrorNode, html.DocumentNode, html.CommentNode, html.DoctypeNode, html.RawNode:
 			return
 		}
 	}
@@ -181,7 +181,7 @@ func handleTextNode(p *drawingml.TextParagraph, n *html.Node, bold, italic, unde
 }
 
 //nolint:revive // argument-limit: recursive HTML parsing requires state
-func handleElementNode(tb *drawingml.TextBody, p **drawingml.TextParagraph, n *html.Node, bold, italic, underline bool, level int, listType string, linkId string, relFn func(string) string, f func(*html.Node, bool, bool, bool, int, string, string)) {
+func handleElementNode(tb *drawingml.TextBody, p **drawingml.TextParagraph, n *html.Node, bold, italic, underline bool, level int, listType, linkId string, relFn func(string) string, f func(*html.Node, bool, bool, bool, int, string, string)) {
 	newBold, newItalic, newUnderline := bold, italic, underline
 	newLevel, newListType, newLinkId := level, listType, linkId
 
